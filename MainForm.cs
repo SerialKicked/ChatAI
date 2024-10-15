@@ -463,7 +463,7 @@ namespace WaifuAI
         {
             if (string.IsNullOrEmpty(ed_input.Text))
                 return;
-            var messagetext = ed_input.Text;
+            var messagetext = LLMChatManager.GetAwayString() + ed_input.Text;
             var msg = new SingleMessage(AuthorRole.User, DateTime.Now, messagetext, LLMChatManager.Bot.UniqueName, LLMChatManager.User.UniqueName, false);
             SendMessageToUI(msg);
 
@@ -699,7 +699,7 @@ namespace WaifuAI
 
             var str = File.ReadAllText("data/chatlogs/Sarah.json");
             var item = JsonConvert.DeserializeObject<Chatlog>(str)!;
-            var output = item.GetFormatedDialogs(16384);
+            var output = item.GetFormatedDialogs(16384, false);
             try
             {
                 var mparams = new KcppPrompt { Prompt = output };
@@ -901,6 +901,11 @@ namespace WaifuAI
         {
             await LLMChatManager.History.StartNewChatSession(true);
             LoadHistoryToUI(50);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Tools.Import("g:/import.jsonl", "g:/export.json", LLMChatManager.Bot.Name, LLMChatManager.User.Name);
         }
     }
 }

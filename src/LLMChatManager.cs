@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
 
 namespace WaifuAI
 {
@@ -224,7 +225,7 @@ namespace WaifuAI
             tokencount += GetTokenCount(sysprompt);
             tokencount += GetTokenCount(Instruct.GetResponseStart(Bot));
             var availtokens = (int)(MaxContextLength) - tokencount - MaxReplyLength;
-            var history = History.GetFormatedDialogs(availtokens);
+            var history = History.GetFormatedDialogs(availtokens, Bot.SessionMemorySystem);
             var res = sysprompt + LLMChatManager.NewLine + history + msg + Instruct.GetResponseStart(Bot);
             return res;
         }
@@ -315,6 +316,26 @@ namespace WaifuAI
                 AuthorRole.Assistant => "**" + Bot.Name + ":** ",
                 _ => "**Error:** ",
             };
+        }
+
+        public static string GetAwayString()
+        {
+            if (History.Messages.Count == 0 || !Bot.SenseOfTime)
+                return string.Empty;
+
+            var timespan = DateTime.Now - History.Messages.Last().Date;
+            if (timespan <= new TimeSpan(2, 0, 0))
+                return string.Empty;
+
+            var msgtxt = (DateTime.Now.Date != History.Messages.Last().Date.Date) || (timespan > new TimeSpan(12, 0, 0)) ? "It's {{day}}, the {{date}} at {{time}}." : string.Empty;
+            if (timespan.Days > 1)
+                msgtxt += " Your last chat was " + timespan.Days.ToString() + " days ago.";
+            else if (timespan.Days == 1)
+                msgtxt += " The last chat was yesterday.";
+            else
+                msgtxt += " The last chat was about " + timespan.Hours.ToString() + " hours ago.";
+            msgtxt = "*" + msgtxt.Trim() + "* ";
+            return msgtxt;
         }
     }
 }

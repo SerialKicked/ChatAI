@@ -37,6 +37,7 @@
             ed_input = new TextBox();
             flowChat = new FlowLayoutPanel();
             panel1 = new Panel();
+            button1 = new Button();
             cb_sysprompt = new ComboBox();
             label11 = new Label();
             num_temperature = new NumericUpDown();
@@ -83,7 +84,7 @@
             bt_version = new Button();
             bt_getmodel = new Button();
             listBox1 = new ListBox();
-            button1 = new Button();
+            button2 = new Button();
             tabControl1.SuspendLayout();
             tabChat.SuspendLayout();
             panel1.SuspendLayout();
@@ -188,6 +189,7 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(button2);
             panel1.Controls.Add(button1);
             panel1.Controls.Add(cb_sysprompt);
             panel1.Controls.Add(label11);
@@ -212,6 +214,15 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(200, 552);
             panel1.TabIndex = 0;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(6, 429);
+            button1.Name = "button1";
+            button1.Size = new Size(187, 23);
+            button1.TabIndex = 20;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
             // 
             // cb_sysprompt
             // 
@@ -683,14 +694,15 @@
             listBox1.Size = new Size(968, 124);
             listBox1.TabIndex = 0;
             // 
-            // button1
+            // button2
             // 
-            button1.Location = new Point(6, 429);
-            button1.Name = "button1";
-            button1.Size = new Size(187, 23);
-            button1.TabIndex = 20;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
+            button2.Location = new Point(71, 402);
+            button2.Name = "button2";
+            button2.Size = new Size(75, 23);
+            button2.TabIndex = 21;
+            button2.Text = "button2";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // MainForm
             // 
@@ -774,5 +786,6 @@
         private ComboBox cb_sysprompt;
         private Label label11;
         private Button button1;
+        private Button button2;
     }
 }

@@ -27,6 +27,10 @@ namespace WaifuAI.Files
         public List<string> Worlds { get; set; } = [];
         /// <summary> Optional world info being used for the Location plugin </summary>
         public string Locations { get; set; } = string.Empty;
+        /// <summary> If set to true, older chat sessions will be summarized, allowing for a advanced form of memory </summary>
+        public bool SessionMemorySystem { get; set; } = false;
+        /// <summary> If set to true, this bot will stay informed about the spacing between user messages </summary>
+        public bool SenseOfTime { get; set; } = false;
         public AdvCharType CharType { get; set; } = AdvCharType.Normal;
 
         [JsonIgnore] public List<WorldInfo> MyWorlds { get; private set; } = [];

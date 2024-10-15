@@ -92,10 +92,10 @@
     <None Update="data\instruct\Mistral.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="data\params\_place params here.txt">
+    <None Update="data\params\Default.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="data\sessions\_session files.txt">
+    <None Update="data\params\_place params here.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="data\sysprompts\Standard.json">

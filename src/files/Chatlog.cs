@@ -310,6 +310,5 @@ namespace WaifuAI.Files
             msgtxt += "*";
             LogMessage(AuthorRole.System, LLMChatManager.ReplaceMacros(msgtxt, LLMChatManager.User, LLMChatManager.Bot), LLMChatManager.User, LLMChatManager.Bot); 
         }
-
     }
 }

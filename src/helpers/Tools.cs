@@ -33,6 +33,35 @@ namespace WaifuAI
         public string GPT { get; set; } = string.Empty;
     }
 
+    public static class JsonlToJsonConverter
+    {
+        public static void ConvertJsonlToJson(string inputPath, string outputPath)
+        {
+            if (!File.Exists(inputPath))
+                throw new FileNotFoundException($"The file {inputPath} does not exist.");
+
+            var lines = File.ReadAllLines(inputPath);
+            var messages = new List<STMessage>();
+
+            foreach (var line in lines)
+            {
+                var message = JsonConvert.DeserializeObject<STMessage>(line);
+                if (message != null)
+                {
+                    messages.Add(message);
+                }
+            }
+
+            var importST = new ImportST
+            {
+                Inventory = messages
+            };
+
+            var json = JsonConvert.SerializeObject(importST, Formatting.Indented);
+            File.WriteAllText(outputPath, json);
+        }
+    }
+
     public static class StringBuilderExtensions
     {
         public static StringBuilder AppendLinuxLine(this StringBuilder sb, string? text = null)
@@ -48,6 +77,8 @@ namespace WaifuAI
     {
         public static int CPUCoreCount() => Environment.ProcessorCount;
 
+
+
         /// <summary>
         /// Import a SillyTavern chatlog file (preconverted from JSONL to JSON ImportST) into a wAIfu Chatlog
         /// </summary>
@@ -59,16 +90,44 @@ namespace WaifuAI
         {
             if (!File.Exists(inputpath))
                 return;
-            var str = File.ReadAllText(inputpath);
-            var item = JsonConvert.DeserializeObject<ImportST>(str)!;
+
+            var lines = File.ReadAllLines(inputpath);
+            var messages = new List<STMessage>();
+
+            foreach (var line in lines)
+            {
+                var message = JsonConvert.DeserializeObject<STMessage>(line);
+                if (message != null)
+                {
+                    messages.Add(message);
+                }
+            }
+
+            var importST = new ImportST
+            {
+                Inventory = messages
+            };
 
             var chat = new Chatlog();
-            foreach (var msg in item.Inventory)
+            foreach (var msg in importST.Inventory)
             {
                 var role = msg.is_user ? AuthorRole.User : AuthorRole.Assistant;
                 chat.Messages.Add(new SingleMessage(role, DateTime.TryParse(msg.send_date, out var d) ? d : default, msg.mes ?? string.Empty, bot, user, false));
             }
             (chat as IFile).SaveToFile(outputpath);
+            
+            //if (!File.Exists(inputpath))
+            //    return;
+            //var str = File.ReadAllText(inputpath);
+            //var item = JsonConvert.DeserializeObject<ImportST>(str)!;
+
+            //var chat = new Chatlog();
+            //foreach (var msg in item.Inventory)
+            //{
+            //    var role = msg.is_user ? AuthorRole.User : AuthorRole.Assistant;
+            //    chat.Messages.Add(new SingleMessage(role, DateTime.TryParse(msg.send_date, out var d) ? d : default, msg.mes ?? string.Empty, bot, user, false));
+            //}
+            //(chat as IFile).SaveToFile(outputpath);
         }
 
         /// <summary>
