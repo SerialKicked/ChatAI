@@ -27,6 +27,7 @@ namespace WaifuAI.Memory
         public KeyWordLink WordLink = KeyWordLink.And;
         public WEPosition Position = WEPosition.SystemPrompt;
         public int PositionIndex = 0;
+        public int Duration = 1;
         public int Priority = 100;
         public bool CaseSensitive = false;
         public string Message = string.Empty;

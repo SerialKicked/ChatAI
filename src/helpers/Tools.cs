@@ -4,12 +4,36 @@ using System.Linq;
 using System.Text;
 using WaifuAI.Files;
 using Newtonsoft.Json;
+using Microsoft.VisualBasic.ApplicationServices;
+using Parlot.Fluent;
+using WaifuAI.Memory;
 
 namespace WaifuAI
 {
 
+    internal record STWorldEntry
+    {
+        public string[] key = [];
+        public string[] keysecondary = [];
+        public string comment = string.Empty;
+        public string content = string.Empty;
+        public bool disable = false;
+        public int sticky = 0;
+        public int position = 1;
+        public int selectiveLogic = 0;
+        public int depth = 0;
+        public int order = 100;
+    }
+
+    internal class ImportSTWorld : BaseFile
+    {
+        public Dictionary<int, STWorldEntry> entries { get; set; } = [];
+    }
+
+
+
     // Suppress CS0649: It's JSON loaded
-    #pragma warning disable CS0649
+#pragma warning disable CS0649
     internal record STMessage
     {
         public string name = string.Empty;
@@ -19,7 +43,7 @@ namespace WaifuAI
     }
     #pragma warning restore CS0649
 
-    internal class ImportST : BaseFile
+    internal class ImportSTChat : BaseFile
     {
         public string Name { get; set; } = string.Empty;
         public List<STMessage> Inventory { get; set; } = [];
@@ -52,7 +76,7 @@ namespace WaifuAI
                 }
             }
 
-            var importST = new ImportST
+            var importST = new ImportSTChat
             {
                 Inventory = messages
             };
@@ -77,7 +101,52 @@ namespace WaifuAI
     {
         public static int CPUCoreCount() => Environment.ProcessorCount;
 
+        internal static bool ImportWorld(string inputpath, string outputpath)
+        {
+            if (!File.Exists(inputpath))
+                return false;
+            try
+            {
+                var filecontent = File.ReadAllText(inputpath);
+                var importST = JsonConvert.DeserializeObject<ImportSTWorld>(filecontent);
 
+                var outputWorld = new WorldInfo
+                {
+                    Name = Path.GetFileNameWithoutExtension(inputpath),
+                    Description = "Imported from Silly Tavern",
+                };
+                foreach (var (key, item) in importST.entries)
+                {
+                    var entry = new WorldEntry
+                    {
+                        KeyWordsMain = [.. item.key],
+                        KeyWordsSecondary = [.. item.keysecondary],
+                        CaseSensitive = false,
+                        Duration = item.sticky,
+                        Enabled = !item.disable,
+                        Message = item.content,
+                        Name = item.comment,
+                        Priority = item.order,
+                        PositionIndex = item.depth
+                    };
+                    entry.Position = item.position == 1 ? WEPosition.SystemPrompt : WEPosition.Chat;
+                    entry.WordLink = item.selectiveLogic switch
+                    {
+                        0 => KeyWordLink.And,
+                        1 => KeyWordLink.Or,
+                        2 => KeyWordLink.Not,
+                        _ => KeyWordLink.And
+                    };
+                    outputWorld.Entries.Add(entry);
+                }
+                (outputWorld as IFile).SaveToFile(outputpath);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         /// <summary>
         /// Import a SillyTavern chatlog file (preconverted from JSONL to JSON ImportST) into a wAIfu Chatlog
@@ -86,48 +155,37 @@ namespace WaifuAI
         /// <param name="outputpath"></param>
         /// <param name="bot"></param>
         /// <param name="user"></param>
-        internal static void Import(string inputpath, string outputpath, string bot, string user)
+        internal static bool ImportChatlog(string inputpath, string outputpath, string bot, string user)
         {
             if (!File.Exists(inputpath))
-                return;
-
-            var lines = File.ReadAllLines(inputpath);
-            var messages = new List<STMessage>();
-
-            foreach (var line in lines)
+                return false;
+            try
             {
-                var message = JsonConvert.DeserializeObject<STMessage>(line);
-                if (message != null)
+                var lines = File.ReadAllLines(inputpath);
+                var messages = new List<STMessage>();
+                foreach (var line in lines)
                 {
-                    messages.Add(message);
+                    var message = JsonConvert.DeserializeObject<STMessage>(line);
+                    if (message != null)
+                        messages.Add(message);
                 }
+                var importST = new ImportSTChat
+                {
+                    Inventory = messages
+                };
+                var chat = new Chatlog();
+                foreach (var msg in importST.Inventory)
+                {
+                    var role = msg.is_user ? AuthorRole.User : AuthorRole.Assistant;
+                    chat.Messages.Add(new SingleMessage(role, DateTime.TryParse(msg.send_date, out var d) ? d : default, msg.mes ?? string.Empty, bot, user, false));
+                }
+                (chat as IFile).SaveToFile(outputpath);
+                return true;
             }
-
-            var importST = new ImportST
+            catch (Exception)
             {
-                Inventory = messages
-            };
-
-            var chat = new Chatlog();
-            foreach (var msg in importST.Inventory)
-            {
-                var role = msg.is_user ? AuthorRole.User : AuthorRole.Assistant;
-                chat.Messages.Add(new SingleMessage(role, DateTime.TryParse(msg.send_date, out var d) ? d : default, msg.mes ?? string.Empty, bot, user, false));
+                return false;
             }
-            (chat as IFile).SaveToFile(outputpath);
-            
-            //if (!File.Exists(inputpath))
-            //    return;
-            //var str = File.ReadAllText(inputpath);
-            //var item = JsonConvert.DeserializeObject<ImportST>(str)!;
-
-            //var chat = new Chatlog();
-            //foreach (var msg in item.Inventory)
-            //{
-            //    var role = msg.is_user ? AuthorRole.User : AuthorRole.Assistant;
-            //    chat.Messages.Add(new SingleMessage(role, DateTime.TryParse(msg.send_date, out var d) ? d : default, msg.mes ?? string.Empty, bot, user, false));
-            //}
-            //(chat as IFile).SaveToFile(outputpath);
         }
 
         /// <summary>
@@ -142,7 +200,7 @@ namespace WaifuAI
             if (!File.Exists(inputpath))
                 return;
             var str = File.ReadAllText(inputpath);
-            var item = JsonConvert.DeserializeObject<ImportST>(str)!;
+            var item = JsonConvert.DeserializeObject<ImportSTChat>(str)!;
 
             var chat = new DataSet();
             var startID = 0;

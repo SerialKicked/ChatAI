@@ -572,14 +572,14 @@ namespace WaifuAI
             {
                 var str = File.ReadAllText("settings.json");
                 Settings = JsonConvert.DeserializeObject<WaifuSettings>(str)!;
-                // set cb_bot to the settings.BotFile value if it's in the list, otherwise set index to 0.
-                cb_bot.SelectedIndex = cb_bot.Items.Contains(Settings.BotFile) ? cb_bot.Items.IndexOf(Settings.BotFile) : 0;
                 // set cb_user to the settings.UserFile value if it's in the list, otherwise set index to 0.
                 cb_user.SelectedIndex = cb_user.Items.Contains(Settings.UserFile) ? cb_user.Items.IndexOf(Settings.UserFile) : 0;
                 // set cb_infer to the settings.InferenceFile value if it's in the list, otherwise set index to 0.
                 cb_infer.SelectedIndex = cb_infer.Items.Contains(Settings.SamplerFile) ? cb_infer.Items.IndexOf(Settings.SamplerFile) : 0;
                 // set cb_instruct to the settings.InstructFile value if it's in the list, otherwise set index to 0.
                 cb_instruct.SelectedIndex = cb_instruct.Items.Contains(Settings.Instruct) ? cb_instruct.Items.IndexOf(Settings.Instruct) : 0;
+                // set cb_bot to the settings.BotFile value if it's in the list, otherwise set index to 0.
+                cb_bot.SelectedIndex = cb_bot.Items.Contains(Settings.BotFile) ? cb_bot.Items.IndexOf(Settings.BotFile) : 0;
                 // set cb_sysprompt to the settings.PromptFile value if it's in the list, otherwise set index to 0.
                 cb_sysprompt.SelectedIndex = cb_sysprompt.Items.Contains(Settings.PromptFile) ? cb_sysprompt.Items.IndexOf(Settings.PromptFile) : 0;
                 num_maxcontext.Value = Settings.MaxTotalTokens;
@@ -903,9 +903,25 @@ namespace WaifuAI
             LoadHistoryToUI(50);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void bt_ImportSTChat_Click(object sender, EventArgs e)
         {
-            Tools.Import("g:/import.jsonl", "g:/export.json", LLMChatManager.Bot.Name, LLMChatManager.User.Name);
+            // Open a file selection dialog and use Tools.Import to import a chatlog from a jsonl file
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                MessageBox.Show(
+                    Tools.ImportChatlog(openFileDialog1.FileName, "exported_chat.json", LLMChatManager.Bot.UniqueName, LLMChatManager.User.UniqueName) ?
+                        "Chatlog imported successfully to exported_chat.json in this application's main folder." :
+                        "Something went wrong while opening or parsing the file."
+                );
+        }
+
+        private void bt_importworld_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                MessageBox.Show(
+                    Tools.ImportWorld(openFileDialog1.FileName, "exported_world.json") ?
+                        "WorldInfo imported successfully to exported_world.json in this application's main folder." :
+                        "Something went wrong while opening or parsing the file."
+                );
         }
     }
 }

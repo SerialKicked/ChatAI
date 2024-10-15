@@ -72,6 +72,8 @@
             cb_samplerlist = new ComboBox();
             pan_samplers = new Panel();
             tabSettings = new TabPage();
+            bt_importworld = new Button();
+            bt_ImportSTChat = new Button();
             tabAPI = new TabPage();
             bt_stream = new Button();
             bt_perf = new Button();
@@ -84,7 +86,7 @@
             bt_version = new Button();
             bt_getmodel = new Button();
             listBox1 = new ListBox();
-            button2 = new Button();
+            openFileDialog1 = new OpenFileDialog();
             tabControl1.SuspendLayout();
             tabChat.SuspendLayout();
             panel1.SuspendLayout();
@@ -94,6 +96,7 @@
             tabInstruct.SuspendLayout();
             tabPage1.SuspendLayout();
             tabSamplers.SuspendLayout();
+            tabSettings.SuspendLayout();
             tabAPI.SuspendLayout();
             SuspendLayout();
             // 
@@ -189,7 +192,6 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
-            panel1.Controls.Add(button2);
             panel1.Controls.Add(button1);
             panel1.Controls.Add(cb_sysprompt);
             panel1.Controls.Add(label11);
@@ -566,6 +568,8 @@
             // 
             // tabSettings
             // 
+            tabSettings.Controls.Add(bt_importworld);
+            tabSettings.Controls.Add(bt_ImportSTChat);
             tabSettings.Location = new Point(4, 27);
             tabSettings.Name = "tabSettings";
             tabSettings.Padding = new Padding(3);
@@ -573,6 +577,26 @@
             tabSettings.TabIndex = 4;
             tabSettings.Text = "Settings";
             tabSettings.UseVisualStyleBackColor = true;
+            // 
+            // bt_importworld
+            // 
+            bt_importworld.Location = new Point(8, 35);
+            bt_importworld.Name = "bt_importworld";
+            bt_importworld.Size = new Size(154, 23);
+            bt_importworld.TabIndex = 1;
+            bt_importworld.Text = "Import ST WorldInfo";
+            bt_importworld.UseVisualStyleBackColor = true;
+            bt_importworld.Click += bt_importworld_Click;
+            // 
+            // bt_ImportSTChat
+            // 
+            bt_ImportSTChat.Location = new Point(8, 6);
+            bt_ImportSTChat.Name = "bt_ImportSTChat";
+            bt_ImportSTChat.Size = new Size(154, 23);
+            bt_ImportSTChat.TabIndex = 0;
+            bt_ImportSTChat.Text = "Import ST Chat";
+            bt_ImportSTChat.UseVisualStyleBackColor = true;
+            bt_ImportSTChat.Click += bt_ImportSTChat_Click;
             // 
             // tabAPI
             // 
@@ -694,15 +718,9 @@
             listBox1.Size = new Size(968, 124);
             listBox1.TabIndex = 0;
             // 
-            // button2
+            // openFileDialog1
             // 
-            button2.Location = new Point(71, 402);
-            button2.Name = "button2";
-            button2.Size = new Size(75, 23);
-            button2.TabIndex = 21;
-            button2.Text = "button2";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            openFileDialog1.FileName = "openFileDialog1";
             // 
             // MainForm
             // 
@@ -725,6 +743,7 @@
             tabInstruct.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
             tabSamplers.ResumeLayout(false);
+            tabSettings.ResumeLayout(false);
             tabAPI.ResumeLayout(false);
             tabAPI.PerformLayout();
             ResumeLayout(false);
@@ -786,6 +805,8 @@
         private ComboBox cb_sysprompt;
         private Label label11;
         private Button button1;
-        private Button button2;
+        private Button bt_ImportSTChat;
+        private OpenFileDialog openFileDialog1;
+        private Button bt_importworld;
     }
 }
