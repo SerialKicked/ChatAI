@@ -44,6 +44,7 @@ namespace WaifuAI
             bt_connect.Click += Connect!;
             bt_send.Click += SendMessage!;
             bt_reroll.Click += RerollMessage!;
+            button1.Click += button1_Click!;
             // Load editors and chat menu
             SetupSamplerEditor();
             SetupInstructEditor();
@@ -896,9 +897,10 @@ namespace WaifuAI
             LLMChatManager.Bot.EndSession();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
-            LLMChatManager.History.CurrentChatToSession();
+            await LLMChatManager.History.StartNewChatSession(true);
+            LoadHistoryToUI(50);
         }
     }
 }

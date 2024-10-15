@@ -147,6 +147,8 @@ namespace WaifuAI
         {
             if (string.IsNullOrEmpty(text))
                 return 0;
+            else if (text.Length > MaxContextLength * 10)
+                return text.Length / 5;
             try
             {
                 var mparams = new KcppPrompt() { Prompt = text };

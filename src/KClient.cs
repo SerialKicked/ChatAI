@@ -390,8 +390,7 @@ namespace WaifuAI
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
-
-            var client_ = _httpClient;
+            var client_ = new HttpClient();
             var disposeClient_ = false;
             try
             {

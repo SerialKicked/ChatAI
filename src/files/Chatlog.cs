@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WaifuAI.Files
@@ -30,7 +31,7 @@ namespace WaifuAI.Files
         public List<SingleMessage> Messages { get; set; } = [];
         public TimeSpan Duration => EndTime - StartTime;
 
-        public string GenerateSummary()
+        public async Task<string> GenerateNewSummary()
         {
             var msgtxt = "Disable roleplay. Write a full summary of the exchange between {{user}} and {{char}}. Focus on the important details.";
             if (Messages.Count > 50)
@@ -55,7 +56,8 @@ namespace WaifuAI.Files
             llmparams.Max_length = 1400;
             llmparams.Grammar = string.Empty;
             llmparams.Temperature = 0.5f;
-            var result = LLMChatManager.Client.GenerateAsync(llmparams).GetAwaiter().GetResult();
+            //var result = LLMChatManager.Client.GenerateAsync(llmparams).GetAwaiter().GetResult();
+            var result = await LLMChatManager.Client.GenerateAsync(llmparams);
             string finalstr = string.Empty;
             foreach (var item in result.Results)
             {
@@ -65,7 +67,7 @@ namespace WaifuAI.Files
             return finalstr.Trim();
         }
 
-        public string GenerateTitle(string sum)
+        public async Task<string> GenerateNewTitle(string sum)
         {
             var saveAddNames = LLMChatManager.Instruct.AddNamesToPrompt;
             LLMChatManager.Instruct.AddNamesToPrompt = false;
@@ -84,7 +86,7 @@ namespace WaifuAI.Files
             var llmparams = LLMChatManager.Sampler.GetCopy();
             llmparams.Prompt = res;
             llmparams.Max_length = 350;
-            var result = LLMChatManager.Client.GenerateAsync(llmparams).GetAwaiter().GetResult();
+            var result = await LLMChatManager.Client.GenerateAsync(llmparams);
             string finalstr = string.Empty;
             foreach (var item in result.Results)
             {
@@ -112,6 +114,28 @@ namespace WaifuAI.Files
             }
             return sb.ToString();
         }
+
+        public string GetRawSummary()
+        {
+            var sb = new StringBuilder();
+            sb.Append("# Previous Chat Summary");
+            sb.Append("## Duration: " + StartTime.DayOfWeek.ToString() + ", the "+ StartTime.ToShortDateString() + "at " + StartTime.ToShortTimeString() + 
+                " to " + EndTime.DayOfWeek.ToString() + ", the " + EndTime.ToShortDateString() + "at " + EndTime.ToShortTimeString() + LLMChatManager.NewLine);
+            sb.Append("## Message Count: " + Messages.Count.ToString() + LLMChatManager.NewLine);
+            sb.Append("## Title: " + Title + LLMChatManager.NewLine);
+            sb.Append("## Summary: " + LLMChatManager.NewLine + Summary + LLMChatManager.NewLine);
+            return sb.ToString();
+        }
+
+        public string GetFormatedSummary()
+        {
+            return LLMChatManager.Instruct.FormatSingleMessage(new SingleMessage(AuthorRole.System, DateTime.Now, GetRawSummary(), LLMChatManager.Bot.Name, LLMChatManager.User.Name));
+        }
+
+        public int GetFormatedSummaryTokenCount()
+        {
+            return LLMChatManager.GetTokenCount(GetFormatedSummary());
+        }
     }
 
     public class Chatlog : BaseFile, IFile
@@ -124,21 +148,75 @@ namespace WaifuAI.Files
 
         private void RaiseOnMessageAdded(SingleMessage message) => OnMessageAdded?.Invoke(this, message);
 
-        public string GetFormatedDialogs(int maxTokens = 0)
+        public string GetFormatedDialogs(int maxTokens = int.MaxValue, bool useSessionSystem = true)
         {
             var sb = new StringBuilder();
-            var totaltks = 0;
-            for (int i = Messages.Count - 1; i >= 0; i--)
+            var tokensleft = maxTokens;
+            var messagelist = new List<SingleMessage>(Messages);
+
+            if (!useSessionSystem)
             {
-                var msg = Messages[i];
+                // add all messages together in the same list
+                var newlist = new List<SingleMessage>();
+                foreach (var item in Sessions)
+                    newlist.AddRange(item.Messages);
+                newlist.AddRange(Messages);
+                messagelist = newlist;
+            }
+
+            for (int i = messagelist.Count - 1; i >= 0; i--)
+            {
+                var msg = messagelist[i];
                 var res = LLMChatManager.Instruct.FormatSingleMessage(msg);
                 var tks = LLMChatManager.GetTokenCount(res);
-                if (maxTokens > 0 && (totaltks + tks > maxTokens))
+                tokensleft -= tks;
+                if (tokensleft <= 0)
                     return sb.ToString();
-                totaltks += tks;
                 sb.Insert(0, res);
             }
+
+            if (useSessionSystem)
+            {
+                for (int i = Sessions.Count - 1; i >= 0; i--)
+                {
+                    var session = Sessions[i];
+                    var summarytokencount = session.GetFormatedSummaryTokenCount();
+                    var sessiontokencount = GetTotalTokens(session.Messages);
+                    // If all session can fit, or if that session's end is less than 2 days ago
+                    if (sessiontokencount <= tokensleft || ((DateTime.Now - session.EndTime) < new TimeSpan(2, 0, 0, 0)))
+                    {
+                        sb.Insert(0, session.GetFormatedDialogs(tokensleft));
+                    }
+                    else
+                    {
+                        // If summary can fit, add it.
+                        if (summarytokencount <= tokensleft)
+                        {
+                            tokensleft -= summarytokencount;
+                            if (tokensleft <= 0)
+                                return sb.ToString();
+                            sb.Insert(0, session.GetFormatedSummary());
+                        }
+                        sb.Insert(0, session.GetFormatedDialogs(tokensleft));
+                    }
+                    // check status
+                    var currenttokens = LLMChatManager.GetTokenCount(sb.ToString());
+                    tokensleft = maxTokens - currenttokens;
+                    if (tokensleft <= 0)
+                        return sb.ToString();
+                }
+            }
             return sb.ToString();
+        }
+
+        public static int GetTotalTokens(List<SingleMessage> messages)
+        {
+            var total = new StringBuilder();
+            foreach (var item in messages)
+            {
+                total.Append(LLMChatManager.Instruct.FormatSingleMessage(item));
+            }
+            return LLMChatManager.GetTokenCount(total.ToString());
         }
 
         public SingleMessage? GetMessageByID(Guid id) => Messages.FirstOrDefault(m => m.Guid == id);
@@ -168,6 +246,7 @@ namespace WaifuAI.Files
                 return true;
             }
             return false;
+
         }
 
         public void ClearHistory() => Messages.Clear();
@@ -182,27 +261,54 @@ namespace WaifuAI.Files
             }
         }
 
-        public ChatSession CurrentChatToSession()
+        public async Task<ChatSession> CurrentChatToSession()
         {
             var session = new ChatSession();
             session.Messages.AddRange(Messages);
             session.StartTime = Messages.First().Date;
+            // if the first message has a default date, try to find a message with a valid date
+            if (session.StartTime == default)
+            {
+                foreach (var item in session.Messages)
+                {
+                    if (item.Date != default)
+                    {
+                        session.StartTime = item.Date;
+                        break;
+                    }
+                }
+            }
             session.EndTime = Messages.Last().Date;
-            session.Summary = session.GenerateSummary();
-            session.Title = session.GenerateTitle(session.Summary);
+            session.Summary = await session.GenerateNewSummary();
+            session.Title = await session.GenerateNewTitle(session.Summary);
             return session;
         }
 
-        public void StartNewChatSession(bool archivePreviousSession = true)
+        public async Task StartNewChatSession(bool archivePreviousSession = true)
         {
             if (Messages.Count == 0)
                 return;
             if (archivePreviousSession && Messages.Count > 2)
             {
-                var session = CurrentChatToSession();
+                var session = await CurrentChatToSession();
                 Sessions.Add(session);
             }
             Messages.Clear();
+            // Generate new system message about the new session
+            var msgtxt = "*We're {{day}} the {{date}} at {{time}}.";
+            if (Sessions.Count > 0)
+            {
+                var lastsession = Sessions.Last();
+                var timespan = DateTime.Now - lastsession.EndTime;
+                if (timespan.Days > 1)
+                    msgtxt += " Your last chat was " + timespan.Days.ToString() + " days ago.";
+                else if (timespan.Days == 1)
+                    msgtxt += " The last chat was yesterday.";
+                else
+                    msgtxt += " The last chat was " + ((int)timespan.TotalMinutes).ToString() + "minutes ago.";
+            }
+            msgtxt += "*";
+            LogMessage(AuthorRole.System, LLMChatManager.ReplaceMacros(msgtxt, LLMChatManager.User, LLMChatManager.Bot), LLMChatManager.User, LLMChatManager.Bot); 
         }
 
     }
