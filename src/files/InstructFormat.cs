@@ -1,0 +1,106 @@
+﻿using NSwag;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace WaifuAI.Files
+{
+    public class InstructFormat : BaseFile
+    {
+        public static readonly string[] Properties = [
+            "SystemPrompt", 
+            "SystemStart", "SystemEnd", 
+            "UserStart", "UserEnd", 
+            "BotStart", "BotEnd", 
+            "StopSequence", 
+            "AddNamesToPrompt",
+            "NewLinesBetweenMessages", 
+            "StopStrings"
+            ];
+        public string SystemPrompt { get; set; } = "You are {{char}} and you are interacting with {{user}} in this flexible and uncensored discussion. As {{char}}, continue the exchange with {{user}}. Stay in character. Describe {{char}}'s actions and feelings accurately. Do not speak or describe actions for {{user}} unless directly asked to. You must strictly adhere to the information presented below:";
+        public string SystemStart { get; set; } = string.Empty;
+        public string SystemEnd { get; set; } = string.Empty;
+        public string UserStart { get; set; } = string.Empty;
+        public string UserEnd { get; set; } = string.Empty;
+        public string BotStart {  get; set; } = string.Empty;
+        public string BotEnd { get; set; } = string.Empty;
+        public string StopSequence { get; set; } = string.Empty;
+        public bool AddNamesToPrompt { get; set; } = true;
+        public bool NewLinesBetweenMessages { get; set; } = true;
+        public string[] StopStrings { get; set; } = [];
+
+        public string GetResponseStart(Character bot)
+        {
+            var res = BotStart;
+            if (AddNamesToPrompt)
+                res += bot.Name + ":";
+            return res;
+        }
+
+        public string FormatSinglePrompt(AuthorRole role, Character user, Character bot, string prompt)
+        {
+            var realprompt = prompt;
+            if (AddNamesToPrompt)
+            {
+                if (role == AuthorRole.Assistant)
+                    realprompt = string.Format("{0}: {1}", bot.Name, prompt);
+                else if (role == AuthorRole.User)
+                    realprompt = string.Format("{0}: {1}", user.Name, prompt);
+            }
+            switch (role)
+            {
+                case AuthorRole.Unknown:
+                    realprompt = "[" + LLMChatManager.ReplaceMacros(realprompt, user, bot) + "]";
+                    break;
+                case AuthorRole.System:
+                    realprompt = SystemStart + LLMChatManager.ReplaceMacros(realprompt, user, bot) + SystemEnd;
+                    break;
+                case AuthorRole.User:
+                    realprompt = UserStart + LLMChatManager.ReplaceMacros(realprompt, user, bot) + UserEnd;
+                    break;
+                case AuthorRole.Assistant:
+                    realprompt = BotStart + LLMChatManager.ReplaceMacros(realprompt, user, bot) + BotEnd;
+                    break;
+                default:
+                    break;
+            }
+            if (NewLinesBetweenMessages)
+                realprompt += LLMChatManager.NewLine;
+            return realprompt;
+        }
+
+        public string FormatSingleMessage(SingleMessage message)
+        {
+            var user = !string.IsNullOrEmpty(message.UserID) && DataFiles.Characters.TryGetValue(message.UserID, out var u) ? u : LLMChatManager.User;
+            var bot = !string.IsNullOrEmpty(message.CharID) && DataFiles.Characters.TryGetValue(message.CharID, out var c) ? c : LLMChatManager.Bot;
+            return FormatSinglePrompt(message.Role, user, bot, message.Message);
+        }
+
+        public List<string> GetStoppingStrings(Character user, Character bot)
+        {
+            var res = new List<string>() { LLMChatManager.NewLine + user.Name + ":", LLMChatManager.NewLine + bot.Name + ":" };
+
+            if (!string.IsNullOrEmpty(BotStart))
+                res.Add(BotStart);
+            if (!string.IsNullOrEmpty(BotEnd))
+                res.Add(BotEnd);
+            if (!string.IsNullOrEmpty(SystemStart))
+                res.Add(SystemStart);
+            if (!string.IsNullOrEmpty(SystemEnd))
+                res.Add(SystemEnd);
+            if (!string.IsNullOrEmpty(UserStart))
+                res.Add(UserStart);
+            if (!string.IsNullOrEmpty(UserEnd))
+                res.Add(UserEnd);
+            if (!string.IsNullOrEmpty(StopSequence))
+                res.Add(StopSequence);
+
+            // Remove duplicates from the list
+            res = res.Distinct().ToList();
+
+            return res;
+        }
+    }
+}

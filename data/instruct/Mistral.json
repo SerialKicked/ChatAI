@@ -1,0 +1,10 @@
+{
+	"SystemStart": "[INST]",
+	"SystemEnd": "[/INST]",
+	"UserStart": "[INST]",
+	"UserEnd": "[/INST]",
+	"BotStart": "",
+	"BotEnd": "</s>",
+	"AddNamesToPrompt": false,
+	"NewLinesBetweenMessages": false
+}

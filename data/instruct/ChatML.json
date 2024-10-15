@@ -1,0 +1,10 @@
+{
+	"SystemStart": "<|im_start|>system\n",
+	"SystemEnd": "<|im_end|>",
+	"UserStart": "<|im_start|>user\n",
+	"UserEnd": "<|im_end|>",
+	"BotStart": "<|im_start|>assistant\n",
+	"BotEnd": "<|im_end|>",
+	"AddNamesToPrompt": true,
+	"NewLinesBetweenMessages": true
+}
