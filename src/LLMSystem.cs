@@ -164,7 +164,7 @@ namespace WaifuAI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occured while counting tokens, estimate used instead. {ex.Message}");
+                //MessageBox.Show($"An error occured while counting tokens, estimate used instead. {ex.Message}");
                 return text.Length / 5; // or any default value you want to return in case of an error
             }
         }

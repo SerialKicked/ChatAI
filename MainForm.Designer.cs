@@ -56,12 +56,20 @@
             label4 = new Label();
             cb_bot = new ComboBox();
             label3 = new Label();
+            tabHistory = new TabPage();
+            web_sessioncontent = new Microsoft.Web.WebView2.WinForms.WebView2();
+            panel2 = new Panel();
+            lbl_sessioninfo = new Label();
+            lbl_sessiontitle = new Label();
+            listSession = new ListView();
+            columnHeader1 = new ColumnHeader();
+            columnHeader2 = new ColumnHeader();
             tabInstruct = new TabPage();
             bt_instructsave = new Button();
             label2 = new Label();
             cb_instructlist = new ComboBox();
             pan_instruct = new Panel();
-            tabPage1 = new TabPage();
+            tabSysPrompt = new TabPage();
             bt_promptsave = new Button();
             label10 = new Label();
             cb_promptlist = new ComboBox();
@@ -72,6 +80,7 @@
             cb_samplerlist = new ComboBox();
             pan_samplers = new Panel();
             tabSettings = new TabPage();
+            ed_log = new TextBox();
             bt_importworld = new Button();
             bt_ImportSTChat = new Button();
             tabAPI = new TabPage();
@@ -87,15 +96,17 @@
             bt_getmodel = new Button();
             listBox1 = new ListBox();
             openFileDialog1 = new OpenFileDialog();
-            ed_log = new TextBox();
             tabControl1.SuspendLayout();
             tabChat.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_temperature).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_maxresponse).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_maxcontext).BeginInit();
+            tabHistory.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)web_sessioncontent).BeginInit();
+            panel2.SuspendLayout();
             tabInstruct.SuspendLayout();
-            tabPage1.SuspendLayout();
+            tabSysPrompt.SuspendLayout();
             tabSamplers.SuspendLayout();
             tabSettings.SuspendLayout();
             tabAPI.SuspendLayout();
@@ -105,8 +116,9 @@
             // 
             tabControl1.Appearance = TabAppearance.FlatButtons;
             tabControl1.Controls.Add(tabChat);
+            tabControl1.Controls.Add(tabHistory);
             tabControl1.Controls.Add(tabInstruct);
-            tabControl1.Controls.Add(tabPage1);
+            tabControl1.Controls.Add(tabSysPrompt);
             tabControl1.Controls.Add(tabSamplers);
             tabControl1.Controls.Add(tabSettings);
             tabControl1.Controls.Add(tabAPI);
@@ -408,6 +420,83 @@
             label3.TabIndex = 0;
             label3.Text = "Bot Persona";
             // 
+            // tabHistory
+            // 
+            tabHistory.Controls.Add(web_sessioncontent);
+            tabHistory.Controls.Add(panel2);
+            tabHistory.Controls.Add(listSession);
+            tabHistory.Location = new Point(4, 27);
+            tabHistory.Name = "tabHistory";
+            tabHistory.Size = new Size(974, 558);
+            tabHistory.TabIndex = 6;
+            tabHistory.Text = "Chat History";
+            tabHistory.UseVisualStyleBackColor = true;
+            // 
+            // web_sessioncontent
+            // 
+            web_sessioncontent.AllowExternalDrop = true;
+            web_sessioncontent.CreationProperties = null;
+            web_sessioncontent.DefaultBackgroundColor = Color.White;
+            web_sessioncontent.Dock = DockStyle.Fill;
+            web_sessioncontent.Location = new Point(326, 100);
+            web_sessioncontent.Name = "web_sessioncontent";
+            web_sessioncontent.Size = new Size(648, 458);
+            web_sessioncontent.TabIndex = 2;
+            web_sessioncontent.ZoomFactor = 1D;
+            // 
+            // panel2
+            // 
+            panel2.AutoScroll = true;
+            panel2.Controls.Add(lbl_sessioninfo);
+            panel2.Controls.Add(lbl_sessiontitle);
+            panel2.Dock = DockStyle.Top;
+            panel2.Location = new Point(326, 0);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(648, 100);
+            panel2.TabIndex = 1;
+            // 
+            // lbl_sessioninfo
+            // 
+            lbl_sessioninfo.AutoSize = true;
+            lbl_sessioninfo.Location = new Point(6, 40);
+            lbl_sessioninfo.Name = "lbl_sessioninfo";
+            lbl_sessioninfo.Size = new Size(347, 15);
+            lbl_sessioninfo.TabIndex = 1;
+            lbl_sessioninfo.Text = "Select a session from the left panel to show information about it.";
+            // 
+            // lbl_sessiontitle
+            // 
+            lbl_sessiontitle.AutoSize = true;
+            lbl_sessiontitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lbl_sessiontitle.Location = new Point(6, 11);
+            lbl_sessiontitle.Name = "lbl_sessiontitle";
+            lbl_sessiontitle.Size = new Size(143, 19);
+            lbl_sessiontitle.TabIndex = 0;
+            lbl_sessiontitle.Text = "No Session Selected";
+            // 
+            // listSession
+            // 
+            listSession.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2 });
+            listSession.Dock = DockStyle.Left;
+            listSession.FullRowSelect = true;
+            listSession.Location = new Point(0, 0);
+            listSession.Name = "listSession";
+            listSession.Size = new Size(326, 558);
+            listSession.TabIndex = 0;
+            listSession.UseCompatibleStateImageBehavior = false;
+            listSession.View = View.Details;
+            listSession.SelectedIndexChanged += listSession_SelectedIndexChanged;
+            // 
+            // columnHeader1
+            // 
+            columnHeader1.Text = "Title";
+            columnHeader1.Width = 220;
+            // 
+            // columnHeader2
+            // 
+            columnHeader2.Text = "Date";
+            columnHeader2.Width = 80;
+            // 
             // tabInstruct
             // 
             tabInstruct.Controls.Add(bt_instructsave);
@@ -461,19 +550,19 @@
             pan_instruct.Size = new Size(958, 513);
             pan_instruct.TabIndex = 6;
             // 
-            // tabPage1
+            // tabSysPrompt
             // 
-            tabPage1.Controls.Add(bt_promptsave);
-            tabPage1.Controls.Add(label10);
-            tabPage1.Controls.Add(cb_promptlist);
-            tabPage1.Controls.Add(pan_prompt);
-            tabPage1.Location = new Point(4, 27);
-            tabPage1.Name = "tabPage1";
-            tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(974, 558);
-            tabPage1.TabIndex = 5;
-            tabPage1.Text = "System Prompt Editor";
-            tabPage1.UseVisualStyleBackColor = true;
+            tabSysPrompt.Controls.Add(bt_promptsave);
+            tabSysPrompt.Controls.Add(label10);
+            tabSysPrompt.Controls.Add(cb_promptlist);
+            tabSysPrompt.Controls.Add(pan_prompt);
+            tabSysPrompt.Location = new Point(4, 27);
+            tabSysPrompt.Name = "tabSysPrompt";
+            tabSysPrompt.Padding = new Padding(3);
+            tabSysPrompt.Size = new Size(974, 558);
+            tabSysPrompt.TabIndex = 5;
+            tabSysPrompt.Text = "System Prompt Editor";
+            tabSysPrompt.UseVisualStyleBackColor = true;
             // 
             // bt_promptsave
             // 
@@ -579,6 +668,15 @@
             tabSettings.TabIndex = 4;
             tabSettings.Text = "Settings";
             tabSettings.UseVisualStyleBackColor = true;
+            // 
+            // ed_log
+            // 
+            ed_log.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            ed_log.Location = new Point(8, 196);
+            ed_log.Multiline = true;
+            ed_log.Name = "ed_log";
+            ed_log.Size = new Size(958, 354);
+            ed_log.TabIndex = 2;
             // 
             // bt_importworld
             // 
@@ -724,15 +822,6 @@
             // 
             openFileDialog1.FileName = "openFileDialog1";
             // 
-            // ed_log
-            // 
-            ed_log.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            ed_log.Location = new Point(8, 196);
-            ed_log.Multiline = true;
-            ed_log.Name = "ed_log";
-            ed_log.Size = new Size(958, 354);
-            ed_log.TabIndex = 2;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -751,8 +840,12 @@
             ((System.ComponentModel.ISupportInitialize)num_temperature).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_maxresponse).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_maxcontext).EndInit();
+            tabHistory.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)web_sessioncontent).EndInit();
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             tabInstruct.ResumeLayout(false);
-            tabPage1.ResumeLayout(false);
+            tabSysPrompt.ResumeLayout(false);
             tabSamplers.ResumeLayout(false);
             tabSettings.ResumeLayout(false);
             tabSettings.PerformLayout();
@@ -805,7 +898,7 @@
         private Button bt_delete;
         private Button bt_reroll;
         private Button bt_send;
-        private TabPage tabPage1;
+        private TabPage tabSysPrompt;
         private Button bt_connect;
         private Label lbl_info;
         private Label label9;
@@ -821,5 +914,13 @@
         private OpenFileDialog openFileDialog1;
         private Button bt_importworld;
         private TextBox ed_log;
+        private TabPage tabHistory;
+        private ListView listSession;
+        private Microsoft.Web.WebView2.WinForms.WebView2 web_sessioncontent;
+        private Panel panel2;
+        private Label lbl_sessioninfo;
+        private Label lbl_sessiontitle;
+        private ColumnHeader columnHeader1;
+        private ColumnHeader columnHeader2;
     }
 }

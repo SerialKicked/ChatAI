@@ -451,8 +451,10 @@ namespace WaifuAI.Files
                     msgtxt += " Your last chat was " + timespan.Days.ToString() + " days ago.";
                 else if (timespan.Days == 1)
                     msgtxt += " The last chat was yesterday.";
+                else if (timespan.Hours > 1)
+                    msgtxt += " The last chat was " + timespan.Hours + " hours ago.";
                 else
-                    msgtxt += " The last chat was " + ((int)timespan.TotalMinutes).ToString() + "minutes ago.";
+                    msgtxt += " The last chat was " + ((int)timespan.TotalMinutes).ToString() + " minutes ago.";
             }
             msgtxt += "*";
             LogMessage(AuthorRole.System, LLMSystem.ReplaceMacros(msgtxt, LLMSystem.User, LLMSystem.Bot), LLMSystem.User, LLMSystem.Bot); 
@@ -475,9 +477,13 @@ namespace WaifuAI.Files
             {
                 var msg = Messages[i];
                 var timespan = msg.Date - lastmsg.Date;
-                var validinitmessage = msg.Role == AuthorRole.User && (Regex.IsMatch(msg.Message, pattern) || msg.Message.StartsWith("Hello") || msg.Message.StartsWith("Hi!"));
+                var validinitmessage = msg.Role == AuthorRole.User && (
+                    Regex.IsMatch(msg.Message, pattern) || 
+                    msg.Message.StartsWith("Hello ") || msg.Message.StartsWith("Hi!") || 
+                    msg.Message.StartsWith("*"+LLMSystem.User.Name+" comes back ") || msg.Message.StartsWith("*" + LLMSystem.User.Name + " logged in.") ||
+                    msg.Message.StartsWith("*We're a day later") || msg.Message.StartsWith("*We're a week"));
                 // Minimum session length should be about 30 messages
-                if (sessionmsgcount > 30 && (timespan.Days > 1 || validinitmessage))
+                if (sessionmsgcount > 30 && (timespan.TotalDays > 1 || validinitmessage))
                 {
                     currentsession.EndTime = lastmsg.Date;
                     if (currentsession.Messages.Count > 0)

@@ -11,6 +11,7 @@ using Parlot.Fluent;
 using Microsoft.VisualBasic.Devices;
 using YamlDotNet.Core.Tokens;
 using YamlDotNet.Serialization;
+using Markdig;
 
 namespace WaifuAI
 {
@@ -629,6 +630,19 @@ namespace WaifuAI
             flowChat.Controls.Clear();
         }
 
+        public void LoadChatHistoryTab()
+        {
+            listSession.Items.Clear();
+            if (LLMSystem.History.Sessions.Count == 0)
+                return;
+            foreach (var session in LLMSystem.History.Sessions)
+            {
+                var item = new ListViewItem(new[] { session.Title, session.StartTime.ToString("g") });
+                item.Tag = session;
+                listSession.Items.Add(item);
+            }
+        }
+
         #endregion
 
         #region *** API Testing Functions ***
@@ -830,6 +844,7 @@ namespace WaifuAI
                 ClearChat();
                 LLMSystem.Bot = DataFiles.Characters[key];
                 LoadHistoryToUI(50);
+                LoadChatHistoryTab();
             }
         }
 
@@ -933,6 +948,28 @@ namespace WaifuAI
                         "WorldInfo imported successfully to exported_world.json in this application's main folder." :
                         "Something went wrong while opening or parsing the file."
                 );
+        }
+
+        private void listSession_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listSession.SelectedItems.Count <= 0)
+                return;
+            var selectedItem = listSession.SelectedItems[0];
+            var session = (ChatSession)selectedItem.Tag!;
+            DisplaySessionDetails(session);
+        }
+
+        private async void DisplaySessionDetails(ChatSession session)
+        {
+            lbl_sessiontitle.Text = session.Title;
+            lbl_sessioninfo.Text = session.StartTime.ToString("g") + " - " + session.EndTime.ToString("g") + " - " + session.Messages.Count + " messages";
+            if (web_sessioncontent.CoreWebView2 == null)
+            {
+                await web_sessioncontent.EnsureCoreWebView2Async();
+            }
+            var dialogs = session.GetRawDialogs(int.MaxValue, false).Replace("\n","\n\n");
+            var inf = "# " + session.Title + LLMSystem.NewLine + LLMSystem.NewLine + "## Summary:" + LLMSystem.NewLine + LLMSystem.NewLine + session.Summary + LLMSystem.NewLine + LLMSystem.NewLine + "## Dialogs:" + LLMSystem.NewLine + LLMSystem.NewLine + dialogs;
+            web_sessioncontent.NavigateToString(Markdown.ToHtml(inf));
         }
     }
 }
