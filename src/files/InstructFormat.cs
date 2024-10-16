@@ -54,38 +54,38 @@ namespace WaifuAI.Files
             switch (role)
             {
                 case AuthorRole.Unknown:
-                    realprompt = "[" + LLMChatManager.ReplaceMacros(realprompt, user, bot) + "]";
+                    realprompt = "[" + LLMSystem.ReplaceMacros(realprompt, user, bot) + "]";
                     break;
                 case AuthorRole.System:
-                    realprompt = SystemStart + LLMChatManager.ReplaceMacros(realprompt, user, bot) + SystemEnd;
+                    realprompt = SystemStart + LLMSystem.ReplaceMacros(realprompt, user, bot) + SystemEnd;
                     break;
                 case AuthorRole.User:
-                    realprompt = UserStart + LLMChatManager.ReplaceMacros(realprompt, user, bot) + UserEnd;
+                    realprompt = UserStart + LLMSystem.ReplaceMacros(realprompt, user, bot) + UserEnd;
                     break;
                 case AuthorRole.Assistant:
-                    realprompt = BotStart + LLMChatManager.ReplaceMacros(realprompt, user, bot) + BotEnd;
+                    realprompt = BotStart + LLMSystem.ReplaceMacros(realprompt, user, bot) + BotEnd;
                     break;
                 case AuthorRole.SysPrompt:
-                    realprompt = SysPromptStart + LLMChatManager.ReplaceMacros(realprompt, user, bot) + SysPromptEnd;
+                    realprompt = SysPromptStart + LLMSystem.ReplaceMacros(realprompt, user, bot) + SysPromptEnd;
                     break;
                 default:
                     break;
             }
             if (NewLinesBetweenMessages)
-                realprompt += LLMChatManager.NewLine;
+                realprompt += LLMSystem.NewLine;
             return realprompt;
         }
 
         public string FormatSingleMessage(SingleMessage message)
         {
-            var user = !string.IsNullOrEmpty(message.UserID) && DataFiles.Characters.TryGetValue(message.UserID, out var u) ? u : LLMChatManager.User;
-            var bot = !string.IsNullOrEmpty(message.CharID) && DataFiles.Characters.TryGetValue(message.CharID, out var c) ? c : LLMChatManager.Bot;
+            var user = !string.IsNullOrEmpty(message.UserID) && DataFiles.Characters.TryGetValue(message.UserID, out var u) ? u : LLMSystem.User;
+            var bot = !string.IsNullOrEmpty(message.CharID) && DataFiles.Characters.TryGetValue(message.CharID, out var c) ? c : LLMSystem.Bot;
             return FormatSinglePrompt(message.Role, user, bot, message.Message);
         }
 
         public List<string> GetStoppingStrings(Character user, Character bot)
         {
-            var res = new List<string>() { LLMChatManager.NewLine + user.Name + ":", LLMChatManager.NewLine + bot.Name + ":" };
+            var res = new List<string>() { LLMSystem.NewLine + user.Name + ":", LLMSystem.NewLine + bot.Name + ":" };
 
             if (!string.IsNullOrEmpty(BotStart))
                 res.Add(BotStart);

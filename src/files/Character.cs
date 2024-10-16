@@ -80,10 +80,8 @@ namespace WaifuAI.Files
 
         private void SaveChatHistory()
         {
-            if (string.IsNullOrEmpty(UniqueName) || History.Messages.Count == 0)
+            if (string.IsNullOrEmpty(UniqueName))
                 return;
-            //if (LLMChatManager.LongTermMemory)
-            //    LLMChatManager.LTMSystem.SaveListToFile("data/chatlogs/" + UniqueName + ".vec");
             History.RemoveEmbeds();
             (History as IFile).SaveToFile("data/chatlogs/" + UniqueName + ".json");
         }

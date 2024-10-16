@@ -41,7 +41,7 @@ namespace WaifuAI.Plugins
                 return false;
             }
             var str = new StringBuilder();
-            str.AppendLinuxLine(LLMChatManager.SystemPrompt.CategorySeparator+ " Current Location: " + currentLocation.Name);
+            str.AppendLinuxLine(LLMSystem.SystemPrompt.CategorySeparator+ " Current Location: " + currentLocation.Name);
             str.Append("{{user}} and {{char}} are currently at this location: ").AppendLinuxLine(currentLocation.Message);
             response = str.ToString();
             return true;
@@ -81,7 +81,7 @@ namespace WaifuAI.Plugins
                         var loc = locations.FindEntries(log, userinput).FirstOrDefault();
                         if (loc != null)
                         {
-                            LLMChatManager.logger?.LogInformation("LocationPlugin KW Only: {output}", loc.Name);
+                            LLMSystem.logger?.LogInformation("LocationPlugin KW Only: {output}", loc.Name);
                             currentLocation = loc;
                             //AddMovingInfSystemMessage(log, loc);
                         }
@@ -111,9 +111,9 @@ namespace WaifuAI.Plugins
 
         private static void AddMovingInfSystemMessage(Chatlog log, WorldEntry newLoc)
         {
-            var prompt = string.Format("{0} and {1} are moving to a new location: {2}. React accordingly.", LLMChatManager.User.Name, LLMChatManager.Bot.Name, newLoc.Name);
+            var prompt = string.Format("{0} and {1} are moving to a new location: {2}. React accordingly.", LLMSystem.User.Name, LLMSystem.Bot.Name, newLoc.Name);
             //var msg = new SingleMessage(AuthorRole.System, DateTime.Now, prompt, LLMChatManager.Bot.Name, LLMChatManager.User.Name, false);
-            log.LogMessage(AuthorRole.System, prompt, LLMChatManager.User, LLMChatManager.Bot);
+            log.LogMessage(AuthorRole.System, prompt, LLMSystem.User, LLMSystem.Bot);
         }
 
         private string BuildCheckPrompt(string userinput)
@@ -142,11 +142,11 @@ namespace WaifuAI.Plugins
             prompt.AppendLinuxLine("User: I don't want to go to the Red Cinema.");
             prompt.AppendLinuxLine("Response: No").AppendLinuxLine();
 
-            var sysprompt = LLMChatManager.Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, LLMChatManager.User, LLMChatManager.Bot, prompt.ToString());
-            var msg = LLMChatManager.Instruct.FormatSinglePrompt(AuthorRole.User, LLMChatManager.User, LLMChatManager.Bot, userinput);
+            var sysprompt = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, LLMSystem.User, LLMSystem.Bot, prompt.ToString());
+            var msg = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.User, LLMSystem.User, LLMSystem.Bot, userinput);
 
-            if (LLMChatManager.Instruct.BotStart != null)
-                msg += LLMChatManager.Instruct.BotStart;
+            if (LLMSystem.Instruct.BotStart != null)
+                msg += LLMSystem.Instruct.BotStart;
             return sysprompt + msg;
         }
 
@@ -160,16 +160,16 @@ namespace WaifuAI.Plugins
         {
             var fullprompt = BuildCheckPrompt(inputText);
             var fullresponse = new StringBuilder();
-            var llmparams = LLMChatManager.Sampler.GetCopy();
+            var llmparams = LLMSystem.Sampler.GetCopy();
             llmparams.Temperature = 0;
             llmparams.Prompt = fullprompt;
-            var result = LLMChatManager.Client.GenerateAsync(llmparams).GetAwaiter().GetResult();
+            var result = LLMSystem.Client.GenerateAsync(llmparams).GetAwaiter().GetResult();
             string finalstr = string.Empty;
             foreach (var item in result.Results)
             {
                 finalstr += item.Text;
             }
-            LLMChatManager.logger?.LogInformation("LocationPlugin Result: {output}", finalstr);
+            LLMSystem.logger?.LogInformation("LocationPlugin Result: {output}", finalstr);
             if (string.IsNullOrEmpty(finalstr))
                 return;
             if (finalstr.Equals("no", StringComparison.InvariantCultureIgnoreCase))

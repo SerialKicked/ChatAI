@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using WaifuAI.Memory;
 
 namespace WaifuAI.Files
@@ -35,63 +37,79 @@ namespace WaifuAI.Files
 
         public async Task<string> GenerateNewSummary()
         {
-            var msgtxt = "Disable roleplay. Write a full summary of the exchange between {{user}} and {{char}}. The summary should be told from {{char}}'s perspective. Focus on the important details.";
+
+            var msgtxt = "You are an automated system designed to summarize chat sessions and stories." + LLMSystem.NewLine +
+                LLMSystem.NewLine +
+                "# Character Information:" + LLMSystem.NewLine +
+                "## Name: {{char}}" + LLMSystem.NewLine +
+                "{{charbio}}" + LLMSystem.NewLine +
+                "## Name: {{user}}" + LLMSystem.NewLine +
+                "{{userbio}}" + LLMSystem.NewLine + LLMSystem.NewLine +
+                "# Chat Session:" + LLMSystem.NewLine +
+                "" + LLMSystem.NewLine +
+                LLMSystem.NewLine +
+                "# Instruction:" + LLMSystem.NewLine +
+                "Write a full summary of the exchange between {{user}} and {{char}} shown above. The summary must be written from {{char}}'s perspective. Do not introduce the characters. Do not add a title, just write the summary directly. Focus on the important details.";
             if (Messages.Count > 50)
             {
                 msgtxt += " The summary should be between 2 and 4 paragraphs.";
             };
-            var saveAddNames = LLMChatManager.Instruct.AddNamesToPrompt;
-            LLMChatManager.Instruct.AddNamesToPrompt = false;
-            var msg = LLMChatManager.Instruct.FormatSinglePrompt(AuthorRole.System, LLMChatManager.User, LLMChatManager.Bot, msgtxt);
-            var tokencount = LLMChatManager.GetTokenCount(msg);
-            var rawprompt = new StringBuilder(LLMChatManager.RawSystemPrompt(LLMChatManager.User, LLMChatManager.Bot));
-            var sysprompt = LLMChatManager.Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, LLMChatManager.User, LLMChatManager.Bot, rawprompt.ToString());
+            var msg = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, msgtxt);
+            var tokencount = LLMSystem.GetTokenCount(msg);
 
-            tokencount += LLMChatManager.GetTokenCount(sysprompt);
-            tokencount += LLMChatManager.GetTokenCount(LLMChatManager.Instruct.GetResponseStart(LLMChatManager.Bot));
-            var availtokens = (int)(LLMChatManager.MaxContextLength) - tokencount - 1400;
-            var r = 0;
-            var history = GetFormatedDialogs(availtokens, ref r, []);
-            var res = sysprompt + LLMChatManager.NewLine + history + msg + LLMChatManager.Instruct.GetResponseStart(LLMChatManager.Bot);
+            var availtokens = LLMSystem.MaxContextLength - tokencount - 1024;
+            var docs = GetRawDialogs(availtokens, true);
+            msgtxt = "You are an automated system designed to summarize chat sessions and stories." + LLMSystem.NewLine +
+                LLMSystem.NewLine +
+                "# Character Information:" + LLMSystem.NewLine +
+                "## Name: {{char}}" + LLMSystem.NewLine +
+                "{{charbio}}" + LLMSystem.NewLine +
+                "## Name: {{user}}" + LLMSystem.NewLine +
+                "{{userbio}}" + LLMSystem.NewLine + LLMSystem.NewLine +
+                "# Chat Session:" + LLMSystem.NewLine +
+                docs + LLMSystem.NewLine +
+                LLMSystem.NewLine +
+                "# Instruction:" + LLMSystem.NewLine +
+                "Write a full summary of the exchange between {{user}} and {{char}} shown above. The summary must be written from {{char}}'s perspective. Do not introduce the characters. Do not add a title, just write the summary directly. Focus on the important details.";
 
-            var llmparams = LLMChatManager.Sampler.GetCopy();
-            llmparams.Prompt = res;
-            llmparams.Max_length = 1400;
-            llmparams.Max_context_length = LLMChatManager.MaxContextLength;
+            var prompt = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, msgtxt);
+
+            var llmparams = LLMSystem.Sampler.GetCopy();
+            llmparams.Prompt = prompt;
+            llmparams.Max_length = 1024;
+            llmparams.Max_context_length = LLMSystem.MaxContextLength;
             llmparams.Grammar = string.Empty;
             llmparams.Temperature = 0.5f;
-            //var result = LLMChatManager.Client.GenerateAsync(llmparams).GetAwaiter().GetResult();
-            var result = await LLMChatManager.Client.GenerateAsync(llmparams);
+            var result = await LLMSystem.Client.GenerateAsync(llmparams);
             string finalstr = string.Empty;
             foreach (var item in result.Results)
             {
                 finalstr += item.Text;
             }
-            LLMChatManager.Instruct.AddNamesToPrompt = saveAddNames;
             return finalstr.Trim();
         }
 
         public async Task<string> GenerateNewTitle(string sum)
         {
-            var saveAddNames = LLMChatManager.Instruct.AddNamesToPrompt;
-            LLMChatManager.Instruct.AddNamesToPrompt = false;
-            var msgtxt = "You are an automated system designed to give titles to summaries."+ LLMChatManager.NewLine + 
-                LLMChatManager.NewLine + 
-                "# Summary:" + LLMChatManager.NewLine +
-                sum + LLMChatManager.NewLine + 
-                LLMChatManager.NewLine + 
-                "# Instruction:" + LLMChatManager.NewLine + 
+            var saveAddNames = LLMSystem.Instruct.AddNamesToPrompt;
+            LLMSystem.Instruct.AddNamesToPrompt = false;
+            var msgtxt = "You are an automated system designed to give titles to summaries."+ LLMSystem.NewLine + 
+                LLMSystem.NewLine + 
+                "# Summary:" + LLMSystem.NewLine +
+                sum + LLMSystem.NewLine + 
+                LLMSystem.NewLine + 
+                "# Instruction:" + LLMSystem.NewLine + 
                 "Give a title to the summary above. This title should be a single sentence. Write only the title.";
-            var msg = LLMChatManager.Instruct.FormatSinglePrompt(AuthorRole.System, LLMChatManager.User, LLMChatManager.Bot, msgtxt);
-            var tokencount = LLMChatManager.GetTokenCount(msg);
-            tokencount += LLMChatManager.GetTokenCount(LLMChatManager.Instruct.GetResponseStart(LLMChatManager.Bot));
-            var res = msg + LLMChatManager.Instruct.GetResponseStart(LLMChatManager.Bot);
+            var msg = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, msgtxt);
+            var tokencount = LLMSystem.GetTokenCount(msg);
+            tokencount += LLMSystem.GetTokenCount(LLMSystem.Instruct.GetResponseStart(LLMSystem.Bot));
+            var res = msg + LLMSystem.Instruct.GetResponseStart(LLMSystem.Bot);
 
-            var llmparams = LLMChatManager.Sampler.GetCopy();
+            var llmparams = LLMSystem.Sampler.GetCopy();
             llmparams.Prompt = res;
             llmparams.Max_length = 350;
-            llmparams.Max_context_length = LLMChatManager.MaxContextLength;
-            var result = await LLMChatManager.Client.GenerateAsync(llmparams);
+            llmparams.Max_context_length = LLMSystem.MaxContextLength;
+            var result = await LLMSystem.Client.GenerateAsync(llmparams);
             string finalstr = string.Empty;
             foreach (var item in result.Results)
             {
@@ -99,8 +117,50 @@ namespace WaifuAI.Files
             }
             // remove any " character from the finalstr
             finalstr = finalstr.Replace("\"", "").Trim();
-            LLMChatManager.Instruct.AddNamesToPrompt = saveAddNames;
+            LLMSystem.Instruct.AddNamesToPrompt = saveAddNames;
             return finalstr;
+        }
+
+
+        public string GetRawDialogs(int maxTokens, bool ignoresystem)
+        {
+            var sb = new StringBuilder();
+            var totaltks = maxTokens;
+
+            for (int i = Messages.Count - 1; i >= 0; i--)
+            {
+                var msg = Messages[i];
+                var text = string.Empty;
+                switch (msg.Role)
+                {
+                    case AuthorRole.System:
+                    case AuthorRole.SysPrompt:
+                        if (ignoresystem)
+                            continue;
+                        text = LLMSystem.NewLine + "*" + msg.Message.Trim() + "*" + LLMSystem.NewLine;
+                        break;
+                    case AuthorRole.User:
+                        {
+                            var sel = DataFiles.Characters.TryGetValue(msg.UserID, out var found) ? found : LLMSystem.User;
+                            text = "**"+sel.Name+":** " + msg.Message.Trim().Replace(LLMSystem.NewLine, " ") + LLMSystem.NewLine;
+                        }
+                        break;
+                    case AuthorRole.Assistant:
+                        {
+                            var sel = DataFiles.Characters.TryGetValue(msg.CharID, out var foundbot) ? foundbot : LLMSystem.Bot;
+                            text = "**" + sel.Name + ":** " + msg.Message.Trim().Replace(LLMSystem.NewLine, " ") + LLMSystem.NewLine;
+                        }
+                        break;
+                }
+                if (text == string.Empty)
+                    continue;
+                var tks = LLMSystem.GetTokenCount(text);
+                totaltks -= tks;
+                if (totaltks <= 0)
+                    return sb.ToString();
+                sb.Insert(0, text);
+            }
+            return sb.ToString();
         }
 
         public string GetFormatedDialogs(int maxTokens, ref int currentDepth, List<WorldEntry>? memories)
@@ -115,13 +175,13 @@ namespace WaifuAI.Files
                 var selmem = mems.FindAll(e => e.PositionIndex == entrydepth);
                 if (selmem.Count > 0)
                 {
-                    var totalmessage = "# Relevant Information from memory: " + LLMChatManager.NewLine;
+                    var totalmessage = "# Relevant Information from memory: " + LLMSystem.NewLine;
                     foreach (var item in selmem)
                     {
-                        totalmessage += item.Message + LLMChatManager.NewLine;
+                        totalmessage += item.Message + LLMSystem.NewLine;
                     }
-                    var formattedmemory = LLMChatManager.Instruct.FormatSinglePrompt(AuthorRole.System, LLMChatManager.User, LLMChatManager.Bot, totalmessage);
-                    var tksmem = LLMChatManager.GetTokenCount(formattedmemory);
+                    var formattedmemory = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, totalmessage);
+                    var tksmem = LLMSystem.GetTokenCount(formattedmemory);
                     if (tksmem <= totaltks)
                     {
                         totaltks -= tksmem;
@@ -134,8 +194,8 @@ namespace WaifuAI.Files
             for (int i = Messages.Count - 1; i >= 0; i--)
             {
                 var msg = Messages[i];
-                var res = LLMChatManager.Instruct.FormatSingleMessage(msg);
-                var tks = LLMChatManager.GetTokenCount(res);
+                var res = LLMSystem.Instruct.FormatSingleMessage(msg);
+                var tks = LLMSystem.GetTokenCount(res);
                 totaltks -= tks;
                 if (totaltks <= 0)
                     return sb.ToString();
@@ -152,21 +212,21 @@ namespace WaifuAI.Files
             var sb = new StringBuilder();
             sb.Append("# Previous Chat Summary");
             sb.Append("## Duration: " + StartTime.DayOfWeek.ToString() + ", the "+ StartTime.ToShortDateString() + "at " + StartTime.ToShortTimeString() + 
-                " to " + EndTime.DayOfWeek.ToString() + ", the " + EndTime.ToShortDateString() + "at " + EndTime.ToShortTimeString() + LLMChatManager.NewLine);
-            sb.Append("## Message Count: " + Messages.Count.ToString() + LLMChatManager.NewLine);
-            sb.Append("## Title: " + Title + LLMChatManager.NewLine);
-            sb.Append("## Summary: " + LLMChatManager.NewLine + Summary + LLMChatManager.NewLine);
+                " to " + EndTime.DayOfWeek.ToString() + ", the " + EndTime.ToShortDateString() + "at " + EndTime.ToShortTimeString() + LLMSystem.NewLine);
+            sb.Append("## Message Count: " + Messages.Count.ToString() + LLMSystem.NewLine);
+            sb.Append("## Title: " + Title + LLMSystem.NewLine);
+            sb.Append("## Summary: " + LLMSystem.NewLine + Summary + LLMSystem.NewLine);
             return sb.ToString();
         }
 
         public string GetFormatedSummary()
         {
-            return LLMChatManager.Instruct.FormatSingleMessage(new SingleMessage(AuthorRole.System, DateTime.Now, GetRawSummary(), LLMChatManager.Bot.Name, LLMChatManager.User.Name));
+            return LLMSystem.Instruct.FormatSingleMessage(new SingleMessage(AuthorRole.System, DateTime.Now, GetRawSummary(), LLMSystem.Bot.Name, LLMSystem.User.Name));
         }
 
         public int GetFormatedSummaryTokenCount()
         {
-            return LLMChatManager.GetTokenCount(GetFormatedSummary());
+            return LLMSystem.GetTokenCount(GetFormatedSummary());
         }
     }
 
@@ -193,13 +253,13 @@ namespace WaifuAI.Files
                 var selmem = mems.FindAll(e => e.PositionIndex == entrydepth);
                 if (selmem.Count > 0)
                 {
-                    var totalmessage = "# Relevant Information from memory:" + LLMChatManager.NewLine;
+                    var totalmessage = "# Relevant Information from memory:" + LLMSystem.NewLine;
                     foreach (var item in selmem)
                     {
-                        totalmessage += item.Message + LLMChatManager.NewLine;
+                        totalmessage += item.Message + LLMSystem.NewLine;
                     }
-                    var formattedmemory = LLMChatManager.Instruct.FormatSinglePrompt(AuthorRole.System, LLMChatManager.User, LLMChatManager.Bot, totalmessage);
-                    var tksmem = LLMChatManager.GetTokenCount(formattedmemory);
+                    var formattedmemory = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, totalmessage);
+                    var tksmem = LLMSystem.GetTokenCount(formattedmemory);
                     if (tksmem <= tokensleft)
                     {
                         tokensleft -= tksmem;
@@ -222,8 +282,8 @@ namespace WaifuAI.Files
             for (int i = messagelist.Count - 1; i >= 0; i--)
             {
                 var msg = messagelist[i];
-                var res = LLMChatManager.Instruct.FormatSingleMessage(msg);
-                var tks = LLMChatManager.GetTokenCount(res);
+                var res = LLMSystem.Instruct.FormatSingleMessage(msg);
+                var tks = LLMSystem.GetTokenCount(res);
                 tokensleft -= tks;
                 if (tokensleft <= 0)
                     return sb.ToString();
@@ -260,7 +320,7 @@ namespace WaifuAI.Files
                         sb.Insert(0, session.GetFormatedDialogs(tokensleft, ref entrydepth, mems));
                     }
                     // check status
-                    var currenttokens = LLMChatManager.GetTokenCount(sb.ToString());
+                    var currenttokens = LLMSystem.GetTokenCount(sb.ToString());
                     tokensleft = maxTokens - currenttokens;
                     if (tokensleft <= 0)
                         return sb.ToString();
@@ -274,9 +334,9 @@ namespace WaifuAI.Files
             var total = new StringBuilder();
             foreach (var item in messages)
             {
-                total.Append(LLMChatManager.Instruct.FormatSingleMessage(item));
+                total.Append(LLMSystem.Instruct.FormatSingleMessage(item));
             }
-            return LLMChatManager.GetTokenCount(total.ToString());
+            return LLMSystem.GetTokenCount(total.ToString());
         }
 
         public SingleMessage? GetMessageByID(Guid id) => Messages.FirstOrDefault(m => m.Guid == id);
@@ -357,7 +417,7 @@ namespace WaifuAI.Files
                     }
                 }
             }
-            session.EndTime = Messages.Last().Date;
+            session.EndTime = session.Messages.Last().Date;
             session.Summary = await session.GenerateNewSummary();
             session.Title = await session.GenerateNewTitle(session.Summary);
             return session;
@@ -395,8 +455,45 @@ namespace WaifuAI.Files
                     msgtxt += " The last chat was " + ((int)timespan.TotalMinutes).ToString() + "minutes ago.";
             }
             msgtxt += "*";
-            LogMessage(AuthorRole.System, LLMChatManager.ReplaceMacros(msgtxt, LLMChatManager.User, LLMChatManager.Bot), LLMChatManager.User, LLMChatManager.Bot); 
+            LogMessage(AuthorRole.System, LLMSystem.ReplaceMacros(msgtxt, LLMSystem.User, LLMSystem.Bot), LLMSystem.User, LLMSystem.Bot); 
         }
 
+        public void DivideChatIntoSessions()
+        {
+            if (Messages.Count == 0)
+                return;
+            Sessions.Clear();
+            // I want to check if msg.Message starts with "*We're " followed by a number to consider it as a new session
+            string pattern = @"^\*We're \d+";
+            // iterate through Messages, and divide them into sessions by checking the time between messages or the presence of a sentence starting by "*We're [number]" or a "Hello" message from user
+            var currentsession = new ChatSession();
+            var lastmsg = Messages.First();
+            currentsession.StartTime = lastmsg.Date;
+            currentsession.Messages.Add(lastmsg);
+            var sessionmsgcount = 1;
+            for (int i = 1; i < Messages.Count; i++)
+            {
+                var msg = Messages[i];
+                var timespan = msg.Date - lastmsg.Date;
+                var validinitmessage = msg.Role == AuthorRole.User && (Regex.IsMatch(msg.Message, pattern) || msg.Message.StartsWith("Hello") || msg.Message.StartsWith("Hi!"));
+                // Minimum session length should be about 30 messages
+                if (sessionmsgcount > 30 && (timespan.Days > 1 || validinitmessage))
+                {
+                    currentsession.EndTime = lastmsg.Date;
+                    if (currentsession.Messages.Count > 0)
+                        Sessions.Add(currentsession);
+                    currentsession = new ChatSession();
+                    sessionmsgcount = 0;
+                    currentsession.StartTime = msg.Date;
+                }
+                currentsession.Messages.Add(msg);
+                sessionmsgcount++;
+                lastmsg = msg;
+            }
+            currentsession.EndTime = lastmsg.Date;
+            if (currentsession.Messages.Count > 0)
+                Sessions.Add(currentsession);
+            Messages.Clear();
+        }
     }
 }

@@ -90,7 +90,7 @@ namespace WaifuAI
     {
         public static StringBuilder AppendLinuxLine(this StringBuilder sb, string? text = null)
         {
-            return text == null ? sb.Append(LLMChatManager.NewLine) : sb.Append(text).Append(LLMChatManager.NewLine);
+            return text == null ? sb.Append(LLMSystem.NewLine) : sb.Append(text).Append(LLMSystem.NewLine);
         }
     }
 

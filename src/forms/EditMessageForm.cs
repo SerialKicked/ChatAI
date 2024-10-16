@@ -39,7 +39,7 @@ namespace WaifuAI.src.forms
         public EditMessageForm(Guid messageID)
         {
             InitializeComponent();
-            Message = LLMChatManager.History.GetMessageByID(messageID);
+            Message = LLMSystem.History.GetMessageByID(messageID);
             if (Message == null)
             {
                 Close();

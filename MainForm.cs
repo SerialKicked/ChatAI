@@ -79,10 +79,10 @@ namespace WaifuAI
                 cb_sysprompt.Items.Add(item.Value.UniqueName);
             }
             LoadSettings();
-            LLMChatManager.Init();
-            LLMChatManager.OnInferenceStreamed += OnStreamMessageReceived;
-            LLMChatManager.OnInferenceEnded += OnStreamInferenceEnded;
-            LLMChatManager.OnFullPromptReady += OnFullPromptReady;
+            LLMSystem.Init();
+            LLMSystem.OnInferenceStreamed += OnStreamMessageReceived;
+            LLMSystem.OnInferenceEnded += OnStreamInferenceEnded;
+            LLMSystem.OnFullPromptReady += OnFullPromptReady;
         }
 
         private void OnFullPromptReady(object? sender, string e)
@@ -96,7 +96,7 @@ namespace WaifuAI
             _currentgenerationtokencount++;
             if (_currentgenerationtokencount > 8)
             {
-                var MsgPrefix = LLMChatManager.GetMessagePrefix(AuthorRole.Assistant);
+                var MsgPrefix = LLMSystem.GetMessagePrefix(AuthorRole.Assistant);
                 _lastMessageControl?.UpdateMessage(MsgPrefix + _currentgeneration);
                 _currentgenerationtokencount = 0;
                 // make sure it's invoked in the application UI
@@ -109,9 +109,9 @@ namespace WaifuAI
 
         private void OnStreamInferenceEnded(object? sender, string e)
         {
-            var MsgPrefix = LLMChatManager.GetMessagePrefix(AuthorRole.Assistant);
+            var MsgPrefix = LLMSystem.GetMessagePrefix(AuthorRole.Assistant);
             _lastMessageControl?.UpdateMessage(MsgPrefix + e);
-            var msg = LLMChatManager.Bot.History.LogMessage(AuthorRole.Assistant, e, LLMChatManager.User, LLMChatManager.Bot);
+            var msg = LLMSystem.Bot.History.LogMessage(AuthorRole.Assistant, e, LLMSystem.User, LLMSystem.Bot);
             if (_lastMessageControl != null)
             {
                 _lastMessageControl.AssociatedID = msg.Guid;
@@ -469,64 +469,64 @@ namespace WaifuAI
         {
             if (string.IsNullOrEmpty(ed_input.Text))
                 return;
-            var messagetext = LLMChatManager.GetAwayString() + ed_input.Text;
-            var msg = new SingleMessage(AuthorRole.User, DateTime.Now, messagetext, LLMChatManager.Bot.UniqueName, LLMChatManager.User.UniqueName, false);
+            var messagetext = LLMSystem.GetAwayString() + ed_input.Text;
+            var msg = new SingleMessage(AuthorRole.User, DateTime.Now, messagetext, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName, false);
             SendMessageToUI(msg);
 
             // ready a new message for the bot's response
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
             _lastMessageControl = SendMessageToUI(
-                new SingleMessage(AuthorRole.Assistant, DateTime.Now, LLMChatManager.Bot.UniqueName + " is reading your post...", LLMChatManager.Bot.UniqueName, LLMChatManager.User.UniqueName, false));
+                new SingleMessage(AuthorRole.Assistant, DateTime.Now, LLMSystem.Bot.UniqueName + " is reading your post...", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName, false));
             ed_input.Text = string.Empty;
-            await LLMChatManager.SendMessageToBot(msg);
+            await LLMSystem.SendMessageToBot(msg);
         }
 
         private async void RerollMessage(object sender, EventArgs e)
         {
-            if (LLMChatManager.Status == LLMStatus.Busy || flowChat.Controls.Count == 0)
+            if (LLMSystem.Status == LLMStatus.Busy || flowChat.Controls.Count == 0)
                 return;
             _lastMessageControl = flowChat.Controls[flowChat.Controls.Count - 1] as ChatMessageControl;
             if (_lastMessageControl == null)
                 return;
-            _lastMessageControl.UpdateMessage(LLMChatManager.Bot.UniqueName + " is thinking...");
+            _lastMessageControl.UpdateMessage(LLMSystem.Bot.UniqueName + " is thinking...");
             _lastMessageControl.Height = 120;
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
-            await LLMChatManager.RerollLastMessage();
+            await LLMSystem.RerollLastMessage();
         }
 
         private async void Connect(object sender, EventArgs e)
         {
-            await LLMChatManager.Connect();
-            num_maxcontext.Maximum = LLMChatManager.MaxContextLength;
-            num_maxcontext.Value = LLMChatManager.MaxContextLength;
-            lbl_info.Text = LLMChatManager.CurrentModel + "\n" + LLMChatManager.Backend;
+            await LLMSystem.Connect();
+            num_maxcontext.Maximum = LLMSystem.MaxContextLength;
+            num_maxcontext.Value = LLMSystem.MaxContextLength;
+            lbl_info.Text = LLMSystem.CurrentModel + "\n" + LLMSystem.Backend;
         }
 
         private void DeleteLastMessage(object sender, EventArgs e)
         {
-            if (LLMChatManager.Status == LLMStatus.Busy || flowChat.Controls.Count == 0)
+            if (LLMSystem.Status == LLMStatus.Busy || flowChat.Controls.Count == 0)
                 return;
             var last = flowChat.Controls[flowChat.Controls.Count - 1] as ChatMessageControl;
             last?.Dispose();
             flowChat.Controls.RemoveAt(flowChat.Controls.Count - 1);
-            LLMChatManager.History.RemoveLast();
+            LLMSystem.History.RemoveLast();
         }
 
         private void LoadHistoryToUI(int maxMsg = 100)
         {
             ClearChat();
-            var start = LLMChatManager.History.Messages.Count - maxMsg;
+            var start = LLMSystem.History.Messages.Count - maxMsg;
             if (start < 0)
                 start = 0;
             _isfillinghistory = true;
             flowChat.SuspendLayout();
             try
             {
-                for (int i = start; i < LLMChatManager.History.Messages.Count; i++)
+                for (int i = start; i < LLMSystem.History.Messages.Count; i++)
                 {
-                    SendMessageToUI(LLMChatManager.History.Messages[i]);
+                    SendMessageToUI(LLMSystem.History.Messages[i]);
                 }
             }
             finally
@@ -544,24 +544,24 @@ namespace WaifuAI
             switch (msg.Role)
             {
                 case AuthorRole.User:
-                    sel = DataFiles.Characters.TryGetValue(msg.UserID, out var found) ? found : LLMChatManager.User;
+                    sel = DataFiles.Characters.TryGetValue(msg.UserID, out var found) ? found : LLMSystem.User;
                     break;
                 case AuthorRole.Assistant:
-                    sel = DataFiles.Characters.TryGetValue(msg.CharID, out var foundbot) ? foundbot : LLMChatManager.Bot;
+                    sel = DataFiles.Characters.TryGetValue(msg.CharID, out var foundbot) ? foundbot : LLMSystem.Bot;
                     break;
                 default:
                     break;
             }
-            var MsgPrefix = LLMChatManager.GetMessagePrefix(msg.Role);
+            var MsgPrefix = LLMSystem.GetMessagePrefix(msg.Role);
             Image img = SystemLogo;
 
             switch (msg.Role)
             {
                 case AuthorRole.User:
-                    img = sel?.Portrait ?? LLMChatManager.User.Portrait;
+                    img = sel?.Portrait ?? LLMSystem.User.Portrait;
                     break;
                 case AuthorRole.Assistant:
-                    img = sel?.Portrait ?? LLMChatManager.Bot.Portrait;
+                    img = sel?.Portrait ?? LLMSystem.Bot.Portrait;
                     break;
             }
             var msgctrl = new ChatMessageControl(img, MsgPrefix + singleMessage.Message);
@@ -592,8 +592,8 @@ namespace WaifuAI
                 num_maxresponse.Value = Settings.MaxResponseTokens;
                 num_temperature.Value = (decimal)Settings.Temperature;
 
-                LLMChatManager.MaxContextLength = Settings.MaxTotalTokens;
-                LLMChatManager.MaxReplyLength = Settings.MaxResponseTokens;
+                LLMSystem.MaxContextLength = Settings.MaxTotalTokens;
+                LLMSystem.MaxReplyLength = Settings.MaxResponseTokens;
 
             }
         }
@@ -607,8 +607,8 @@ namespace WaifuAI
                 Settings.SamplerFile = cb_infer.SelectedItem?.ToString() ?? string.Empty;
                 Settings.Instruct = cb_instruct.SelectedItem?.ToString() ?? string.Empty;
                 Settings.PromptFile = cb_sysprompt.SelectedItem?.ToString() ?? string.Empty;
-                Settings.MaxTotalTokens = LLMChatManager.MaxContextLength;
-                Settings.MaxResponseTokens = LLMChatManager.MaxReplyLength;
+                Settings.MaxTotalTokens = LLMSystem.MaxContextLength;
+                Settings.MaxResponseTokens = LLMSystem.MaxReplyLength;
                 Settings.Temperature = (double)num_temperature.Value;
                 var str = JsonConvert.SerializeObject(Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
@@ -635,10 +635,10 @@ namespace WaifuAI
 
         private async void APIGetPerformances(object sender, EventArgs e)
         {
-            LLMChatManager.Init();
+            LLMSystem.Init();
             try
             {
-                var result = await LLMChatManager.Client.PerfAsync();
+                var result = await LLMSystem.Client.PerfAsync();
                 listBox1.Items.Add("Performances: " + result.Uptime + " Last Gen Ms: " + result.Last_process + " Last Gen Tks: " + result.Last_token_count);
             }
             catch (Exception ex)
@@ -649,10 +649,10 @@ namespace WaifuAI
 
         private async void APIGetModelName(object sender, EventArgs e)
         {
-            LLMChatManager.Init();
+            LLMSystem.Init();
             try
             {
-                KCBasicResult result = await LLMChatManager.Client.ModelAsync();
+                KCBasicResult result = await LLMSystem.Client.ModelAsync();
                 listBox1.Items.Add("Model: " + result.Result);
             }
             catch (Exception ex)
@@ -663,10 +663,10 @@ namespace WaifuAI
 
         private async void APIGetVersion(object sender, EventArgs e)
         {
-            LLMChatManager.Init();
+            LLMSystem.Init();
             try
             {
-                KCBasicResult result = await LLMChatManager.Client.VersionAsync();
+                KCBasicResult result = await LLMSystem.Client.VersionAsync();
                 listBox1.Items.Add("Version: " + result.Result);
             }
             catch (Exception ex)
@@ -677,10 +677,10 @@ namespace WaifuAI
 
         private async void APIGetExtraVersion(object sender, EventArgs e)
         {
-            LLMChatManager.Init();
+            LLMSystem.Init();
             try
             {
-                var result = await LLMChatManager.Client.ExtraVersionAsync();
+                var result = await LLMSystem.Client.ExtraVersionAsync();
                 listBox1.Items.Add("Version: " + result.result + result.version);
             }
             catch (Exception ex)
@@ -691,10 +691,10 @@ namespace WaifuAI
 
         private async void APIGetMaxContextLen(object sender, EventArgs e)
         {
-            LLMChatManager.Init();
+            LLMSystem.Init();
             try
             {
-                var result = await LLMChatManager.Client.TrueMaxContextLengthAsync();
+                var result = await LLMSystem.Client.TrueMaxContextLengthAsync();
                 listBox1.Items.Add("MaxLength: " + result.Value);
             }
             catch (Exception ex)
@@ -705,7 +705,7 @@ namespace WaifuAI
 
         private async void APIGetTokenCount(object sender, EventArgs e)
         {
-            LLMChatManager.Init();
+            LLMSystem.Init();
 
             var str = File.ReadAllText("data/chatlogs/Sarah.json");
             var item = JsonConvert.DeserializeObject<Chatlog>(str)!;
@@ -713,7 +713,7 @@ namespace WaifuAI
             try
             {
                 var mparams = new KcppPrompt { Prompt = output };
-                var result = await LLMChatManager.Client.TokencountAsync(mparams);
+                var result = await LLMSystem.Client.TokencountAsync(mparams);
                 listBox1.Items.Add("Token Count: " + result.Value);
             }
             catch (Exception ex)
@@ -724,7 +724,7 @@ namespace WaifuAI
 
         private async void APIGenerate(object sender, EventArgs e)
         {
-            LLMChatManager.Init();
+            LLMSystem.Init();
             try
             {
                 var mparams = new GenerationInput()
@@ -751,7 +751,7 @@ namespace WaifuAI
                     Sampler_order = [6, 0, 1, 3, 4, 2, 5],
                     Mirostat = 0
                 };
-                var result = await LLMChatManager.Client.GenerateAsync(mparams);
+                var result = await LLMSystem.Client.GenerateAsync(mparams);
                 foreach (var item in result.Results)
                 {
                     listBox1.Items.Add("Generation: " + item.Text);
@@ -765,14 +765,14 @@ namespace WaifuAI
 
         private async void APIStreamGenerate(object sender, EventArgs e)
         {
-            LLMChatManager.Init();
+            LLMSystem.Init();
             try
             {
                 var mparams = new GenerationInput()
                 {
                     Prompt = ed_generate.Text,
-                    Max_context_length = LLMChatManager.MaxContextLength,
-                    Max_length = LLMChatManager.MaxReplyLength,
+                    Max_context_length = LLMSystem.MaxContextLength,
+                    Max_length = LLMSystem.MaxReplyLength,
                     Temperature = 0.7,
                     Top_k = 0,
                     Top_p = 1,
@@ -792,7 +792,7 @@ namespace WaifuAI
                     Sampler_order = [6, 0, 1, 3, 4, 2, 5],
                     Mirostat = 0,
                 };
-                await LLMChatManager.Client.GenerateTextStreamAsync(mparams);
+                await LLMSystem.Client.GenerateTextStreamAsync(mparams);
             }
             catch (Exception ex)
             {
@@ -804,7 +804,7 @@ namespace WaifuAI
 
         private void flowChat_Resize(object sender, EventArgs e)
         {
-            if (_isfillinghistory || LLMChatManager.Status == LLMStatus.Busy)
+            if (_isfillinghistory || LLMSystem.Status == LLMStatus.Busy)
                 return;
             flowChat.SuspendLayout();
             try
@@ -828,39 +828,39 @@ namespace WaifuAI
             if (cb_bot.SelectedItem is string key && !string.IsNullOrEmpty(key))
             {
                 ClearChat();
-                LLMChatManager.Bot = DataFiles.Characters[key];
+                LLMSystem.Bot = DataFiles.Characters[key];
                 LoadHistoryToUI(50);
             }
         }
 
         private void num_maxcontext_ValueChanged(object sender, EventArgs e)
         {
-            LLMChatManager.MaxContextLength = (int)num_maxcontext.Value;
+            LLMSystem.MaxContextLength = (int)num_maxcontext.Value;
         }
 
         private void num_maxresponse_ValueChanged(object sender, EventArgs e)
         {
-            LLMChatManager.MaxReplyLength = (int)num_maxresponse.Value;
+            LLMSystem.MaxReplyLength = (int)num_maxresponse.Value;
         }
 
         private void cb_user_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cb_user.SelectedItem is string key && !string.IsNullOrEmpty(key))
-                LLMChatManager.User = DataFiles.Characters[key];
+                LLMSystem.User = DataFiles.Characters[key];
         }
 
         private void cb_instruct_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cb_instruct.SelectedItem is string key && !string.IsNullOrEmpty(key))
-                LLMChatManager.Instruct = DataFiles.Instruct[key];
+                LLMSystem.Instruct = DataFiles.Instruct[key];
 
         }
 
         private void cb_infer_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cb_infer.SelectedItem is string key && !string.IsNullOrEmpty(key))
-                LLMChatManager.Sampler = DataFiles.Inference[key];
-            num_temperature.Value = (decimal)LLMChatManager.Sampler.Temperature;
+                LLMSystem.Sampler = DataFiles.Inference[key];
+            num_temperature.Value = (decimal)LLMSystem.Sampler.Temperature;
         }
 
         private void ed_input_KeyPress(object sender, KeyPressEventArgs e)
@@ -875,7 +875,7 @@ namespace WaifuAI
 
         private void num_temperature_ValueChanged(object sender, EventArgs e)
         {
-            LLMChatManager.ForceTemperature = ((double)num_temperature.Value);
+            LLMSystem.ForceTemperature = ((double)num_temperature.Value);
         }
 
         private void bt_promptsave_Click(object sender, EventArgs e)
@@ -898,18 +898,19 @@ namespace WaifuAI
         private void cb_sysprompt_SelectionIndexChanged(object sender, EventArgs e)
         {
             if (cb_sysprompt.SelectedItem is string key && !string.IsNullOrEmpty(key))
-                LLMChatManager.SystemPrompt = DataFiles.SysPrompts[key];
+                LLMSystem.SystemPrompt = DataFiles.SysPrompts[key];
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
-            LLMChatManager.Bot.EndSession();
+            LLMSystem.Bot.EndSession();
         }
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            await LLMChatManager.History.RewriteAllSessions();
+            LLMSystem.History.DivideChatIntoSessions();
+            await LLMSystem.History.RewriteAllSessions();
             LoadHistoryToUI(50);
         }
 
@@ -918,7 +919,7 @@ namespace WaifuAI
             // Open a file selection dialog and use Tools.Import to import a chatlog from a jsonl file
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 MessageBox.Show(
-                    Tools.ImportChatlog(openFileDialog1.FileName, "exported_chat.json", LLMChatManager.Bot.UniqueName, LLMChatManager.User.UniqueName) ?
+                    Tools.ImportChatlog(openFileDialog1.FileName, "exported_chat.json", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName) ?
                         "Chatlog imported successfully to exported_chat.json in this application's main folder." :
                         "Something went wrong while opening or parsing the file."
                 );

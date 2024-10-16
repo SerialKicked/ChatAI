@@ -17,7 +17,7 @@ namespace WaifuAI
     enum LLMStatus { NotInit, Ready, Busy }
     enum SystemPromptSection { MainPrompt, BotBio, UserBio, Scenario, Memory, ContextInfo }
 
-    static class LLMChatManager
+    static class LLMSystem
     {
         public const int EmbeddingSize = 384;
         public const int EmbeddingDelay = 80;
@@ -164,7 +164,7 @@ namespace WaifuAI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error while counting tokens, estimate used instead: {ex.Message}");
+                MessageBox.Show($"An error occured while counting tokens, estimate used instead. {ex.Message}");
                 return text.Length / 5; // or any default value you want to return in case of an error
             }
         }
@@ -232,7 +232,7 @@ namespace WaifuAI
             tokencount += GetTokenCount(Instruct.GetResponseStart(Bot));
             var availtokens = (int)(MaxContextLength) - tokencount - MaxReplyLength;
             var history = History.GetFormatedDialogs(availtokens, Bot.SessionMemorySystem, _currentWorldEntries);
-            var res = sysprompt + LLMChatManager.NewLine + history + msg + Instruct.GetResponseStart(Bot);
+            var res = sysprompt + LLMSystem.NewLine + history + msg + Instruct.GetResponseStart(Bot);
             return res;
         }
 
