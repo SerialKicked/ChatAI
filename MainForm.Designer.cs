@@ -675,6 +675,7 @@
             ed_log.Location = new Point(8, 196);
             ed_log.Multiline = true;
             ed_log.Name = "ed_log";
+            ed_log.ScrollBars = ScrollBars.Vertical;
             ed_log.Size = new Size(958, 354);
             ed_log.TabIndex = 2;
             // 
@@ -815,6 +816,7 @@
             listBox1.ItemHeight = 15;
             listBox1.Location = new Point(3, 431);
             listBox1.Name = "listBox1";
+            listBox1.ScrollAlwaysVisible = true;
             listBox1.Size = new Size(968, 124);
             listBox1.TabIndex = 0;
             // 

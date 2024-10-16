@@ -30,6 +30,32 @@ namespace WaifuAI
         public Dictionary<int, STWorldEntry> entries { get; set; } = [];
     }
 
+    public class BooleanOrStringConverter : JsonConverter<bool>
+    {
+        public override bool ReadJson(JsonReader reader, Type objectType, bool existingValue, bool hasExistingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Boolean)
+            {
+                return (bool)reader.Value;
+            }
+            else if (reader.TokenType == JsonToken.String)
+            {
+                var stringValue = (string)reader.Value;
+                return string.IsNullOrEmpty(stringValue);
+            }
+            else if (reader.TokenType == JsonToken.Null)
+            {
+                return false;
+            }
+            throw new JsonSerializationException($"Unexpected token {reader.TokenType} when parsing boolean.");
+        }
+
+        public override void WriteJson(JsonWriter writer, bool value, JsonSerializer serializer)
+        {
+            writer.WriteValue(value);
+        }
+    }
+
 
 
     // Suppress CS0649: It's JSON loaded
@@ -38,6 +64,8 @@ namespace WaifuAI
     {
         public string name = string.Empty;
         public bool is_user = false;
+        [JsonConverter(typeof(BooleanOrStringConverter))]
+        public bool is_system { get; set; } = false;
         public string mes = string.Empty;
         public string send_date = string.Empty;
     }
@@ -177,6 +205,8 @@ namespace WaifuAI
                 foreach (var msg in importST.Inventory)
                 {
                     var role = msg.is_user ? AuthorRole.User : AuthorRole.Assistant;
+                    if (!msg.is_user && msg.is_system)
+                        role = AuthorRole.System;
                     chat.Messages.Add(new SingleMessage(role, DateTime.TryParse(msg.send_date, out var d) ? d : default, msg.mes ?? string.Empty, bot, user, false));
                 }
                 (chat as IFile).SaveToFile(outputpath);

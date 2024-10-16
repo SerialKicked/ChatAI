@@ -342,7 +342,7 @@ namespace WaifuAI
             else
                 msgtxt += " The last chat was about " + timespan.Hours.ToString() + " hours ago.";
             msgtxt = "*" + msgtxt.Trim() + "* ";
-            return msgtxt;
+            return ReplaceMacros(msgtxt, User, Bot);
         }
     }
 }

@@ -99,7 +99,7 @@ namespace WaifuAI.Files
                 sum + LLMSystem.NewLine + 
                 LLMSystem.NewLine + 
                 "# Instruction:" + LLMSystem.NewLine + 
-                "Give a title to the summary above. This title should be a single sentence. Write only the title.";
+                "Give a title to the summary above. This title should be a single sentence. Write only the title, nothinh else.";
             var msg = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, msgtxt);
             var tokencount = LLMSystem.GetTokenCount(msg);
             tokencount += LLMSystem.GetTokenCount(LLMSystem.Instruct.GetResponseStart(LLMSystem.Bot));
@@ -108,6 +108,7 @@ namespace WaifuAI.Files
             var llmparams = LLMSystem.Sampler.GetCopy();
             llmparams.Prompt = res;
             llmparams.Max_length = 350;
+            llmparams.Temperature = 0.4f;
             llmparams.Max_context_length = LLMSystem.MaxContextLength;
             var result = await LLMSystem.Client.GenerateAsync(llmparams);
             string finalstr = string.Empty;
@@ -137,7 +138,7 @@ namespace WaifuAI.Files
                     case AuthorRole.SysPrompt:
                         if (ignoresystem)
                             continue;
-                        text = LLMSystem.NewLine + "*" + msg.Message.Trim() + "*" + LLMSystem.NewLine;
+                        text = msg.Message.StartsWith("*") ? LLMSystem.NewLine + msg.Message.Trim() + LLMSystem.NewLine : LLMSystem.NewLine + "*" + msg.Message.Trim() + "*" + LLMSystem.NewLine;
                         break;
                     case AuthorRole.User:
                         {
@@ -417,6 +418,17 @@ namespace WaifuAI.Files
                     }
                 }
             }
+            var previousmess = session.Messages.First();
+            foreach (var item in session.Messages)
+            {
+                if (item.Date == default || item.Date.Year == 1)
+                {
+                    item.Date = previousmess.Date + new TimeSpan(0,1,0);
+                    break;
+                }
+                previousmess = item;
+            }
+
             session.EndTime = session.Messages.Last().Date;
             session.Summary = await session.GenerateNewSummary();
             session.Title = await session.GenerateNewTitle(session.Summary);
@@ -465,6 +477,27 @@ namespace WaifuAI.Files
             if (Messages.Count == 0)
                 return;
             Sessions.Clear();
+
+            // Fix potential date problems
+            var firstdate = default(DateTime);
+            foreach (var item in Messages)
+            {
+                if (item.Date != default)
+                {
+                    firstdate = item.Date;
+                    break;
+                }
+            }
+            var previousmess = Messages.First();
+            previousmess.Date = firstdate;
+            foreach (var item in Messages)
+            {
+                if (item.Date == default || item.Date.Year == 1)
+                {
+                    item.Date = previousmess.Date + new TimeSpan(0, 0, 15);
+                }
+                previousmess = item;
+            }
             // I want to check if msg.Message starts with "*We're " followed by a number to consider it as a new session
             string pattern = @"^\*We're \d+";
             // iterate through Messages, and divide them into sessions by checking the time between messages or the presence of a sentence starting by "*We're [number]" or a "Hello" message from user
@@ -477,13 +510,15 @@ namespace WaifuAI.Files
             {
                 var msg = Messages[i];
                 var timespan = msg.Date - lastmsg.Date;
-                var validinitmessage = msg.Role == AuthorRole.User && (
-                    Regex.IsMatch(msg.Message, pattern) || 
-                    msg.Message.StartsWith("Hello ") || msg.Message.StartsWith("Hi!") || 
-                    msg.Message.StartsWith("*"+LLMSystem.User.Name+" comes back ") || msg.Message.StartsWith("*" + LLMSystem.User.Name + " logged in.") ||
+                var totaltimespan = msg.Date - currentsession.StartTime;
+                var validinitmessage = (msg.Role == AuthorRole.User || msg.Role == AuthorRole.System) && (
+                    Regex.IsMatch(msg.Message, pattern) ||
+                    msg.Message.StartsWith("Hello ") || msg.Message.StartsWith("Hi!") || msg.Message.StartsWith("Hi ") ||
+                    msg.Message.StartsWith("*" + LLMSystem.User.Name + " comes back ") || msg.Message.StartsWith("*" + LLMSystem.User.Name + " logged in.") || 
+                    msg.Message.StartsWith("*A few days later") ||
                     msg.Message.StartsWith("*We're a day later") || msg.Message.StartsWith("*We're a week"));
                 // Minimum session length should be about 30 messages
-                if (sessionmsgcount > 30 && (timespan.TotalDays > 1 || validinitmessage))
+                if (sessionmsgcount > 35 && (timespan.TotalDays >= 1 || (totaltimespan.TotalDays > 3 && sessionmsgcount > 120) || validinitmessage))
                 {
                     currentsession.EndTime = lastmsg.Date;
                     if (currentsession.Messages.Count > 0)

@@ -88,7 +88,9 @@ namespace WaifuAI
 
         private void OnFullPromptReady(object? sender, string e)
         {
-            ed_log.Text += "====== New Generation ======\n\n" + e + "\n\n";
+            ed_log.Clear();
+            var text = "====== New Generation ======\n\n" + e + "\n\n";
+            ed_log.Text = text.Replace("\n", Environment.NewLine);
         }
 
         private void OnStreamMessageReceived(object? sender, string e)
