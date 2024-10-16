@@ -1,4 +1,6 @@
 {
+	"SysPromptStart": "[INST]",
+	"SysPromptEnd": "[/INST]Understood.</s>",
 	"SystemStart": "[INST]",
 	"SystemEnd": "[/INST]",
 	"UserStart": "[INST]",

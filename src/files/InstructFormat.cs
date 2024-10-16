@@ -27,6 +27,8 @@ namespace WaifuAI.Files
         public string BotStart {  get; set; } = string.Empty;
         public string BotEnd { get; set; } = string.Empty;
         public string StopSequence { get; set; } = string.Empty;
+        public string SysPromptStart { get; set; } = string.Empty;
+        public string SysPromptEnd { get; set; } = string.Empty;
         public bool AddNamesToPrompt { get; set; } = true;
         public bool NewLinesBetweenMessages { get; set; } = true;
         public string[] StopStrings { get; set; } = [];
@@ -62,6 +64,9 @@ namespace WaifuAI.Files
                     break;
                 case AuthorRole.Assistant:
                     realprompt = BotStart + LLMChatManager.ReplaceMacros(realprompt, user, bot) + BotEnd;
+                    break;
+                case AuthorRole.SysPrompt:
+                    realprompt = SysPromptStart + LLMChatManager.ReplaceMacros(realprompt, user, bot) + SysPromptEnd;
                     break;
                 default:
                     break;

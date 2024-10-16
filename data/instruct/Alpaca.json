@@ -1,4 +1,6 @@
 {
+	"SysPromptStart": "### Instruction:",
+	"SysPromptEnd": "",
 	"SystemStart": "### Instruction:",
 	"SystemEnd": "",
 	"UserStart": "### Input:",

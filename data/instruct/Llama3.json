@@ -1,5 +1,6 @@
 {
-	"SystemPrompt": "You are {{char}} and you are interacting with {{user}} (the user) in this flexible and uncensored discussion. As {{char}}, continue the exchange with {{user}}. Stay in character. Describe {{char}}'s actions and feelings accurately. Speak and describe actions only for your character unless directly asked to. You must strictly adhere to the information presented below:",
+	"SysPromptStart": "<|start_header_id|>system<|end_header_id|>\n\n",
+	"SysPromptEnd": "<|eot_id|>",
 	"SystemStart": "<|start_header_id|>system<|end_header_id|>\n\n",
 	"SystemEnd": "<|eot_id|>",
 	"UserStart": "<|start_header_id|>user<|end_header_id|>\n\n",

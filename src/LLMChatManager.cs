@@ -23,18 +23,23 @@ namespace WaifuAI
         public const int EmbeddingDelay = 80;
 
         public static int MaxReplyLength { get; set; } = 512;
-        public static int MaxContextLength { get; set; } = 4096;
+        public static int MaxContextLength { 
+            get => maxContextLength; 
+            set => maxContextLength = value; 
+        }
         public static bool SkipSpecialTokens { get; set; } = false;
         public static string CurrentModel { get; private set; } = string.Empty;
         public static string Backend { get; private set; } = string.Empty;
         public static double ForceTemperature { get; set; } = 0.7;
 
+        public static EventHandler<string>? OnFullPromptReady;
         /// <summary> Called during inference each time the LLM outputs a new token </summary>
         public static EventHandler<string>? OnInferenceStreamed;
         /// <summary> Called once the inference has ended, returns the full string </summary>
         public static EventHandler<string>? OnInferenceEnded;
         /// <summary> Called when the system changes states (no init, busy, ready) </summary>
         public static EventHandler<LLMStatus>? OnStatusChanged;
+        private static void RaiseOnFullPromptReady(string fullprompt) => OnFullPromptReady?.Invoke(null, fullprompt);
         private static void RaiseOnStatusChange(LLMStatus newStatus) => OnStatusChanged?.Invoke(null, newStatus);
         private static void RaiseOnInferenceStreamed(string addedString) => OnInferenceStreamed?.Invoke(null, addedString);
         private static void RaiseOnInferenceEnded(string fullString) => OnInferenceEnded?.Invoke(null, fullString);
@@ -78,10 +83,11 @@ namespace WaifuAI
 
         public static readonly string NewLine = "\n";
         private static string StreamingTextProgress = string.Empty;
-        private static List<WorldEntry> _currentWorldEntries = [];
 
+        private static List<WorldEntry> _currentWorldEntries = [];
         private static readonly HttpClient _httpclient = new();
         public static KClient Client = new(_httpclient);
+        private static int maxContextLength = 4096;
 
         public static void Init()
         {
@@ -158,8 +164,8 @@ namespace WaifuAI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}");
-                return 0; // or any default value you want to return in case of an error
+                MessageBox.Show($"An error while counting tokens, estimate used instead: {ex.Message}");
+                return text.Length / 5; // or any default value you want to return in case of an error
             }
         }
 
@@ -183,7 +189,7 @@ namespace WaifuAI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}");
+                MessageBox.Show($"An error while connecting: {ex.Message}");
             }
         }
 
@@ -194,7 +200,7 @@ namespace WaifuAI
         /// <returns></returns>
         private static string GenerateFullPrompt(AuthorRole MsgSender, string newMessage)
         {
-            var msg = Instruct.FormatSinglePrompt(MsgSender, User, Bot, newMessage);
+            var msg = String.IsNullOrEmpty(newMessage) ? string.Empty : Instruct.FormatSinglePrompt(MsgSender, User, Bot, newMessage);
             var tokencount = GetTokenCount(msg);
             var rawprompt = new StringBuilder(RawSystemPrompt(User, Bot));
             if (Bot.MyWorlds.Count > 0)
@@ -218,14 +224,14 @@ namespace WaifuAI
                     rawprompt.AppendLinuxLine(ctxinfo);
             }
 
-            var sysprompt = Instruct.FormatSinglePrompt(AuthorRole.System, User, Bot, rawprompt.ToString());
+            var sysprompt = Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, User, Bot, rawprompt.ToString());
 
             systemPromptSize = GetTokenCount(sysprompt);
 
             tokencount += GetTokenCount(sysprompt);
             tokencount += GetTokenCount(Instruct.GetResponseStart(Bot));
             var availtokens = (int)(MaxContextLength) - tokencount - MaxReplyLength;
-            var history = History.GetFormatedDialogs(availtokens, Bot.SessionMemorySystem);
+            var history = History.GetFormatedDialogs(availtokens, Bot.SessionMemorySystem, _currentWorldEntries);
             var res = sysprompt + LLMChatManager.NewLine + history + msg + Instruct.GetResponseStart(Bot);
             return res;
         }
@@ -273,7 +279,7 @@ namespace WaifuAI
                 return;
             History.RemoveLast();
             var lastusermsg = History.LastMessage() ?? new SingleMessage(AuthorRole.User, DateTime.Now, "Hi!", Bot.Name, User.Name);
-            await StartGeneration(lastusermsg.Role, lastusermsg.Message);
+            await StartGeneration(lastusermsg.Role, string.Empty);
         }
 
         /// <summary>
@@ -303,7 +309,7 @@ namespace WaifuAI
             genparams.Max_length = MaxReplyLength;
             genparams.Stop_sequence = Instruct.GetStoppingStrings(User, Bot);
             genparams.Prompt = GenerateFullPrompt(MsgSender, inputText);
-
+            RaiseOnFullPromptReady(genparams.Prompt);
             await Client.GenerateTextStreamAsync(genparams);
         }
 
@@ -312,6 +318,7 @@ namespace WaifuAI
             return role switch
             {
                 AuthorRole.System => "**SYSTEM:** ",
+                AuthorRole.SysPrompt => "**SYS PROMPT:** ",
                 AuthorRole.User => "**" + User.Name + ":** ",
                 AuthorRole.Assistant => "**" + Bot.Name + ":** ",
                 _ => "**Error:** ",

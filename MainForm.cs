@@ -82,6 +82,12 @@ namespace WaifuAI
             LLMChatManager.Init();
             LLMChatManager.OnInferenceStreamed += OnStreamMessageReceived;
             LLMChatManager.OnInferenceEnded += OnStreamInferenceEnded;
+            LLMChatManager.OnFullPromptReady += OnFullPromptReady;
+        }
+
+        private void OnFullPromptReady(object? sender, string e)
+        {
+            ed_log.Text += "====== New Generation ======\n\n" + e + "\n\n";
         }
 
         private void OnStreamMessageReceived(object? sender, string e)
@@ -585,6 +591,10 @@ namespace WaifuAI
                 num_maxcontext.Value = Settings.MaxTotalTokens;
                 num_maxresponse.Value = Settings.MaxResponseTokens;
                 num_temperature.Value = (decimal)Settings.Temperature;
+
+                LLMChatManager.MaxContextLength = Settings.MaxTotalTokens;
+                LLMChatManager.MaxReplyLength = Settings.MaxResponseTokens;
+
             }
         }
 
@@ -597,8 +607,8 @@ namespace WaifuAI
                 Settings.SamplerFile = cb_infer.SelectedItem?.ToString() ?? string.Empty;
                 Settings.Instruct = cb_instruct.SelectedItem?.ToString() ?? string.Empty;
                 Settings.PromptFile = cb_sysprompt.SelectedItem?.ToString() ?? string.Empty;
-                Settings.MaxTotalTokens = (int)num_maxcontext.Value;
-                Settings.MaxResponseTokens = (int)num_maxresponse.Value;
+                Settings.MaxTotalTokens = LLMChatManager.MaxContextLength;
+                Settings.MaxResponseTokens = LLMChatManager.MaxReplyLength;
                 Settings.Temperature = (double)num_temperature.Value;
                 var str = JsonConvert.SerializeObject(Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
@@ -699,7 +709,7 @@ namespace WaifuAI
 
             var str = File.ReadAllText("data/chatlogs/Sarah.json");
             var item = JsonConvert.DeserializeObject<Chatlog>(str)!;
-            var output = item.GetFormatedDialogs(16384, false);
+            var output = item.GetFormatedDialogs(16384, false, []);
             try
             {
                 var mparams = new KcppPrompt { Prompt = output };
@@ -899,7 +909,7 @@ namespace WaifuAI
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            await LLMChatManager.History.StartNewChatSession(true);
+            await LLMChatManager.History.RewriteAllSessions();
             LoadHistoryToUI(50);
         }
 

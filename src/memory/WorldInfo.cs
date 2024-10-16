@@ -37,7 +37,7 @@ namespace WaifuAI.Memory
             if (!Enabled)
                 return false;
             var main = KeyWordsMain.Any(kw => message.Contains(kw, CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase));
-            var secondary = KeyWordsSecondary.Any(kw => message.Contains(kw, CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase));
+            var secondary = KeyWordsSecondary.Count == 0 || KeyWordsSecondary.Any(kw => message.Contains(kw, CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase));
             return WordLink switch
             {
                 KeyWordLink.And => main && secondary,

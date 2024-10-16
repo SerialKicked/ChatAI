@@ -142,7 +142,7 @@ namespace WaifuAI.Plugins
             prompt.AppendLinuxLine("User: I don't want to go to the Red Cinema.");
             prompt.AppendLinuxLine("Response: No").AppendLinuxLine();
 
-            var sysprompt = LLMChatManager.Instruct.FormatSinglePrompt(AuthorRole.System, LLMChatManager.User, LLMChatManager.Bot, prompt.ToString());
+            var sysprompt = LLMChatManager.Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, LLMChatManager.User, LLMChatManager.Bot, prompt.ToString());
             var msg = LLMChatManager.Instruct.FormatSinglePrompt(AuthorRole.User, LLMChatManager.User, LLMChatManager.Bot, userinput);
 
             if (LLMChatManager.Instruct.BotStart != null)

@@ -87,6 +87,7 @@
             bt_getmodel = new Button();
             listBox1 = new ListBox();
             openFileDialog1 = new OpenFileDialog();
+            ed_log = new TextBox();
             tabControl1.SuspendLayout();
             tabChat.SuspendLayout();
             panel1.SuspendLayout();
@@ -568,6 +569,7 @@
             // 
             // tabSettings
             // 
+            tabSettings.Controls.Add(ed_log);
             tabSettings.Controls.Add(bt_importworld);
             tabSettings.Controls.Add(bt_ImportSTChat);
             tabSettings.Location = new Point(4, 27);
@@ -722,6 +724,15 @@
             // 
             openFileDialog1.FileName = "openFileDialog1";
             // 
+            // ed_log
+            // 
+            ed_log.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            ed_log.Location = new Point(8, 196);
+            ed_log.Multiline = true;
+            ed_log.Name = "ed_log";
+            ed_log.Size = new Size(958, 354);
+            ed_log.TabIndex = 2;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -744,6 +755,7 @@
             tabPage1.ResumeLayout(false);
             tabSamplers.ResumeLayout(false);
             tabSettings.ResumeLayout(false);
+            tabSettings.PerformLayout();
             tabAPI.ResumeLayout(false);
             tabAPI.PerformLayout();
             ResumeLayout(false);
@@ -808,5 +820,6 @@
         private Button bt_ImportSTChat;
         private OpenFileDialog openFileDialog1;
         private Button bt_importworld;
+        private TextBox ed_log;
     }
 }
