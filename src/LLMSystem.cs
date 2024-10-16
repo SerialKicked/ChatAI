@@ -85,6 +85,7 @@ namespace WaifuAI
         private static string StreamingTextProgress = string.Empty;
 
         private static List<WorldEntry> _currentWorldEntries = [];
+        private static string _LastGeneratedPrompt = string.Empty;
         private static readonly HttpClient _httpclient = new();
         public static KClient Client = new(_httpclient);
         private static int maxContextLength = 4096;
@@ -277,9 +278,26 @@ namespace WaifuAI
         {
             if (Status != LLMStatus.Ready || History.Messages.Count == 0 || History.LastMessage()?.Role != AuthorRole.Assistant)
                 return;
-            History.RemoveLast();
-            var lastusermsg = History.LastMessage() ?? new SingleMessage(AuthorRole.User, DateTime.Now, "Hi!", Bot.Name, User.Name);
-            await StartGeneration(lastusermsg.Role, string.Empty);
+            if (string.IsNullOrEmpty(_LastGeneratedPrompt))
+            {
+                History.RemoveLast();
+                var lastusermsg = History.LastMessage() ?? new SingleMessage(AuthorRole.User, DateTime.Now, "Hi!", Bot.Name, User.Name);
+                await StartGeneration(lastusermsg.Role, string.Empty);
+            }
+            else
+            {
+                Status = LLMStatus.Busy;
+                StreamingTextProgress = string.Empty;
+                GenerationInput genparams = Sampler.GetCopy();
+                if (ForceTemperature >= 0)
+                    genparams.Temperature = ForceTemperature;
+                genparams.Max_context_length = MaxContextLength;
+                genparams.Max_length = MaxReplyLength;
+                genparams.Stop_sequence = Instruct.GetStoppingStrings(User, Bot);
+                genparams.Prompt = _LastGeneratedPrompt;
+                RaiseOnFullPromptReady(genparams.Prompt);
+                await Client.GenerateTextStreamAsync(genparams);
+            }
         }
 
         /// <summary>
@@ -303,12 +321,14 @@ namespace WaifuAI
 
             StreamingTextProgress = string.Empty;
             GenerationInput genparams = Sampler.GetCopy();
+            _LastGeneratedPrompt = GenerateFullPrompt(MsgSender, inputText);
             if (ForceTemperature >= 0)
                 genparams.Temperature = ForceTemperature;
             genparams.Max_context_length = MaxContextLength;
             genparams.Max_length = MaxReplyLength;
             genparams.Stop_sequence = Instruct.GetStoppingStrings(User, Bot);
-            genparams.Prompt = GenerateFullPrompt(MsgSender, inputText);
+            genparams.Prompt = _LastGeneratedPrompt;
+
             RaiseOnFullPromptReady(genparams.Prompt);
             await Client.GenerateTextStreamAsync(genparams);
         }

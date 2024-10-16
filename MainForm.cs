@@ -472,7 +472,7 @@ namespace WaifuAI
         {
             if (string.IsNullOrEmpty(ed_input.Text))
                 return;
-            var messagetext = LLMSystem.GetAwayString() + ed_input.Text;
+            var messagetext = LLMSystem.GetAwayString() + ed_input.Text.Replace(Environment.NewLine, LLMSystem.NewLine);
             var msg = new SingleMessage(AuthorRole.User, DateTime.Now, messagetext, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName, false);
             SendMessageToUI(msg);
 
@@ -480,7 +480,7 @@ namespace WaifuAI
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
             _lastMessageControl = SendMessageToUI(
-                new SingleMessage(AuthorRole.Assistant, DateTime.Now, LLMSystem.Bot.UniqueName + " is reading your post...", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName, false));
+                new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your post...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName, false));
             ed_input.Text = string.Empty;
             await LLMSystem.SendMessageToBot(msg);
         }
@@ -492,7 +492,7 @@ namespace WaifuAI
             _lastMessageControl = flowChat.Controls[flowChat.Controls.Count - 1] as ChatMessageControl;
             if (_lastMessageControl == null)
                 return;
-            _lastMessageControl.UpdateMessage(LLMSystem.Bot.UniqueName + " is thinking...");
+            _lastMessageControl.UpdateMessage("*"+ LLMSystem.Bot.UniqueName + " is thinking...*");
             _lastMessageControl.Height = 120;
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
