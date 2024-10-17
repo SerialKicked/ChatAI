@@ -421,5 +421,11 @@ namespace WaifuAI
             string formattedDate = date.ToString("MMMM d", CultureInfo.InvariantCulture) + daySuffix + ", " + date.Year.ToString(CultureInfo.InvariantCulture);
             return formattedDate;
         }
+
+        internal static void RemoveLastMessage()
+        {
+            LLMSystem.History.RemoveLast();
+            _LastGeneratedPrompt = string.Empty;
+        }
     }
 }

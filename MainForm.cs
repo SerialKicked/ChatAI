@@ -514,9 +514,9 @@ namespace WaifuAI
             if (LLMSystem.Status == LLMStatus.Busy || flowChat.Controls.Count == 0)
                 return;
             var last = flowChat.Controls[flowChat.Controls.Count - 1] as ChatMessageControl;
+            flowChat.Controls.Remove(last);
             last?.Dispose();
-            flowChat.Controls.RemoveAt(flowChat.Controls.Count - 1);
-            LLMSystem.History.RemoveLast();
+            LLMSystem.RemoveLastMessage();
         }
 
         private void LoadHistoryToUI(int maxMsg = 100)
