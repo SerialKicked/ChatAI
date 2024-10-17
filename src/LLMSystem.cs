@@ -79,7 +79,7 @@ namespace WaifuAI
             set
             {
                 instruct = value;
-                _LastGeneratedPrompt = string.Empty;
+                InvalidatePromptCache();
             } 
         }
         public static SamplerSettings Sampler = new();
@@ -160,7 +160,7 @@ namespace WaifuAI
         /// <param name="newbot"></param>
         private static void ChangeBot(Character newbot)
         {
-            _LastGeneratedPrompt = string.Empty;
+            InvalidatePromptCache();
             _currentWorldEntries = [];
             bot.EndSession();
             bot = newbot;
@@ -425,6 +425,11 @@ namespace WaifuAI
         internal static void RemoveLastMessage()
         {
             LLMSystem.History.RemoveLast();
+            InvalidatePromptCache();
+        }
+
+        internal static void InvalidatePromptCache()
+        {
             _LastGeneratedPrompt = string.Empty;
         }
     }
