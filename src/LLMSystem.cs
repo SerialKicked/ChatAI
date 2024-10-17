@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
+using System.Globalization;
 
 namespace WaifuAI
 {
@@ -72,7 +73,14 @@ namespace WaifuAI
         // Default/Current Characters, Users, Instruct format, and inference parameters
         private static Character bot = new() { IsUser = false, Name = "Assistant", Bio = "You are an helpful AI assistant whose goal is to answer questions and complete tasks.", UniqueName = string.Empty };
         public static Character User = new() { IsUser = true, Name = "User", UniqueName = string.Empty };
-        public static InstructFormat Instruct = new();
+        public static InstructFormat Instruct { 
+            get => instruct; 
+            set
+            {
+                instruct = value;
+                _LastGeneratedPrompt = string.Empty;
+            } 
+        }
         public static SamplerSettings Sampler = new();
         public static SystemPrompt SystemPrompt = new();
         public static Chatlog History => Bot.History;
@@ -89,6 +97,7 @@ namespace WaifuAI
         private static readonly HttpClient _httpclient = new();
         public static KClient Client = new(_httpclient);
         private static int maxContextLength = 4096;
+        private static InstructFormat instruct = new();
 
         public static void Init()
         {
@@ -136,7 +145,7 @@ namespace WaifuAI
                .Replace("{{userbio}}", user.GetBio(character.Name))
                .Replace("{{char}}", character.Name)
                .Replace("{{charbio}}", character.GetBio(user.Name))
-               .Replace("{{date}}", DateTime.Now.ToShortDateString())
+               .Replace("{{date}}", DateToHumanString(DateTime.Now))
                .Replace("{{time}}", DateTime.Now.ToShortTimeString())
                .Replace("{{day}}", DateTime.Now.DayOfWeek.ToString())
                .Replace("{{scenario}}", character.GetScenario(user.Name))
@@ -144,13 +153,24 @@ namespace WaifuAI
             return res.ToString();
         }
 
+        /// <summary>
+        /// Change the current bot persona.
+        /// </summary>
+        /// <param name="newbot"></param>
         private static void ChangeBot(Character newbot)
         {
+            _LastGeneratedPrompt = string.Empty;
+            _currentWorldEntries = [];
             bot.EndSession();
             bot = newbot;
             bot.BeginSession();
         }
 
+        /// <summary>
+        /// Returns the current token count of a string.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public static int GetTokenCount(string text)
         {
             if (string.IsNullOrEmpty(text))
@@ -333,6 +353,11 @@ namespace WaifuAI
             await Client.GenerateTextStreamAsync(genparams);
         }
 
+        /// <summary>
+        /// Returns a message prefix depending on the role. (generally the user/bot's name)
+        /// </summary>
+        /// <param name="role"></param>
+        /// <returns></returns>
         public static string GetMessagePrefix(AuthorRole role)
         {
             return role switch
@@ -345,6 +370,10 @@ namespace WaifuAI
             };
         }
 
+        /// <summary>
+        /// Returns an away string depending on the last chat's date.
+        /// </summary>
+        /// <returns></returns>
         public static string GetAwayString()
         {
             if (History.Messages.Count == 0 || !Bot.SenseOfTime)
@@ -354,7 +383,7 @@ namespace WaifuAI
             if (timespan <= new TimeSpan(2, 0, 0))
                 return string.Empty;
 
-            var msgtxt = (DateTime.Now.Date != History.Messages.Last().Date.Date) || (timespan > new TimeSpan(12, 0, 0)) ? "It's {{day}}, the {{date}} at {{time}}." : string.Empty;
+            var msgtxt = (DateTime.Now.Date != History.Messages.Last().Date.Date) || (timespan > new TimeSpan(12, 0, 0)) ? "It's {{day}}, {{date}} at {{time}}." : string.Empty;
             if (timespan.Days > 1)
                 msgtxt += " Your last chat was " + timespan.Days.ToString() + " days ago.";
             else if (timespan.Days == 1)
@@ -363,6 +392,33 @@ namespace WaifuAI
                 msgtxt += " The last chat was about " + timespan.Hours.ToString() + " hours ago.";
             msgtxt = "*" + msgtxt.Trim() + "* ";
             return ReplaceMacros(msgtxt, User, Bot);
+        }
+
+        public static string DateToHumanString(DateTime date)
+        {
+            string GetDaySuffix(int day)
+            {
+                if (day >= 11 && day <= 13)
+                {
+                    return "th";
+                }
+
+                switch (day % 10)
+                {
+                    case 1:
+                        return "st";
+                    case 2:
+                        return "nd";
+                    case 3:
+                        return "rd";
+                    default:
+                        return "th";
+                }
+            }
+
+            string daySuffix = GetDaySuffix(date.Day);
+            string formattedDate = date.ToString("MMMM d", CultureInfo.InvariantCulture) + daySuffix + ", " + date.Year.ToString(CultureInfo.InvariantCulture);
+            return formattedDate;
         }
     }
 }
