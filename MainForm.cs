@@ -46,7 +46,7 @@ namespace WaifuAI
             bt_connect.Click += Connect!;
             bt_send.Click += SendMessage!;
             bt_reroll.Click += RerollMessage!;
-            button1.Click += button1_Click!;
+            bt_chattosessions.Click += ConvertChatToSessionList!;
             bt_sessionrefresh.Click += bt_sessionrefresh_Click!;
             // Load editors and chat menu
             SetupSamplerEditor();
@@ -474,7 +474,7 @@ namespace WaifuAI
         {
             if (string.IsNullOrEmpty(ed_input.Text))
                 return;
-            var messagetext = LLMSystem.GetAwayString() + ed_input.Text.Replace(Environment.NewLine, LLMSystem.NewLine);
+            var messagetext = LLMSystem.GetAwayString() + LLMSystem.ReplaceMacros(ed_input.Text.Replace(Environment.NewLine, LLMSystem.NewLine), LLMSystem.User, LLMSystem.Bot);
             var msg = new SingleMessage(AuthorRole.User, DateTime.Now, messagetext, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName, false);
             SendMessageToUI(msg);
 
@@ -820,6 +820,74 @@ namespace WaifuAI
 
         #endregion
 
+        #region *** Settings Tab Functions ***
+
+        private async void ConvertChatToSessionList(object sender, EventArgs e)
+        {
+            LLMSystem.History.DivideChatIntoSessions();
+            await LLMSystem.History.RewriteAllSessions();
+            LoadHistoryToUI(50);
+        }
+
+        private void bt_ImportSTChat_Click(object sender, EventArgs e)
+        {
+            // Open a file selection dialog and use Tools.Import to import a chatlog from a jsonl file
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                MessageBox.Show(
+                    Tools.ImportChatlog(openFileDialog1.FileName, "exported_chat.json", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName) ?
+                        "Chatlog imported successfully to exported_chat.json in this application's main folder." :
+                        "Something went wrong while opening or parsing the file."
+                );
+        }
+
+        private void bt_importworld_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                MessageBox.Show(
+                    Tools.ImportWorld(openFileDialog1.FileName, "exported_world.json") ?
+                        "WorldInfo imported successfully to exported_world.json in this application's main folder." :
+                        "Something went wrong while opening or parsing the file."
+                );
+        }
+
+        #endregion
+
+        #region *** Chat History Tab Functions ***
+
+        private void listSession_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listSession.SelectedItems.Count <= 0)
+                return;
+            var selectedItem = listSession.SelectedItems[0];
+            _selectedSession = (ChatSession)selectedItem.Tag!;
+            DisplaySessionDetails(_selectedSession);
+        }
+
+        private async void DisplaySessionDetails(ChatSession session)
+        {
+            lbl_sessiontitle.Text = session.Title;
+            lbl_sessioninfo.Text = session.StartTime.ToString("g") + " - " + session.EndTime.ToString("g") + " - " + session.Messages.Count + " messages";
+            if (web_sessioncontent.CoreWebView2 == null)
+            {
+                await web_sessioncontent.EnsureCoreWebView2Async();
+            }
+            var dialogs = session.GetRawDialogs(int.MaxValue, false).Replace("\n", "\n\n");
+            var inf = "# " + session.Title + LLMSystem.NewLine + LLMSystem.NewLine + "## Summary:" + LLMSystem.NewLine + LLMSystem.NewLine + session.Summary + LLMSystem.NewLine + LLMSystem.NewLine + "## Dialogs:" + LLMSystem.NewLine + LLMSystem.NewLine + dialogs;
+            web_sessioncontent.NavigateToString(Markdown.ToHtml(inf));
+        }
+
+        private async void bt_sessionrefresh_Click(object sender, EventArgs e)
+        {
+            if (_selectedSession == null)
+                return;
+
+            _selectedSession.Summary = await _selectedSession.GenerateNewSummary();
+            _selectedSession.Title = await _selectedSession.GenerateNewTitle(_selectedSession.Summary);
+            DisplaySessionDetails(_selectedSession);
+        }
+
+        #endregion
+
         private void flowChat_Resize(object sender, EventArgs e)
         {
             if (_isfillinghistory || LLMSystem.Status == LLMStatus.Busy)
@@ -926,64 +994,5 @@ namespace WaifuAI
             LLMSystem.Bot.EndSession();
         }
 
-        private async void button1_Click(object sender, EventArgs e)
-        {
-            LLMSystem.History.DivideChatIntoSessions();
-            await LLMSystem.History.RewriteAllSessions();
-            LoadHistoryToUI(50);
-        }
-
-        private void bt_ImportSTChat_Click(object sender, EventArgs e)
-        {
-            // Open a file selection dialog and use Tools.Import to import a chatlog from a jsonl file
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-                MessageBox.Show(
-                    Tools.ImportChatlog(openFileDialog1.FileName, "exported_chat.json", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName) ?
-                        "Chatlog imported successfully to exported_chat.json in this application's main folder." :
-                        "Something went wrong while opening or parsing the file."
-                );
-        }
-
-        private void bt_importworld_Click(object sender, EventArgs e)
-        {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-                MessageBox.Show(
-                    Tools.ImportWorld(openFileDialog1.FileName, "exported_world.json") ?
-                        "WorldInfo imported successfully to exported_world.json in this application's main folder." :
-                        "Something went wrong while opening or parsing the file."
-                );
-        }
-
-        private void listSession_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (listSession.SelectedItems.Count <= 0)
-                return;
-            var selectedItem = listSession.SelectedItems[0];
-            _selectedSession = (ChatSession)selectedItem.Tag!;
-            DisplaySessionDetails(_selectedSession);
-        }
-
-        private async void DisplaySessionDetails(ChatSession session)
-        {
-            lbl_sessiontitle.Text = session.Title;
-            lbl_sessioninfo.Text = session.StartTime.ToString("g") + " - " + session.EndTime.ToString("g") + " - " + session.Messages.Count + " messages";
-            if (web_sessioncontent.CoreWebView2 == null)
-            {
-                await web_sessioncontent.EnsureCoreWebView2Async();
-            }
-            var dialogs = session.GetRawDialogs(int.MaxValue, false).Replace("\n", "\n\n");
-            var inf = "# " + session.Title + LLMSystem.NewLine + LLMSystem.NewLine + "## Summary:" + LLMSystem.NewLine + LLMSystem.NewLine + session.Summary + LLMSystem.NewLine + LLMSystem.NewLine + "## Dialogs:" + LLMSystem.NewLine + LLMSystem.NewLine + dialogs;
-            web_sessioncontent.NavigateToString(Markdown.ToHtml(inf));
-        }
-
-        private async void bt_sessionrefresh_Click(object sender, EventArgs e)
-        {
-            if (_selectedSession == null)
-                return;
-
-            _selectedSession.Summary = await _selectedSession.GenerateNewSummary();
-            _selectedSession.Title = await _selectedSession.GenerateNewTitle(_selectedSession.Summary);
-            DisplaySessionDetails(_selectedSession);
-        }
     }
 }

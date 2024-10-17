@@ -37,7 +37,6 @@
             ed_input = new TextBox();
             flowChat = new FlowLayoutPanel();
             panel1 = new Panel();
-            button1 = new Button();
             cb_sysprompt = new ComboBox();
             label11 = new Label();
             num_temperature = new NumericUpDown();
@@ -97,6 +96,7 @@
             bt_getmodel = new Button();
             listBox1 = new ListBox();
             openFileDialog1 = new OpenFileDialog();
+            bt_chattosessions = new Button();
             tabControl1.SuspendLayout();
             tabChat.SuspendLayout();
             panel1.SuspendLayout();
@@ -206,7 +206,6 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
-            panel1.Controls.Add(button1);
             panel1.Controls.Add(cb_sysprompt);
             panel1.Controls.Add(label11);
             panel1.Controls.Add(num_temperature);
@@ -230,15 +229,6 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(200, 552);
             panel1.TabIndex = 0;
-            // 
-            // button1
-            // 
-            button1.Location = new Point(6, 429);
-            button1.Name = "button1";
-            button1.Size = new Size(187, 23);
-            button1.TabIndex = 20;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
             // 
             // cb_sysprompt
             // 
@@ -669,6 +659,7 @@
             // 
             // tabSettings
             // 
+            tabSettings.Controls.Add(bt_chattosessions);
             tabSettings.Controls.Add(ed_log);
             tabSettings.Controls.Add(bt_importworld);
             tabSettings.Controls.Add(bt_ImportSTChat);
@@ -835,6 +826,16 @@
             // 
             openFileDialog1.FileName = "openFileDialog1";
             // 
+            // button1
+            // 
+            bt_chattosessions.ForeColor = Color.Red;
+            bt_chattosessions.Location = new Point(8, 64);
+            bt_chattosessions.Name = "button1";
+            bt_chattosessions.Size = new Size(154, 23);
+            bt_chattosessions.TabIndex = 21;
+            bt_chattosessions.Text = "Raw chat to session list";
+            bt_chattosessions.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -922,7 +923,6 @@
         private Panel pan_prompt;
         private ComboBox cb_sysprompt;
         private Label label11;
-        private Button button1;
         private Button bt_ImportSTChat;
         private OpenFileDialog openFileDialog1;
         private Button bt_importworld;
@@ -936,5 +936,6 @@
         private ColumnHeader columnHeader1;
         private ColumnHeader columnHeader2;
         private Button bt_sessionrefresh;
+        private Button bt_chattosessions;
     }
 }
