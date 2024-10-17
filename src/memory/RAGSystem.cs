@@ -69,6 +69,7 @@ namespace WaifuAI.Memory
         public static bool UseSummaries { get; set; } = true;
         public static bool UseTitles { get; set; } = true;
         public static int MValue { get; set; } = 15;
+        public static float DistanceCutOff { get; set; } = 0.2f;
         public static NeighbourSelectionHeuristic Heuristic { get; set; } = NeighbourSelectionHeuristic.SelectSimple;
 
         public static bool Enabled
@@ -268,7 +269,7 @@ namespace WaifuAI.Memory
             // Make sure we got the correct amount of results
             if (res.Count > count)
                 res = res.GetRange(0, count);
-
+            res.RemoveAll(e => e.Distance > DistanceCutOff);
             var list = new List<(Files.ChatSession session, EmbedType category, float distance)>();
             foreach (var item in res)
             {

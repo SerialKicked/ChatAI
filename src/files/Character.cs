@@ -31,6 +31,9 @@ namespace WaifuAI.Files
         public bool SessionMemorySystem { get; set; } = false;
         /// <summary> If set to true, this bot will stay informed about the spacing between user messages </summary>
         public bool SenseOfTime { get; set; } = false;
+        /// <summary> If set to true, this bot will use RAG to recall relevant memories </summary>
+        public bool UseRAG { get; set; } = false;
+
         public AdvCharType CharType { get; set; } = AdvCharType.Normal;
 
         [JsonIgnore] public List<WorldInfo> MyWorlds { get; private set; } = [];

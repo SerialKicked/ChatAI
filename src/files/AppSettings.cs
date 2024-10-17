@@ -16,5 +16,11 @@ namespace WaifuAI.Files
         public double Temperature { get; set; } = 0.55;
         public int MaxResponseTokens { get; set; } = 150;
         public int MaxTotalTokens { get; set; } = 8192;
+        public bool RAGUseTitles { get; set; } = true;
+        public bool RAGUseSummaries { get; set; } = true;
+        public float RAGDistanceCutOff { get; set; } = 0.2f;
+        public HNSW.Net.NeighbourSelectionHeuristic RAGHeurisitc { get; set; } = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
+        public int MaxRAGEntries { get; set; } = 4;
+        public int ReservedSessionTokens { get; set; } = 2048;
     }
 }

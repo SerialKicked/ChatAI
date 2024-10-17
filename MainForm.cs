@@ -600,9 +600,27 @@ namespace WaifuAI
                 num_maxcontext.Value = Settings.MaxTotalTokens;
                 num_maxresponse.Value = Settings.MaxResponseTokens;
                 num_temperature.Value = (decimal)Settings.Temperature;
-
+                RAGSystem.Heuristic = Settings.RAGHeurisitc;
+                switch (RAGSystem.Heuristic)
+                {
+                    case HNSW.Net.NeighbourSelectionHeuristic.SelectSimple:
+                        cb_ragheuristic.SelectedIndex = 1;
+                        break;
+                    case HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic:
+                        cb_ragheuristic.SelectedIndex = 0;
+                        break;
+                    default:
+                        break;
+                }
+                RAGSystem.UseSummaries = Settings.RAGUseSummaries;
+                ck_ragsummaries.Checked = Settings.RAGUseSummaries;
+                RAGSystem.UseTitles = Settings.RAGUseTitles;
+                ck_ragtitles.Checked = Settings.RAGUseTitles;
+                RAGSystem.DistanceCutOff = Settings.RAGDistanceCutOff;
                 LLMSystem.MaxContextLength = Settings.MaxTotalTokens;
                 LLMSystem.MaxReplyLength = Settings.MaxResponseTokens;
+                LLMSystem.ReservedSessionTokens = Settings.ReservedSessionTokens;
+                LLMSystem.MaxRAGEntries = Settings.MaxRAGEntries;
 
             }
         }
@@ -619,6 +637,12 @@ namespace WaifuAI
                 Settings.MaxTotalTokens = LLMSystem.MaxContextLength;
                 Settings.MaxResponseTokens = LLMSystem.MaxReplyLength;
                 Settings.Temperature = (double)num_temperature.Value;
+                Settings.RAGHeurisitc = RAGSystem.Heuristic;
+                Settings.RAGUseSummaries = RAGSystem.UseSummaries;
+                Settings.RAGUseTitles = RAGSystem.UseTitles;
+                Settings.RAGDistanceCutOff = RAGSystem.DistanceCutOff;
+                Settings.ReservedSessionTokens = LLMSystem.ReservedSessionTokens;
+                Settings.MaxRAGEntries = LLMSystem.MaxRAGEntries;
                 var str = JsonConvert.SerializeObject(Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
             }
@@ -1035,7 +1059,10 @@ namespace WaifuAI
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            if (cb_ragheuristic.SelectedIndex == 0)
+                RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
+            else if (cb_ragheuristic.SelectedIndex == 1)
+                RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
         }
     }
 }

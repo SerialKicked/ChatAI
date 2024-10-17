@@ -20,16 +20,18 @@ namespace WaifuAI
 
     static class LLMSystem
     {
-        public const int EmbeddingSize = 384;
-        public const int EmbeddingDelay = 80;
-
+        public static int MaxRAGEntries { get; set; } = 4;
         public static int ReservedSessionTokens { get; set; } = 2048;
         public static int MaxReplyLength { get; set; } = 512;
         public static int MaxContextLength { 
-            get => maxContextLength; 
-            set => maxContextLength = value; 
+            get => maxContextLength;
+            set 
+            {
+                if (value != maxContextLength) 
+                    InvalidatePromptCache();
+                maxContextLength = value;
+            }
         }
-        public static bool SkipSpecialTokens { get; set; } = false;
         public static string CurrentModel { get; private set; } = string.Empty;
         public static string Backend { get; private set; } = string.Empty;
         public static double ForceTemperature { get; set; } = 0.7;
@@ -104,7 +106,6 @@ namespace WaifuAI
         {
             if (Status != LLMStatus.NotInit)
                 return;
-            SkipSpecialTokens = false;
             Client.BaseUrl = "http://localhost:5001";
             Client.ReadResponseAsString = true;
             Client.StreamingMessageReceived += Client_StreamingMessageReceived;
@@ -130,6 +131,11 @@ namespace WaifuAI
                 StreamingTextProgress += e.Data.token;
                 RaiseOnInferenceStreamed(e.Data.token);
             }
+        }
+
+        public static string ReplaceMacros(string inputText)
+        {
+            return ReplaceMacros(inputText, User, Bot);
         }
 
         /// <summary>
@@ -223,7 +229,7 @@ namespace WaifuAI
         /// <returns></returns>
         private static string GenerateFullPrompt(AuthorRole MsgSender, string newMessage)
         {
-            var msg = String.IsNullOrEmpty(newMessage) ? string.Empty : Instruct.FormatSinglePrompt(MsgSender, User, Bot, newMessage);
+            var msg = string.IsNullOrEmpty(newMessage) ? string.Empty : Instruct.FormatSinglePrompt(MsgSender, User, Bot, newMessage);
             var tokencount = GetTokenCount(msg);
             var rawprompt = new StringBuilder(RawSystemPrompt(User, Bot));
             if (Bot.MyWorlds.Count > 0)

@@ -4,6 +4,7 @@ using Parlot.Fluent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -217,22 +218,22 @@ namespace WaifuAI.Files
             return sb.ToString();
         }
 
-        public string GetRawSummary()
+        public string GetRawSummary(string title = "Chat Session")
         {
             var sb = new StringBuilder();
-            sb.Append("# Chat Session");
+            sb.AppendLinuxLine("# "+ LLMSystem.ReplaceMacros(title));
             if (StartTime.Date == EndTime.Date)
-                sb.Append("## Date: " + StartTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(StartTime) + LLMSystem.NewLine);
+                sb.AppendLinuxLine("## Date: " + StartTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(StartTime));
             else
-                sb.Append("## From " + StartTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(StartTime) + " to " + EndTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(EndTime)  + LLMSystem.NewLine);
-            sb.Append("## Title: " + Title.Trim() + LLMSystem.NewLine);
-            sb.Append("## Summary: " + LLMSystem.NewLine + Summary.Replace("\n\n"," ").Trim() + LLMSystem.NewLine);
+                sb.AppendLinuxLine("## From " + StartTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(StartTime) + " to " + EndTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(EndTime));
+            sb.AppendLinuxLine("## Title: " + Title.Trim());
+            sb.AppendLinuxLine("## Summary: " + LLMSystem.NewLine + Summary.Replace("\n\n"," ").Trim() + LLMSystem.NewLine);
             return sb.ToString();
         }
 
-        public string GetFormatedSummary()
+        public string GetFormatedSummary(string title = "Chat Session")
         {
-            return LLMSystem.Instruct.FormatSingleMessage(new SingleMessage(AuthorRole.System, DateTime.Now, GetRawSummary(), LLMSystem.Bot.Name, LLMSystem.User.Name));
+            return LLMSystem.Instruct.FormatSingleMessage(new SingleMessage(AuthorRole.System, DateTime.Now, GetRawSummary(title), LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
         }
 
         public int GetFormatedSummaryTokenCount()
