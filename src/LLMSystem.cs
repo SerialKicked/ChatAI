@@ -165,6 +165,7 @@ namespace WaifuAI
             bot.EndSession();
             bot = newbot;
             bot.BeginSession();
+            RAGSystem.VectorizeChatlog(History);
         }
 
         /// <summary>

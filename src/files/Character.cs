@@ -78,11 +78,10 @@ namespace WaifuAI.Files
             Plugins.Clear();
         }
 
-        private void SaveChatHistory()
+        public void SaveChatHistory()
         {
             if (string.IsNullOrEmpty(UniqueName))
                 return;
-            History.RemoveEmbeds();
             (History as IFile).SaveToFile("data/chatlogs/" + UniqueName + ".json");
         }
 

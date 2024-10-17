@@ -22,6 +22,11 @@ namespace WaifuAI.src.forms
             base.Dispose(disposing);
         }
 
+        public new void Dispose()
+        {
+            Dispose(true);
+        }
+
         #region Windows Form Designer generated code
 
         /// <summary>

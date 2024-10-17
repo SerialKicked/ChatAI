@@ -31,7 +31,7 @@ namespace WaifuAI
         {
             pictureBox.Image = image;
             string htmlContent = Markdown.ToHtml(messageText);
-            htmlContent = InjectNoScrollbarsCss(htmlContent);
+            htmlContent = InjectDialogCSS(htmlContent);
             InitializeAsync().ContinueWith(_ =>
             {
                 webBrowser.NavigateToString(htmlContent);
@@ -48,7 +48,7 @@ namespace WaifuAI
             else
             {
                 string htmlContent = Markdown.ToHtml(messageText);
-                htmlContent = InjectNoScrollbarsCss(htmlContent);
+                htmlContent = InjectDialogCSS(htmlContent);
                 webBrowser.NavigateToString(htmlContent);
             }
         }
@@ -90,7 +90,7 @@ namespace WaifuAI
             }
         }
 
-        private static string InjectNoScrollbarsCss(string htmlContent)
+        private static string InjectDialogCSS(string htmlContent)
         {
             string css = @"
             <style>

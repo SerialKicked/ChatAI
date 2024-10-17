@@ -12,6 +12,8 @@ using Microsoft.VisualBasic.Devices;
 using YamlDotNet.Core.Tokens;
 using YamlDotNet.Serialization;
 using Markdig;
+using WaifuAI.Memory;
+using Microsoft.VisualBasic.Logging;
 
 namespace WaifuAI
 {
@@ -49,6 +51,7 @@ namespace WaifuAI
             bt_chattosessions.Click += ConvertChatToSessionList!;
             bt_sessionrefresh.Click += bt_sessionrefresh_Click!;
             // Load editors and chat menu
+            bt_embedall.Click += EmbedAllSessions!;
             SetupSamplerEditor();
             SetupInstructEditor();
             SetupPromptEditor();
@@ -82,6 +85,7 @@ namespace WaifuAI
                 cb_sysprompt.Items.Add(item.Value.UniqueName);
             }
             LoadSettings();
+            RAGSystem.Enabled = true;
             LLMSystem.Init();
             LLMSystem.OnInferenceStreamed += OnStreamMessageReceived;
             LLMSystem.OnInferenceEnded += OnStreamInferenceEnded;
@@ -825,7 +829,7 @@ namespace WaifuAI
         private async void ConvertChatToSessionList(object sender, EventArgs e)
         {
             LLMSystem.History.DivideChatIntoSessions();
-            await LLMSystem.History.RewriteAllSessions();
+            await LLMSystem.History.UpdateAllSessions();
             LoadHistoryToUI(50);
         }
 
@@ -848,6 +852,19 @@ namespace WaifuAI
                         "WorldInfo imported successfully to exported_world.json in this application's main folder." :
                         "Something went wrong while opening or parsing the file."
                 );
+        }
+
+        private async void EmbedAllSessions(object sender, EventArgs e)
+        {
+            if (!RAGSystem.Enabled)
+            {
+                MessageBox.Show("The RAG System is not enabled. Operation cancelled.");
+                return;
+            }
+            await RAGSystem.EmbedChatSessions(LLMSystem.History);
+            MessageBox.Show("All sessions have been embedded successfully.");
+            LLMSystem.Bot.SaveChatHistory();
+            RAGSystem.VectorizeChatlog(LLMSystem.History);
         }
 
         #endregion
@@ -884,6 +901,7 @@ namespace WaifuAI
             _selectedSession.Summary = await _selectedSession.GenerateNewSummary();
             _selectedSession.Title = await _selectedSession.GenerateNewTitle(_selectedSession.Summary);
             DisplaySessionDetails(_selectedSession);
+            LLMSystem.Bot.SaveChatHistory();
         }
 
         #endregion
@@ -994,5 +1012,21 @@ namespace WaifuAI
             LLMSystem.Bot.EndSession();
         }
 
+        private async void bt_apiEmbed_Click(object sender, EventArgs e)
+        {
+            ed_generate.Clear();
+            var res = await RAGSystem.Search(ed_tokencount.Text, 5);
+            foreach (var item in res)
+            {
+                ed_generate.AppendText(item.Title + Environment.NewLine);
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            RAGSystem.VectorDB.UseSummaries = ck_ragsummaries.Checked;
+            RAGSystem.VectorDB.UseTitles = ck_ragtitles.Checked;
+            RAGSystem.VectorizeChatlog(LLMSystem.History);
+        }
     }
 }

@@ -22,14 +22,16 @@ namespace WaifuAI.Files
         public DateTime Date = date;
         public string CharID = chara;
         public string UserID = user;
-        public bool IsNewSession = isNewSession;
-        public float[] Embedding = [];
     }
 
     public class ChatSession
     {
+        [JsonIgnore] public Guid Guid = Guid.NewGuid();
         public string Title { get; set; } = string.Empty;
         public string Summary { get; set; } = string.Empty;
+
+        public float[] EmbedTitle { get; set; } = [];
+        public float[] EmbedSummary { get; set; } = [];
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public List<SingleMessage> Messages { get; set; } = [];
@@ -122,6 +124,13 @@ namespace WaifuAI.Files
             return finalstr;
         }
 
+        public async Task GenerateEmbeds()
+        {
+            if (!RAGSystem.Enabled)
+                return;
+            EmbedTitle = await RAGSystem.EmbeddingText(Title);
+            EmbedSummary = await RAGSystem.EmbeddingText(Summary);
+        }
 
         public string GetRawDialogs(int maxTokens, bool ignoresystem)
         {
@@ -353,6 +362,8 @@ namespace WaifuAI.Files
             return LLMSystem.GetTokenCount(total.ToString());
         }
 
+        public ChatSession? GetSessionByID(Guid id) => Sessions.FirstOrDefault(s => s.Guid == id);
+
         public SingleMessage? GetMessageByID(Guid id) => Messages.FirstOrDefault(m => m.Guid == id);
 
         public SingleMessage LogMessage(AuthorRole role, string msg, Character user, Character bot)
@@ -389,12 +400,17 @@ namespace WaifuAI.Files
 
         public void RemoveEmbeds()
         {
-            foreach (var item in Messages)
+            foreach (var item in Sessions)
             {
-                item.Embedding = [];
+                item.EmbedSummary = [];
+                item.EmbedTitle = [];
             }
         }
 
+        /// <summary>
+        /// Move the current active chat to the session list and generate title, summary, and embeds for it.
+        /// </summary>
+        /// <returns></returns>
         public async Task<ChatSession> CurrentChatToSession()
         {
             var session = new ChatSession();
@@ -415,9 +431,15 @@ namespace WaifuAI.Files
             session.EndTime = Messages.Last().Date;
             session.Summary = await session.GenerateNewSummary();
             session.Title = await session.GenerateNewTitle(session.Summary);
+            await session.GenerateEmbeds();
             return session;
         }
 
+        /// <summary>
+        /// Generate title, summary and embeddings for the selected session. Also fixes date issues if any.
+        /// </summary>
+        /// <param name="session"></param>
+        /// <returns></returns>
         public async Task<ChatSession> UpdateSession(ChatSession session)
         {
             if (session.StartTime == default)
@@ -443,12 +465,18 @@ namespace WaifuAI.Files
             }
 
             session.EndTime = session.Messages.Last().Date;
-            session.Summary = await session.GenerateNewSummary();
-            session.Title = await session.GenerateNewTitle(session.Summary);
+            var sum = await session.GenerateNewSummary();
+            session.Summary = sum;
+            session.Title = await session.GenerateNewTitle(sum);
+            await session.GenerateEmbeds();
             return session;
         }
 
-        public async Task RewriteAllSessions()
+        /// <summary>
+        /// Generate title, summary and embeddings for all the sessions in the chatlog
+        /// </summary>
+        /// <returns></returns>
+        public async Task UpdateAllSessions()
         {
             foreach (var item in Sessions)
             {
@@ -485,6 +513,9 @@ namespace WaifuAI.Files
             LogMessage(AuthorRole.System, LLMSystem.ReplaceMacros(msgtxt, LLMSystem.User, LLMSystem.Bot), LLMSystem.User, LLMSystem.Bot); 
         }
 
+        /// <summary>
+        /// Divides a raw chatlog (likely imported from ST) into sessions using timestamps and specific messages to determine the start of a new session
+        /// </summary>
         public void DivideChatIntoSessions()
         {
             if (Messages.Count == 0)
