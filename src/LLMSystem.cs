@@ -116,7 +116,7 @@ namespace WaifuAI
             // "null", "stop", "length"
             if (e.Data.finish_reason != "null")
             {
-                var response = StreamingTextProgress;
+                var response = StreamingTextProgress.Trim();
                 foreach (var ctxplug in Bot.Plugins)
                 {
                     if (ctxplug.ReplaceUserInput(ReplaceMacros(response, User, Bot), History, out var editedresponse))
@@ -299,9 +299,9 @@ namespace WaifuAI
         {
             if (Status != LLMStatus.Ready || History.Messages.Count == 0 || History.LastMessage()?.Role != AuthorRole.Assistant)
                 return;
+            History.RemoveLast();
             if (string.IsNullOrEmpty(_LastGeneratedPrompt))
             {
-                History.RemoveLast();
                 var lastusermsg = History.LastMessage() ?? new SingleMessage(AuthorRole.User, DateTime.Now, "Hi!", Bot.Name, User.Name);
                 await StartGeneration(lastusermsg.Role, string.Empty);
             }
