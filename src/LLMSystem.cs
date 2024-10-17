@@ -15,7 +15,7 @@ using System.Globalization;
 
 namespace WaifuAI
 {
-    enum LLMStatus { NotInit, Ready, Busy }
+    enum SystemStatus { NotInit, Ready, Busy }
     enum SystemPromptSection { MainPrompt, BotBio, UserBio, Scenario, Memory, ContextInfo }
 
     static class LLMSystem
@@ -42,13 +42,13 @@ namespace WaifuAI
         /// <summary> Called once the inference has ended, returns the full string </summary>
         public static EventHandler<string>? OnInferenceEnded;
         /// <summary> Called when the system changes states (no init, busy, ready) </summary>
-        public static EventHandler<LLMStatus>? OnStatusChanged;
+        public static EventHandler<SystemStatus>? OnStatusChanged;
         private static void RaiseOnFullPromptReady(string fullprompt) => OnFullPromptReady?.Invoke(null, fullprompt);
-        private static void RaiseOnStatusChange(LLMStatus newStatus) => OnStatusChanged?.Invoke(null, newStatus);
+        private static void RaiseOnStatusChange(SystemStatus newStatus) => OnStatusChanged?.Invoke(null, newStatus);
         private static void RaiseOnInferenceStreamed(string addedString) => OnInferenceStreamed?.Invoke(null, addedString);
         private static void RaiseOnInferenceEnded(string fullString) => OnInferenceEnded?.Invoke(null, fullString);
 
-        public static LLMStatus Status
+        public static SystemStatus Status
         {
             get => status;
             private set
@@ -88,7 +88,7 @@ namespace WaifuAI
         public static SystemPrompt SystemPrompt = new();
         public static Chatlog History => Bot.History;
 
-        private static LLMStatus status = LLMStatus.NotInit;
+        private static SystemStatus status = SystemStatus.NotInit;
         private static bool longTermMemory = true;
         private static int systemPromptSize = 0;
 
@@ -104,12 +104,12 @@ namespace WaifuAI
 
         public static void Init()
         {
-            if (Status != LLMStatus.NotInit)
+            if (Status != SystemStatus.NotInit)
                 return;
             Client.BaseUrl = "http://localhost:5001";
             Client.ReadResponseAsString = true;
             Client.StreamingMessageReceived += Client_StreamingMessageReceived;
-            Status = LLMStatus.Ready;
+            Status = SystemStatus.Ready;
         }
 
         private static void Client_StreamingMessageReceived(object? sender, TextStreamingEvenArg e)
@@ -124,7 +124,7 @@ namespace WaifuAI
                         response = editedresponse;
                 }
                 RaiseOnInferenceEnded(response);
-                Status = LLMStatus.Ready;
+                Status = SystemStatus.Ready;
             }
             else
             {
@@ -227,7 +227,7 @@ namespace WaifuAI
         /// </summary>
         /// <param name="newMessage">Added message from the user</param>
         /// <returns></returns>
-        private static string GenerateFullPrompt(AuthorRole MsgSender, string newMessage)
+        private static async Task<string> GenerateFullPrompt(AuthorRole MsgSender, string newMessage)
         {
             var msg = string.IsNullOrEmpty(newMessage) ? string.Empty : Instruct.FormatSinglePrompt(MsgSender, User, Bot, newMessage);
             var tokencount = GetTokenCount(msg);
@@ -256,13 +256,36 @@ namespace WaifuAI
             var sysprompt = Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, User, Bot, rawprompt.ToString());
 
             systemPromptSize = GetTokenCount(sysprompt);
-
-            tokencount += GetTokenCount(sysprompt);
+            tokencount += systemPromptSize;
+            var memprompt = string.Empty;
+            if (Bot.UseRAG && RAGSystem.Enabled)
+            {
+                var search = await RAGSystem.Search(ReplaceMacros(newMessage), MaxRAGEntries);
+                memprompt = MemoriesToMessage(search);
+                if (!string.IsNullOrEmpty(memprompt))
+                {
+                    memprompt = Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, User, Bot, memprompt);
+                    tokencount += GetTokenCount(memprompt);
+                }
+            }
             tokencount += GetTokenCount(Instruct.GetResponseStart(Bot));
             var availtokens = (int)(MaxContextLength) - tokencount - MaxReplyLength;
             var history = History.GetFormatedDialogs(availtokens, Bot.SessionMemorySystem, _currentWorldEntries);
-            var res = sysprompt + LLMSystem.NewLine + history + msg + Instruct.GetResponseStart(Bot);
+            var res = sysprompt + NewLine + history + memprompt + msg + Instruct.GetResponseStart(Bot);
             return res;
+        }
+
+        private static string MemoriesToMessage(List<(ChatSession session, EmbedType category, float distance)> memories)
+        {
+            if (memories.Count == 0)
+                return string.Empty;
+            var stbuild = new StringBuilder();
+            stbuild.AppendLinuxLine("The message from {{user}} below triggered the following memories:");
+            foreach (var item in memories)
+            {
+                stbuild.AppendLinuxLine(item.session.GetRawMemory());
+            }
+            return stbuild.ToString();
         }
 
         /// <summary>
@@ -291,7 +314,7 @@ namespace WaifuAI
         /// <returns></returns>
         public static async Task SendMessageToBot(SingleMessage message, bool logtohistory = true)
         {
-            if (Status == LLMStatus.Busy)
+            if (Status == SystemStatus.Busy)
                 return;
             if (logtohistory)
                 Bot.History.LogMessage(message);
@@ -304,7 +327,7 @@ namespace WaifuAI
         /// <returns></returns>
         public static async Task RerollLastMessage()
         {
-            if (Status != LLMStatus.Ready || History.Messages.Count == 0 || History.LastMessage()?.Role != AuthorRole.Assistant)
+            if (Status != SystemStatus.Ready || History.Messages.Count == 0 || History.LastMessage()?.Role != AuthorRole.Assistant)
                 return;
             History.RemoveLast();
             if (string.IsNullOrEmpty(_LastGeneratedPrompt))
@@ -314,7 +337,7 @@ namespace WaifuAI
             }
             else
             {
-                Status = LLMStatus.Busy;
+                Status = SystemStatus.Busy;
                 StreamingTextProgress = string.Empty;
                 GenerationInput genparams = Sampler.GetCopy();
                 if (ForceTemperature >= 0)
@@ -336,9 +359,9 @@ namespace WaifuAI
         /// <returns></returns>
         private static async Task StartGeneration(AuthorRole MsgSender, string userInput)
         {
-            if (Status == LLMStatus.Busy)
+            if (Status == SystemStatus.Busy)
                 return;
-            Status = LLMStatus.Busy;
+            Status = SystemStatus.Busy;
 
             var inputText = userInput;
             foreach (var ctxplug in Bot.Plugins)
@@ -349,7 +372,7 @@ namespace WaifuAI
 
             StreamingTextProgress = string.Empty;
             GenerationInput genparams = Sampler.GetCopy();
-            _LastGeneratedPrompt = GenerateFullPrompt(MsgSender, inputText);
+            _LastGeneratedPrompt = await GenerateFullPrompt(MsgSender, inputText);
             if (ForceTemperature >= 0)
                 genparams.Temperature = ForceTemperature;
             genparams.Max_context_length = MaxContextLength;

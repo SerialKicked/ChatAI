@@ -231,6 +231,18 @@ namespace WaifuAI.Files
             return sb.ToString();
         }
 
+        public string GetRawMemory()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLinuxLine("# " + Title.Trim());
+            if (StartTime.Date == EndTime.Date)
+                sb.AppendLinuxLine("## Date: " + StartTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(StartTime));
+            else
+                sb.AppendLinuxLine("## From " + StartTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(StartTime) + " to " + EndTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(EndTime));
+            sb.AppendLinuxLine("## Memory: " + Summary.Replace("\n\n", " ").Trim());
+            return sb.ToString();
+        }
+
         public string GetFormatedSummary(string title = "Chat Session")
         {
             return LLMSystem.Instruct.FormatSingleMessage(new SingleMessage(AuthorRole.System, DateTime.Now, GetRawSummary(title), LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));

@@ -85,6 +85,8 @@
             bt_importworld = new Button();
             bt_ImportSTChat = new Button();
             groupBox1 = new GroupBox();
+            label13 = new Label();
+            num_ragcutoff = new NumericUpDown();
             label12 = new Label();
             cb_ragheuristic = new ComboBox();
             bt_embedall = new Button();
@@ -121,6 +123,7 @@
             tabSettings.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)num_ragcutoff).BeginInit();
             tabAPI.SuspendLayout();
             SuspendLayout();
             // 
@@ -689,7 +692,7 @@
             groupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox2.Location = new Point(437, 6);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(262, 114);
+            groupBox2.Size = new Size(262, 218);
             groupBox2.TabIndex = 24;
             groupBox2.TabStop = false;
             groupBox2.Text = "Import";
@@ -698,7 +701,7 @@
             // 
             bt_chattosessions.Font = new Font("Segoe UI", 9F);
             bt_chattosessions.ForeColor = Color.Red;
-            bt_chattosessions.Location = new Point(6, 80);
+            bt_chattosessions.Location = new Point(9, 189);
             bt_chattosessions.Name = "bt_chattosessions";
             bt_chattosessions.Size = new Size(247, 23);
             bt_chattosessions.TabIndex = 22;
@@ -727,6 +730,8 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(label13);
+            groupBox1.Controls.Add(num_ragcutoff);
             groupBox1.Controls.Add(label12);
             groupBox1.Controls.Add(cb_ragheuristic);
             groupBox1.Controls.Add(bt_embedall);
@@ -740,6 +745,29 @@
             groupBox1.TabIndex = 23;
             groupBox1.TabStop = false;
             groupBox1.Text = "RAG System";
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Font = new Font("Segoe UI", 9F);
+            label13.Location = new Point(184, 63);
+            label13.Name = "label13";
+            label13.Size = new Size(123, 15);
+            label13.TabIndex = 24;
+            label13.Text = "Distance cut-off point";
+            // 
+            // num_ragcutoff
+            // 
+            num_ragcutoff.DecimalPlaces = 3;
+            num_ragcutoff.Increment = new decimal(new int[] { 5, 0, 0, 196608 });
+            num_ragcutoff.Location = new Point(184, 81);
+            num_ragcutoff.Maximum = new decimal(new int[] { 5, 0, 0, 65536 });
+            num_ragcutoff.Minimum = new decimal(new int[] { 5, 0, 0, 196608 });
+            num_ragcutoff.Name = "num_ragcutoff";
+            num_ragcutoff.Size = new Size(208, 23);
+            num_ragcutoff.TabIndex = 23;
+            num_ragcutoff.Value = new decimal(new int[] { 2, 0, 0, 65536 });
+            num_ragcutoff.ValueChanged += num_ragcutoff_ValueChanged;
             // 
             // label12
             // 
@@ -985,6 +1013,7 @@
             groupBox2.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)num_ragcutoff).EndInit();
             tabAPI.ResumeLayout(false);
             tabAPI.PerformLayout();
             ResumeLayout(false);
@@ -1068,5 +1097,7 @@
         private Button bt_chattosessions;
         private Button bt_importworld;
         private Button bt_ImportSTChat;
+        private Label label13;
+        private NumericUpDown num_ragcutoff;
     }
 }

@@ -493,7 +493,7 @@ namespace WaifuAI
 
         private async void RerollMessage(object sender, EventArgs e)
         {
-            if (LLMSystem.Status == LLMStatus.Busy || flowChat.Controls.Count == 0)
+            if (LLMSystem.Status == SystemStatus.Busy || flowChat.Controls.Count == 0)
                 return;
             _lastMessageControl = flowChat.Controls[flowChat.Controls.Count - 1] as ChatMessageControl;
             if (_lastMessageControl == null)
@@ -515,7 +515,7 @@ namespace WaifuAI
 
         private void DeleteLastMessage(object sender, EventArgs e)
         {
-            if (LLMSystem.Status == LLMStatus.Busy || flowChat.Controls.Count == 0)
+            if (LLMSystem.Status == SystemStatus.Busy || flowChat.Controls.Count == 0)
                 return;
             var last = flowChat.Controls[flowChat.Controls.Count - 1] as ChatMessageControl;
             flowChat.Controls.Remove(last);
@@ -617,6 +617,7 @@ namespace WaifuAI
                 RAGSystem.UseTitles = Settings.RAGUseTitles;
                 ck_ragtitles.Checked = Settings.RAGUseTitles;
                 RAGSystem.DistanceCutOff = Settings.RAGDistanceCutOff;
+                num_ragcutoff.Value = (decimal)Settings.RAGDistanceCutOff;
                 LLMSystem.MaxContextLength = Settings.MaxTotalTokens;
                 LLMSystem.MaxReplyLength = Settings.MaxResponseTokens;
                 LLMSystem.ReservedSessionTokens = Settings.ReservedSessionTokens;
@@ -932,7 +933,7 @@ namespace WaifuAI
 
         private void flowChat_Resize(object sender, EventArgs e)
         {
-            if (_isfillinghistory || LLMSystem.Status == LLMStatus.Busy)
+            if (_isfillinghistory || LLMSystem.Status == SystemStatus.Busy)
                 return;
             flowChat.SuspendLayout();
             try
@@ -1050,11 +1051,13 @@ namespace WaifuAI
         {
             RAGSystem.UseSummaries = ck_ragsummaries.Checked;
             RAGSystem.UseTitles = ck_ragtitles.Checked;
+            RAGSystem.DistanceCutOff = (float)num_ragcutoff.Value;
             if (cb_ragheuristic.SelectedIndex == 0)
                 RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
             else if (cb_ragheuristic.SelectedIndex == 1)
                 RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
             RAGSystem.ApplySettings();
+            SaveSettings();
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -1063,6 +1066,11 @@ namespace WaifuAI
                 RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
             else if (cb_ragheuristic.SelectedIndex == 1)
                 RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
+        }
+
+        private void num_ragcutoff_ValueChanged(object sender, EventArgs e)
+        {
+            RAGSystem.DistanceCutOff = (float)num_ragcutoff.Value;
         }
     }
 }
