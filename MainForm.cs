@@ -1018,15 +1018,24 @@ namespace WaifuAI
             var res = await RAGSystem.Search(ed_tokencount.Text, 5);
             foreach (var item in res)
             {
-                ed_generate.AppendText(item.Title + Environment.NewLine);
+                ed_generate.AppendText("[" + item.category.ToString() + " - " + item.distance.ToString("F3") + "] " + item.session.Title + Environment.NewLine);
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void ApplyRAGSettings(object sender, EventArgs e)
         {
-            RAGSystem.VectorDB.UseSummaries = ck_ragsummaries.Checked;
-            RAGSystem.VectorDB.UseTitles = ck_ragtitles.Checked;
-            RAGSystem.VectorizeChatlog(LLMSystem.History);
+            RAGSystem.UseSummaries = ck_ragsummaries.Checked;
+            RAGSystem.UseTitles = ck_ragtitles.Checked;
+            if (cb_ragheuristic.SelectedIndex == 0)
+                RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
+            else if (cb_ragheuristic.SelectedIndex == 1)
+                RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
+            RAGSystem.ApplySettings();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

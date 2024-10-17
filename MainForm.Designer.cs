@@ -85,10 +85,7 @@
             ck_ragsummaries = new CheckBox();
             ck_ragtitles = new CheckBox();
             bt_embedall = new Button();
-            bt_chattosessions = new Button();
             ed_log = new TextBox();
-            bt_importworld = new Button();
-            bt_ImportSTChat = new Button();
             tabAPI = new TabPage();
             bt_apiEmbed = new Button();
             bt_stream = new Button();
@@ -103,6 +100,12 @@
             bt_getmodel = new Button();
             listBox1 = new ListBox();
             openFileDialog1 = new OpenFileDialog();
+            cb_ragheuristic = new ComboBox();
+            label12 = new Label();
+            groupBox2 = new GroupBox();
+            bt_ImportSTChat = new Button();
+            bt_importworld = new Button();
+            bt_chattosessions = new Button();
             tabControl1.SuspendLayout();
             tabChat.SuspendLayout();
             panel1.SuspendLayout();
@@ -118,6 +121,7 @@
             tabSettings.SuspendLayout();
             groupBox1.SuspendLayout();
             tabAPI.SuspendLayout();
+            groupBox2.SuspendLayout();
             SuspendLayout();
             // 
             // tabControl1
@@ -666,12 +670,9 @@
             // 
             // tabSettings
             // 
+            tabSettings.Controls.Add(groupBox2);
             tabSettings.Controls.Add(groupBox1);
-            tabSettings.Controls.Add(bt_embedall);
-            tabSettings.Controls.Add(bt_chattosessions);
             tabSettings.Controls.Add(ed_log);
-            tabSettings.Controls.Add(bt_importworld);
-            tabSettings.Controls.Add(bt_ImportSTChat);
             tabSettings.Location = new Point(4, 27);
             tabSettings.Name = "tabSettings";
             tabSettings.Padding = new Padding(3);
@@ -682,26 +683,29 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(label12);
+            groupBox1.Controls.Add(cb_ragheuristic);
+            groupBox1.Controls.Add(bt_embedall);
             groupBox1.Controls.Add(button1);
             groupBox1.Controls.Add(ck_ragsummaries);
             groupBox1.Controls.Add(ck_ragtitles);
             groupBox1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox1.Location = new Point(168, 6);
+            groupBox1.Location = new Point(8, 6);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(311, 120);
+            groupBox1.Size = new Size(423, 218);
             groupBox1.TabIndex = 23;
             groupBox1.TabStop = false;
             groupBox1.Text = "RAG System";
             // 
             // button1
             // 
-            button1.Location = new Point(6, 91);
+            button1.Location = new Point(6, 189);
             button1.Name = "button1";
-            button1.Size = new Size(299, 23);
+            button1.Size = new Size(411, 23);
             button1.TabIndex = 2;
             button1.Text = "Apply RAG Settings";
             button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            button1.Click += ApplyRAGSettings;
             // 
             // ck_ragsummaries
             // 
@@ -731,22 +735,13 @@
             // 
             // bt_embedall
             // 
-            bt_embedall.Location = new Point(8, 64);
+            bt_embedall.Font = new Font("Segoe UI", 9F);
+            bt_embedall.Location = new Point(6, 160);
             bt_embedall.Name = "bt_embedall";
-            bt_embedall.Size = new Size(154, 23);
+            bt_embedall.Size = new Size(411, 23);
             bt_embedall.TabIndex = 22;
-            bt_embedall.Text = "Embed All Sessions";
+            bt_embedall.Text = "Embed all chat sessions ";
             bt_embedall.UseVisualStyleBackColor = true;
-            // 
-            // bt_chattosessions
-            // 
-            bt_chattosessions.ForeColor = Color.Red;
-            bt_chattosessions.Location = new Point(8, 93);
-            bt_chattosessions.Name = "bt_chattosessions";
-            bt_chattosessions.Size = new Size(154, 23);
-            bt_chattosessions.TabIndex = 21;
-            bt_chattosessions.Text = "Raw chat to session list";
-            bt_chattosessions.UseVisualStyleBackColor = true;
             // 
             // ed_log
             // 
@@ -757,26 +752,6 @@
             ed_log.ScrollBars = ScrollBars.Vertical;
             ed_log.Size = new Size(958, 320);
             ed_log.TabIndex = 2;
-            // 
-            // bt_importworld
-            // 
-            bt_importworld.Location = new Point(8, 35);
-            bt_importworld.Name = "bt_importworld";
-            bt_importworld.Size = new Size(154, 23);
-            bt_importworld.TabIndex = 1;
-            bt_importworld.Text = "Import ST WorldInfo";
-            bt_importworld.UseVisualStyleBackColor = true;
-            bt_importworld.Click += bt_importworld_Click;
-            // 
-            // bt_ImportSTChat
-            // 
-            bt_ImportSTChat.Location = new Point(8, 6);
-            bt_ImportSTChat.Name = "bt_ImportSTChat";
-            bt_ImportSTChat.Size = new Size(154, 23);
-            bt_ImportSTChat.TabIndex = 0;
-            bt_ImportSTChat.Text = "Import ST Chat";
-            bt_ImportSTChat.UseVisualStyleBackColor = true;
-            bt_ImportSTChat.Click += bt_ImportSTChat_Click;
             // 
             // tabAPI
             // 
@@ -802,11 +777,11 @@
             // 
             // bt_apiEmbed
             // 
-            bt_apiEmbed.Location = new Point(6, 180);
+            bt_apiEmbed.Location = new Point(424, 93);
             bt_apiEmbed.Name = "bt_apiEmbed";
             bt_apiEmbed.Size = new Size(127, 23);
             bt_apiEmbed.TabIndex = 11;
-            bt_apiEmbed.Text = "Embedding";
+            bt_apiEmbed.Text = "RAG Search";
             bt_apiEmbed.UseVisualStyleBackColor = true;
             bt_apiEmbed.Click += bt_apiEmbed_Click;
             // 
@@ -839,10 +814,12 @@
             // 
             // ed_generate
             // 
+            ed_generate.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             ed_generate.Location = new Point(139, 122);
             ed_generate.Multiline = true;
             ed_generate.Name = "ed_generate";
-            ed_generate.Size = new Size(279, 81);
+            ed_generate.ScrollBars = ScrollBars.Vertical;
+            ed_generate.Size = new Size(827, 81);
             ed_generate.TabIndex = 7;
             ed_generate.Text = "<|system|>You are a helpful assistant<|user|>Hello, how are you doing?<|model|>";
             // 
@@ -859,9 +836,9 @@
             // 
             ed_tokencount.Location = new Point(139, 93);
             ed_tokencount.Name = "ed_tokencount";
+            ed_tokencount.PlaceholderText = "Used to count token or search using RAG";
             ed_tokencount.Size = new Size(279, 23);
             ed_tokencount.TabIndex = 5;
-            ed_tokencount.Text = "This is a test sentence";
             // 
             // bt_tokencount
             // 
@@ -901,18 +878,82 @@
             // 
             // listBox1
             // 
-            listBox1.Dock = DockStyle.Bottom;
+            listBox1.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             listBox1.FormattingEnabled = true;
             listBox1.ItemHeight = 15;
-            listBox1.Location = new Point(3, 431);
+            listBox1.Location = new Point(3, 356);
             listBox1.Name = "listBox1";
             listBox1.ScrollAlwaysVisible = true;
-            listBox1.Size = new Size(968, 124);
+            listBox1.Size = new Size(968, 199);
             listBox1.TabIndex = 0;
             // 
             // openFileDialog1
             // 
             openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // cb_ragheuristic
+            // 
+            cb_ragheuristic.FormattingEnabled = true;
+            cb_ragheuristic.Items.AddRange(new object[] { "Heuristic", "Simple" });
+            cb_ragheuristic.Location = new Point(184, 37);
+            cb_ragheuristic.Name = "cb_ragheuristic";
+            cb_ragheuristic.Size = new Size(208, 23);
+            cb_ragheuristic.TabIndex = 3;
+            cb_ragheuristic.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Font = new Font("Segoe UI", 9F);
+            label12.Location = new Point(184, 19);
+            label12.Name = "label12";
+            label12.Size = new Size(125, 15);
+            label12.TabIndex = 4;
+            label12.Text = "RAG Heuristic Method";
+            // 
+            // groupBox2
+            // 
+            groupBox2.Controls.Add(bt_chattosessions);
+            groupBox2.Controls.Add(bt_importworld);
+            groupBox2.Controls.Add(bt_ImportSTChat);
+            groupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            groupBox2.Location = new Point(437, 6);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new Size(262, 114);
+            groupBox2.TabIndex = 24;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "Import";
+            // 
+            // bt_ImportSTChat
+            // 
+            bt_ImportSTChat.Font = new Font("Segoe UI", 9F);
+            bt_ImportSTChat.Location = new Point(6, 22);
+            bt_ImportSTChat.Name = "bt_ImportSTChat";
+            bt_ImportSTChat.Size = new Size(247, 23);
+            bt_ImportSTChat.TabIndex = 1;
+            bt_ImportSTChat.Text = "Import ST Chat";
+            bt_ImportSTChat.UseVisualStyleBackColor = true;
+            // 
+            // bt_importworld
+            // 
+            bt_importworld.Font = new Font("Segoe UI", 9F);
+            bt_importworld.Location = new Point(6, 51);
+            bt_importworld.Name = "bt_importworld";
+            bt_importworld.Size = new Size(247, 23);
+            bt_importworld.TabIndex = 2;
+            bt_importworld.Text = "Import ST WorldInfo";
+            bt_importworld.UseVisualStyleBackColor = true;
+            // 
+            // bt_chattosessions
+            // 
+            bt_chattosessions.Font = new Font("Segoe UI", 9F);
+            bt_chattosessions.ForeColor = Color.Red;
+            bt_chattosessions.Location = new Point(6, 80);
+            bt_chattosessions.Name = "bt_chattosessions";
+            bt_chattosessions.Size = new Size(247, 23);
+            bt_chattosessions.TabIndex = 22;
+            bt_chattosessions.Text = "Raw chat to session list";
+            bt_chattosessions.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -945,6 +986,7 @@
             groupBox1.PerformLayout();
             tabAPI.ResumeLayout(false);
             tabAPI.PerformLayout();
+            groupBox2.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -1003,9 +1045,7 @@
         private Panel pan_prompt;
         private ComboBox cb_sysprompt;
         private Label label11;
-        private Button bt_ImportSTChat;
         private OpenFileDialog openFileDialog1;
-        private Button bt_importworld;
         private TextBox ed_log;
         private TabPage tabHistory;
         private ListView listSession;
@@ -1016,12 +1056,17 @@
         private ColumnHeader columnHeader1;
         private ColumnHeader columnHeader2;
         private Button bt_sessionrefresh;
-        private Button bt_chattosessions;
         private Button bt_apiEmbed;
         private Button bt_embedall;
         private GroupBox groupBox1;
         private CheckBox ck_ragsummaries;
         private CheckBox ck_ragtitles;
         private Button button1;
+        private Label label12;
+        private ComboBox cb_ragheuristic;
+        private GroupBox groupBox2;
+        private Button bt_chattosessions;
+        private Button bt_importworld;
+        private Button bt_ImportSTChat;
     }
 }

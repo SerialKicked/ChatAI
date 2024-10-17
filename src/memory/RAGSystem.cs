@@ -1,13 +1,75 @@
-﻿using LLama;
+﻿using HNSW.Net;
+using LLama;
 using LLama.Common;
 using LLama.Extensions;
+using MessagePack;
+using Microsoft.Extensions.Logging;
+using System.Numerics;
 using WaifuAI.Files;
 
 namespace WaifuAI.Memory
 {
+    /// <summary>
+    /// Basic RNG for the SmallWorld implementation (not thread safe)
+    /// </summary>
+    class RNGPlus : IProvideRandomValues
+    {
+        private readonly Random RNG = new();
+        public bool IsThreadSafe => false;
+        public float NextFloat() => (float)RNG.NextDouble();
+        public int Next(int minValue, int maxValue) => RNG.Next(minValue, maxValue);
+        public void NextFloats(Span<float> buffer)
+        {
+            for (int i = 0; i < buffer.Length; i++)
+                buffer[i] = (float)RNG.NextDouble();
+        }
+    }
+
+    /// <summary>
+    /// Thread-safe RNG for the SmallWorld implementation
+    /// </summary>
+    class ThreadSafeRNG : IProvideRandomValues
+    {
+        private readonly ThreadLocal<Random> threadLocalRandom = new(() => new Random(Interlocked.Increment(ref seed)));
+        private static int seed = Environment.TickCount;
+
+        //private readonly Random RNG = new();
+        public bool IsThreadSafe => true;
+        public float NextFloat() => (float)threadLocalRandom.Value!.NextDouble();
+        public int Next(int minValue, int maxValue) => threadLocalRandom.Value!.Next(minValue, maxValue);
+        public void NextFloats(Span<float> buffer)
+        {
+            var rng = threadLocalRandom.Value;
+            for (int i = 0; i < buffer.Length; i++)
+                buffer[i] = (float)rng!.NextDouble();
+        }
+    }
+
+    record VectorSearchResult
+    {
+        public Guid ID;
+        public EmbedType Category;
+        public float Distance;
+        public VectorSearchResult(Guid id, EmbedType category, float dist)
+        {
+            ID = id;
+            Category = category;
+            Distance = dist;
+        }
+    }
+
+    public enum EmbedType { Title, Summary, Session, Document }
+
+    /// <summary>
+    /// Retrieval Augmented Generation System
+    /// </summary>
     static class RAGSystem
     {
-        public static int EmbeddingSize { get; private set; } = 384;
+        public static int EmbeddingSize { get; private set; } = 1024;
+        public static bool UseSummaries { get; set; } = true;
+        public static bool UseTitles { get; set; } = true;
+        public static int MValue { get; set; } = 15;
+        public static NeighbourSelectionHeuristic Heuristic { get; set; } = NeighbourSelectionHeuristic.SelectSimple;
 
         public static bool Enabled
         {
@@ -24,11 +86,35 @@ namespace WaifuAI.Memory
         private static LLamaWeights? EmbedWeights = null;
         private static LLamaEmbedder? Embedder = null;
         private static bool enabled = true;
+        private static SmallWorld<float[], float> VectorDB = null!;
+        private static int VectorDBCount => VectorDB?.Items?.Count ?? 0;
+        private static bool IsVectorDBLoaded = false;
 
-        public static SmallWorldDB VectorDB { get; private set; } = new();
+        public static Dictionary<int, (Guid ID, EmbedType embedType)> LookupDB { get; private set; } = [];
 
         public static void Init()
         {
+        }
+
+        public static void ApplySettings()
+        {
+            if (!Enabled)
+                return;
+            ResetVectorDB();
+            if (LLMSystem.History != null)
+                VectorizeChatlog(LLMSystem.History);
+        }
+
+        private static void ResetVectorDB()
+        {
+            var parameters = new SmallWorld<float[], float>.Parameters()
+            {
+                M = MValue,
+                LevelLambda = 1 / Math.Log(MValue),
+                NeighbourHeuristic = Heuristic,
+            };
+            VectorDB = new SmallWorld<float[], float>(Vector.IsHardwareAccelerated ? CosineDistance.SIMDForUnits : CosineDistance.ForUnits, new ThreadSafeRNG(), parameters, true);
+            IsVectorDBLoaded = false;
         }
 
         /// <summary>
@@ -104,25 +190,129 @@ namespace WaifuAI.Memory
         {
             if (!Enabled)
                 return;
-            VectorDB.ImportChatlog(log);
+            ResetVectorDB();
+            if (log.Sessions.Count == 0)
+                return;
+
+            var vectors = new List<float[]>();
+            LookupDB = new Dictionary<int, (Guid ID, EmbedType embedType)>();
+            var currentID = 0;
+
+            for (int i = 0; i < log.Sessions.Count; i++)
+            {
+                var session = log.Sessions[i];
+                if (session.EmbedTitle.Length == 0 || session.EmbedSummary.Length == 0)
+                    continue;
+                if (UseTitles)
+                {
+                    vectors.Add(session.EmbedTitle);
+                    LookupDB[currentID] = (session.Guid, EmbedType.Title);
+                    currentID++;
+                }
+                if (UseSummaries)
+                {
+                    vectors.Add(session.EmbedSummary);
+                    LookupDB[currentID] = (session.Guid, EmbedType.Summary);
+                    currentID++;
+                }
+            }
+            try
+            {
+                VectorDB.AddItems(vectors);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+            IsVectorDBLoaded = true;
         }
 
-        public static async Task<List<Files.ChatSession>> Search(string message, int count)
+        public static async Task<List<(Files.ChatSession session, EmbedType category, float distance)>> Search(string message, int count)
         {
             if (!Enabled)
                 return [];
+            if (!IsVectorDBLoaded || VectorDB == null)
+            {
+                ResetVectorDB();
+                VectorizeChatlog(LLMSystem.History);
+            }
             var emb = await EmbeddingText(message);
-            var res = VectorDB.Search(emb, count);
-            var list = new List<Files.ChatSession>();
+            var subcount = count;
+            // If we have both titles and summaries double result count to get a better picture
+            if (UseSummaries && UseTitles)
+                subcount += count;
+            var res = Search(emb, subcount);
+            if (UseSummaries && UseTitles)
+            {
+                // look for ID triggered by both summary and title
+                var newlist = new List<VectorSearchResult>();
+                foreach (var item in res)
+                {
+                    // if no item or item already in newlist, skip
+                    if (item == null || newlist.Find(e => e.ID == item.ID) != null)
+                        continue;
+                    // find if other with same GUID
+                    var copy = res.Find(e => e != item && e.ID == item.ID);
+                    if (copy != null)
+                    {
+                        // we have a second candidate in the list, this makes this result a lot more probable
+                        var boosted = new VectorSearchResult(item.ID, EmbedType.Session, (item.Distance + copy.Distance) / 2.5f);
+                        newlist.Add(boosted);
+                    }
+                    else
+                        newlist.Add(item);
+                }
+                res = newlist;
+                res.Sort((a, b) => a.Distance.CompareTo(b.Distance));
+            }
+            // Make sure we got the correct amount of results
+            if (res.Count > count)
+                res = res.GetRange(0, count);
+
+            var list = new List<(Files.ChatSession session, EmbedType category, float distance)>();
             foreach (var item in res)
             {
                 if (item == null)
                     continue;
                 var found = LLMSystem.History.GetSessionByID(item.ID);
                 if (found != null)
-                    list.Add(found);
+                    list.Add((found, item.Category, item.Distance));
             }
             return list;
+        }
+
+        private static List<VectorSearchResult> Search(float[] message, int count)
+        {
+            LLMSystem.logger?.LogInformation("LTM Size: {size} out of {logsize}", VectorDBCount.ToString(), LLMSystem.History.Sessions.Count.ToString());
+            if (!IsVectorDBLoaded || VectorDBCount == 0)
+                return [];
+            var found = VectorDB.KNNSearch(message, count);
+            var res = new List<VectorSearchResult>();
+            foreach (var item in found)
+            {
+                res.Add(new VectorSearchResult(LookupDB[item.Id].ID, LookupDB[item.Id].embedType, item.Distance));
+                LLMSystem.logger?.LogInformation("LTM Found: {id} ({distance})", item.Id.ToString(), item.Distance.ToString());
+            }
+            res.Sort((a, b) => a.Distance.CompareTo(b.Distance));
+            return res;
+        }
+
+        public static void ExportVectorDB(string filePath)
+        {
+            var tosave = VectorDB.Items;
+            byte[] bytes = MessagePackSerializer.Serialize(tosave);
+            File.WriteAllBytes(filePath, bytes);
+        }
+
+        public static void ImportVectorDB(string filePath)
+        {
+            ResetVectorDB();
+            byte[] bytes = File.ReadAllBytes(filePath);
+            var x = MessagePackSerializer.Deserialize<IReadOnlyList<float[]>>(bytes);
+            if (x == null || x.Count == 0)
+                return;
+            VectorDB.AddItems(x);
+            IsVectorDBLoaded = true;
         }
     }
 }
