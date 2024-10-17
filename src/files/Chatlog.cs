@@ -211,12 +211,13 @@ namespace WaifuAI.Files
         public string GetRawSummary()
         {
             var sb = new StringBuilder();
-            sb.Append("# Previous Chat Summary");
-            sb.Append("## Duration: " + StartTime.DayOfWeek.ToString() + ", the "+ StartTime.ToShortDateString() + "at " + StartTime.ToShortTimeString() + 
-                " to " + EndTime.DayOfWeek.ToString() + ", the " + EndTime.ToShortDateString() + "at " + EndTime.ToShortTimeString() + LLMSystem.NewLine);
-            sb.Append("## Message Count: " + Messages.Count.ToString() + LLMSystem.NewLine);
-            sb.Append("## Title: " + Title + LLMSystem.NewLine);
-            sb.Append("## Summary: " + LLMSystem.NewLine + Summary + LLMSystem.NewLine);
+            sb.Append("# Chat Session");
+            if (StartTime.Date == EndTime.Date)
+                sb.Append("## Date: " + StartTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(StartTime) + LLMSystem.NewLine);
+            else
+                sb.Append("## From " + StartTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(StartTime) + " to " + EndTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(EndTime)  + LLMSystem.NewLine);
+            sb.Append("## Title: " + Title.Trim() + LLMSystem.NewLine);
+            sb.Append("## Summary: " + LLMSystem.NewLine + Summary.Replace("\n\n"," ").Trim() + LLMSystem.NewLine);
             return sb.ToString();
         }
 
@@ -244,17 +245,19 @@ namespace WaifuAI.Files
         public string GetFormatedDialogs(int maxTokens, bool useSessionSystem, List<WorldEntry>? memories)
         {
             var sb = new StringBuilder();
-            var tokensleft = maxTokens;
+            var tokensleft = useSessionSystem ? maxTokens - LLMSystem.ReservedSessionTokens : maxTokens;
+            var availSessionMemTokens = useSessionSystem ? LLMSystem.ReservedSessionTokens : 0;
             var messagelist = new List<SingleMessage>(Messages);
             var mems = memories?.FindAll(e => e.Position == WEPosition.Chat) ?? [];
             var entrydepth = 0;
 
+            /// <summary> Insert WorldInfo memories into the chatlog </summary>
             void CheckAndAddMemories()
             {
                 var selmem = mems.FindAll(e => e.PositionIndex == entrydepth);
                 if (selmem.Count > 0)
                 {
-                    var totalmessage = "# Relevant Information from memory:" + LLMSystem.NewLine;
+                    var totalmessage = "# Relevant Information:" + LLMSystem.NewLine;
                     foreach (var item in selmem)
                     {
                         totalmessage += item.Message + LLMSystem.NewLine;
@@ -268,7 +271,6 @@ namespace WaifuAI.Files
                     }
                 }
             }
-
 
             if (!useSessionSystem)
             {
@@ -287,7 +289,7 @@ namespace WaifuAI.Files
                 var tks = LLMSystem.GetTokenCount(res);
                 tokensleft -= tks;
                 if (tokensleft <= 0)
-                    return sb.ToString();
+                    break;
                 sb.Insert(0, res);
                 // check if we need to add a memory
                 CheckAndAddMemories();
@@ -301,29 +303,40 @@ namespace WaifuAI.Files
                     var session = Sessions[i];
                     var summarytokencount = session.GetFormatedSummaryTokenCount();
                     var sessiontokencount = GetTotalTokens(session.Messages);
-                    // If all session can fit, or if that session's end is less than 2 days ago
-                    if (sessiontokencount <= tokensleft || ((DateTime.Now - session.EndTime) < new TimeSpan(2, 0, 0, 0)))
+                    // If all session can fit, or if that session's end is less than 7 days ago, or we have too few messages
+                    if (sessiontokencount <= tokensleft || ((DateTime.Now - session.EndTime) < new TimeSpan(7, 0, 0, 0)))
                     {
-                        sb.Insert(0, session.GetFormatedDialogs(tokensleft, ref entrydepth, mems));
+                        var text = session.GetFormatedDialogs(tokensleft, ref entrydepth, mems);
+                        if (string.IsNullOrEmpty(text))
+                        {
+                            availSessionMemTokens += tokensleft;
+                            tokensleft = 0;
+                        }
+                        else
+                            sb.Insert(0, text);
                     }
                     else
                     {
                         // If summary can fit, add it.
-                        if (summarytokencount <= tokensleft)
+                        if (summarytokencount <= availSessionMemTokens)
                         {
-                            tokensleft -= summarytokencount;
-                            if (tokensleft <= 0)
-                                return sb.ToString();
+                            availSessionMemTokens -= summarytokencount;
                             sb.Insert(0, session.GetFormatedSummary());
                             CheckAndAddMemories();
                             entrydepth++;
                         }
-                        sb.Insert(0, session.GetFormatedDialogs(tokensleft, ref entrydepth, mems));
+                        else
+                        {
+                            summarytokencount = 0;
+                        }
                     }
                     // check status
-                    var currenttokens = LLMSystem.GetTokenCount(sb.ToString());
-                    tokensleft = maxTokens - currenttokens;
-                    if (tokensleft <= 0)
+                    if (tokensleft > 0)
+                    {
+                        var currenttokens = LLMSystem.GetTokenCount(sb.ToString());
+                        tokensleft = maxTokens - LLMSystem.ReservedSessionTokens - currenttokens;
+                    }
+                    if (tokensleft <= 0 && availSessionMemTokens <= 0)
                         return sb.ToString();
                 }
             }

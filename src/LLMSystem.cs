@@ -23,6 +23,7 @@ namespace WaifuAI
         public const int EmbeddingSize = 384;
         public const int EmbeddingDelay = 80;
 
+        public static int ReservedSessionTokens { get; set; } = 2048;
         public static int MaxReplyLength { get; set; } = 512;
         public static int MaxContextLength { 
             get => maxContextLength; 
