@@ -59,6 +59,7 @@
             tabHistory = new TabPage();
             web_sessioncontent = new Microsoft.Web.WebView2.WinForms.WebView2();
             panel2 = new Panel();
+            bt_sessionrefresh = new Button();
             lbl_sessioninfo = new Label();
             lbl_sessiontitle = new Label();
             listSession = new ListView();
@@ -447,6 +448,7 @@
             // panel2
             // 
             panel2.AutoScroll = true;
+            panel2.Controls.Add(bt_sessionrefresh);
             panel2.Controls.Add(lbl_sessioninfo);
             panel2.Controls.Add(lbl_sessiontitle);
             panel2.Dock = DockStyle.Top;
@@ -454,6 +456,15 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(648, 100);
             panel2.TabIndex = 1;
+            // 
+            // bt_sessionrefresh
+            // 
+            bt_sessionrefresh.Location = new Point(6, 71);
+            bt_sessionrefresh.Name = "bt_sessionrefresh";
+            bt_sessionrefresh.Size = new Size(143, 23);
+            bt_sessionrefresh.TabIndex = 2;
+            bt_sessionrefresh.Text = "Generate Summary";
+            bt_sessionrefresh.UseVisualStyleBackColor = true;
             // 
             // lbl_sessioninfo
             // 
@@ -924,5 +935,6 @@
         private Label lbl_sessiontitle;
         private ColumnHeader columnHeader1;
         private ColumnHeader columnHeader2;
+        private Button bt_sessionrefresh;
     }
 }

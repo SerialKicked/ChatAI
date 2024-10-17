@@ -28,6 +28,7 @@ namespace WaifuAI
         private string? _currentgeneration = null;
         private int _currentgenerationtokencount = 0;
         private bool _isfillinghistory = false;
+        private ChatSession? _selectedSession = null;
 
         public MainForm()
         {
@@ -46,6 +47,7 @@ namespace WaifuAI
             bt_send.Click += SendMessage!;
             bt_reroll.Click += RerollMessage!;
             button1.Click += button1_Click!;
+            bt_sessionrefresh.Click += bt_sessionrefresh_Click!;
             // Load editors and chat menu
             SetupSamplerEditor();
             SetupInstructEditor();
@@ -492,7 +494,7 @@ namespace WaifuAI
             _lastMessageControl = flowChat.Controls[flowChat.Controls.Count - 1] as ChatMessageControl;
             if (_lastMessageControl == null)
                 return;
-            _lastMessageControl.UpdateMessage("*"+ LLMSystem.Bot.UniqueName + " is thinking...*");
+            _lastMessageControl.UpdateMessage("*" + LLMSystem.Bot.UniqueName + " is thinking...*");
             _lastMessageControl.Height = 120;
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
@@ -957,8 +959,8 @@ namespace WaifuAI
             if (listSession.SelectedItems.Count <= 0)
                 return;
             var selectedItem = listSession.SelectedItems[0];
-            var session = (ChatSession)selectedItem.Tag!;
-            DisplaySessionDetails(session);
+            _selectedSession = (ChatSession)selectedItem.Tag!;
+            DisplaySessionDetails(_selectedSession);
         }
 
         private async void DisplaySessionDetails(ChatSession session)
@@ -969,9 +971,19 @@ namespace WaifuAI
             {
                 await web_sessioncontent.EnsureCoreWebView2Async();
             }
-            var dialogs = session.GetRawDialogs(int.MaxValue, false).Replace("\n","\n\n");
+            var dialogs = session.GetRawDialogs(int.MaxValue, false).Replace("\n", "\n\n");
             var inf = "# " + session.Title + LLMSystem.NewLine + LLMSystem.NewLine + "## Summary:" + LLMSystem.NewLine + LLMSystem.NewLine + session.Summary + LLMSystem.NewLine + LLMSystem.NewLine + "## Dialogs:" + LLMSystem.NewLine + LLMSystem.NewLine + dialogs;
             web_sessioncontent.NavigateToString(Markdown.ToHtml(inf));
+        }
+
+        private async void bt_sessionrefresh_Click(object sender, EventArgs e)
+        {
+            if (_selectedSession == null)
+                return;
+
+            _selectedSession.Summary = await _selectedSession.GenerateNewSummary();
+            _selectedSession.Title = await _selectedSession.GenerateNewTitle(_selectedSession.Summary);
+            DisplaySessionDetails(_selectedSession);
         }
     }
 }
