@@ -19,6 +19,7 @@ namespace WaifuAI
         public ChatMessageControl()
         {
             InitializeComponent();
+            bt_edit!.Click += bt_edit_Click!;
         }
 #pragma warning restore CS8618
 
@@ -139,7 +140,6 @@ namespace WaifuAI
             bt_edit.TabIndex = 2;
             bt_edit.Text = "Edit";
             bt_edit.UseVisualStyleBackColor = true;
-            bt_edit.Click += bt_edit_Click!;
             // 
             // ChatMessageControl
             // 
@@ -190,19 +190,19 @@ namespace WaifuAI
                 if (webBrowser != null)
                 {
                     webBrowser.Dispose();
-                    webBrowser = null;
+                    webBrowser = null!;
                 }
 
                 if (pictureBox != null)
                 {
                     pictureBox.Dispose();
-                    pictureBox = null;
+                    pictureBox = null!;
                 }
 
                 if (bt_edit != null)
                 {
                     bt_edit.Dispose();
-                    bt_edit = null;
+                    bt_edit = null!;
                 }
             }
             base.Dispose(disposing);

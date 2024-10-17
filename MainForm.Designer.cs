@@ -37,6 +37,7 @@
             ed_input = new TextBox();
             flowChat = new FlowLayoutPanel();
             panel1 = new Panel();
+            ck_ragenabled = new CheckBox();
             cb_sysprompt = new ComboBox();
             label11 = new Label();
             num_temperature = new NumericUpDown();
@@ -85,6 +86,8 @@
             bt_importworld = new Button();
             bt_ImportSTChat = new Button();
             groupBox1 = new GroupBox();
+            label14 = new Label();
+            num_ragmaxretrieve = new NumericUpDown();
             label13 = new Label();
             num_ragcutoff = new NumericUpDown();
             label12 = new Label();
@@ -108,6 +111,8 @@
             bt_getmodel = new Button();
             listBox1 = new ListBox();
             openFileDialog1 = new OpenFileDialog();
+            num_ragindex = new NumericUpDown();
+            label15 = new Label();
             tabControl1.SuspendLayout();
             tabChat.SuspendLayout();
             panel1.SuspendLayout();
@@ -123,8 +128,10 @@
             tabSettings.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)num_ragmaxretrieve).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_ragcutoff).BeginInit();
             tabAPI.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)num_ragindex).BeginInit();
             SuspendLayout();
             // 
             // tabControl1
@@ -220,6 +227,7 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(ck_ragenabled);
             panel1.Controls.Add(cb_sysprompt);
             panel1.Controls.Add(label11);
             panel1.Controls.Add(num_temperature);
@@ -243,6 +251,19 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(200, 552);
             panel1.TabIndex = 0;
+            // 
+            // ck_ragenabled
+            // 
+            ck_ragenabled.AutoSize = true;
+            ck_ragenabled.Checked = true;
+            ck_ragenabled.CheckState = CheckState.Checked;
+            ck_ragenabled.Location = new Point(2, 386);
+            ck_ragenabled.Name = "ck_ragenabled";
+            ck_ragenabled.Size = new Size(94, 19);
+            ck_ragenabled.TabIndex = 20;
+            ck_ragenabled.Text = "RAG Enabled";
+            ck_ragenabled.UseVisualStyleBackColor = true;
+            ck_ragenabled.CheckedChanged += ck_ragenabled_CheckedChanged;
             // 
             // cb_sysprompt
             // 
@@ -690,9 +711,9 @@
             groupBox2.Controls.Add(bt_importworld);
             groupBox2.Controls.Add(bt_ImportSTChat);
             groupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox2.Location = new Point(437, 6);
+            groupBox2.Location = new Point(416, 6);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(262, 218);
+            groupBox2.Size = new Size(266, 218);
             groupBox2.TabIndex = 24;
             groupBox2.TabStop = false;
             groupBox2.Text = "Import";
@@ -730,6 +751,10 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(label15);
+            groupBox1.Controls.Add(num_ragindex);
+            groupBox1.Controls.Add(label14);
+            groupBox1.Controls.Add(num_ragmaxretrieve);
             groupBox1.Controls.Add(label13);
             groupBox1.Controls.Add(num_ragcutoff);
             groupBox1.Controls.Add(label12);
@@ -741,16 +766,37 @@
             groupBox1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox1.Location = new Point(8, 6);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(423, 218);
+            groupBox1.Size = new Size(402, 218);
             groupBox1.TabIndex = 23;
             groupBox1.TabStop = false;
             groupBox1.Text = "RAG System";
+            // 
+            // label14
+            // 
+            label14.AutoSize = true;
+            label14.Font = new Font("Segoe UI", 9F);
+            label14.Location = new Point(137, 107);
+            label14.Name = "label14";
+            label14.Size = new Size(64, 15);
+            label14.TabIndex = 26;
+            label14.Text = "Max count";
+            // 
+            // num_ragmaxretrieve
+            // 
+            num_ragmaxretrieve.Location = new Point(137, 125);
+            num_ragmaxretrieve.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            num_ragmaxretrieve.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            num_ragmaxretrieve.Name = "num_ragmaxretrieve";
+            num_ragmaxretrieve.Size = new Size(125, 23);
+            num_ragmaxretrieve.TabIndex = 25;
+            num_ragmaxretrieve.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            num_ragmaxretrieve.ValueChanged += num_ragmaxretrieve_ValueChanged;
             // 
             // label13
             // 
             label13.AutoSize = true;
             label13.Font = new Font("Segoe UI", 9F);
-            label13.Location = new Point(184, 63);
+            label13.Location = new Point(268, 107);
             label13.Name = "label13";
             label13.Size = new Size(123, 15);
             label13.TabIndex = 24;
@@ -760,11 +806,11 @@
             // 
             num_ragcutoff.DecimalPlaces = 3;
             num_ragcutoff.Increment = new decimal(new int[] { 5, 0, 0, 196608 });
-            num_ragcutoff.Location = new Point(184, 81);
+            num_ragcutoff.Location = new Point(268, 125);
             num_ragcutoff.Maximum = new decimal(new int[] { 5, 0, 0, 65536 });
             num_ragcutoff.Minimum = new decimal(new int[] { 5, 0, 0, 196608 });
             num_ragcutoff.Name = "num_ragcutoff";
-            num_ragcutoff.Size = new Size(208, 23);
+            num_ragcutoff.Size = new Size(125, 23);
             num_ragcutoff.TabIndex = 23;
             num_ragcutoff.Value = new decimal(new int[] { 2, 0, 0, 65536 });
             num_ragcutoff.ValueChanged += num_ragcutoff_ValueChanged;
@@ -785,7 +831,7 @@
             cb_ragheuristic.Items.AddRange(new object[] { "Heuristic", "Simple" });
             cb_ragheuristic.Location = new Point(184, 37);
             cb_ragheuristic.Name = "cb_ragheuristic";
-            cb_ragheuristic.Size = new Size(208, 23);
+            cb_ragheuristic.Size = new Size(209, 23);
             cb_ragheuristic.TabIndex = 3;
             cb_ragheuristic.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
             // 
@@ -794,7 +840,7 @@
             bt_embedall.Font = new Font("Segoe UI", 9F);
             bt_embedall.Location = new Point(6, 160);
             bt_embedall.Name = "bt_embedall";
-            bt_embedall.Size = new Size(411, 23);
+            bt_embedall.Size = new Size(387, 23);
             bt_embedall.TabIndex = 22;
             bt_embedall.Text = "Embed all chat sessions ";
             bt_embedall.UseVisualStyleBackColor = true;
@@ -803,7 +849,7 @@
             // 
             button1.Location = new Point(6, 189);
             button1.Name = "button1";
-            button1.Size = new Size(411, 23);
+            button1.Size = new Size(387, 23);
             button1.TabIndex = 2;
             button1.Text = "Apply RAG Settings";
             button1.UseVisualStyleBackColor = true;
@@ -983,6 +1029,27 @@
             // 
             openFileDialog1.FileName = "openFileDialog1";
             // 
+            // num_ragindex
+            // 
+            num_ragindex.Location = new Point(6, 125);
+            num_ragindex.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            num_ragindex.Minimum = new decimal(new int[] { 1, 0, 0, int.MinValue });
+            num_ragindex.Name = "num_ragindex";
+            num_ragindex.Size = new Size(125, 23);
+            num_ragindex.TabIndex = 27;
+            num_ragindex.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            num_ragindex.ValueChanged += num_ragindex_ValueChanged;
+            // 
+            // label15
+            // 
+            label15.AutoSize = true;
+            label15.Font = new Font("Segoe UI", 9F);
+            label15.Location = new Point(6, 107);
+            label15.Name = "label15";
+            label15.Size = new Size(98, 15);
+            label15.TabIndex = 28;
+            label15.Text = "Placement Depth";
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1013,9 +1080,11 @@
             groupBox2.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)num_ragmaxretrieve).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_ragcutoff).EndInit();
             tabAPI.ResumeLayout(false);
             tabAPI.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)num_ragindex).EndInit();
             ResumeLayout(false);
         }
 
@@ -1099,5 +1168,10 @@
         private Button bt_ImportSTChat;
         private Label label13;
         private NumericUpDown num_ragcutoff;
+        private Label label14;
+        private NumericUpDown num_ragmaxretrieve;
+        private CheckBox ck_ragenabled;
+        private Label label15;
+        private NumericUpDown num_ragindex;
     }
 }

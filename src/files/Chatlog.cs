@@ -15,7 +15,7 @@ using WaifuAI.Memory;
 
 namespace WaifuAI.Files
 {
-    public class SingleMessage(AuthorRole role, DateTime date, string mess, string chara, string user, bool isNewSession = false)
+    public class SingleMessage(AuthorRole role, DateTime date, string mess, string chara, string user)
     {
         [JsonIgnore] public Guid Guid = Guid.NewGuid();
         public AuthorRole Role = role;
@@ -36,6 +36,10 @@ namespace WaifuAI.Files
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public List<SingleMessage> Messages { get; set; } = [];
+        /// <summary>
+        /// If set to true, this memory will always be included in the prompt
+        /// </summary>
+        public bool Sticky { get; set; } = false;
         public TimeSpan Duration => EndTime - StartTime;
 
         public async Task<string> GenerateNewSummary()
@@ -174,33 +178,25 @@ namespace WaifuAI.Files
             return sb.ToString();
         }
 
-        public string GetFormatedDialogs(int maxTokens, ref int currentDepth, List<WorldEntry>? memories)
+        public string GetFormatedDialogs(int maxTokens, ref int currentDepth, Dictionary<int, string>? memories)
         {
             var sb = new StringBuilder();
             var totaltks = maxTokens;
-            var mems = memories?.FindAll(e => e.Position == WEPosition.Chat) ?? new List<WorldEntry>();
+            var mems = memories ?? [];
             var entrydepth = currentDepth;
 
             void CheckAndAddMemories()
             {
-                var selmem = mems.FindAll(e => e.PositionIndex == entrydepth);
-                if (selmem.Count > 0)
+                if (!mems.TryGetValue(entrydepth, out string? value) || string.IsNullOrEmpty(value))
+                    return;
+                var formattedmemory = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, value);
+                var tksmem = LLMSystem.GetTokenCount(formattedmemory);
+                if (tksmem <= totaltks)
                 {
-                    var totalmessage = "# Relevant Information from memory: " + LLMSystem.NewLine;
-                    foreach (var item in selmem)
-                    {
-                        totalmessage += item.Message + LLMSystem.NewLine;
-                    }
-                    var formattedmemory = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, totalmessage);
-                    var tksmem = LLMSystem.GetTokenCount(formattedmemory);
-                    if (tksmem <= totaltks)
-                    {
-                        totaltks -= tksmem;
-                        sb.Insert(0, formattedmemory);
-                    }
+                    totaltks -= tksmem;
+                    sb.Insert(0, formattedmemory);
                 }
             }
-
 
             for (int i = Messages.Count - 1; i >= 0; i--)
             {
@@ -264,33 +260,26 @@ namespace WaifuAI.Files
 
         private void RaiseOnMessageAdded(SingleMessage message) => OnMessageAdded?.Invoke(this, message);
 
-        public string GetFormatedDialogs(int maxTokens, bool useSessionSystem, List<WorldEntry>? memories)
+        public string GetFormatedDialogs(int maxTokens, bool useSessionSystem, Dictionary<int, string>? memories)
         {
             var sb = new StringBuilder();
             var tokensleft = useSessionSystem ? maxTokens - LLMSystem.ReservedSessionTokens : maxTokens;
             var availSessionMemTokens = useSessionSystem ? LLMSystem.ReservedSessionTokens : 0;
             var messagelist = new List<SingleMessage>(Messages);
-            var mems = memories?.FindAll(e => e.Position == WEPosition.Chat) ?? [];
+            var mems = memories ?? [];
             var entrydepth = 0;
 
             /// <summary> Insert WorldInfo memories into the chatlog </summary>
             void CheckAndAddMemories()
             {
-                var selmem = mems.FindAll(e => e.PositionIndex == entrydepth);
-                if (selmem.Count > 0)
+                if (!mems.TryGetValue(entrydepth, out string? value) || string.IsNullOrEmpty(value))
+                    return;
+                var formattedmemory = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, value);
+                var tksmem = LLMSystem.GetTokenCount(formattedmemory);
+                if (tksmem <= tokensleft)
                 {
-                    var totalmessage = "# Relevant Information:" + LLMSystem.NewLine;
-                    foreach (var item in selmem)
-                    {
-                        totalmessage += item.Message + LLMSystem.NewLine;
-                    }
-                    var formattedmemory = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, totalmessage);
-                    var tksmem = LLMSystem.GetTokenCount(formattedmemory);
-                    if (tksmem <= tokensleft)
-                    {
-                        tokensleft -= tksmem;
-                        sb.Insert(0, formattedmemory);
-                    }
+                    tokensleft -= tksmem;
+                    sb.Insert(0, formattedmemory);
                 }
             }
 
@@ -349,7 +338,7 @@ namespace WaifuAI.Files
                         }
                         else
                         {
-                            summarytokencount = 0;
+                            availSessionMemTokens = 0;
                         }
                     }
                     // check status
@@ -381,7 +370,7 @@ namespace WaifuAI.Files
 
         public SingleMessage LogMessage(AuthorRole role, string msg, Character user, Character bot)
         {
-            var single = new SingleMessage(role, DateTime.Now, msg, bot.UniqueName, user.UniqueName, false);
+            var single = new SingleMessage(role, DateTime.Now, msg, bot.UniqueName, user.UniqueName);
             Messages.Add(single);
             RaiseOnMessageAdded(single);
             return single;

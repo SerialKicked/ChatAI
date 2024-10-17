@@ -114,7 +114,7 @@ namespace WaifuAI.Memory
                 LevelLambda = 1 / Math.Log(MValue),
                 NeighbourHeuristic = Heuristic,
             };
-            VectorDB = new SmallWorld<float[], float>(Vector.IsHardwareAccelerated ? CosineDistance.SIMDForUnits : CosineDistance.ForUnits, new ThreadSafeRNG(), parameters, true);
+            VectorDB = new SmallWorld<float[], float>(Vector.IsHardwareAccelerated ? CosineDistance.SIMDForUnits : CosineDistance.ForUnits, new RNGPlus(), parameters, false);
             IsVectorDBLoaded = false;
         }
 
@@ -162,7 +162,7 @@ namespace WaifuAI.Memory
         {
             if (!Enabled)
                 return;
-            var embed = Embedder ?? LoadEmbedder();
+            _ = Embedder ?? LoadEmbedder();
             // Embed all the messages in the chatlog except the 80 last ones
             foreach (var session in log.Sessions)
             {
@@ -196,7 +196,7 @@ namespace WaifuAI.Memory
                 return;
 
             var vectors = new List<float[]>();
-            LookupDB = new Dictionary<int, (Guid ID, EmbedType embedType)>();
+            LookupDB = [];
             var currentID = 0;
 
             for (int i = 0; i < log.Sessions.Count; i++)
@@ -232,7 +232,7 @@ namespace WaifuAI.Memory
         {
             if (!Enabled)
                 return [];
-            if (!IsVectorDBLoaded || VectorDB == null)
+            if (!IsVectorDBLoaded || VectorDB == null || VectorDBCount == 0)
             {
                 ResetVectorDB();
                 VectorizeChatlog(LLMSystem.History);

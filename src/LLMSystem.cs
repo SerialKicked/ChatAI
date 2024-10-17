@@ -18,9 +18,17 @@ namespace WaifuAI
     enum SystemStatus { NotInit, Ready, Busy }
     enum SystemPromptSection { MainPrompt, BotBio, UserBio, Scenario, Memory, ContextInfo }
 
+    public class InsertPrompt(string prompt, AuthorRole role = AuthorRole.SysPrompt, int depth = 1)
+    {
+        public AuthorRole Role = role;
+        public string Prompt = prompt;
+        public int Depth = depth;
+    }
+
     static class LLMSystem
     {
-        public static int MaxRAGEntries { get; set; } = 4;
+        public static int MaxRAGEntries { get; set; } = 3;
+        public static int RAGIndex { get; set; } = 3;
         public static int ReservedSessionTokens { get; set; } = 2048;
         public static int MaxReplyLength { get; set; } = 512;
         public static int MaxContextLength { 
@@ -191,7 +199,7 @@ namespace WaifuAI
                 var res = Client.TokencountAsync(mparams).GetAwaiter().GetResult();
                 return res.Value;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //MessageBox.Show($"An error occured while counting tokens, estimate used instead. {ex.Message}");
                 return text.Length / 5; // or any default value you want to return in case of an error
@@ -232,12 +240,13 @@ namespace WaifuAI
             var msg = string.IsNullOrEmpty(newMessage) ? string.Empty : Instruct.FormatSinglePrompt(MsgSender, User, Bot, newMessage);
             var tokencount = GetTokenCount(msg);
             var rawprompt = new StringBuilder(RawSystemPrompt(User, Bot));
+            var inserts = new Dictionary<int, string>();
             if (Bot.MyWorlds.Count > 0)
             {
                 _currentWorldEntries = [];
-                foreach (var item in Bot.MyWorlds)
+                foreach (var world in Bot.MyWorlds)
                 {
-                    _currentWorldEntries.AddRange(item.FindEntries(History, newMessage));
+                    _currentWorldEntries.AddRange(world.FindEntries(History, newMessage));
                 }
                 var entries = _currentWorldEntries.FindAll(e => e.Position == WEPosition.SystemPrompt);
                 if (entries.Count > 0)
@@ -245,6 +254,12 @@ namespace WaifuAI
                     rawprompt.AppendLinuxLine().AppendLinuxLine(SystemPrompt.WorldInfoTitle);
                     foreach (var item in entries)
                         rawprompt.AppendLinuxLine(item.Message);
+                }
+                entries = _currentWorldEntries.FindAll(e => e.Position == WEPosition.Chat);
+                foreach (var item in entries)
+                {
+                    if (!inserts.TryAdd(item.PositionIndex, item.Message))
+                        inserts[item.PositionIndex] += NewLine + item.Message;
                 }
             }
             foreach (var ctxplug in Bot.Plugins)
@@ -264,14 +279,27 @@ namespace WaifuAI
                 memprompt = MemoriesToMessage(search);
                 if (!string.IsNullOrEmpty(memprompt))
                 {
-                    memprompt = Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, User, Bot, memprompt);
-                    tokencount += GetTokenCount(memprompt);
+                    if (RAGIndex == -1)
+                    {
+                        memprompt = Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, User, Bot, memprompt);
+                        tokencount += GetTokenCount(memprompt);
+                    }
+                    else
+                    {
+                        if (!inserts.TryAdd(RAGIndex, memprompt))
+                            inserts[RAGIndex] += NewLine + memprompt;
+                    }
                 }
             }
+
             tokencount += GetTokenCount(Instruct.GetResponseStart(Bot));
             var availtokens = (int)(MaxContextLength) - tokencount - MaxReplyLength;
-            var history = History.GetFormatedDialogs(availtokens, Bot.SessionMemorySystem, _currentWorldEntries);
-            var res = sysprompt + NewLine + history + memprompt + msg + Instruct.GetResponseStart(Bot);
+            var history = History.GetFormatedDialogs(availtokens, Bot.SessionMemorySystem, inserts);
+
+            var res = !string.IsNullOrEmpty(memprompt) && RAGIndex == -1 ?
+                sysprompt + NewLine + memprompt + history + msg + Instruct.GetResponseStart(Bot) :
+                sysprompt + NewLine + history + msg + Instruct.GetResponseStart(Bot);
+
             return res;
         }
 
@@ -280,10 +308,10 @@ namespace WaifuAI
             if (memories.Count == 0)
                 return string.Empty;
             var stbuild = new StringBuilder();
-            stbuild.AppendLinuxLine("The message from {{user}} below triggered the following memories:");
-            foreach (var item in memories)
+            stbuild.AppendLinuxLine("The message from {{user}} at the bottom triggered the following memories:");
+            foreach (var (session, _, _) in memories)
             {
-                stbuild.AppendLinuxLine(item.session.GetRawMemory());
+                stbuild.AppendLinuxLine(session.GetRawMemory());
             }
             return stbuild.ToString();
         }
@@ -427,24 +455,20 @@ namespace WaifuAI
 
         public static string DateToHumanString(DateTime date)
         {
-            string GetDaySuffix(int day)
+            static string GetDaySuffix(int day)
             {
                 if (day >= 11 && day <= 13)
                 {
                     return "th";
                 }
 
-                switch (day % 10)
+                return (day % 10) switch
                 {
-                    case 1:
-                        return "st";
-                    case 2:
-                        return "nd";
-                    case 3:
-                        return "rd";
-                    default:
-                        return "th";
-                }
+                    1 => "st",
+                    2 => "nd",
+                    3 => "rd",
+                    _ => "th",
+                };
             }
 
             string daySuffix = GetDaySuffix(date.Day);

@@ -36,11 +36,11 @@ namespace WaifuAI
         {
             if (reader.TokenType == JsonToken.Boolean)
             {
-                return (bool)reader.Value;
+                return (bool)reader.Value!;
             }
             else if (reader.TokenType == JsonToken.String)
             {
-                var stringValue = (string)reader.Value;
+                var stringValue = (string)reader.Value!;
                 return string.IsNullOrEmpty(stringValue);
             }
             else if (reader.TokenType == JsonToken.Null)
@@ -137,6 +137,8 @@ namespace WaifuAI
             {
                 var filecontent = File.ReadAllText(inputpath);
                 var importST = JsonConvert.DeserializeObject<ImportSTWorld>(filecontent);
+                if (importST == null)
+                    return false;
 
                 var outputWorld = new WorldInfo
                 {
@@ -155,15 +157,15 @@ namespace WaifuAI
                         Message = item.content,
                         Name = item.comment,
                         Priority = item.order,
-                        PositionIndex = item.depth
-                    };
-                    entry.Position = item.position == 1 ? WEPosition.SystemPrompt : WEPosition.Chat;
-                    entry.WordLink = item.selectiveLogic switch
-                    {
-                        0 => KeyWordLink.And,
-                        1 => KeyWordLink.Or,
-                        2 => KeyWordLink.Not,
-                        _ => KeyWordLink.And
+                        PositionIndex = item.depth,
+                        Position = item.position == 1 ? WEPosition.SystemPrompt : WEPosition.Chat,
+                        WordLink = item.selectiveLogic switch
+                        {
+                            0 => KeyWordLink.And,
+                            1 => KeyWordLink.Or,
+                            2 => KeyWordLink.Not,
+                            _ => KeyWordLink.And
+                        }
                     };
                     outputWorld.Entries.Add(entry);
                 }
@@ -207,7 +209,7 @@ namespace WaifuAI
                     var role = msg.is_user ? AuthorRole.User : AuthorRole.Assistant;
                     if (!msg.is_user && msg.is_system)
                         role = AuthorRole.System;
-                    chat.Messages.Add(new SingleMessage(role, DateTime.TryParse(msg.send_date, out var d) ? d : default, msg.mes ?? string.Empty, bot, user, false));
+                    chat.Messages.Add(new SingleMessage(role, DateTime.TryParse(msg.send_date, out var d) ? d : default, msg.mes ?? string.Empty, bot, user));
                 }
                 (chat as IFile).SaveToFile(outputpath);
                 return true;

@@ -86,6 +86,7 @@ namespace WaifuAI
             }
             LoadSettings();
             RAGSystem.Enabled = true;
+            ck_ragenabled.Checked = RAGSystem.Enabled;
             LLMSystem.Init();
             LLMSystem.OnInferenceStreamed += OnStreamMessageReceived;
             LLMSystem.OnInferenceEnded += OnStreamInferenceEnded;
@@ -479,14 +480,14 @@ namespace WaifuAI
             if (string.IsNullOrEmpty(ed_input.Text))
                 return;
             var messagetext = LLMSystem.GetAwayString() + LLMSystem.ReplaceMacros(ed_input.Text.Replace(Environment.NewLine, LLMSystem.NewLine), LLMSystem.User, LLMSystem.Bot);
-            var msg = new SingleMessage(AuthorRole.User, DateTime.Now, messagetext, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName, false);
+            var msg = new SingleMessage(AuthorRole.User, DateTime.Now, messagetext, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
             SendMessageToUI(msg);
 
             // ready a new message for the bot's response
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
             _lastMessageControl = SendMessageToUI(
-                new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your post...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName, false));
+                new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your post...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
             ed_input.Text = string.Empty;
             await LLMSystem.SendMessageToBot(msg);
         }
@@ -573,8 +574,10 @@ namespace WaifuAI
                     img = sel?.Portrait ?? LLMSystem.Bot.Portrait;
                     break;
             }
-            var msgctrl = new ChatMessageControl(img, MsgPrefix + singleMessage.Message);
-            msgctrl.AssociatedID = msg.Guid;
+            var msgctrl = new ChatMessageControl(img, MsgPrefix + singleMessage.Message)
+            {
+                AssociatedID = msg.Guid
+            };
             flowChat.Controls.Add(msgctrl);
             flowChat.VerticalScroll.Value = flowChat.VerticalScroll.Maximum;
             msgctrl.Width = flowChat.ClientSize.Width - 20;
@@ -622,7 +625,9 @@ namespace WaifuAI
                 LLMSystem.MaxReplyLength = Settings.MaxResponseTokens;
                 LLMSystem.ReservedSessionTokens = Settings.ReservedSessionTokens;
                 LLMSystem.MaxRAGEntries = Settings.MaxRAGEntries;
-
+                num_ragmaxretrieve.Value = Settings.MaxRAGEntries;
+                LLMSystem.RAGIndex = Settings.RAGPosition;
+                num_ragindex.Value = Settings.RAGPosition;
             }
         }
 
@@ -644,6 +649,7 @@ namespace WaifuAI
                 Settings.RAGDistanceCutOff = RAGSystem.DistanceCutOff;
                 Settings.ReservedSessionTokens = LLMSystem.ReservedSessionTokens;
                 Settings.MaxRAGEntries = LLMSystem.MaxRAGEntries;
+                Settings.RAGPosition = LLMSystem.RAGIndex;
                 var str = JsonConvert.SerializeObject(Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
             }
@@ -670,8 +676,10 @@ namespace WaifuAI
                 return;
             foreach (var session in LLMSystem.History.Sessions)
             {
-                var item = new ListViewItem(new[] { session.Title, session.StartTime.ToString("g") });
-                item.Tag = session;
+                var item = new ListViewItem([session.Title, session.StartTime.ToString("g")])
+                {
+                    Tag = session
+                };
                 listSession.Items.Add(item);
             }
         }
@@ -1041,9 +1049,9 @@ namespace WaifuAI
         {
             ed_generate.Clear();
             var res = await RAGSystem.Search(ed_tokencount.Text, 5);
-            foreach (var item in res)
+            foreach (var (session, category, distance) in res)
             {
-                ed_generate.AppendText("[" + item.category.ToString() + " - " + item.distance.ToString("F3") + "] " + item.session.Title + Environment.NewLine);
+                ed_generate.AppendText("[" + category.ToString() + " - " + distance.ToString("F3") + "] " + session.Title + Environment.NewLine);
             }
         }
 
@@ -1052,6 +1060,8 @@ namespace WaifuAI
             RAGSystem.UseSummaries = ck_ragsummaries.Checked;
             RAGSystem.UseTitles = ck_ragtitles.Checked;
             RAGSystem.DistanceCutOff = (float)num_ragcutoff.Value;
+            LLMSystem.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
+            LLMSystem.RAGIndex = (int)num_ragindex.Value;
             if (cb_ragheuristic.SelectedIndex == 0)
                 RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
             else if (cb_ragheuristic.SelectedIndex == 1)
@@ -1071,6 +1081,21 @@ namespace WaifuAI
         private void num_ragcutoff_ValueChanged(object sender, EventArgs e)
         {
             RAGSystem.DistanceCutOff = (float)num_ragcutoff.Value;
+        }
+
+        private void num_ragmaxretrieve_ValueChanged(object sender, EventArgs e)
+        {
+            LLMSystem.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
+        }
+
+        private void ck_ragenabled_CheckedChanged(object sender, EventArgs e)
+        {
+            RAGSystem.Enabled = ck_ragenabled.Checked;
+        }
+
+        private void num_ragindex_ValueChanged(object sender, EventArgs e)
+        {
+            LLMSystem.RAGIndex = (int)num_ragindex.Value;
         }
     }
 }

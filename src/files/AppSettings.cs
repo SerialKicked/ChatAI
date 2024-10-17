@@ -22,5 +22,6 @@ namespace WaifuAI.Files
         public HNSW.Net.NeighbourSelectionHeuristic RAGHeurisitc { get; set; } = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
         public int MaxRAGEntries { get; set; } = 4;
         public int ReservedSessionTokens { get; set; } = 2048;
+        public int RAGPosition { get; set; } = 1;
     }
 }
