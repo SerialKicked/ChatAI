@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using WaifuAI.Files;
 
 namespace WaifuAI.Memory
@@ -94,11 +95,24 @@ namespace WaifuAI.Memory
         {
             if (log.Messages.Count == 0)
                 return [];
-            // retrieve the last messages from the chatlog
-            var messages = log.Messages.Skip(Math.Max(0, log.Messages.Count - ScanDepth)).Select(m => m.Message).ToList();  
+            // retrieve the last User and Bot messages from the chatlog
+            var messages = new List<SingleMessage>();
+            var min = log.Messages.Count - ScanDepth;
+            if (min < 0)
+                min = 0;
+            for (int i = log.Messages.Count - 1; i >= min; i--)
+            {
+                var mess =log.Messages[i];
+                if (mess.Role == AuthorRole.User || mess.Role == AuthorRole.Assistant)
+                {
+                    messages.Add(mess);
+                }
+            }
+            if (messages.Count == 0)
+                return [];
             var stbuilder = new StringBuilder();
             foreach (var item in messages)
-                stbuilder.AppendLinuxLine(item);
+                stbuilder.AppendLinuxLine(item.Message);
             if (userinput != null)
                 stbuilder.AppendLinuxLine(userinput);
             return FindEntries(stbuilder.ToString());
