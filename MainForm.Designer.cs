@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             tabControl1 = new TabControl();
             tabChat = new TabPage();
+            bt_impersonate = new Button();
             web_chat = new Microsoft.Web.WebView2.WinForms.WebView2();
             bt_delete = new Button();
             bt_reroll = new Button();
@@ -157,11 +158,12 @@
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(981, 702);
+            tabControl1.Size = new Size(908, 602);
             tabControl1.TabIndex = 1;
             // 
             // tabChat
             // 
+            tabChat.Controls.Add(bt_impersonate);
             tabChat.Controls.Add(web_chat);
             tabChat.Controls.Add(bt_delete);
             tabChat.Controls.Add(bt_reroll);
@@ -171,10 +173,23 @@
             tabChat.Location = new Point(4, 27);
             tabChat.Name = "tabChat";
             tabChat.Padding = new Padding(3);
-            tabChat.Size = new Size(973, 671);
+            tabChat.Size = new Size(900, 571);
             tabChat.TabIndex = 1;
             tabChat.Text = "Chat";
             tabChat.UseVisualStyleBackColor = true;
+            // 
+            // bt_impersonate
+            // 
+            bt_impersonate.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            bt_impersonate.BackColor = Color.Turquoise;
+            bt_impersonate.FlatStyle = FlatStyle.Flat;
+            bt_impersonate.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            bt_impersonate.Location = new Point(771, 543);
+            bt_impersonate.Name = "bt_impersonate";
+            bt_impersonate.Size = new Size(60, 25);
+            bt_impersonate.TabIndex = 7;
+            bt_impersonate.Text = "For Me";
+            bt_impersonate.UseVisualStyleBackColor = false;
             // 
             // web_chat
             // 
@@ -184,7 +199,7 @@
             web_chat.DefaultBackgroundColor = Color.White;
             web_chat.Location = new Point(212, 3);
             web_chat.Name = "web_chat";
-            web_chat.Size = new Size(758, 620);
+            web_chat.Size = new Size(685, 502);
             web_chat.TabIndex = 6;
             web_chat.ZoomFactor = 1D;
             // 
@@ -194,11 +209,11 @@
             bt_delete.BackColor = Color.LightCoral;
             bt_delete.FlatStyle = FlatStyle.Flat;
             bt_delete.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_delete.Location = new Point(895, 629);
+            bt_delete.Location = new Point(837, 543);
             bt_delete.Name = "bt_delete";
-            bt_delete.Size = new Size(75, 39);
+            bt_delete.Size = new Size(60, 25);
             bt_delete.TabIndex = 5;
-            bt_delete.Text = "REM LAST";
+            bt_delete.Text = "Delete";
             bt_delete.UseVisualStyleBackColor = false;
             // 
             // bt_reroll
@@ -207,11 +222,11 @@
             bt_reroll.BackColor = Color.PaleGoldenrod;
             bt_reroll.FlatStyle = FlatStyle.Flat;
             bt_reroll.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_reroll.Location = new Point(814, 629);
+            bt_reroll.Location = new Point(837, 512);
             bt_reroll.Name = "bt_reroll";
-            bt_reroll.Size = new Size(75, 39);
+            bt_reroll.Size = new Size(60, 25);
             bt_reroll.TabIndex = 4;
-            bt_reroll.Text = "REROLL";
+            bt_reroll.Text = "ReRoll";
             bt_reroll.UseVisualStyleBackColor = false;
             // 
             // bt_send
@@ -220,11 +235,11 @@
             bt_send.BackColor = Color.PaleGreen;
             bt_send.FlatStyle = FlatStyle.Flat;
             bt_send.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_send.Location = new Point(733, 629);
+            bt_send.Location = new Point(771, 512);
             bt_send.Name = "bt_send";
-            bt_send.Size = new Size(75, 39);
+            bt_send.Size = new Size(60, 25);
             bt_send.TabIndex = 3;
-            bt_send.Text = "SEND";
+            bt_send.Text = "Send";
             bt_send.UseVisualStyleBackColor = false;
             // 
             // ed_input
@@ -232,10 +247,10 @@
             ed_input.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             ed_input.BackColor = Color.WhiteSmoke;
             ed_input.BorderStyle = BorderStyle.FixedSingle;
-            ed_input.Location = new Point(212, 629);
+            ed_input.Location = new Point(212, 511);
             ed_input.Multiline = true;
             ed_input.Name = "ed_input";
-            ed_input.Size = new Size(515, 39);
+            ed_input.Size = new Size(553, 57);
             ed_input.TabIndex = 2;
             ed_input.KeyPress += ed_input_KeyPress;
             // 
@@ -248,7 +263,7 @@
             panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
-            panel1.Size = new Size(203, 665);
+            panel1.Size = new Size(203, 565);
             panel1.TabIndex = 0;
             // 
             // groupBox5
@@ -266,7 +281,7 @@
             groupBox5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox5.Location = new Point(6, 320);
             groupBox5.Name = "groupBox5";
-            groupBox5.Size = new Size(187, 341);
+            groupBox5.Size = new Size(187, 241);
             groupBox5.TabIndex = 25;
             groupBox5.TabStop = false;
             groupBox5.Text = "Chat Settings";
@@ -308,7 +323,7 @@
             ck_ragenabled.Checked = true;
             ck_ragenabled.CheckState = CheckState.Checked;
             ck_ragenabled.Font = new Font("Segoe UI", 9F);
-            ck_ragenabled.Location = new Point(87, 287);
+            ck_ragenabled.Location = new Point(87, 187);
             ck_ragenabled.Name = "ck_ragenabled";
             ck_ragenabled.Size = new Size(94, 19);
             ck_ragenabled.TabIndex = 20;
@@ -320,7 +335,7 @@
             // 
             lbl_session.AutoSize = true;
             lbl_session.Font = new Font("Segoe UI", 9F);
-            lbl_session.Location = new Point(6, 173);
+            lbl_session.Location = new Point(6, 151);
             lbl_session.Name = "lbl_session";
             lbl_session.Size = new Size(70, 15);
             lbl_session.TabIndex = 22;
@@ -340,7 +355,7 @@
             // 
             bt_newsession.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             bt_newsession.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_newsession.Location = new Point(6, 312);
+            bt_newsession.Location = new Point(6, 212);
             bt_newsession.Name = "bt_newsession";
             bt_newsession.Size = new Size(175, 23);
             bt_newsession.TabIndex = 21;
@@ -524,7 +539,7 @@
             tabHistory.Controls.Add(listSession);
             tabHistory.Location = new Point(4, 27);
             tabHistory.Name = "tabHistory";
-            tabHistory.Size = new Size(973, 671);
+            tabHistory.Size = new Size(1042, 671);
             tabHistory.TabIndex = 6;
             tabHistory.Text = "Chat History";
             tabHistory.UseVisualStyleBackColor = true;
@@ -537,7 +552,7 @@
             web_sessioncontent.Dock = DockStyle.Fill;
             web_sessioncontent.Location = new Point(326, 100);
             web_sessioncontent.Name = "web_sessioncontent";
-            web_sessioncontent.Size = new Size(647, 571);
+            web_sessioncontent.Size = new Size(716, 571);
             web_sessioncontent.TabIndex = 2;
             web_sessioncontent.ZoomFactor = 1D;
             // 
@@ -550,7 +565,7 @@
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(326, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(647, 100);
+            panel2.Size = new Size(716, 100);
             panel2.TabIndex = 1;
             // 
             // bt_sessionrefresh
@@ -613,7 +628,7 @@
             tabInstruct.Location = new Point(4, 27);
             tabInstruct.Name = "tabInstruct";
             tabInstruct.Padding = new Padding(3);
-            tabInstruct.Size = new Size(973, 671);
+            tabInstruct.Size = new Size(1042, 671);
             tabInstruct.TabIndex = 2;
             tabInstruct.Text = "Instruction Format Editor";
             tabInstruct.UseVisualStyleBackColor = true;
@@ -666,7 +681,7 @@
             tabSysPrompt.Location = new Point(4, 27);
             tabSysPrompt.Name = "tabSysPrompt";
             tabSysPrompt.Padding = new Padding(3);
-            tabSysPrompt.Size = new Size(973, 671);
+            tabSysPrompt.Size = new Size(1042, 671);
             tabSysPrompt.TabIndex = 5;
             tabSysPrompt.Text = "System Prompt Editor";
             tabSysPrompt.UseVisualStyleBackColor = true;
@@ -719,7 +734,7 @@
             tabSamplers.Location = new Point(4, 27);
             tabSamplers.Name = "tabSamplers";
             tabSamplers.Padding = new Padding(3);
-            tabSamplers.Size = new Size(973, 671);
+            tabSamplers.Size = new Size(1042, 671);
             tabSamplers.TabIndex = 3;
             tabSamplers.Text = "Sampler Editor";
             tabSamplers.UseVisualStyleBackColor = true;
@@ -771,7 +786,7 @@
             tabSettings.Location = new Point(4, 27);
             tabSettings.Name = "tabSettings";
             tabSettings.Padding = new Padding(3);
-            tabSettings.Size = new Size(973, 671);
+            tabSettings.Size = new Size(1042, 671);
             tabSettings.TabIndex = 4;
             tabSettings.Text = "Settings";
             tabSettings.UseVisualStyleBackColor = true;
@@ -1020,7 +1035,7 @@
             tabAPI.Location = new Point(4, 27);
             tabAPI.Name = "tabAPI";
             tabAPI.Padding = new Padding(3);
-            tabAPI.Size = new Size(973, 671);
+            tabAPI.Size = new Size(1042, 671);
             tabAPI.TabIndex = 0;
             tabAPI.Text = "API Testing";
             tabAPI.UseVisualStyleBackColor = true;
@@ -1145,7 +1160,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(981, 702);
+            ClientSize = new Size(908, 602);
             Controls.Add(tabControl1);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
@@ -1275,5 +1290,6 @@
         private GroupBox grp_model;
         private GroupBox groupBox4;
         private GroupBox groupBox5;
+        private Button bt_impersonate;
     }
 }

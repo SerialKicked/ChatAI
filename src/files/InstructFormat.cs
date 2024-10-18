@@ -37,7 +37,15 @@ namespace WaifuAI.Files
         {
             var res = BotStart;
             if (AddNamesToPrompt)
-                res += bot.Name + ":";
+                res += bot.Name + ": ";
+            return res;
+        }
+
+        public string GetUserStart(Character user)
+        {
+            var res = UserStart;
+            if (AddNamesToPrompt)
+                res += user.Name + ": ";
             return res;
         }
 

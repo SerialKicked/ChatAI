@@ -292,16 +292,28 @@ namespace WaifuAI
                     }
                 }
             }
-
-            tokencount += GetTokenCount(Instruct.GetResponseStart(Bot));
+            if (string.IsNullOrEmpty(newMessage) && MsgSender == AuthorRole.User)
+                tokencount += GetTokenCount(Instruct.GetResponseStart(User));
+            else
+                tokencount += GetTokenCount(Instruct.GetResponseStart(Bot));
             var availtokens = (int)(MaxContextLength) - tokencount - MaxReplyLength;
             var history = History.GetFormatedDialogs(availtokens, Bot.SessionMemorySystem, inserts);
 
-            var res = !string.IsNullOrEmpty(memprompt) && RAGIndex == -1 ?
-                sysprompt + NewLine + memprompt + history + msg + Instruct.GetResponseStart(Bot) :
-                sysprompt + NewLine + history + msg + Instruct.GetResponseStart(Bot);
 
-            return res;
+            if (string.IsNullOrEmpty(newMessage) && MsgSender == AuthorRole.User)
+            {
+                var res = !string.IsNullOrEmpty(memprompt) && RAGIndex == -1 ?
+                    sysprompt + NewLine + memprompt + history + msg + Instruct.GetUserStart(User) :
+                    sysprompt + NewLine + history + msg + Instruct.GetUserStart(User);
+                return res;
+            }
+            else
+            {
+                var res = !string.IsNullOrEmpty(memprompt) && RAGIndex == -1 ?
+                    sysprompt + NewLine + memprompt + history + msg + Instruct.GetResponseStart(Bot) :
+                    sysprompt + NewLine + history + msg + Instruct.GetResponseStart(Bot);
+                return res;
+            }
         }
 
         private static string MemoriesToMessage(List<(ChatSession session, EmbedType category, float distance)> memories)
@@ -339,6 +351,13 @@ namespace WaifuAI
             if (Status == SystemStatus.Busy)
                 return;
             await StartGeneration(AuthorRole.Assistant, "");
+        }
+
+        public static async Task ImpersonateUser()
+        {
+            if (Status == SystemStatus.Busy)
+                return;
+            await StartGeneration(AuthorRole.User, "");
         }
 
         /// <summary>

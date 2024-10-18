@@ -22,6 +22,7 @@ namespace WaifuAI
         private string? _currentgeneration = null;
         private int _currentgenerationtokencount = 0;
         private ChatSession? _selectedSession = null;
+        private bool _impersonatemode = false;
 
         public MainForm()
         {
@@ -43,6 +44,7 @@ namespace WaifuAI
             bt_chattosessions.Click += ConvertChatToSessionList!;
             bt_sessionrefresh.Click += bt_sessionrefresh_Click!;
             bt_newsession.Click += StartNewSession!;
+            bt_impersonate.Click += Impersonate!;
             // Load editors and chat menu
             bt_embedall.Click += EmbedAllSessions!;
             SetupSamplerEditor();
@@ -97,26 +99,47 @@ namespace WaifuAI
         {
             _currentgeneration += e;
             _currentgenerationtokencount++;
-            if (_currentgenerationtokencount > 1)
+            if (_currentgenerationtokencount > 2)
             {
                 _currentgenerationtokencount = 0;
-                var MsgPrefix = LLMSystem.GetMessagePrefix(AuthorRole.Assistant);
-                await WebEditLastMessage(MsgPrefix + _currentgeneration);
+                if (!_impersonatemode)
+                {
+                    var MsgPrefix = LLMSystem.GetMessagePrefix(AuthorRole.Assistant);
+                    await WebEditLastMessage(MsgPrefix + _currentgeneration);
+                }
+                else
+                {
+                    Invoke((System.Windows.Forms.MethodInvoker)delegate
+                    {
+                        ed_input.Text = _currentgeneration;
+                    });
+                }
             }
         }
 
         private async void OnStreamInferenceEnded(object? sender, string e)
         {
-            var MsgPrefix = LLMSystem.GetMessagePrefix(AuthorRole.Assistant);
-            var msg = LLMSystem.Bot.History.LogMessage(AuthorRole.Assistant, e, LLMSystem.User, LLMSystem.Bot);
-            await WebEditLastMessage(MsgPrefix + e);
-
-            _currentgeneration = string.Empty;
-            _currentgenerationtokencount = 0;
-            Invoke((System.Windows.Forms.MethodInvoker)delegate
+            if (_impersonatemode)
             {
-                ShowCurrentSessionInfo();
-            });
+                _impersonatemode = false;
+                Invoke((System.Windows.Forms.MethodInvoker)delegate
+                {
+                    ed_input.Text = e;
+                });
+                LLMSystem.InvalidatePromptCache();
+            }
+            else
+            {
+                var MsgPrefix = LLMSystem.GetMessagePrefix(AuthorRole.Assistant);
+                var msg = LLMSystem.Bot.History.LogMessage(AuthorRole.Assistant, e, LLMSystem.User, LLMSystem.Bot);
+                await WebEditLastMessage(MsgPrefix + e);
+                _currentgeneration = string.Empty;
+                _currentgenerationtokencount = 0;
+                Invoke((System.Windows.Forms.MethodInvoker)delegate
+                {
+                    ShowCurrentSessionInfo();
+                });
+            }
         }
 
         private void ShowCurrentSessionInfo()
@@ -480,8 +503,22 @@ namespace WaifuAI
 
         #region *** Main Chat Functions ***
 
+        private async void Impersonate(object sender, EventArgs e)
+        {
+            if (LLMSystem.Status == SystemStatus.Busy)
+                return;
+            _impersonatemode = true;
+            _currentgeneration = string.Empty;
+            _currentgenerationtokencount = 0;
+            ed_input.Text = string.Empty;
+            await LLMSystem.ImpersonateUser();
+        }
+
         private async void SendMessage(object sender, EventArgs e)
         {
+            if (LLMSystem.Status == SystemStatus.Busy)
+                return;
+            _impersonatemode = false;
             if (!string.IsNullOrEmpty(ed_input.Text))
             {
                 var messagetext = LLMSystem.GetAwayString() + LLMSystem.ReplaceMacros(ed_input.Text.Replace(Environment.NewLine, LLMSystem.NewLine), LLMSystem.User, LLMSystem.Bot);
@@ -501,7 +538,7 @@ namespace WaifuAI
                 _currentgeneration = string.Empty;
                 _currentgenerationtokencount = 0;
                 await SendMessageToUI(
-                    new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your post...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                    new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is thinking...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
                 ed_input.Text = string.Empty;
                 await LLMSystem.AddBotMessage();
             }
@@ -512,6 +549,7 @@ namespace WaifuAI
         {
             if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.Messages.Count == 0)
                 return;
+            _impersonatemode = false;
             await WebEditLastMessage("*" + LLMSystem.Bot.UniqueName + " is thinking...*");
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
@@ -538,6 +576,7 @@ namespace WaifuAI
 
         private async void DeleteLastMessage(object sender, EventArgs e)
         {
+            _impersonatemode = false;
             if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.Messages.Count == 0)
                 return;
             LLMSystem.RemoveLastMessage();
