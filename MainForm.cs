@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using Markdig;
 using WaifuAI.Memory;
 using Microsoft.Web.WebView2.Core;
+using WaifuAI.src.forms;
+using System.Numerics;
 
 namespace WaifuAI
 {
@@ -555,7 +557,7 @@ namespace WaifuAI
             var text = Markdown.ToHtml(LLMSystem.GetMessagePrefix(singleMessage.Role) + singleMessage.Message);
             var coremsg = $@"
                     <div class='portrait'>
-                        <img src='https://appassets.test/{img}' alt='Portrait' width='50' height='67'>
+                        <img src='https://appassets.test/img/{img}' alt='Portrait' width='50' height='67'>
                     </div>
                     <div class='message-content'>
                         {text}
@@ -1060,27 +1062,43 @@ namespace WaifuAI
                     max-height: 100%;
                     overflow-y: auto;
                     overflow-x: hidden;
-                    padding: 10px;
+                    padding: 16px;
                     width: 100%;
                     box-sizing: border-box;
+                    background-image: url('https://appassets.test/ui/background.jpg');
+                    background-size: cover; /* Ensures the image covers the entire background */
+                    background-attachment: fixed; /* Keeps the background image fixed in place */
+                    background-position: center; /* Centers the background image */
+                    background-repeat: no-repeat; /* Prevents the background image from repeating */
+
                 }
-                em { color: darkblue; }
+                em { color: yellow; }
+                strong { color: Tomato }
 
                 .chat-message {
                     display: flex;
                     align-items: flex-start;
                     margin-bottom: 10px;
+                    border: 1px solid gray;
+                    background-color: rgba(0, 0, 0, 0.75);
+                    color: rgb(200, 200, 200);
+                }
+                .chatContainer {
                 }
 
                 .portrait {
                     flex: 0 0 70px;
-                    margin-right: 10px;
+                    padding: 10px;
+                    margin-right: 0px;
                 }
 
                 .message-content {
                     flex: 1;
                     word-wrap: break-word;
+                    padding-right: 10px;
                 }
+
+
             </style>";
             string scripts = @"
             <script>
@@ -1100,14 +1118,49 @@ namespace WaifuAI
                         const newDiv = document.createElement('div');
                         newDiv.className = 'chat-message';
                         newDiv.innerHTML = htmlContent;
-                        console.warn(chatMessages.length);
                         lastChatMessage.insertAdjacentElement('afterend', newDiv);
                     } else {
                         console.warn('No chat messages found.');
                     }
                 }
+                document.addEventListener('DOMContentLoaded', (event) => {
+                    const chatContainer = document.getElementById('chatContainer');
+                    chatContainer.addEventListener('dblclick', (event) => {
+                        if (event.target.classList.contains('chat-message')) {
+                            const index = Array.from(chatContainer.children).indexOf(event.target);
+                            window.chrome.webview.postMessage({ type: 'EditMessage', index: index + 1 });
+                        }
+                    });
+                });            
             </script>";
-            return $"<html><head>{css}</head><body>{scripts}<div id='chatContainer'>{htmlContent}</div></body></html>";
+            return $"<html><head>{css}</head><body>{scripts}<div id='chatContainer'>{htmlContent}<br/></div></body></html>";
+        }
+
+        private void EditMessage(int messageIndex)
+        {
+            //if (InvokeRequired)
+            //{
+            //    Invoke(new Action<int>(EditMessage), messageIndex);
+            //    return;
+            //}
+            var x = messageIndex;
+            var realid = LLMSystem.History.Messages.Count - 50;
+            if (realid < 0)
+                realid = 0;
+            realid += messageIndex - 1;
+            var editForm = new EditMessageForm(LLMSystem.History.Messages[realid].Guid);
+            try
+            {
+                if (editForm.ShowDialog() == DialogResult.OK && editForm.Message != null)
+                {
+                    LoadHistoryToUI(50);
+                    LLMSystem.InvalidatePromptCache();
+                }
+            }
+            finally
+            {
+                editForm.Dispose();
+            }
         }
 
         private static string InjectDialogHtml(string imgPath, string dialog)
@@ -1116,7 +1169,7 @@ namespace WaifuAI
             return $@"
                 <div class='chat-message'>
                     <div class='portrait'>
-                        <img src='https://appassets.test/{imgPath}' alt='Portrait' width='50' height='67'>
+                        <img src='https://appassets.test/img/{imgPath}' alt='Portrait' width='50' height='67'>
                     </div>
                     <div class='message-content'>
                         {dialog}
@@ -1179,8 +1232,9 @@ namespace WaifuAI
             {
                 await web_chat.EnsureCoreWebView2Async();
                 web_chat.CoreWebView2!.Settings.AreDevToolsEnabled = true;
-                web_chat.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets.test", AppContext.BaseDirectory + "data\\img\\", CoreWebView2HostResourceAccessKind.Allow);
+                web_chat.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets.test", AppContext.BaseDirectory + "data\\", CoreWebView2HostResourceAccessKind.Allow);
                 web_chat.CoreWebView2.DOMContentLoaded += OnWebChatContentLoaded!; // Add event handler
+                web_chat.CoreWebView2.WebMessageReceived += OnWebChatWebMessageReceived!;
                 web_chat.CoreWebView2.OpenDevToolsWindow();
             }
             var html = string.Empty;
@@ -1204,6 +1258,21 @@ namespace WaifuAI
         {
             string script = "window.scrollTo(0, document.body.scrollHeight);";
             await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+        }
+
+        private void OnWebChatWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
+        {
+            var message = e.WebMessageAsJson;
+            if (message != null)
+            {
+                var json = JsonConvert.DeserializeObject<Dictionary<string, object>>(message);
+                if (json != null && json.ContainsKey("type") && json["type"].ToString() == "EditMessage")
+                {
+                    int divNumber = Convert.ToInt32(json["index"]);
+                    Invoke(new Action<int>(EditMessage), divNumber);
+
+                }
+            }
         }
     }
 }
