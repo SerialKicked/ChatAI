@@ -75,6 +75,7 @@ namespace WaifuAI.src.forms
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
             Text = "Edit Message";
+            TopMost = true;
             ResumeLayout(false);
             PerformLayout();
         }

@@ -119,12 +119,12 @@ namespace WaifuAI
             });
         }
 
-
         private void ShowCurrentSessionInfo()
         {
             var (tokens, duration) = LLMSystem.History.GetCurrentChatSessionInfo();
             lbl_session.Text = "Tokens: " + tokens + Environment.NewLine + "Duration: " + duration.TotalDays.ToString("F2") + " days";
         }
+      
         // Helper method to use Invoke with async methods
         private Task<bool> InvokeAsync(Func<Task> func)
         {
@@ -533,9 +533,9 @@ namespace WaifuAI
             await WebChatLoad();
         }
 
-        private void LoadHistoryToUI()
+        private async Task LoadHistoryToUI()
         {
-            WebChatLoad();
+            await WebChatLoad();
         }
 
         private async Task SendMessageToUI(SingleMessage singleMessage)
@@ -965,12 +965,12 @@ namespace WaifuAI
 
         #endregion
 
-        private void cb_bot_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cb_bot_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cb_bot.SelectedItem is string key && !string.IsNullOrEmpty(key))
             {
                 LLMSystem.Bot = DataFiles.Characters[key];
-                LoadHistoryToUI();
+                await LoadHistoryToUI();
                 LoadChatHistoryTab();
                 ShowCurrentSessionInfo();
             }
@@ -1135,22 +1135,30 @@ namespace WaifuAI
 
         private void EditMessage(int messageIndex)
         {
-            var realid = LLMSystem.History.Messages.Count - Settings.MaxMessagesOnScreen;
-            if (realid < 0)
-                realid = 0;
-            realid += messageIndex - 1;
-            var editForm = new EditMessageForm(LLMSystem.History.Messages[realid].Guid);
             try
             {
-                if (editForm.ShowDialog() == DialogResult.OK && editForm.Message != null)
+                Task.Run(() =>
                 {
-                    LoadHistoryToUI();
-                    LLMSystem.InvalidatePromptCache();
-                }
+                    var realid = LLMSystem.History.Messages.Count - Settings.MaxMessagesOnScreen;
+                    if (realid < 0)
+                        realid = 0;
+                    realid += messageIndex - 1;
+                    var editForm = new EditMessageForm(LLMSystem.History.Messages[realid].Guid);
+                    if (editForm.ShowDialog() == DialogResult.OK && editForm.Message != null)
+                    {
+                        Invoke((System.Windows.Forms.MethodInvoker)delegate
+                        {
+                            LoadHistoryToUI();
+                            LLMSystem.InvalidatePromptCache();
+                        });
+                    }
+                    editForm.Dispose();
+                });
             }
-            finally
+            catch (Exception ex)
             {
-                editForm.Dispose();
+                // Log the exception
+                Console.WriteLine($"An error occurred while editing the message: {ex.Message}");
             }
         }
 
@@ -1254,7 +1262,6 @@ namespace WaifuAI
                 {
                     int divNumber = Convert.ToInt32(json["index"]);
                     Invoke(new Action<int>(EditMessage), divNumber);
-
                 }
             }
         }
