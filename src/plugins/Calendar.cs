@@ -7,18 +7,11 @@ using WaifuAI.Files;
 
 namespace WaifuAI.Plugins
 {
-    public class RecurrencePattern
+    public class RecurrencePattern(RecurrenceFrequency frequency, int interval, DateTime? endDate = null)
     {
-        public RecurrenceFrequency Frequency { get; set; }
-        public int Interval { get; set; } // e.g., every 2 days, every 3 weeks
-        public DateTime? EndDate { get; set; } // null if it never ends
-
-        public RecurrencePattern(RecurrenceFrequency frequency, int interval, DateTime? endDate = null)
-        {
-            Frequency = frequency;
-            Interval = interval;
-            EndDate = endDate;
-        }
+        public RecurrenceFrequency Frequency { get; set; } = frequency;
+        public int Interval { get; set; } = interval;
+        public DateTime? EndDate { get; set; } = endDate;
     }
 
     public enum RecurrenceFrequency
@@ -29,24 +22,19 @@ namespace WaifuAI.Plugins
         Yearly
     }
 
-    public class CalendarEvent
+    public class CalendarEvent(Guid id, string title, string description, DateTime startTime, DateTime endTime, string location, RecurrencePattern recurrence)
     {
-        public Guid Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-        public string Location { get; set; }
-        public RecurrencePattern Recurrence { get; set; }
-
-        public CalendarEvent()
-        {
-            Id = Guid.NewGuid();
-        }
+        public Guid Id { get; set; } = id;
+        public string Title { get; set; } = title;
+        public string Description { get; set; } = description;
+        public DateTime StartTime { get; set; } = startTime;
+        public DateTime EndTime { get; set; } = endTime;
+        public string Location { get; set; } = location;
+        public RecurrencePattern Recurrence { get; set; } = recurrence;
     }
 
     public class Calendar : BaseFile
     {
-        public List<CalendarEvent> Events { get; set; } = new();
+        public List<CalendarEvent> Events { get; set; } = [];
     }
 }

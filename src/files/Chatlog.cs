@@ -108,8 +108,6 @@ namespace WaifuAI.Files
                 "# Instruction:" + LLMSystem.NewLine + 
                 "Give a title to the summary above. This title should be a single sentence. Write only the title, nothinh else.";
             var msg = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, msgtxt);
-            var tokencount = LLMSystem.GetTokenCount(msg);
-            tokencount += LLMSystem.GetTokenCount(LLMSystem.Instruct.GetResponseStart(LLMSystem.Bot));
             var res = msg + LLMSystem.Instruct.GetResponseStart(LLMSystem.Bot);
 
             var llmparams = LLMSystem.Sampler.GetCopy();

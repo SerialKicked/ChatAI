@@ -18,14 +18,10 @@ namespace WaifuAI
         public SamplerSettings SelectedSamplerEditor { get; set; } = new SamplerSettings();
         public InstructFormat SelectedInstructEditor { get; set; } = new InstructFormat();
         public SystemPrompt SelectedPromptEditor { get; set; } = new SystemPrompt();
-        private System.Drawing.Image SystemLogo { get; } = System.Drawing.Image.FromFile("data/img/gears.png");
 
         private string? _currentgeneration = null;
         private int _currentgenerationtokencount = 0;
-        private bool _isfillinghistory = false;
         private ChatSession? _selectedSession = null;
-
-        private string _savedhtml = string.Empty;
 
         public MainForm()
         {
@@ -124,13 +120,13 @@ namespace WaifuAI
             _currentgenerationtokencount = 0;
             Invoke((System.Windows.Forms.MethodInvoker)delegate
             {
-                var infogen = LLMSystem.History.GetCurrentChatSessionInfo();
-                lbl_session.Text = "Tokens: " + infogen.tokens + Environment.NewLine + "Duration: " + infogen.duration.TotalDays.ToString("F2") + " days";
+                var (tokens, duration) = LLMSystem.History.GetCurrentChatSessionInfo();
+                lbl_session.Text = "Tokens: " + tokens + Environment.NewLine + "Duration: " + duration.TotalDays.ToString("F2") + " days";
             });
         }
 
         // Helper method to use Invoke with async methods
-        private Task InvokeAsync(Func<Task> func)
+        private Task<bool> InvokeAsync(Func<Task> func)
         {
             var tcs = new TaskCompletionSource<bool>();
             BeginInvoke(new Action(async () =>
@@ -280,7 +276,7 @@ namespace WaifuAI
                 }
                 else if (property.PropertyType == typeof(ICollection<int>))
                 {
-                    control = new TextBox { Text = string.Join(",", (ICollection<int>)property.GetValue(generationInput)), Location = new Point(150, yPos), Width = 200 };
+                    control = new TextBox { Text = string.Join(",", (ICollection<int>)property.GetValue(generationInput)!), Location = new Point(150, yPos), Width = 200 };
                     ((TextBox)control).TextChanged += (sender, e) => property.SetValue(generationInput, ((TextBox)control).Text.Split(',').Select(int.Parse).ToList());
                 }
                 else if (property.PropertyType == typeof(ICollection<string>))
@@ -351,7 +347,7 @@ namespace WaifuAI
                 }
                 else if (property.PropertyType == typeof(string))
                 {
-                    control = new TextBox { Text = ((string)property.GetValue(instructsetting)).Replace("\n", "\\n"), Location = new Point(150, yPos), Width = 400 };
+                    control = new TextBox { Text = ((string)property.GetValue(instructsetting)!).Replace("\n", "\\n"), Location = new Point(150, yPos), Width = 400 };
                     ((TextBox)control).TextChanged += (sender, e) => property.SetValue(instructsetting, ((TextBox)control).Text.Replace("\\n", "\n"));
                 }
                 else if (property.PropertyType == typeof(bool))
@@ -361,7 +357,7 @@ namespace WaifuAI
                 }
                 else if (property.PropertyType == typeof(ICollection<int>))
                 {
-                    control = new TextBox { Text = string.Join(",", (ICollection<int>)property.GetValue(instructsetting)), Location = new Point(150, yPos), Width = 400 };
+                    control = new TextBox { Text = string.Join(",", (ICollection<int>)property.GetValue(instructsetting)!), Location = new Point(150, yPos), Width = 400 };
                     ((TextBox)control).TextChanged += (sender, e) => property.SetValue(instructsetting, ((TextBox)control).Text.Split(',').Select(int.Parse).ToList());
                 }
                 else if (property.PropertyType == typeof(ICollection<string>))
@@ -414,7 +410,7 @@ namespace WaifuAI
                 }
                 else if (property.PropertyType == typeof(string))
                 {
-                    control = new TextBox { Text = ((string)property.GetValue(promptsetting)).Replace("\n", "\\n"), Location = new Point(150, yPos), Width = 400 };
+                    control = new TextBox { Text = ((string)property.GetValue(promptsetting)!).Replace("\n", "\\n"), Location = new Point(150, yPos), Width = 400 };
                     ((TextBox)control).TextChanged += (sender, e) => property.SetValue(promptsetting, ((TextBox)control).Text.Replace("\\n", "\n"));
                 }
                 else if (property.PropertyType == typeof(bool))
@@ -424,7 +420,7 @@ namespace WaifuAI
                 }
                 else if (property.PropertyType == typeof(ICollection<int>))
                 {
-                    control = new TextBox { Text = string.Join(",", (ICollection<int>)property.GetValue(promptsetting)), Location = new Point(150, yPos), Width = 400 };
+                    control = new TextBox { Text = string.Join(",", (ICollection<int>)property.GetValue(promptsetting)!), Location = new Point(150, yPos), Width = 400 };
                     ((TextBox)control).TextChanged += (sender, e) => property.SetValue(promptsetting, ((TextBox)control).Text.Split(',').Select(int.Parse).ToList());
                 }
                 else if (property.PropertyType == typeof(ICollection<string>))
@@ -1138,12 +1134,6 @@ namespace WaifuAI
 
         private void EditMessage(int messageIndex)
         {
-            //if (InvokeRequired)
-            //{
-            //    Invoke(new Action<int>(EditMessage), messageIndex);
-            //    return;
-            //}
-            var x = messageIndex;
             var realid = LLMSystem.History.Messages.Count - 50;
             if (realid < 0)
                 realid = 0;
@@ -1177,7 +1167,7 @@ namespace WaifuAI
                 </div>";
         }
 
-        private string AddHtmlMessage(SingleMessage singleMessage)
+        private static string AddHtmlMessage(SingleMessage singleMessage)
         {
             string img = "gears.png";
             switch (singleMessage.Role)
@@ -1231,11 +1221,11 @@ namespace WaifuAI
             if (web_chat.CoreWebView2 == null)
             {
                 await web_chat.EnsureCoreWebView2Async();
-                web_chat.CoreWebView2!.Settings.AreDevToolsEnabled = true;
+                web_chat.CoreWebView2!.Settings.AreDevToolsEnabled = false;
+                web_chat.CoreWebView2!.Settings.AreDefaultContextMenusEnabled = false;
                 web_chat.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets.test", AppContext.BaseDirectory + "data\\", CoreWebView2HostResourceAccessKind.Allow);
                 web_chat.CoreWebView2.DOMContentLoaded += OnWebChatContentLoaded!; // Add event handler
                 web_chat.CoreWebView2.WebMessageReceived += OnWebChatWebMessageReceived!;
-                web_chat.CoreWebView2.OpenDevToolsWindow();
             }
             var html = string.Empty;
             var start = LLMSystem.History.Messages.Count - MaxMessage;
@@ -1245,16 +1235,10 @@ namespace WaifuAI
             {
                 html += AddHtmlMessage(LLMSystem.History.Messages[i]);
             }
-            _savedhtml = html;
             web_chat.NavigateToString(InjectDialogCSS(html));
         }
 
-        private void UpdateHTML()
-        {
-            web_chat.NavigateToString(InjectDialogCSS(_savedhtml));
-        }
-
-        private async void OnWebChatContentLoaded(object sender, CoreWebView2DOMContentLoadedEventArgs e)
+         private async void OnWebChatContentLoaded(object sender, CoreWebView2DOMContentLoadedEventArgs e)
         {
             string script = "window.scrollTo(0, document.body.scrollHeight);";
             await web_chat.CoreWebView2.ExecuteScriptAsync(script);
@@ -1266,7 +1250,7 @@ namespace WaifuAI
             if (message != null)
             {
                 var json = JsonConvert.DeserializeObject<Dictionary<string, object>>(message);
-                if (json != null && json.ContainsKey("type") && json["type"].ToString() == "EditMessage")
+                if (json != null && json.TryGetValue("type", out object? value) && value.ToString() == "EditMessage")
                 {
                     int divNumber = Convert.ToInt32(json["index"]);
                     Invoke(new Action<int>(EditMessage), divNumber);

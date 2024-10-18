@@ -40,7 +40,7 @@ namespace WaifuAI
         private static System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings, true);
         private Newtonsoft.Json.JsonSerializerSettings _instanceSettings;
 
-        public event EventHandler<TextStreamingEvenArg>? StreamingMessageReceived;
+        public event EventHandler<TextStreamingEvenArg> StreamingMessageReceived;
         protected virtual void OnStreamingMessageReceived(TextStreamingEvenArg e) => StreamingMessageReceived?.Invoke(this, e);
 
 
