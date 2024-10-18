@@ -104,7 +104,7 @@ namespace WaifuAI
         {
             _currentgeneration += e;
             _currentgenerationtokencount++;
-            if (_currentgenerationtokencount > 4)
+            if (_currentgenerationtokencount > 1)
             {
                 _currentgenerationtokencount = 0;
                 var MsgPrefix = LLMSystem.GetMessagePrefix(AuthorRole.Assistant);
@@ -1168,7 +1168,8 @@ namespace WaifuAI
                 .Replace("\"", "\\\"")
                 .Replace("\n", "\\n")
                 .Replace("\r", "\\r");
-            await web_chat.CoreWebView2.ExecuteScriptAsync($"updateMessageAtIndex('{text}',{index});");
+            var script = $"updateMessageAtIndex(\"{text}\", {index});";
+            await web_chat.CoreWebView2.ExecuteScriptAsync(script);
         }
 
 
