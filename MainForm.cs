@@ -124,7 +124,7 @@ namespace WaifuAI
             var (tokens, duration) = LLMSystem.History.GetCurrentChatSessionInfo();
             lbl_session.Text = "Tokens: " + tokens + Environment.NewLine + "Duration: " + duration.TotalDays.ToString("F2") + " days";
         }
-      
+
         // Helper method to use Invoke with async methods
         private Task<bool> InvokeAsync(Func<Task> func)
         {
@@ -482,19 +482,30 @@ namespace WaifuAI
 
         private async void SendMessage(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(ed_input.Text))
-                return;
-            var messagetext = LLMSystem.GetAwayString() + LLMSystem.ReplaceMacros(ed_input.Text.Replace(Environment.NewLine, LLMSystem.NewLine), LLMSystem.User, LLMSystem.Bot);
-            var msg = new SingleMessage(AuthorRole.User, DateTime.Now, messagetext, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
-            await SendMessageToUI(msg);
+            if (!string.IsNullOrEmpty(ed_input.Text))
+            {
+                var messagetext = LLMSystem.GetAwayString() + LLMSystem.ReplaceMacros(ed_input.Text.Replace(Environment.NewLine, LLMSystem.NewLine), LLMSystem.User, LLMSystem.Bot);
+                var msg = new SingleMessage(AuthorRole.User, DateTime.Now, messagetext, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
+                await SendMessageToUI(msg);
+                // ready a new message for the bot's response
+                _currentgeneration = string.Empty;
+                _currentgenerationtokencount = 0;
+                await SendMessageToUI(
+                    new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your post...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                ed_input.Text = string.Empty;
+                await LLMSystem.SendMessageToBot(msg);
+            }
+            else
+            {
+                // ready a new message for the bot's response
+                _currentgeneration = string.Empty;
+                _currentgenerationtokencount = 0;
+                await SendMessageToUI(
+                    new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your post...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                ed_input.Text = string.Empty;
+                await LLMSystem.AddBotMessage();
+            }
 
-            // ready a new message for the bot's response
-            _currentgeneration = string.Empty;
-            _currentgenerationtokencount = 0;
-            await SendMessageToUI(
-                new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your post...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
-            ed_input.Text = string.Empty;
-            await LLMSystem.SendMessageToBot(msg);
         }
 
         private async void RerollMessage(object sender, EventArgs e)
@@ -553,7 +564,7 @@ namespace WaifuAI
             var text = Markdown.ToHtml(LLMSystem.GetMessagePrefix(singleMessage.Role) + singleMessage.Message);
             var coremsg = $@"
                     <div class='portrait'>
-                        <img src='https://appassets.test/img/{img}' alt='Portrait' width='50' height='67'>
+                        <img src='https://appassets.test/img/{img}' alt='Portrait' width='60'>
                     </div>
                     <div class='message-content'>
                         {text}
@@ -965,91 +976,7 @@ namespace WaifuAI
 
         #endregion
 
-        private async void cb_bot_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cb_bot.SelectedItem is string key && !string.IsNullOrEmpty(key))
-            {
-                LLMSystem.Bot = DataFiles.Characters[key];
-                await LoadHistoryToUI();
-                LoadChatHistoryTab();
-                ShowCurrentSessionInfo();
-            }
-        }
-
-        private void num_maxcontext_ValueChanged(object sender, EventArgs e)
-        {
-            LLMSystem.MaxContextLength = (int)num_maxcontext.Value;
-        }
-
-        private void num_maxresponse_ValueChanged(object sender, EventArgs e)
-        {
-            LLMSystem.MaxReplyLength = (int)num_maxresponse.Value;
-        }
-
-        private void cb_user_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cb_user.SelectedItem is string key && !string.IsNullOrEmpty(key))
-                LLMSystem.User = DataFiles.Characters[key];
-        }
-
-        private void cb_instruct_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cb_instruct.SelectedItem is string key && !string.IsNullOrEmpty(key))
-                LLMSystem.Instruct = DataFiles.Instruct[key];
-
-        }
-
-        private void cb_infer_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cb_infer.SelectedItem is string key && !string.IsNullOrEmpty(key))
-                LLMSystem.Sampler = DataFiles.Inference[key];
-            num_temperature.Value = (decimal)LLMSystem.Sampler.Temperature;
-        }
-
-        private void ed_input_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            // if user pressed Shift + Enter send message
-            if (e.KeyChar == (char)13 && ModifierKeys == Keys.Shift)
-            {
-                e.Handled = true;
-                SendMessage(sender, e);
-            }
-        }
-
-        private void num_temperature_ValueChanged(object sender, EventArgs e)
-        {
-            LLMSystem.ForceTemperature = ((double)num_temperature.Value);
-        }
-
-        private void bt_promptsave_Click(object sender, EventArgs e)
-        {
-            var NewName = cb_promptlist.Text;
-            if (string.IsNullOrWhiteSpace(NewName))
-            {
-                MessageBox.Show("Please select a valide name for the new system prompt format.");
-                return;
-            }
-            // If name already exists ask for confirmation
-            if (DataFiles.SysPrompts.ContainsKey(NewName) && (MessageBox.Show("This prompt format already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
-                return;
-            SelectedPromptEditor.UniqueName = NewName;
-            DataFiles.SysPrompts[NewName] = SelectedPromptEditor;
-            (SelectedPromptEditor as IFile).SaveToFile("data/sysprompts/" + NewName + ".json");
-            SetupPromptEditor(NewName);
-        }
-
-        private void cb_sysprompt_SelectionIndexChanged(object sender, EventArgs e)
-        {
-            if (cb_sysprompt.SelectedItem is string key && !string.IsNullOrEmpty(key))
-                LLMSystem.SystemPrompt = DataFiles.SysPrompts[key];
-        }
-
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            SaveSettings();
-            LLMSystem.Bot.EndSession();
-        }
-
+        #region *** Web Chat Control Handling ***
 
         private static string InjectDialogCSS(string htmlContent)
         {
@@ -1168,7 +1095,7 @@ namespace WaifuAI
             return $@"
                 <div class='chat-message'>
                     <div class='portrait'>
-                        <img src='https://appassets.test/img/{imgPath}' alt='Portrait' width='50' height='67'>
+                        <img src='https://appassets.test/img/{imgPath}' alt='Portrait' width='60'>
                     </div>
                     <div class='message-content'>
                         {dialog}
@@ -1264,6 +1191,93 @@ namespace WaifuAI
                     Invoke(new Action<int>(EditMessage), divNumber);
                 }
             }
+        }
+
+        #endregion
+
+        private async void cb_bot_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cb_bot.SelectedItem is string key && !string.IsNullOrEmpty(key))
+            {
+                LLMSystem.Bot = DataFiles.Characters[key];
+                await LoadHistoryToUI();
+                LoadChatHistoryTab();
+                ShowCurrentSessionInfo();
+            }
+        }
+
+        private void num_maxcontext_ValueChanged(object sender, EventArgs e)
+        {
+            LLMSystem.MaxContextLength = (int)num_maxcontext.Value;
+        }
+
+        private void num_maxresponse_ValueChanged(object sender, EventArgs e)
+        {
+            LLMSystem.MaxReplyLength = (int)num_maxresponse.Value;
+        }
+
+        private void cb_user_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cb_user.SelectedItem is string key && !string.IsNullOrEmpty(key))
+                LLMSystem.User = DataFiles.Characters[key];
+        }
+
+        private void cb_instruct_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cb_instruct.SelectedItem is string key && !string.IsNullOrEmpty(key))
+                LLMSystem.Instruct = DataFiles.Instruct[key];
+
+        }
+
+        private void cb_infer_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cb_infer.SelectedItem is string key && !string.IsNullOrEmpty(key))
+                LLMSystem.Sampler = DataFiles.Inference[key];
+            num_temperature.Value = (decimal)LLMSystem.Sampler.Temperature;
+        }
+
+        private void ed_input_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // if user pressed Shift + Enter send message
+            if (e.KeyChar == (char)13 && ModifierKeys == Keys.Shift)
+            {
+                e.Handled = true;
+                SendMessage(sender, e);
+            }
+        }
+
+        private void num_temperature_ValueChanged(object sender, EventArgs e)
+        {
+            LLMSystem.ForceTemperature = ((double)num_temperature.Value);
+        }
+
+        private void bt_promptsave_Click(object sender, EventArgs e)
+        {
+            var NewName = cb_promptlist.Text;
+            if (string.IsNullOrWhiteSpace(NewName))
+            {
+                MessageBox.Show("Please select a valide name for the new system prompt format.");
+                return;
+            }
+            // If name already exists ask for confirmation
+            if (DataFiles.SysPrompts.ContainsKey(NewName) && (MessageBox.Show("This prompt format already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
+                return;
+            SelectedPromptEditor.UniqueName = NewName;
+            DataFiles.SysPrompts[NewName] = SelectedPromptEditor;
+            (SelectedPromptEditor as IFile).SaveToFile("data/sysprompts/" + NewName + ".json");
+            SetupPromptEditor(NewName);
+        }
+
+        private void cb_sysprompt_SelectionIndexChanged(object sender, EventArgs e)
+        {
+            if (cb_sysprompt.SelectedItem is string key && !string.IsNullOrEmpty(key))
+                LLMSystem.SystemPrompt = DataFiles.SysPrompts[key];
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveSettings();
+            LLMSystem.Bot.EndSession();
         }
 
     }

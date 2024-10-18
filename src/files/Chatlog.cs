@@ -486,8 +486,6 @@ namespace WaifuAI.Files
 
         public async Task StartNewChatSession(bool archivePreviousSession = true)
         {
-            if (Messages.Count == 0)
-                return;
             if (archivePreviousSession && Messages.Count > 2)
             {
                 var session = await CurrentChatToSession();
@@ -583,6 +581,10 @@ namespace WaifuAI.Files
 
         public (int tokens, TimeSpan duration) GetCurrentChatSessionInfo()
         {
+            if (Messages.Count <= 1)
+            {
+                return (0, TimeSpan.Zero);
+            }
             var sb = new StringBuilder();
             foreach (var message in Messages)
             {

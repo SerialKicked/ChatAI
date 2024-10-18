@@ -365,5 +365,5 @@ FodyWeavers.xsd
 /data/chatlogs/*.json
 /data/worlds/*.json
 /data/img/*.png
-/data/models/MiniLM-L6-v2.gguf
-/data/models/gte-large.Q6_K.gguf
+/data/img/*.jpg
+/data/models/*.gguf

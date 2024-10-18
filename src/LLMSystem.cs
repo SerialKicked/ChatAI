@@ -12,6 +12,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using System.Globalization;
+using static LLama.Common.ChatHistory;
 
 namespace WaifuAI
 {
@@ -238,7 +239,7 @@ namespace WaifuAI
         private static async Task<string> GenerateFullPrompt(AuthorRole MsgSender, string newMessage)
         {
             var msg = string.IsNullOrEmpty(newMessage) ? string.Empty : Instruct.FormatSinglePrompt(MsgSender, User, Bot, newMessage);
-            var tokencount = GetTokenCount(msg);
+            var tokencount = string.IsNullOrEmpty(msg) ? 0 :GetTokenCount(msg);
             var rawprompt = new StringBuilder(RawSystemPrompt(User, Bot));
             var inserts = new Dictionary<int, string>();
             if (Bot.MyWorlds.Count > 0)
@@ -333,6 +334,13 @@ namespace WaifuAI
             return res.ToString();
         }
 
+        public static async Task AddBotMessage()
+        {
+            if (Status == SystemStatus.Busy)
+                return;
+            await StartGeneration(AuthorRole.Assistant, "");
+        }
+
         /// <summary>
         /// Sends a message to the bot and logs it to the chat history. Response done through the RaiseOnInferenceStreamed and OnInferenceEnded events.
         /// </summary>
@@ -392,11 +400,10 @@ namespace WaifuAI
             Status = SystemStatus.Busy;
 
             var inputText = userInput;
-            foreach (var ctxplug in Bot.Plugins)
-            {
-                if (ctxplug.ReplaceUserInput(ReplaceMacros(inputText, User, Bot), History, out var ctxinfo))
-                    inputText = ctxinfo;
-            }
+            if (!string.IsNullOrEmpty(inputText))
+                foreach (var ctxplug in Bot.Plugins)
+                    if (ctxplug.ReplaceUserInput(ReplaceMacros(inputText, User, Bot), History, out var ctxinfo))
+                        inputText = ctxinfo;
 
             StreamingTextProgress = string.Empty;
             GenerationInput genparams = Sampler.GetCopy();
