@@ -37,7 +37,6 @@
             ed_input = new TextBox();
             flowChat = new FlowLayoutPanel();
             panel1 = new Panel();
-            bt_htmltest = new Button();
             lbl_session = new Label();
             bt_newsession = new Button();
             ck_ragenabled = new CheckBox();
@@ -115,9 +114,12 @@
             bt_version = new Button();
             bt_getmodel = new Button();
             listBox1 = new ListBox();
-            openFileDialog1 = new OpenFileDialog();
             tabPage1 = new TabPage();
             web_chat = new Microsoft.Web.WebView2.WinForms.WebView2();
+            panel3 = new Panel();
+            bt_htmltest = new Button();
+            openFileDialog1 = new OpenFileDialog();
+            bt_reroll2 = new Button();
             tabControl1.SuspendLayout();
             tabChat.SuspendLayout();
             panel1.SuspendLayout();
@@ -139,6 +141,7 @@
             tabAPI.SuspendLayout();
             tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
+            panel3.SuspendLayout();
             SuspendLayout();
             // 
             // tabControl1
@@ -235,7 +238,6 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
-            panel1.Controls.Add(bt_htmltest);
             panel1.Controls.Add(lbl_session);
             panel1.Controls.Add(bt_newsession);
             panel1.Controls.Add(ck_ragenabled);
@@ -262,15 +264,6 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(200, 552);
             panel1.TabIndex = 0;
-            // 
-            // bt_htmltest
-            // 
-            bt_htmltest.Location = new Point(102, 456);
-            bt_htmltest.Name = "bt_htmltest";
-            bt_htmltest.Size = new Size(75, 23);
-            bt_htmltest.TabIndex = 23;
-            bt_htmltest.Text = "button2";
-            bt_htmltest.UseVisualStyleBackColor = true;
             // 
             // lbl_session
             // 
@@ -1087,13 +1080,10 @@
             listBox1.Size = new Size(968, 199);
             listBox1.TabIndex = 0;
             // 
-            // openFileDialog1
-            // 
-            openFileDialog1.FileName = "openFileDialog1";
-            // 
             // tabPage1
             // 
             tabPage1.Controls.Add(web_chat);
+            tabPage1.Controls.Add(panel3);
             tabPage1.Location = new Point(4, 27);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
@@ -1108,11 +1098,45 @@
             web_chat.CreationProperties = null;
             web_chat.DefaultBackgroundColor = Color.White;
             web_chat.Dock = DockStyle.Fill;
-            web_chat.Location = new Point(3, 3);
+            web_chat.Location = new Point(203, 3);
             web_chat.Name = "web_chat";
-            web_chat.Size = new Size(968, 552);
-            web_chat.TabIndex = 1;
+            web_chat.Size = new Size(768, 552);
+            web_chat.TabIndex = 3;
             web_chat.ZoomFactor = 1D;
+            // 
+            // panel3
+            // 
+            panel3.Controls.Add(bt_reroll2);
+            panel3.Controls.Add(bt_htmltest);
+            panel3.Dock = DockStyle.Left;
+            panel3.Location = new Point(3, 3);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(200, 552);
+            panel3.TabIndex = 2;
+            // 
+            // bt_htmltest
+            // 
+            bt_htmltest.Location = new Point(14, 15);
+            bt_htmltest.Name = "bt_htmltest";
+            bt_htmltest.Size = new Size(168, 23);
+            bt_htmltest.TabIndex = 24;
+            bt_htmltest.Text = "button2";
+            bt_htmltest.UseVisualStyleBackColor = true;
+            // 
+            // openFileDialog1
+            // 
+            openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // bt_reroll2
+            // 
+            bt_reroll2.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            bt_reroll2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            bt_reroll2.Location = new Point(14, 44);
+            bt_reroll2.Name = "bt_reroll2";
+            bt_reroll2.Size = new Size(75, 39);
+            bt_reroll2.TabIndex = 25;
+            bt_reroll2.Text = "REROLL";
+            bt_reroll2.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -1151,6 +1175,7 @@
             tabAPI.PerformLayout();
             tabPage1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)web_chat).EndInit();
+            panel3.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -1241,8 +1266,10 @@
         private NumericUpDown num_ragindex;
         private Label lbl_session;
         private Button bt_newsession;
-        private Button bt_htmltest;
         private TabPage tabPage1;
         private Microsoft.Web.WebView2.WinForms.WebView2 web_chat;
+        private Panel panel3;
+        private Button bt_htmltest;
+        private Button bt_reroll2;
     }
 }

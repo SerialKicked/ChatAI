@@ -16,6 +16,9 @@ using WaifuAI.Memory;
 using Microsoft.VisualBasic.Logging;
 using Markdig.Helpers;
 using Microsoft.Web.WebView2.Core;
+using Microsoft.AspNetCore.Components.Forms;
+using static System.Net.Mime.MediaTypeNames;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace WaifuAI
 {
@@ -26,7 +29,7 @@ namespace WaifuAI
         public SamplerSettings SelectedSamplerEditor { get; set; } = new SamplerSettings();
         public InstructFormat SelectedInstructEditor { get; set; } = new InstructFormat();
         public SystemPrompt SelectedPromptEditor { get; set; } = new SystemPrompt();
-        private Image SystemLogo { get; } = Image.FromFile("data/img/gears.png");
+        private System.Drawing.Image SystemLogo { get; } = System.Drawing.Image.FromFile("data/img/gears.png");
 
         private ChatMessageControl? _lastMessageControl = null;
         private string? _currentgeneration = null;
@@ -52,13 +55,14 @@ namespace WaifuAI
             bt_connect.Click += Connect!;
             bt_send.Click += SendMessage!;
             bt_reroll.Click += RerollMessage!;
+            bt_reroll2.Click += RerollMessage!;
             bt_chattosessions.Click += ConvertChatToSessionList!;
             bt_sessionrefresh.Click += bt_sessionrefresh_Click!;
             bt_newsession.Click += StartNewSession!;
             // Load editors and chat menu
             bt_embedall.Click += EmbedAllSessions!;
 
-            bt_htmltest.Click += NuChatLoad!;
+            bt_htmltest.Click += WebChatLoad!;
             SetupSamplerEditor();
             SetupInstructEditor();
             SetupPromptEditor();
@@ -107,24 +111,25 @@ namespace WaifuAI
             ed_log.Text = text.Replace("\n", Environment.NewLine);
         }
 
-        private void OnStreamMessageReceived(object? sender, string e)
+        private async void OnStreamMessageReceived(object? sender, string e)
         {
             _currentgeneration += e;
             _currentgenerationtokencount++;
             if (_currentgenerationtokencount > 8)
             {
                 var MsgPrefix = LLMSystem.GetMessagePrefix(AuthorRole.Assistant);
-                _lastMessageControl?.UpdateMessage(MsgPrefix + _currentgeneration);
+                //_lastMessageControl?.UpdateMessage(MsgPrefix + _currentgeneration);
                 _currentgenerationtokencount = 0;
                 // make sure it's invoked in the application UI
-                Invoke((System.Windows.Forms.MethodInvoker)delegate
-                {
-                    flowChat.VerticalScroll.Value = flowChat.VerticalScroll.Maximum;
-                });
+                //flowChat.VerticalScroll.Value = flowChat.VerticalScroll.Maximum;
+                await WebEditLastMessage(MsgPrefix + _currentgeneration);
+                //Invoke((System.Windows.Forms.MethodInvoker)delegate
+                //{
+                //});
             }
         }
 
-        private void OnStreamInferenceEnded(object? sender, string e)
+        private async void OnStreamInferenceEnded(object? sender, string e)
         {
             var MsgPrefix = LLMSystem.GetMessagePrefix(AuthorRole.Assistant);
             _lastMessageControl?.UpdateMessage(MsgPrefix + e);
@@ -137,6 +142,7 @@ namespace WaifuAI
                     _lastMessageControl.ForceResizeVerticallyToFitContent();
                 });
             }
+            await WebEditLastMessage(MsgPrefix + e);
 
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
@@ -146,6 +152,25 @@ namespace WaifuAI
                 var infogen = LLMSystem.History.GetCurrentChatSessionInfo();
                 lbl_session.Text = "Tokens: " + infogen.tokens + Environment.NewLine + "Duration: " + infogen.duration.TotalDays.ToString("F2") + " days";
             });
+        }
+
+        // Helper method to use Invoke with async methods
+        private Task InvokeAsync(Func<Task> func)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            BeginInvoke(new Action(async () =>
+            {
+                try
+                {
+                    await func();
+                    tcs.SetResult(true);
+                }
+                catch (Exception ex)
+                {
+                    tcs.SetException(ex);
+                }
+            }));
+            return tcs.Task;
         }
 
         #region *** Editor Related Functions ***
@@ -582,7 +607,7 @@ namespace WaifuAI
                     break;
             }
             var MsgPrefix = LLMSystem.GetMessagePrefix(msg.Role);
-            Image img = SystemLogo;
+            System.Drawing.Image img = SystemLogo;
 
             switch (msg.Role)
             {
@@ -1121,13 +1146,16 @@ namespace WaifuAI
         {
             string css = @"
             <style>
-                body { overflow: hidden; }
-                em { color: darkblue; }
-                .chat-container {
+                body { 
                     max-height: 100%;
                     overflow-y: auto;
+                    overflow-x: hidden;
                     padding: 10px;
+                    width: 100%;
+                    box-sizing: border-box;
                 }
+                em { color: darkblue; }
+
                 .chat-message {
                     display: flex;
                     align-items: flex-start;
@@ -1144,13 +1172,25 @@ namespace WaifuAI
                     word-wrap: break-word;
                 }
             </style>";
-            return $"<html><head>{css}</head><body><div class=\"chat-container\">{htmlContent}</div></body></html>";
+            string scripts = @"
+            <script>
+                function updateMessageAtIndex(text, index) {
+                    console.log(index);
+                    const messageContents = document.getElementsByClassName('message-content');
+                    if (index >= 0 && index < messageContents.length) {
+                        const messageContent = messageContents[index];
+                        messageContent.innerHTML = text;
+                    } else {
+                        console.error('Index out of bounds');
+                    }
+                }
+            </script>";
+            return $"<html><head>{css}</head><body>{scripts}<div id='chatContainer'>{htmlContent}</div></body></html>";
         }
 
         private static string InjectDialogHtml(string imgPath, string dialog)
         {
             // Convert relative path to absolute path and format as file URI
-            string absoluteImgPath = new Uri(Path.GetFullPath(imgPath)).AbsoluteUri;
             return $@"
                 <div class='chat-message'>
                     <div class='portrait'>
@@ -1162,36 +1202,79 @@ namespace WaifuAI
                 </div>";
         }
 
-        private async void NuChatLoad(object sender, EventArgs e)
+        private string AddHtmlMessage(SingleMessage singleMessage)
+        {
+            string img = "gears.png";
+            switch (singleMessage.Role)
+            {
+                case AuthorRole.User:
+                    img = LLMSystem.User.Icon;
+                    break;
+                case AuthorRole.Assistant:
+                    img = LLMSystem.Bot.Icon;
+                    break;
+            }
+            return InjectDialogHtml(img, Markdown.ToHtml(LLMSystem.GetMessagePrefix(singleMessage.Role) + singleMessage.Message));
+        }
+
+        private async Task WebEditLastMessage(string newMessage)
+        {
+            if (InvokeRequired)
+            {
+                await InvokeAsync(new Func<Task>(async () => await WebEditLastMessage(newMessage)));
+                return;
+            }
+            var text = Markdown.ToHtml(newMessage);
+            text = text.Replace("\\", "\\\\")
+                .Replace("\"", "\\\"")
+                .Replace("\n", "\\n")
+                .Replace("\r", "\\r");
+            var script = $"updateMessageAtIndex(\"{text}\", document.getElementsByClassName('message-content').length - 1);";
+            var result = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+        }
+
+        private async Task WebEditMessageByID(string newMessage, int index)
+        {
+            if (InvokeRequired)
+            {
+                await InvokeAsync(new Func<Task>(async () => await WebEditMessageByID(newMessage, index)));
+                return;
+            }
+            var text = Markdown.ToHtml(newMessage);
+            text = text.Replace("\\", "\\\\")
+                .Replace("\"", "\\\"")
+                .Replace("\n", "\\n")
+                .Replace("\r", "\\r");
+            await web_chat.CoreWebView2.ExecuteScriptAsync($"updateMessageAtIndex('{text}',{index});");
+        }
+
+
+        private async void WebChatLoad(object sender, EventArgs e)
         {
             if (web_chat.CoreWebView2 == null)
             {
                 await web_chat.EnsureCoreWebView2Async();
+                web_chat.CoreWebView2!.Settings.AreDevToolsEnabled = true;
                 web_chat.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets.test", AppContext.BaseDirectory + "data\\img\\", CoreWebView2HostResourceAccessKind.Allow);
+                web_chat.CoreWebView2.DOMContentLoaded += OnWebChatContentLoaded; // Add event handler
+                web_chat.CoreWebView2.OpenDevToolsWindow();
             }
-
             var html = string.Empty;
             var start = LLMSystem.History.Messages.Count - 50;
             if (start < 0)
                 start = 0;
             for (int i = start; i < LLMSystem.History.Messages.Count; i++)
             {
-                var msg = LLMSystem.History.Messages[i];
-                string img = "gears.png";
-
-                switch (msg.Role)
-                {
-                    case AuthorRole.User:
-                        img = LLMSystem.User.Icon;
-                        break;
-                    case AuthorRole.Assistant:
-                        img = LLMSystem.Bot.Icon;
-                        break;
-                }
-                html += InjectDialogHtml(img, Markdown.ToHtml(msg.Message));
+                html += AddHtmlMessage(LLMSystem.History.Messages[i]);
             }
             _savedhtml = html;
             web_chat.NavigateToString(InjectDialogCSS(html));
+        }
+
+        private async void OnWebChatContentLoaded(object sender, CoreWebView2DOMContentLoadedEventArgs e)
+        {
+            string script = "window.scrollTo(0, document.body.scrollHeight);";
+            await web_chat.CoreWebView2.ExecuteScriptAsync(script);
         }
     }
 }
