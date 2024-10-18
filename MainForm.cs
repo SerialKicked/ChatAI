@@ -15,6 +15,7 @@ using Markdig;
 using WaifuAI.Memory;
 using Microsoft.VisualBasic.Logging;
 using Markdig.Helpers;
+using Microsoft.Web.WebView2.Core;
 
 namespace WaifuAI
 {
@@ -32,6 +33,8 @@ namespace WaifuAI
         private int _currentgenerationtokencount = 0;
         private bool _isfillinghistory = false;
         private ChatSession? _selectedSession = null;
+
+        private string _savedhtml = string.Empty;
 
         public MainForm()
         {
@@ -54,6 +57,8 @@ namespace WaifuAI
             bt_newsession.Click += StartNewSession!;
             // Load editors and chat menu
             bt_embedall.Click += EmbedAllSessions!;
+
+            bt_htmltest.Click += NuChatLoad!;
             SetupSamplerEditor();
             SetupInstructEditor();
             SetupPromptEditor();
@@ -1111,5 +1116,82 @@ namespace WaifuAI
             LLMSystem.Bot.EndSession();
         }
 
+
+        private static string InjectDialogCSS(string htmlContent)
+        {
+            string css = @"
+            <style>
+                body { overflow: hidden; }
+                em { color: darkblue; }
+                .chat-container {
+                    max-height: 100%;
+                    overflow-y: auto;
+                    padding: 10px;
+                }
+                .chat-message {
+                    display: flex;
+                    align-items: flex-start;
+                    margin-bottom: 10px;
+                }
+
+                .portrait {
+                    flex: 0 0 70px;
+                    margin-right: 10px;
+                }
+
+                .message-content {
+                    flex: 1;
+                    word-wrap: break-word;
+                }
+            </style>";
+            return $"<html><head>{css}</head><body><div class=\"chat-container\">{htmlContent}</div></body></html>";
+        }
+
+        private static string InjectDialogHtml(string imgPath, string dialog)
+        {
+            // Convert relative path to absolute path and format as file URI
+            string absoluteImgPath = new Uri(Path.GetFullPath(imgPath)).AbsoluteUri;
+            return $@"
+                <div class='chat-message'>
+                    <div class='portrait'>
+                        <img src='https://appassets.test/{imgPath}' alt='Portrait' width='50' height='67'>
+                    </div>
+                    <div class='message-content'>
+                        <p>{dialog}</p>
+                    </div>
+                </div>";
+        }
+
+        private async void NuChatLoad(object sender, EventArgs e)
+        {
+            if (web_chat.CoreWebView2 == null)
+            {
+                await web_chat.EnsureCoreWebView2Async();
+                web_chat.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets.test", AppContext.BaseDirectory + "data\\img\\", CoreWebView2HostResourceAccessKind.Allow);
+            }
+
+            var html = string.Empty;
+            var start = LLMSystem.History.Messages.Count - 50;
+            if (start < 0)
+                start = 0;
+            for (int i = start; i < LLMSystem.History.Messages.Count; i++)
+            {
+                var msg = LLMSystem.History.Messages[i];
+                string img = "gears.png";
+
+                switch (msg.Role)
+                {
+                    case AuthorRole.User:
+                        img = LLMSystem.User.Icon;
+                        break;
+                    case AuthorRole.Assistant:
+                        img = LLMSystem.Bot.Icon;
+                        break;
+                }
+                html += InjectDialogHtml(img, Markdown.ToHtml(msg.Message));
+            }
+            _savedhtml = html;
+            web_chat.NavigateToString(InjectDialogCSS(html));
+        }
     }
 }

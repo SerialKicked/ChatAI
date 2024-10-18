@@ -37,6 +37,7 @@
             ed_input = new TextBox();
             flowChat = new FlowLayoutPanel();
             panel1 = new Panel();
+            bt_htmltest = new Button();
             lbl_session = new Label();
             bt_newsession = new Button();
             ck_ragenabled = new CheckBox();
@@ -115,6 +116,8 @@
             bt_getmodel = new Button();
             listBox1 = new ListBox();
             openFileDialog1 = new OpenFileDialog();
+            tabPage1 = new TabPage();
+            web_chat = new Microsoft.Web.WebView2.WinForms.WebView2();
             tabControl1.SuspendLayout();
             tabChat.SuspendLayout();
             panel1.SuspendLayout();
@@ -134,6 +137,8 @@
             ((System.ComponentModel.ISupportInitialize)num_ragmaxretrieve).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_ragcutoff).BeginInit();
             tabAPI.SuspendLayout();
+            tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
             SuspendLayout();
             // 
             // tabControl1
@@ -146,6 +151,7 @@
             tabControl1.Controls.Add(tabSamplers);
             tabControl1.Controls.Add(tabSettings);
             tabControl1.Controls.Add(tabAPI);
+            tabControl1.Controls.Add(tabPage1);
             tabControl1.Dock = DockStyle.Fill;
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
@@ -229,6 +235,7 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(bt_htmltest);
             panel1.Controls.Add(lbl_session);
             panel1.Controls.Add(bt_newsession);
             panel1.Controls.Add(ck_ragenabled);
@@ -255,6 +262,15 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(200, 552);
             panel1.TabIndex = 0;
+            // 
+            // bt_htmltest
+            // 
+            bt_htmltest.Location = new Point(102, 456);
+            bt_htmltest.Name = "bt_htmltest";
+            bt_htmltest.Size = new Size(75, 23);
+            bt_htmltest.TabIndex = 23;
+            bt_htmltest.Text = "button2";
+            bt_htmltest.UseVisualStyleBackColor = true;
             // 
             // lbl_session
             // 
@@ -1075,6 +1091,29 @@
             // 
             openFileDialog1.FileName = "openFileDialog1";
             // 
+            // tabPage1
+            // 
+            tabPage1.Controls.Add(web_chat);
+            tabPage1.Location = new Point(4, 27);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(974, 558);
+            tabPage1.TabIndex = 7;
+            tabPage1.Text = "tabPage1";
+            tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // web_chat
+            // 
+            web_chat.AllowExternalDrop = false;
+            web_chat.CreationProperties = null;
+            web_chat.DefaultBackgroundColor = Color.White;
+            web_chat.Dock = DockStyle.Fill;
+            web_chat.Location = new Point(3, 3);
+            web_chat.Name = "web_chat";
+            web_chat.Size = new Size(968, 552);
+            web_chat.TabIndex = 1;
+            web_chat.ZoomFactor = 1D;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1110,6 +1149,8 @@
             ((System.ComponentModel.ISupportInitialize)num_ragcutoff).EndInit();
             tabAPI.ResumeLayout(false);
             tabAPI.PerformLayout();
+            tabPage1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)web_chat).EndInit();
             ResumeLayout(false);
         }
 
@@ -1200,5 +1241,8 @@
         private NumericUpDown num_ragindex;
         private Label lbl_session;
         private Button bt_newsession;
+        private Button bt_htmltest;
+        private TabPage tabPage1;
+        private Microsoft.Web.WebView2.WinForms.WebView2 web_chat;
     }
 }
