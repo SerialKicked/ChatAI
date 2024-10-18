@@ -14,6 +14,7 @@ using YamlDotNet.Serialization;
 using Markdig;
 using WaifuAI.Memory;
 using Microsoft.VisualBasic.Logging;
+using Markdig.Helpers;
 
 namespace WaifuAI
 {
@@ -50,6 +51,7 @@ namespace WaifuAI
             bt_reroll.Click += RerollMessage!;
             bt_chattosessions.Click += ConvertChatToSessionList!;
             bt_sessionrefresh.Click += bt_sessionrefresh_Click!;
+            bt_newsession.Click += StartNewSession!;
             // Load editors and chat menu
             bt_embedall.Click += EmbedAllSessions!;
             SetupSamplerEditor();
@@ -136,6 +138,8 @@ namespace WaifuAI
             Invoke((System.Windows.Forms.MethodInvoker)delegate
             {
                 flowChat.VerticalScroll.Value = flowChat.VerticalScroll.Maximum;
+                var infogen = LLMSystem.History.GetCurrentChatSessionInfo();
+                lbl_session.Text = "Tokens: " + infogen.tokens + Environment.NewLine + "Duration: " + infogen.duration.TotalDays.ToString("F2") + " days";
             });
         }
 
@@ -514,6 +518,16 @@ namespace WaifuAI
             lbl_info.Text = LLMSystem.CurrentModel + "\n" + LLMSystem.Backend;
         }
 
+        private async void StartNewSession(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("This will archive the current chat and start a new one.", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No)
+                return;
+            await LLMSystem.History.StartNewChatSession(true);
+            LLMSystem.Bot.SaveChatHistory();
+            LoadHistoryToUI(50);
+            LoadChatHistoryTab();
+        }
+
         private void DeleteLastMessage(object sender, EventArgs e)
         {
             if (LLMSystem.Status == SystemStatus.Busy || flowChat.Controls.Count == 0)
@@ -669,6 +683,98 @@ namespace WaifuAI
             flowChat.Controls.Clear();
         }
 
+        #endregion
+
+        #region *** Settings Tab Functions ***
+
+        private async void ConvertChatToSessionList(object sender, EventArgs e)
+        {
+            LLMSystem.History.DivideChatIntoSessions();
+            await LLMSystem.History.UpdateAllSessions();
+            LoadHistoryToUI(50);
+        }
+
+        private void bt_ImportSTChat_Click(object sender, EventArgs e)
+        {
+            // Open a file selection dialog and use Tools.Import to import a chatlog from a jsonl file
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                MessageBox.Show(
+                    Tools.ImportChatlog(openFileDialog1.FileName, "exported_chat.json", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName) ?
+                        "Chatlog imported successfully to exported_chat.json in this application's main folder." :
+                        "Something went wrong while opening or parsing the file."
+                );
+        }
+
+        private void bt_importworld_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                MessageBox.Show(
+                    Tools.ImportWorld(openFileDialog1.FileName, "exported_world.json") ?
+                        "WorldInfo imported successfully to exported_world.json in this application's main folder." :
+                        "Something went wrong while opening or parsing the file."
+                );
+        }
+
+        private async void EmbedAllSessions(object sender, EventArgs e)
+        {
+            if (!RAGSystem.Enabled)
+            {
+                MessageBox.Show("The RAG System is not enabled. Operation cancelled.");
+                return;
+            }
+            await RAGSystem.EmbedChatSessions(LLMSystem.History);
+            MessageBox.Show("All sessions have been embedded successfully.");
+            LLMSystem.Bot.SaveChatHistory();
+            RAGSystem.VectorizeChatlog(LLMSystem.History);
+        }
+
+        private void ApplyRAGSettings(object sender, EventArgs e)
+        {
+            RAGSystem.UseSummaries = ck_ragsummaries.Checked;
+            RAGSystem.UseTitles = ck_ragtitles.Checked;
+            RAGSystem.DistanceCutOff = (float)num_ragcutoff.Value;
+            LLMSystem.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
+            LLMSystem.RAGIndex = (int)num_ragindex.Value;
+            if (cb_ragheuristic.SelectedIndex == 0)
+                RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
+            else if (cb_ragheuristic.SelectedIndex == 1)
+                RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
+            RAGSystem.ApplySettings();
+            SaveSettings();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cb_ragheuristic.SelectedIndex == 0)
+                RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
+            else if (cb_ragheuristic.SelectedIndex == 1)
+                RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
+        }
+
+        private void num_ragcutoff_ValueChanged(object sender, EventArgs e)
+        {
+            RAGSystem.DistanceCutOff = (float)num_ragcutoff.Value;
+        }
+
+        private void num_ragmaxretrieve_ValueChanged(object sender, EventArgs e)
+        {
+            LLMSystem.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
+        }
+
+        private void ck_ragenabled_CheckedChanged(object sender, EventArgs e)
+        {
+            RAGSystem.Enabled = ck_ragenabled.Checked;
+        }
+
+        private void num_ragindex_ValueChanged(object sender, EventArgs e)
+        {
+            LLMSystem.RAGIndex = (int)num_ragindex.Value;
+        }
+
+        #endregion
+
+        #region *** Chat History Tab Functions ***
+
         public void LoadChatHistoryTab()
         {
             listSession.Items.Clear();
@@ -682,6 +788,38 @@ namespace WaifuAI
                 };
                 listSession.Items.Add(item);
             }
+        }
+
+        private void listSession_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listSession.SelectedItems.Count <= 0)
+                return;
+            var selectedItem = listSession.SelectedItems[0];
+            _selectedSession = (ChatSession)selectedItem.Tag!;
+            DisplaySessionDetails(_selectedSession);
+        }
+
+        private async void DisplaySessionDetails(ChatSession session)
+        {
+            lbl_sessiontitle.Text = session.Title;
+            lbl_sessioninfo.Text = session.StartTime.ToString("g") + " - " + session.EndTime.ToString("g") + " - " + session.Messages.Count + " messages";
+            if (web_sessioncontent.CoreWebView2 == null)
+            {
+                await web_sessioncontent.EnsureCoreWebView2Async();
+            }
+            var dialogs = session.GetRawDialogs(int.MaxValue, false).Replace("\n", "\n\n");
+            var inf = "# " + session.Title + LLMSystem.NewLine + LLMSystem.NewLine + "## Summary:" + LLMSystem.NewLine + LLMSystem.NewLine + session.Summary + LLMSystem.NewLine + LLMSystem.NewLine + "## Dialogs:" + LLMSystem.NewLine + LLMSystem.NewLine + dialogs;
+            web_sessioncontent.NavigateToString(Markdown.ToHtml(inf));
+        }
+
+        private async void bt_sessionrefresh_Click(object sender, EventArgs e)
+        {
+            if (_selectedSession == null)
+                return;
+            _selectedSession.Summary = await _selectedSession.GenerateNewSummary();
+            _selectedSession.Title = await _selectedSession.GenerateNewTitle(_selectedSession.Summary);
+            DisplaySessionDetails(_selectedSession);
+            LLMSystem.Bot.SaveChatHistory();
         }
 
         #endregion
@@ -855,86 +993,14 @@ namespace WaifuAI
             }
         }
 
-        #endregion
-
-        #region *** Settings Tab Functions ***
-
-        private async void ConvertChatToSessionList(object sender, EventArgs e)
+        private async void bt_apiEmbed_Click(object sender, EventArgs e)
         {
-            LLMSystem.History.DivideChatIntoSessions();
-            await LLMSystem.History.UpdateAllSessions();
-            LoadHistoryToUI(50);
-        }
-
-        private void bt_ImportSTChat_Click(object sender, EventArgs e)
-        {
-            // Open a file selection dialog and use Tools.Import to import a chatlog from a jsonl file
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-                MessageBox.Show(
-                    Tools.ImportChatlog(openFileDialog1.FileName, "exported_chat.json", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName) ?
-                        "Chatlog imported successfully to exported_chat.json in this application's main folder." :
-                        "Something went wrong while opening or parsing the file."
-                );
-        }
-
-        private void bt_importworld_Click(object sender, EventArgs e)
-        {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-                MessageBox.Show(
-                    Tools.ImportWorld(openFileDialog1.FileName, "exported_world.json") ?
-                        "WorldInfo imported successfully to exported_world.json in this application's main folder." :
-                        "Something went wrong while opening or parsing the file."
-                );
-        }
-
-        private async void EmbedAllSessions(object sender, EventArgs e)
-        {
-            if (!RAGSystem.Enabled)
+            ed_generate.Clear();
+            var res = await RAGSystem.Search(ed_tokencount.Text, 5);
+            foreach (var (session, category, distance) in res)
             {
-                MessageBox.Show("The RAG System is not enabled. Operation cancelled.");
-                return;
+                ed_generate.AppendText("[" + category.ToString() + " - " + distance.ToString("F3") + "] " + session.Title + Environment.NewLine);
             }
-            await RAGSystem.EmbedChatSessions(LLMSystem.History);
-            MessageBox.Show("All sessions have been embedded successfully.");
-            LLMSystem.Bot.SaveChatHistory();
-            RAGSystem.VectorizeChatlog(LLMSystem.History);
-        }
-
-        #endregion
-
-        #region *** Chat History Tab Functions ***
-
-        private void listSession_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (listSession.SelectedItems.Count <= 0)
-                return;
-            var selectedItem = listSession.SelectedItems[0];
-            _selectedSession = (ChatSession)selectedItem.Tag!;
-            DisplaySessionDetails(_selectedSession);
-        }
-
-        private async void DisplaySessionDetails(ChatSession session)
-        {
-            lbl_sessiontitle.Text = session.Title;
-            lbl_sessioninfo.Text = session.StartTime.ToString("g") + " - " + session.EndTime.ToString("g") + " - " + session.Messages.Count + " messages";
-            if (web_sessioncontent.CoreWebView2 == null)
-            {
-                await web_sessioncontent.EnsureCoreWebView2Async();
-            }
-            var dialogs = session.GetRawDialogs(int.MaxValue, false).Replace("\n", "\n\n");
-            var inf = "# " + session.Title + LLMSystem.NewLine + LLMSystem.NewLine + "## Summary:" + LLMSystem.NewLine + LLMSystem.NewLine + session.Summary + LLMSystem.NewLine + LLMSystem.NewLine + "## Dialogs:" + LLMSystem.NewLine + LLMSystem.NewLine + dialogs;
-            web_sessioncontent.NavigateToString(Markdown.ToHtml(inf));
-        }
-
-        private async void bt_sessionrefresh_Click(object sender, EventArgs e)
-        {
-            if (_selectedSession == null)
-                return;
-
-            _selectedSession.Summary = await _selectedSession.GenerateNewSummary();
-            _selectedSession.Title = await _selectedSession.GenerateNewTitle(_selectedSession.Summary);
-            DisplaySessionDetails(_selectedSession);
-            LLMSystem.Bot.SaveChatHistory();
         }
 
         #endregion
@@ -1045,57 +1111,5 @@ namespace WaifuAI
             LLMSystem.Bot.EndSession();
         }
 
-        private async void bt_apiEmbed_Click(object sender, EventArgs e)
-        {
-            ed_generate.Clear();
-            var res = await RAGSystem.Search(ed_tokencount.Text, 5);
-            foreach (var (session, category, distance) in res)
-            {
-                ed_generate.AppendText("[" + category.ToString() + " - " + distance.ToString("F3") + "] " + session.Title + Environment.NewLine);
-            }
-        }
-
-        private void ApplyRAGSettings(object sender, EventArgs e)
-        {
-            RAGSystem.UseSummaries = ck_ragsummaries.Checked;
-            RAGSystem.UseTitles = ck_ragtitles.Checked;
-            RAGSystem.DistanceCutOff = (float)num_ragcutoff.Value;
-            LLMSystem.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
-            LLMSystem.RAGIndex = (int)num_ragindex.Value;
-            if (cb_ragheuristic.SelectedIndex == 0)
-                RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
-            else if (cb_ragheuristic.SelectedIndex == 1)
-                RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
-            RAGSystem.ApplySettings();
-            SaveSettings();
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cb_ragheuristic.SelectedIndex == 0)
-                RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
-            else if (cb_ragheuristic.SelectedIndex == 1)
-                RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
-        }
-
-        private void num_ragcutoff_ValueChanged(object sender, EventArgs e)
-        {
-            RAGSystem.DistanceCutOff = (float)num_ragcutoff.Value;
-        }
-
-        private void num_ragmaxretrieve_ValueChanged(object sender, EventArgs e)
-        {
-            LLMSystem.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
-        }
-
-        private void ck_ragenabled_CheckedChanged(object sender, EventArgs e)
-        {
-            RAGSystem.Enabled = ck_ragenabled.Checked;
-        }
-
-        private void num_ragindex_ValueChanged(object sender, EventArgs e)
-        {
-            LLMSystem.RAGIndex = (int)num_ragindex.Value;
-        }
     }
 }

@@ -582,5 +582,17 @@ namespace WaifuAI.Files
                 Sessions.Add(currentsession);
             Messages.Clear();
         }
+
+        public (int tokens, TimeSpan duration) GetCurrentChatSessionInfo()
+        {
+            var sb = new StringBuilder();
+            foreach (var message in Messages)
+            {
+                sb.Append(LLMSystem.Instruct.FormatSingleMessage(message));
+            }
+            var tokencount = LLMSystem.GetTokenCount(sb.ToString());
+            var duration = Messages.Last().Date - Messages.First().Date;
+            return (tokencount, duration);
+        }
     }
 }
