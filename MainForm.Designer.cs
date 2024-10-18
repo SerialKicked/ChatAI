@@ -31,11 +31,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             tabControl1 = new TabControl();
             tabChat = new TabPage();
+            web_chat = new Microsoft.Web.WebView2.WinForms.WebView2();
             bt_delete = new Button();
             bt_reroll = new Button();
             bt_send = new Button();
             ed_input = new TextBox();
-            flowChat = new FlowLayoutPanel();
             panel1 = new Panel();
             lbl_session = new Label();
             bt_newsession = new Button();
@@ -114,14 +114,10 @@
             bt_version = new Button();
             bt_getmodel = new Button();
             listBox1 = new ListBox();
-            tabPage1 = new TabPage();
-            web_chat = new Microsoft.Web.WebView2.WinForms.WebView2();
-            panel3 = new Panel();
-            bt_htmltest = new Button();
             openFileDialog1 = new OpenFileDialog();
-            bt_reroll2 = new Button();
             tabControl1.SuspendLayout();
             tabChat.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_temperature).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_maxresponse).BeginInit();
@@ -139,9 +135,6 @@
             ((System.ComponentModel.ISupportInitialize)num_ragmaxretrieve).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_ragcutoff).BeginInit();
             tabAPI.SuspendLayout();
-            tabPage1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
-            panel3.SuspendLayout();
             SuspendLayout();
             // 
             // tabControl1
@@ -154,7 +147,6 @@
             tabControl1.Controls.Add(tabSamplers);
             tabControl1.Controls.Add(tabSettings);
             tabControl1.Controls.Add(tabAPI);
-            tabControl1.Controls.Add(tabPage1);
             tabControl1.Dock = DockStyle.Fill;
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
@@ -164,11 +156,11 @@
             // 
             // tabChat
             // 
+            tabChat.Controls.Add(web_chat);
             tabChat.Controls.Add(bt_delete);
             tabChat.Controls.Add(bt_reroll);
             tabChat.Controls.Add(bt_send);
             tabChat.Controls.Add(ed_input);
-            tabChat.Controls.Add(flowChat);
             tabChat.Controls.Add(panel1);
             tabChat.Location = new Point(4, 27);
             tabChat.Name = "tabChat";
@@ -177,6 +169,18 @@
             tabChat.TabIndex = 1;
             tabChat.Text = "Chat";
             tabChat.UseVisualStyleBackColor = true;
+            // 
+            // web_chat
+            // 
+            web_chat.AllowExternalDrop = false;
+            web_chat.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            web_chat.CreationProperties = null;
+            web_chat.DefaultBackgroundColor = Color.White;
+            web_chat.Location = new Point(203, 3);
+            web_chat.Name = "web_chat";
+            web_chat.Size = new Size(768, 507);
+            web_chat.TabIndex = 6;
+            web_chat.ZoomFactor = 1D;
             // 
             // bt_delete
             // 
@@ -188,7 +192,6 @@
             bt_delete.TabIndex = 5;
             bt_delete.Text = "REM LAST";
             bt_delete.UseVisualStyleBackColor = true;
-            bt_delete.Click += DeleteLastMessage;
             // 
             // bt_reroll
             // 
@@ -221,19 +224,6 @@
             ed_input.Size = new Size(514, 39);
             ed_input.TabIndex = 2;
             ed_input.KeyPress += ed_input_KeyPress;
-            // 
-            // flowChat
-            // 
-            flowChat.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            flowChat.AutoScroll = true;
-            flowChat.BorderStyle = BorderStyle.FixedSingle;
-            flowChat.FlowDirection = FlowDirection.TopDown;
-            flowChat.Location = new Point(209, 6);
-            flowChat.Name = "flowChat";
-            flowChat.Size = new Size(757, 504);
-            flowChat.TabIndex = 1;
-            flowChat.WrapContents = false;
-            flowChat.Resize += flowChat_Resize;
             // 
             // panel1
             // 
@@ -1080,63 +1070,9 @@
             listBox1.Size = new Size(968, 199);
             listBox1.TabIndex = 0;
             // 
-            // tabPage1
-            // 
-            tabPage1.Controls.Add(web_chat);
-            tabPage1.Controls.Add(panel3);
-            tabPage1.Location = new Point(4, 27);
-            tabPage1.Name = "tabPage1";
-            tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(974, 558);
-            tabPage1.TabIndex = 7;
-            tabPage1.Text = "tabPage1";
-            tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // web_chat
-            // 
-            web_chat.AllowExternalDrop = false;
-            web_chat.CreationProperties = null;
-            web_chat.DefaultBackgroundColor = Color.White;
-            web_chat.Dock = DockStyle.Fill;
-            web_chat.Location = new Point(203, 3);
-            web_chat.Name = "web_chat";
-            web_chat.Size = new Size(768, 552);
-            web_chat.TabIndex = 3;
-            web_chat.ZoomFactor = 1D;
-            // 
-            // panel3
-            // 
-            panel3.Controls.Add(bt_reroll2);
-            panel3.Controls.Add(bt_htmltest);
-            panel3.Dock = DockStyle.Left;
-            panel3.Location = new Point(3, 3);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(200, 552);
-            panel3.TabIndex = 2;
-            // 
-            // bt_htmltest
-            // 
-            bt_htmltest.Location = new Point(14, 15);
-            bt_htmltest.Name = "bt_htmltest";
-            bt_htmltest.Size = new Size(168, 23);
-            bt_htmltest.TabIndex = 24;
-            bt_htmltest.Text = "button2";
-            bt_htmltest.UseVisualStyleBackColor = true;
-            // 
             // openFileDialog1
             // 
             openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // bt_reroll2
-            // 
-            bt_reroll2.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            bt_reroll2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_reroll2.Location = new Point(14, 44);
-            bt_reroll2.Name = "bt_reroll2";
-            bt_reroll2.Size = new Size(75, 39);
-            bt_reroll2.TabIndex = 25;
-            bt_reroll2.Text = "REROLL";
-            bt_reroll2.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -1151,6 +1087,7 @@
             tabControl1.ResumeLayout(false);
             tabChat.ResumeLayout(false);
             tabChat.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)web_chat).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)num_temperature).EndInit();
@@ -1173,9 +1110,6 @@
             ((System.ComponentModel.ISupportInitialize)num_ragcutoff).EndInit();
             tabAPI.ResumeLayout(false);
             tabAPI.PerformLayout();
-            tabPage1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)web_chat).EndInit();
-            panel3.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -1218,7 +1152,6 @@
         private NumericUpDown num_maxcontext;
         private NumericUpDown num_maxresponse;
         private Label label8;
-        private FlowLayoutPanel flowChat;
         private TextBox ed_input;
         private Button bt_delete;
         private Button bt_reroll;
@@ -1266,10 +1199,6 @@
         private NumericUpDown num_ragindex;
         private Label lbl_session;
         private Button bt_newsession;
-        private TabPage tabPage1;
         private Microsoft.Web.WebView2.WinForms.WebView2 web_chat;
-        private Panel panel3;
-        private Button bt_htmltest;
-        private Button bt_reroll2;
     }
 }

@@ -31,7 +31,6 @@ namespace WaifuAI
         public SystemPrompt SelectedPromptEditor { get; set; } = new SystemPrompt();
         private System.Drawing.Image SystemLogo { get; } = System.Drawing.Image.FromFile("data/img/gears.png");
 
-        private ChatMessageControl? _lastMessageControl = null;
         private string? _currentgeneration = null;
         private int _currentgenerationtokencount = 0;
         private bool _isfillinghistory = false;
@@ -55,18 +54,21 @@ namespace WaifuAI
             bt_connect.Click += Connect!;
             bt_send.Click += SendMessage!;
             bt_reroll.Click += RerollMessage!;
-            bt_reroll2.Click += RerollMessage!;
+            bt_delete.Click += DeleteLastMessage!;
             bt_chattosessions.Click += ConvertChatToSessionList!;
             bt_sessionrefresh.Click += bt_sessionrefresh_Click!;
             bt_newsession.Click += StartNewSession!;
             // Load editors and chat menu
             bt_embedall.Click += EmbedAllSessions!;
-
-            bt_htmltest.Click += WebChatLoad!;
             SetupSamplerEditor();
             SetupInstructEditor();
             SetupPromptEditor();
             SetupChatMenu();
+        }
+
+        private void Bt_delete_Click(object? sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void SetupChatMenu()
@@ -115,40 +117,24 @@ namespace WaifuAI
         {
             _currentgeneration += e;
             _currentgenerationtokencount++;
-            if (_currentgenerationtokencount > 8)
+            if (_currentgenerationtokencount > 4)
             {
-                var MsgPrefix = LLMSystem.GetMessagePrefix(AuthorRole.Assistant);
-                //_lastMessageControl?.UpdateMessage(MsgPrefix + _currentgeneration);
                 _currentgenerationtokencount = 0;
-                // make sure it's invoked in the application UI
-                //flowChat.VerticalScroll.Value = flowChat.VerticalScroll.Maximum;
+                var MsgPrefix = LLMSystem.GetMessagePrefix(AuthorRole.Assistant);
                 await WebEditLastMessage(MsgPrefix + _currentgeneration);
-                //Invoke((System.Windows.Forms.MethodInvoker)delegate
-                //{
-                //});
             }
         }
 
         private async void OnStreamInferenceEnded(object? sender, string e)
         {
             var MsgPrefix = LLMSystem.GetMessagePrefix(AuthorRole.Assistant);
-            _lastMessageControl?.UpdateMessage(MsgPrefix + e);
             var msg = LLMSystem.Bot.History.LogMessage(AuthorRole.Assistant, e, LLMSystem.User, LLMSystem.Bot);
-            if (_lastMessageControl != null)
-            {
-                _lastMessageControl.AssociatedID = msg.Guid;
-                Invoke((System.Windows.Forms.MethodInvoker)delegate
-                {
-                    _lastMessageControl.ForceResizeVerticallyToFitContent();
-                });
-            }
             await WebEditLastMessage(MsgPrefix + e);
 
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
             Invoke((System.Windows.Forms.MethodInvoker)delegate
             {
-                flowChat.VerticalScroll.Value = flowChat.VerticalScroll.Maximum;
                 var infogen = LLMSystem.History.GetCurrentChatSessionInfo();
                 lbl_session.Text = "Tokens: " + infogen.tokens + Environment.NewLine + "Duration: " + infogen.duration.TotalDays.ToString("F2") + " days";
             });
@@ -520,7 +506,7 @@ namespace WaifuAI
             // ready a new message for the bot's response
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
-            _lastMessageControl = SendMessageToUI(
+            SendMessageToUI(
                 new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your post...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
             ed_input.Text = string.Empty;
             await LLMSystem.SendMessageToBot(msg);
@@ -528,13 +514,9 @@ namespace WaifuAI
 
         private async void RerollMessage(object sender, EventArgs e)
         {
-            if (LLMSystem.Status == SystemStatus.Busy || flowChat.Controls.Count == 0)
+            if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.Messages.Count == 0)
                 return;
-            _lastMessageControl = flowChat.Controls[flowChat.Controls.Count - 1] as ChatMessageControl;
-            if (_lastMessageControl == null)
-                return;
-            _lastMessageControl.UpdateMessage("*" + LLMSystem.Bot.UniqueName + " is thinking...*");
-            _lastMessageControl.Height = 120;
+            await WebEditLastMessage("*" + LLMSystem.Bot.UniqueName + " is thinking...*");
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
             await LLMSystem.RerollLastMessage();
@@ -554,78 +536,28 @@ namespace WaifuAI
                 return;
             await LLMSystem.History.StartNewChatSession(true);
             LLMSystem.Bot.SaveChatHistory();
-            LoadHistoryToUI(50);
+            await WebChatLoad(50);
             LoadChatHistoryTab();
         }
 
-        private void DeleteLastMessage(object sender, EventArgs e)
+        private async void DeleteLastMessage(object sender, EventArgs e)
         {
-            if (LLMSystem.Status == SystemStatus.Busy || flowChat.Controls.Count == 0)
+            if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.Messages.Count == 0)
                 return;
-            var last = flowChat.Controls[flowChat.Controls.Count - 1] as ChatMessageControl;
-            flowChat.Controls.Remove(last);
-            last?.Dispose();
             LLMSystem.RemoveLastMessage();
+            await WebChatLoad(50);
         }
 
         private void LoadHistoryToUI(int maxMsg = 100)
         {
-            ClearChat();
-            var start = LLMSystem.History.Messages.Count - maxMsg;
-            if (start < 0)
-                start = 0;
-            _isfillinghistory = true;
-            flowChat.SuspendLayout();
-            try
-            {
-                for (int i = start; i < LLMSystem.History.Messages.Count; i++)
-                {
-                    SendMessageToUI(LLMSystem.History.Messages[i]);
-                }
-            }
-            finally
-            {
-                flowChat.ResumeLayout();
-                _isfillinghistory = false;
-                flowChat.VerticalScroll.Value = flowChat.VerticalScroll.Maximum;
-            }
+            WebChatLoad(maxMsg);
         }
 
-        private ChatMessageControl SendMessageToUI(SingleMessage singleMessage)
+        private void SendMessageToUI(SingleMessage singleMessage)
         {
-            Character? sel = null;
-            var msg = singleMessage;
-            switch (msg.Role)
-            {
-                case AuthorRole.User:
-                    sel = DataFiles.Characters.TryGetValue(msg.UserID, out var found) ? found : LLMSystem.User;
-                    break;
-                case AuthorRole.Assistant:
-                    sel = DataFiles.Characters.TryGetValue(msg.CharID, out var foundbot) ? foundbot : LLMSystem.Bot;
-                    break;
-                default:
-                    break;
-            }
-            var MsgPrefix = LLMSystem.GetMessagePrefix(msg.Role);
-            System.Drawing.Image img = SystemLogo;
-
-            switch (msg.Role)
-            {
-                case AuthorRole.User:
-                    img = sel?.Portrait ?? LLMSystem.User.Portrait;
-                    break;
-                case AuthorRole.Assistant:
-                    img = sel?.Portrait ?? LLMSystem.Bot.Portrait;
-                    break;
-            }
-            var msgctrl = new ChatMessageControl(img, MsgPrefix + singleMessage.Message)
-            {
-                AssociatedID = msg.Guid
-            };
-            flowChat.Controls.Add(msgctrl);
-            flowChat.VerticalScroll.Value = flowChat.VerticalScroll.Maximum;
-            msgctrl.Width = flowChat.ClientSize.Width - 20;
-            return msgctrl;
+            var addedhtml = AddHtmlMessage(singleMessage);
+            _savedhtml += addedhtml;
+            UpdateHTML();
         }
 
         private void LoadSettings()
@@ -703,16 +635,6 @@ namespace WaifuAI
             }
         }
 
-        public void ClearChat()
-        {
-            foreach (var item in flowChat.Controls)
-            {
-                if (item is ChatMessageControl control)
-                    control.Dispose();
-            }
-            flowChat.Controls.Clear();
-        }
-
         #endregion
 
         #region *** Settings Tab Functions ***
@@ -721,7 +643,7 @@ namespace WaifuAI
         {
             LLMSystem.History.DivideChatIntoSessions();
             await LLMSystem.History.UpdateAllSessions();
-            LoadHistoryToUI(50);
+            await WebChatLoad(50);
         }
 
         private void bt_ImportSTChat_Click(object sender, EventArgs e)
@@ -1035,32 +957,10 @@ namespace WaifuAI
 
         #endregion
 
-        private void flowChat_Resize(object sender, EventArgs e)
-        {
-            if (_isfillinghistory || LLMSystem.Status == SystemStatus.Busy)
-                return;
-            flowChat.SuspendLayout();
-            try
-            {
-                foreach (Control control in flowChat.Controls)
-                {
-                    control.Width = flowChat.ClientSize.Width - 20;
-                    if (control is ChatMessageControl ctrl)
-                        ctrl.ForceResizeVerticallyToFitContent();
-                }
-            }
-            finally
-            {
-                flowChat.ResumeLayout();
-                flowChat.VerticalScroll.Value = flowChat.VerticalScroll.Maximum;
-            }
-        }
-
         private void cb_bot_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cb_bot.SelectedItem is string key && !string.IsNullOrEmpty(key))
             {
-                ClearChat();
                 LLMSystem.Bot = DataFiles.Characters[key];
                 LoadHistoryToUI(50);
                 LoadChatHistoryTab();
@@ -1231,6 +1131,7 @@ namespace WaifuAI
                 .Replace("\r", "\\r");
             var script = $"updateMessageAtIndex(\"{text}\", document.getElementsByClassName('message-content').length - 1);";
             var result = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+            await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
 
         private async Task WebEditMessageByID(string newMessage, int index)
@@ -1249,18 +1150,18 @@ namespace WaifuAI
         }
 
 
-        private async void WebChatLoad(object sender, EventArgs e)
+        private async Task WebChatLoad(int MaxMessage)
         {
             if (web_chat.CoreWebView2 == null)
             {
                 await web_chat.EnsureCoreWebView2Async();
                 web_chat.CoreWebView2!.Settings.AreDevToolsEnabled = true;
                 web_chat.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets.test", AppContext.BaseDirectory + "data\\img\\", CoreWebView2HostResourceAccessKind.Allow);
-                web_chat.CoreWebView2.DOMContentLoaded += OnWebChatContentLoaded; // Add event handler
+                web_chat.CoreWebView2.DOMContentLoaded += OnWebChatContentLoaded!; // Add event handler
                 web_chat.CoreWebView2.OpenDevToolsWindow();
             }
             var html = string.Empty;
-            var start = LLMSystem.History.Messages.Count - 50;
+            var start = LLMSystem.History.Messages.Count - MaxMessage;
             if (start < 0)
                 start = 0;
             for (int i = start; i < LLMSystem.History.Messages.Count; i++)
@@ -1269,6 +1170,11 @@ namespace WaifuAI
             }
             _savedhtml = html;
             web_chat.NavigateToString(InjectDialogCSS(html));
+        }
+
+        private void UpdateHTML()
+        {
+            web_chat.NavigateToString(InjectDialogCSS(_savedhtml));
         }
 
         private async void OnWebChatContentLoaded(object sender, CoreWebView2DOMContentLoadedEventArgs e)
