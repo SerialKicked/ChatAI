@@ -13,15 +13,16 @@ namespace WaifuAI.Files
         public string PromptFile { get; set; } = "Standard";
         public string Instruct { get; set; } = "ChatML";
         public string SamplerFile { get; set; } = "Default";
-        public double Temperature { get; set; } = 0.55;
-        public int MaxResponseTokens { get; set; } = 150;
-        public int MaxTotalTokens { get; set; } = 8192;
+        public double Temperature { get; set; } = 0.70;
+        public int MaxResponseTokens { get; set; } = 512;
+        public int MaxTotalTokens { get; set; } = 16384;
         public bool RAGUseTitles { get; set; } = true;
         public bool RAGUseSummaries { get; set; } = true;
-        public float RAGDistanceCutOff { get; set; } = 0.2f;
+        public float RAGDistanceCutOff { get; set; } = 0.165f;
         public HNSW.Net.NeighbourSelectionHeuristic RAGHeurisitc { get; set; } = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
-        public int MaxRAGEntries { get; set; } = 4;
+        public int MaxRAGEntries { get; set; } = 3;
         public int ReservedSessionTokens { get; set; } = 2048;
-        public int RAGPosition { get; set; } = 1;
+        public int RAGPosition { get; set; } = 3;
+        public int MaxMessagesOnScreen { get; set; } = 100;
     }
 }

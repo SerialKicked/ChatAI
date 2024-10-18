@@ -51,11 +51,6 @@ namespace WaifuAI
             SetupChatMenu();
         }
 
-        private void Bt_delete_Click(object? sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         private void SetupChatMenu()
         {
             cb_bot.Items.Clear();
@@ -120,11 +115,16 @@ namespace WaifuAI
             _currentgenerationtokencount = 0;
             Invoke((System.Windows.Forms.MethodInvoker)delegate
             {
-                var (tokens, duration) = LLMSystem.History.GetCurrentChatSessionInfo();
-                lbl_session.Text = "Tokens: " + tokens + Environment.NewLine + "Duration: " + duration.TotalDays.ToString("F2") + " days";
+                ShowCurrentSessionInfo();
             });
         }
 
+
+        private void ShowCurrentSessionInfo()
+        {
+            var (tokens, duration) = LLMSystem.History.GetCurrentChatSessionInfo();
+            lbl_session.Text = "Tokens: " + tokens + Environment.NewLine + "Duration: " + duration.TotalDays.ToString("F2") + " days";
+        }
         // Helper method to use Invoke with async methods
         private Task<bool> InvokeAsync(Func<Task> func)
         {
@@ -512,7 +512,7 @@ namespace WaifuAI
             await LLMSystem.Connect();
             num_maxcontext.Maximum = LLMSystem.MaxContextLength;
             num_maxcontext.Value = LLMSystem.MaxContextLength;
-            lbl_info.Text = LLMSystem.CurrentModel + "\n" + LLMSystem.Backend;
+            grp_model.Text = LLMSystem.CurrentModel;
         }
 
         private async void StartNewSession(object sender, EventArgs e)
@@ -521,7 +521,7 @@ namespace WaifuAI
                 return;
             await LLMSystem.History.StartNewChatSession(true);
             LLMSystem.Bot.SaveChatHistory();
-            await WebChatLoad(50);
+            await WebChatLoad();
             LoadChatHistoryTab();
         }
 
@@ -530,12 +530,12 @@ namespace WaifuAI
             if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.Messages.Count == 0)
                 return;
             LLMSystem.RemoveLastMessage();
-            await WebChatLoad(50);
+            await WebChatLoad();
         }
 
-        private void LoadHistoryToUI(int maxMsg = 100)
+        private void LoadHistoryToUI()
         {
-            WebChatLoad(maxMsg);
+            WebChatLoad();
         }
 
         private async Task SendMessageToUI(SingleMessage singleMessage)
@@ -651,7 +651,7 @@ namespace WaifuAI
         {
             LLMSystem.History.DivideChatIntoSessions();
             await LLMSystem.History.UpdateAllSessions();
-            await WebChatLoad(50);
+            await WebChatLoad();
         }
 
         private void bt_ImportSTChat_Click(object sender, EventArgs e)
@@ -970,8 +970,9 @@ namespace WaifuAI
             if (cb_bot.SelectedItem is string key && !string.IsNullOrEmpty(key))
             {
                 LLMSystem.Bot = DataFiles.Characters[key];
-                LoadHistoryToUI(50);
+                LoadHistoryToUI();
                 LoadChatHistoryTab();
+                ShowCurrentSessionInfo();
             }
         }
 
@@ -1134,7 +1135,7 @@ namespace WaifuAI
 
         private void EditMessage(int messageIndex)
         {
-            var realid = LLMSystem.History.Messages.Count - 50;
+            var realid = LLMSystem.History.Messages.Count - Settings.MaxMessagesOnScreen;
             if (realid < 0)
                 realid = 0;
             realid += messageIndex - 1;
@@ -1143,7 +1144,7 @@ namespace WaifuAI
             {
                 if (editForm.ShowDialog() == DialogResult.OK && editForm.Message != null)
                 {
-                    LoadHistoryToUI(50);
+                    LoadHistoryToUI();
                     LLMSystem.InvalidatePromptCache();
                 }
             }
@@ -1215,8 +1216,7 @@ namespace WaifuAI
             await web_chat.CoreWebView2.ExecuteScriptAsync(script);
         }
 
-
-        private async Task WebChatLoad(int MaxMessage)
+        private async Task WebChatLoad()
         {
             if (web_chat.CoreWebView2 == null)
             {
@@ -1228,7 +1228,7 @@ namespace WaifuAI
                 web_chat.CoreWebView2.WebMessageReceived += OnWebChatWebMessageReceived!;
             }
             var html = string.Empty;
-            var start = LLMSystem.History.Messages.Count - MaxMessage;
+            var start = LLMSystem.History.Messages.Count - Settings.MaxMessagesOnScreen;
             if (start < 0)
                 start = 0;
             for (int i = start; i < LLMSystem.History.Messages.Count; i++)
@@ -1238,7 +1238,7 @@ namespace WaifuAI
             web_chat.NavigateToString(InjectDialogCSS(html));
         }
 
-         private async void OnWebChatContentLoaded(object sender, CoreWebView2DOMContentLoadedEventArgs e)
+        private async void OnWebChatContentLoaded(object sender, CoreWebView2DOMContentLoadedEventArgs e)
         {
             string script = "window.scrollTo(0, document.body.scrollHeight);";
             await web_chat.CoreWebView2.ExecuteScriptAsync(script);
@@ -1258,5 +1258,6 @@ namespace WaifuAI
                 }
             }
         }
+
     }
 }
