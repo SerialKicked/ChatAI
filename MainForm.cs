@@ -1,24 +1,11 @@
-using NSwag.CodeGeneration.CSharp;
-using NSwag;
+using System;
 using System.Net;
 using WaifuAI.Files;
 using System.Reflection;
 using Newtonsoft.Json;
-using System;
-using Microsoft.VisualBasic.ApplicationServices;
-using System.Security.AccessControl;
-using Parlot.Fluent;
-using Microsoft.VisualBasic.Devices;
-using YamlDotNet.Core.Tokens;
-using YamlDotNet.Serialization;
 using Markdig;
 using WaifuAI.Memory;
-using Microsoft.VisualBasic.Logging;
-using Markdig.Helpers;
 using Microsoft.Web.WebView2.Core;
-using Microsoft.AspNetCore.Components.Forms;
-using static System.Net.Mime.MediaTypeNames;
-using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace WaifuAI
 {
@@ -501,12 +488,12 @@ namespace WaifuAI
                 return;
             var messagetext = LLMSystem.GetAwayString() + LLMSystem.ReplaceMacros(ed_input.Text.Replace(Environment.NewLine, LLMSystem.NewLine), LLMSystem.User, LLMSystem.Bot);
             var msg = new SingleMessage(AuthorRole.User, DateTime.Now, messagetext, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
-            SendMessageToUI(msg);
+            await SendMessageToUI(msg);
 
             // ready a new message for the bot's response
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
-            SendMessageToUI(
+            await SendMessageToUI(
                 new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your post...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
             ed_input.Text = string.Empty;
             await LLMSystem.SendMessageToBot(msg);
@@ -553,11 +540,34 @@ namespace WaifuAI
             WebChatLoad(maxMsg);
         }
 
-        private void SendMessageToUI(SingleMessage singleMessage)
+        private async Task SendMessageToUI(SingleMessage singleMessage)
         {
-            var addedhtml = AddHtmlMessage(singleMessage);
-            _savedhtml += addedhtml;
-            UpdateHTML();
+            string img = "gears.png";
+            switch (singleMessage.Role)
+            {
+                case AuthorRole.User:
+                    img = LLMSystem.User.Icon;
+                    break;
+                case AuthorRole.Assistant:
+                    img = LLMSystem.Bot.Icon;
+                    break;
+            }
+            var text = Markdown.ToHtml(LLMSystem.GetMessagePrefix(singleMessage.Role) + singleMessage.Message);
+            var coremsg = $@"
+                    <div class='portrait'>
+                        <img src='https://appassets.test/{img}' alt='Portrait' width='50' height='67'>
+                    </div>
+                    <div class='message-content'>
+                        {text}
+                    </div>";
+
+            coremsg = coremsg.Replace("\\", "\\\\")
+                .Replace("\"", "\\\"")
+                .Replace("\n", "\\n")
+                .Replace("\r", "\\r");
+            var script = $"addHtmlAfterLastChatMessage(\"{coremsg}\");";
+            await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+            await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
 
         private void LoadSettings()
@@ -1075,13 +1085,25 @@ namespace WaifuAI
             string scripts = @"
             <script>
                 function updateMessageAtIndex(text, index) {
-                    console.log(index);
                     const messageContents = document.getElementsByClassName('message-content');
                     if (index >= 0 && index < messageContents.length) {
                         const messageContent = messageContents[index];
                         messageContent.innerHTML = text;
                     } else {
                         console.error('Index out of bounds');
+                    }
+                }
+                function addHtmlAfterLastChatMessage(htmlContent) {
+                    const chatMessages = document.querySelectorAll('.chat-message');
+                    if (chatMessages.length > 0) {
+                        const lastChatMessage = chatMessages[chatMessages.length - 1];
+                        const newDiv = document.createElement('div');
+                        newDiv.className = 'chat-message';
+                        newDiv.innerHTML = htmlContent;
+                        console.warn(chatMessages.length);
+                        lastChatMessage.insertAdjacentElement('afterend', newDiv);
+                    } else {
+                        console.warn('No chat messages found.');
                     }
                 }
             </script>";
@@ -1097,7 +1119,7 @@ namespace WaifuAI
                         <img src='https://appassets.test/{imgPath}' alt='Portrait' width='50' height='67'>
                     </div>
                     <div class='message-content'>
-                        <p>{dialog}</p>
+                        {dialog}
                     </div>
                 </div>";
         }
