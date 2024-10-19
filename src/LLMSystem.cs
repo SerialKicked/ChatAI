@@ -177,7 +177,7 @@ namespace WaifuAI
         {
             InvalidatePromptCache();
             _currentWorldEntries = [];
-            bot.EndSession();
+            bot.EndSession(true);
             bot = newbot;
             bot.BeginSession();
             RAGSystem.VectorizeChatlog(History);

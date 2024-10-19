@@ -760,7 +760,7 @@ namespace WaifuAI
             }
             await RAGSystem.EmbedChatSessions(LLMSystem.History);
             MessageBox.Show("All sessions have been embedded successfully.");
-            LLMSystem.Bot.SaveChatHistory();
+            LLMSystem.Bot.SaveChatHistory(true);
             RAGSystem.VectorizeChatlog(LLMSystem.History);
         }
 
@@ -1340,7 +1340,7 @@ namespace WaifuAI
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
-            LLMSystem.Bot.EndSession();
+            LLMSystem.Bot.EndSession(backup: true);
         }
 
         private void ck_senseoftime_CheckedChanged(object sender, EventArgs e)

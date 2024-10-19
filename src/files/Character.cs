@@ -75,17 +75,24 @@ namespace WaifuAI.Files
         {
         }
 
-        public void EndSession()
+        public void EndSession(bool backup = false)
         {
-            SaveChatHistory();
+            SaveChatHistory(backup);
             Plugins.Clear();
         }
 
-        public void SaveChatHistory()
+        public void SaveChatHistory(bool backup = false)
         {
             if (string.IsNullOrEmpty(UniqueName))
                 return;
-            (History as IFile).SaveToFile("data/chatlogs/" + UniqueName + ".json");
+            if (backup && File.Exists("data/chatlogs/" + UniqueName + ".json"))
+            {
+                if (File.Exists("data/chatlogs/" + UniqueName + ".bak"))
+                    File.Delete("data/chatlogs/" + UniqueName + ".bak");
+                File.Move("data/chatlogs/" + UniqueName + ".json", "data/chatlogs/" + UniqueName + ".bak");
+            }
+
+            History.SaveToFile("data/chatlogs/" + UniqueName + ".json");
         }
 
         private void LoadChatHistory()
