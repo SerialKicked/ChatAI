@@ -625,7 +625,7 @@ namespace WaifuAI
                     img = LLMSystem.Bot.Icon;
                     break;
             }
-            var text = Markdown.ToHtml(LLMSystem.GetMessagePrefix(singleMessage.Role) + singleMessage.Message, CustomMarkDownPipeline);
+            var text = Markdown.ToHtml(LLMSystem.GetMessagePrefix(singleMessage) + singleMessage.Message, CustomMarkDownPipeline);
             var coremsg = $@"
                     <div class='portrait'>
                         <img src='https://appassets.test/img/{img}' alt='Portrait' width='60'>
@@ -1170,13 +1170,13 @@ namespace WaifuAI
             switch (singleMessage.Role)
             {
                 case AuthorRole.User:
-                    img = LLMSystem.User.Icon;
+                    img = singleMessage.User.Icon;
                     break;
                 case AuthorRole.Assistant:
-                    img = LLMSystem.Bot.Icon;
+                    img = singleMessage.Bot.Icon;
                     break;
             }
-            var html = Markdown.ToHtml(LLMSystem.GetMessagePrefix(singleMessage.Role) + singleMessage.Message, CustomMarkDownPipeline);
+            var html = Markdown.ToHtml(LLMSystem.GetMessagePrefix(singleMessage) + singleMessage.Message, CustomMarkDownPipeline);
             return InjectDialogHtml(img, html);
         }
 

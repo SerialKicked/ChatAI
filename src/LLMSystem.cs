@@ -387,7 +387,6 @@ namespace WaifuAI
             History.RemoveLast();
             if (string.IsNullOrEmpty(_LastGeneratedPrompt))
             {
-                var lastusermsg = History.LastMessage() ?? new SingleMessage(AuthorRole.User, DateTime.Now, "Hi!", Bot.Name, User.Name);
                 await StartGeneration(AuthorRole.Assistant, string.Empty);
             }
             else
@@ -454,6 +453,19 @@ namespace WaifuAI
                 _ => "**Error:** ",
             };
         }
+
+        public static string GetMessagePrefix(SingleMessage message)
+        {
+            return message.Role switch
+            {
+                AuthorRole.System => "**SYSTEM:** ",
+                AuthorRole.SysPrompt => "**SYS PROMPT:** ",
+                AuthorRole.User => "**" + message.User.Name + ":** ",
+                AuthorRole.Assistant => "**" + message.Bot.Name + ":** ",
+                _ => "**Error:** ",
+            };
+        }
+
 
         /// <summary>
         /// Returns an away string depending on the last chat's date.

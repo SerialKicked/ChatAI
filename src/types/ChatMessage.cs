@@ -173,7 +173,7 @@ namespace WaifuAI
             {
                 if (editForm.ShowDialog() == DialogResult.OK && editForm.Message != null)
                 {
-                    UpdateMessage(LLMSystem.GetMessagePrefix(editForm.Message.Role) + editForm.Message.Message);
+                    UpdateMessage(LLMSystem.GetMessagePrefix(editForm.Message) + editForm.Message.Message);
                     LLMSystem.InvalidatePromptCache();
                 }
             }

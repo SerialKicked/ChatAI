@@ -1,16 +1,6 @@
-﻿using Microsoft.AspNetCore.SignalR.Protocol;
-using Microsoft.VisualBasic.ApplicationServices;
-using Parlot.Fluent;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using Newtonsoft.Json;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using WaifuAI.Memory;
 
 namespace WaifuAI.Files
@@ -23,6 +13,10 @@ namespace WaifuAI.Files
         public DateTime Date = date;
         public string CharID = chara;
         public string UserID = user;
+
+        [JsonIgnore] public Character User => !string.IsNullOrEmpty(UserID) && DataFiles.Characters.TryGetValue(UserID, out var u) ? u : LLMSystem.User;
+        [JsonIgnore] public Character Bot => !string.IsNullOrEmpty(CharID) && DataFiles.Characters.TryGetValue(CharID, out var c) ? c : LLMSystem.Bot;
+        [JsonIgnore] public Character? Sender => Role == AuthorRole.User? User : Role == AuthorRole.Assistant ? Bot : null;
     }
 
     public class ChatSession
@@ -153,16 +147,8 @@ namespace WaifuAI.Files
                         text = msg.Message.StartsWith("*") ? LLMSystem.NewLine + msg.Message.Trim() + LLMSystem.NewLine : LLMSystem.NewLine + "*" + msg.Message.Trim() + "*" + LLMSystem.NewLine;
                         break;
                     case AuthorRole.User:
-                        {
-                            var sel = DataFiles.Characters.TryGetValue(msg.UserID, out var found) ? found : LLMSystem.User;
-                            text = "**"+sel.Name+":** " + msg.Message.Trim().Replace(LLMSystem.NewLine, " ") + LLMSystem.NewLine;
-                        }
-                        break;
                     case AuthorRole.Assistant:
-                        {
-                            var sel = DataFiles.Characters.TryGetValue(msg.CharID, out var foundbot) ? foundbot : LLMSystem.Bot;
-                            text = "**" + sel.Name + ":** " + msg.Message.Trim().Replace(LLMSystem.NewLine, " ") + LLMSystem.NewLine;
-                        }
+                        text = "**" + msg.Sender?.Name + ":** " + msg.Message.Trim().Replace(LLMSystem.NewLine, " ") + LLMSystem.NewLine;
                         break;
                 }
                 if (text == string.Empty)
@@ -593,6 +579,13 @@ namespace WaifuAI.Files
             var tokencount = LLMSystem.GetTokenCount(sb.ToString());
             var duration = Messages.Last().Date - Messages.First().Date;
             return (tokencount, duration);
+        }
+
+
+        public void SaveToFile(string pPath) 
+        {
+            var content = JsonConvert.SerializeObject(this);
+            File.WriteAllText(pPath, content);
         }
     }
 }

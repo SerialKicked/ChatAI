@@ -10,7 +10,8 @@ namespace WaifuAI.Files
     public class InstructFormat : BaseFile
     {
         public static readonly string[] Properties = [
-            "SystemPrompt", 
+            "SystemPrompt",
+            "SysPromptStart", "SysPromptEnd",
             "SystemStart", "SystemEnd", 
             "UserStart", "UserEnd", 
             "BotStart", "BotEnd", 
@@ -86,9 +87,7 @@ namespace WaifuAI.Files
 
         public string FormatSingleMessage(SingleMessage message)
         {
-            var user = !string.IsNullOrEmpty(message.UserID) && DataFiles.Characters.TryGetValue(message.UserID, out var u) ? u : LLMSystem.User;
-            var bot = !string.IsNullOrEmpty(message.CharID) && DataFiles.Characters.TryGetValue(message.CharID, out var c) ? c : LLMSystem.Bot;
-            return FormatSinglePrompt(message.Role, user, bot, message.Message);
+            return FormatSinglePrompt(message.Role, message.User, message.Bot, message.Message);
         }
 
         public List<string> GetStoppingStrings(Character user, Character bot)
