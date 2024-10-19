@@ -140,6 +140,7 @@ namespace WaifuAI
                     ShowCurrentSessionInfo();
                 });
             }
+            LLMSystem.Bot.SaveChatHistory();
         }
 
         private void ShowCurrentSessionInfo()
@@ -300,12 +301,33 @@ namespace WaifuAI
                 else if (property.PropertyType == typeof(ICollection<int>))
                 {
                     control = new TextBox { Text = string.Join(",", (ICollection<int>)property.GetValue(generationInput)!), Location = new Point(150, yPos), Width = 200 };
-                    ((TextBox)control).TextChanged += (sender, e) => property.SetValue(generationInput, ((TextBox)control).Text.Split(',').Select(int.Parse).ToList());
+
+                    ((TextBox)control).TextChanged += (sender, e) =>
+                    {
+                        try
+                        {
+                            property.SetValue(generationInput, ((TextBox)control).Text.Split(',').Select(int.Parse).ToList());
+                        }
+                        catch (Exception)
+                        {
+                            // ignore until good input
+                        }
+                    };
                 }
                 else if (property.PropertyType == typeof(ICollection<string>))
                 {
                     control = new TextBox { Text = string.Join(",", (ICollection<string>)property.GetValue(generationInput) ?? []), Location = new Point(150, yPos), Width = 200 };
-                    ((TextBox)control).TextChanged += (sender, e) => property.SetValue(generationInput, ((TextBox)control).Text.Split(',').ToList());
+                    ((TextBox)control).TextChanged += (sender, e) => 
+                    {
+                        try
+                        {
+                            property.SetValue(generationInput, ((TextBox)control).Text.Split(',').ToList());
+                        }
+                        catch (Exception)
+                        {
+                            // ignore until good input
+                        }
+                    };
                 }
 
                 if (control != null)

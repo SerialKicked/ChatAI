@@ -388,7 +388,7 @@ namespace WaifuAI
             if (string.IsNullOrEmpty(_LastGeneratedPrompt))
             {
                 var lastusermsg = History.LastMessage() ?? new SingleMessage(AuthorRole.User, DateTime.Now, "Hi!", Bot.Name, User.Name);
-                await StartGeneration(lastusermsg.Role, string.Empty);
+                await StartGeneration(AuthorRole.Assistant, string.Empty);
             }
             else
             {
