@@ -151,12 +151,13 @@ namespace WaifuAI
                 }
                 if (lines[i].Count(c => c == '*') % 2 == 1)
                 {
-                    lines[i] = lines[i].Trim() + "*";
-                }
-                // If a line ends with but doesn't start with an asterisk, add one at the beginning
-                if (lines[i].EndsWith("*") && !lines[i].StartsWith("*"))
-                {
-                    lines[i] = "*" + lines[i].Trim();
+                    // If a line ends with but doesn't start with an asterisk, add one at the beginning
+                    if (lines[i].EndsWith("*") && !lines[i].StartsWith("*"))
+                    {
+                        lines[i] = "*" + lines[i].Trim();
+                    }
+                    else
+                        lines[i] = lines[i].Trim() + "*";
                 }
             }
             return string.Join(LLMSystem.NewLine, lines);

@@ -39,6 +39,8 @@
             ed_input = new TextBox();
             panel1 = new Panel();
             groupBox5 = new GroupBox();
+            ck_sessionmemory = new CheckBox();
+            ck_senseoftime = new CheckBox();
             label3 = new Label();
             cb_bot = new ComboBox();
             label4 = new Label();
@@ -158,7 +160,7 @@
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(908, 602);
+            tabControl1.Size = new Size(908, 685);
             tabControl1.TabIndex = 1;
             // 
             // tabChat
@@ -173,7 +175,7 @@
             tabChat.Location = new Point(4, 27);
             tabChat.Name = "tabChat";
             tabChat.Padding = new Padding(3);
-            tabChat.Size = new Size(900, 571);
+            tabChat.Size = new Size(900, 654);
             tabChat.TabIndex = 1;
             tabChat.Text = "Chat";
             tabChat.UseVisualStyleBackColor = true;
@@ -184,7 +186,7 @@
             bt_impersonate.BackColor = Color.Turquoise;
             bt_impersonate.FlatStyle = FlatStyle.Flat;
             bt_impersonate.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_impersonate.Location = new Point(771, 543);
+            bt_impersonate.Location = new Point(771, 626);
             bt_impersonate.Name = "bt_impersonate";
             bt_impersonate.Size = new Size(60, 25);
             bt_impersonate.TabIndex = 7;
@@ -199,7 +201,7 @@
             web_chat.DefaultBackgroundColor = Color.White;
             web_chat.Location = new Point(212, 3);
             web_chat.Name = "web_chat";
-            web_chat.Size = new Size(685, 502);
+            web_chat.Size = new Size(685, 585);
             web_chat.TabIndex = 6;
             web_chat.ZoomFactor = 1D;
             // 
@@ -209,7 +211,7 @@
             bt_delete.BackColor = Color.LightCoral;
             bt_delete.FlatStyle = FlatStyle.Flat;
             bt_delete.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_delete.Location = new Point(837, 543);
+            bt_delete.Location = new Point(837, 626);
             bt_delete.Name = "bt_delete";
             bt_delete.Size = new Size(60, 25);
             bt_delete.TabIndex = 5;
@@ -222,7 +224,7 @@
             bt_reroll.BackColor = Color.PaleGoldenrod;
             bt_reroll.FlatStyle = FlatStyle.Flat;
             bt_reroll.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_reroll.Location = new Point(837, 512);
+            bt_reroll.Location = new Point(837, 595);
             bt_reroll.Name = "bt_reroll";
             bt_reroll.Size = new Size(60, 25);
             bt_reroll.TabIndex = 4;
@@ -235,7 +237,7 @@
             bt_send.BackColor = Color.PaleGreen;
             bt_send.FlatStyle = FlatStyle.Flat;
             bt_send.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_send.Location = new Point(771, 512);
+            bt_send.Location = new Point(771, 595);
             bt_send.Name = "bt_send";
             bt_send.Size = new Size(60, 25);
             bt_send.TabIndex = 3;
@@ -247,7 +249,7 @@
             ed_input.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             ed_input.BackColor = Color.WhiteSmoke;
             ed_input.BorderStyle = BorderStyle.FixedSingle;
-            ed_input.Location = new Point(212, 511);
+            ed_input.Location = new Point(212, 594);
             ed_input.Multiline = true;
             ed_input.Name = "ed_input";
             ed_input.Size = new Size(553, 57);
@@ -263,12 +265,14 @@
             panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
-            panel1.Size = new Size(203, 565);
+            panel1.Size = new Size(203, 648);
             panel1.TabIndex = 0;
             // 
             // groupBox5
             // 
             groupBox5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            groupBox5.Controls.Add(ck_sessionmemory);
+            groupBox5.Controls.Add(ck_senseoftime);
             groupBox5.Controls.Add(label3);
             groupBox5.Controls.Add(cb_bot);
             groupBox5.Controls.Add(label4);
@@ -281,10 +285,36 @@
             groupBox5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox5.Location = new Point(6, 320);
             groupBox5.Name = "groupBox5";
-            groupBox5.Size = new Size(187, 241);
+            groupBox5.Size = new Size(187, 324);
             groupBox5.TabIndex = 25;
             groupBox5.TabStop = false;
             groupBox5.Text = "Chat Settings";
+            // 
+            // ck_sessionmemory
+            // 
+            ck_sessionmemory.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            ck_sessionmemory.AutoSize = true;
+            ck_sessionmemory.Font = new Font("Segoe UI", 9F);
+            ck_sessionmemory.Location = new Point(6, 220);
+            ck_sessionmemory.Name = "ck_sessionmemory";
+            ck_sessionmemory.Size = new Size(113, 19);
+            ck_sessionmemory.TabIndex = 24;
+            ck_sessionmemory.Text = "Session Memory";
+            ck_sessionmemory.UseVisualStyleBackColor = true;
+            ck_sessionmemory.CheckedChanged += ck_sessionmemory_CheckedChanged;
+            // 
+            // ck_senseoftime
+            // 
+            ck_senseoftime.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            ck_senseoftime.AutoSize = true;
+            ck_senseoftime.Font = new Font("Segoe UI", 9F);
+            ck_senseoftime.Location = new Point(6, 245);
+            ck_senseoftime.Name = "ck_senseoftime";
+            ck_senseoftime.Size = new Size(97, 19);
+            ck_senseoftime.TabIndex = 23;
+            ck_senseoftime.Text = "Sense of time";
+            ck_senseoftime.UseVisualStyleBackColor = true;
+            ck_senseoftime.CheckedChanged += ck_senseoftime_CheckedChanged;
             // 
             // label3
             // 
@@ -323,7 +353,7 @@
             ck_ragenabled.Checked = true;
             ck_ragenabled.CheckState = CheckState.Checked;
             ck_ragenabled.Font = new Font("Segoe UI", 9F);
-            ck_ragenabled.Location = new Point(87, 187);
+            ck_ragenabled.Location = new Point(6, 270);
             ck_ragenabled.Name = "ck_ragenabled";
             ck_ragenabled.Size = new Size(94, 19);
             ck_ragenabled.TabIndex = 20;
@@ -355,7 +385,7 @@
             // 
             bt_newsession.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             bt_newsession.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_newsession.Location = new Point(6, 212);
+            bt_newsession.Location = new Point(6, 295);
             bt_newsession.Name = "bt_newsession";
             bt_newsession.Size = new Size(175, 23);
             bt_newsession.TabIndex = 21;
@@ -539,7 +569,7 @@
             tabHistory.Controls.Add(listSession);
             tabHistory.Location = new Point(4, 27);
             tabHistory.Name = "tabHistory";
-            tabHistory.Size = new Size(1042, 671);
+            tabHistory.Size = new Size(900, 654);
             tabHistory.TabIndex = 6;
             tabHistory.Text = "Chat History";
             tabHistory.UseVisualStyleBackColor = true;
@@ -552,7 +582,7 @@
             web_sessioncontent.Dock = DockStyle.Fill;
             web_sessioncontent.Location = new Point(326, 100);
             web_sessioncontent.Name = "web_sessioncontent";
-            web_sessioncontent.Size = new Size(716, 571);
+            web_sessioncontent.Size = new Size(574, 554);
             web_sessioncontent.TabIndex = 2;
             web_sessioncontent.ZoomFactor = 1D;
             // 
@@ -565,7 +595,7 @@
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(326, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(716, 100);
+            panel2.Size = new Size(574, 100);
             panel2.TabIndex = 1;
             // 
             // bt_sessionrefresh
@@ -603,7 +633,7 @@
             listSession.FullRowSelect = true;
             listSession.Location = new Point(0, 0);
             listSession.Name = "listSession";
-            listSession.Size = new Size(326, 671);
+            listSession.Size = new Size(326, 654);
             listSession.TabIndex = 0;
             listSession.UseCompatibleStateImageBehavior = false;
             listSession.View = View.Details;
@@ -628,7 +658,7 @@
             tabInstruct.Location = new Point(4, 27);
             tabInstruct.Name = "tabInstruct";
             tabInstruct.Padding = new Padding(3);
-            tabInstruct.Size = new Size(1042, 671);
+            tabInstruct.Size = new Size(900, 654);
             tabInstruct.TabIndex = 2;
             tabInstruct.Text = "Instruction Format Editor";
             tabInstruct.UseVisualStyleBackColor = true;
@@ -681,7 +711,7 @@
             tabSysPrompt.Location = new Point(4, 27);
             tabSysPrompt.Name = "tabSysPrompt";
             tabSysPrompt.Padding = new Padding(3);
-            tabSysPrompt.Size = new Size(1042, 671);
+            tabSysPrompt.Size = new Size(900, 654);
             tabSysPrompt.TabIndex = 5;
             tabSysPrompt.Text = "System Prompt Editor";
             tabSysPrompt.UseVisualStyleBackColor = true;
@@ -734,7 +764,7 @@
             tabSamplers.Location = new Point(4, 27);
             tabSamplers.Name = "tabSamplers";
             tabSamplers.Padding = new Padding(3);
-            tabSamplers.Size = new Size(1042, 671);
+            tabSamplers.Size = new Size(900, 654);
             tabSamplers.TabIndex = 3;
             tabSamplers.Text = "Sampler Editor";
             tabSamplers.UseVisualStyleBackColor = true;
@@ -786,7 +816,7 @@
             tabSettings.Location = new Point(4, 27);
             tabSettings.Name = "tabSettings";
             tabSettings.Padding = new Padding(3);
-            tabSettings.Size = new Size(1042, 671);
+            tabSettings.Size = new Size(900, 654);
             tabSettings.TabIndex = 4;
             tabSettings.Text = "Settings";
             tabSettings.UseVisualStyleBackColor = true;
@@ -1035,7 +1065,7 @@
             tabAPI.Location = new Point(4, 27);
             tabAPI.Name = "tabAPI";
             tabAPI.Padding = new Padding(3);
-            tabAPI.Size = new Size(1042, 671);
+            tabAPI.Size = new Size(900, 654);
             tabAPI.TabIndex = 0;
             tabAPI.Text = "API Testing";
             tabAPI.UseVisualStyleBackColor = true;
@@ -1160,7 +1190,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(908, 602);
+            ClientSize = new Size(908, 685);
             Controls.Add(tabControl1);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
@@ -1291,5 +1321,7 @@
         private GroupBox groupBox4;
         private GroupBox groupBox5;
         private Button bt_impersonate;
+        private CheckBox ck_senseoftime;
+        private CheckBox ck_sessionmemory;
     }
 }

@@ -24,7 +24,11 @@ namespace WaifuAI
         private ChatSession? _selectedSession = null;
         private bool _impersonatemode = false;
 
-        public static MarkdownPipeline CustomMarkDownPipeline = new MarkdownPipelineBuilder().UseSoftlineBreakAsHardlineBreak().UseEmojiAndSmiley().UseAutoLinks().Build();
+        public static MarkdownPipeline CustomMarkDownPipeline { get; } = new MarkdownPipelineBuilder()
+            .UseSoftlineBreakAsHardlineBreak()
+            .UseEmojiAndSmiley()
+            .UseAutoLinks()
+            .Build();
 
         public MainForm()
         {
@@ -320,7 +324,7 @@ namespace WaifuAI
                 else if (property.PropertyType == typeof(ICollection<string>))
                 {
                     control = new TextBox { Text = string.Join(",", (ICollection<string>)property.GetValue(generationInput) ?? []), Location = new Point(150, yPos), Width = 200 };
-                    ((TextBox)control).TextChanged += (sender, e) => 
+                    ((TextBox)control).TextChanged += (sender, e) =>
                     {
                         try
                         {
@@ -1059,6 +1063,7 @@ namespace WaifuAI
                 }
                 em { color: yellow; }
                 strong { color: Tomato }
+                a { color: gold }
 
                 .chat-message {
                     display: flex;
@@ -1259,6 +1264,8 @@ namespace WaifuAI
                 await LoadHistoryToUI();
                 LoadChatHistoryTab();
                 ShowCurrentSessionInfo();
+                ck_senseoftime.Checked = LLMSystem.Bot.SenseOfTime;
+                ck_sessionmemory.Checked = LLMSystem.Bot.SessionMemorySystem;
             }
         }
 
@@ -1336,5 +1343,14 @@ namespace WaifuAI
             LLMSystem.Bot.EndSession();
         }
 
+        private void ck_senseoftime_CheckedChanged(object sender, EventArgs e)
+        {
+            ck_senseoftime.Checked = LLMSystem.Bot.SenseOfTime;
+        }
+
+        private void ck_sessionmemory_CheckedChanged(object sender, EventArgs e)
+        {
+            ck_sessionmemory.Checked = LLMSystem.Bot.SessionMemorySystem;
+        }
     }
 }
