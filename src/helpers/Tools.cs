@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Microsoft.VisualBasic.ApplicationServices;
 using Parlot.Fluent;
 using WaifuAI.Memory;
+using System.Text.RegularExpressions;
 
 namespace WaifuAI
 {
@@ -114,11 +115,51 @@ namespace WaifuAI
         }
     }
 
-    public static class StringBuilderExtensions
+    public static class StringExtensions
     {
         public static StringBuilder AppendLinuxLine(this StringBuilder sb, string? text = null)
         {
             return text == null ? sb.Append(LLMSystem.NewLine) : sb.Append(text).Append(LLMSystem.NewLine);
+        }
+
+        public static string ToWinFormat(this string text) => text.Replace("\n", "\r\n");
+
+        public static string ToLinuxFormat(this string text) => text.Replace("\r\n", "\n");
+
+        public static string SanitizeForJS(this string text)
+        {
+            return text.Replace("\\", "\\\\")
+                .Replace("\"", "\\\"")
+                .Replace("\n", "\\n")
+                .Replace("\r", "\\r");
+        }
+
+        public static string FixAsterisks(this string text)
+        {
+            // Automatically close asterisks if they are not closed before the end of each paragraph delimited by a newline
+            var lines = text.Split(LLMSystem.NewLine);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                // skip small lines
+                if (lines[i].Length <= 2)
+                    continue;
+                if (lines[i].StartsWith("*"))
+                {
+                    // remove the first character from lines[i]
+                    lines[i] = lines[i][1..];
+                    lines[i] = "*" + lines[i].Trim();
+                }
+                if (lines[i].Count(c => c == '*') % 2 == 1)
+                {
+                    lines[i] = lines[i].Trim() + "*";
+                }
+                // If a line ends with but doesn't start with an asterisk, add one at the beginning
+                if (lines[i].EndsWith("*") && !lines[i].StartsWith("*"))
+                {
+                    lines[i] = "*" + lines[i].Trim();
+                }
+            }
+            return string.Join(LLMSystem.NewLine, lines);
         }
     }
 

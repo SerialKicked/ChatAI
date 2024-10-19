@@ -76,6 +76,7 @@ namespace WaifuAI.src.forms
             StartPosition = FormStartPosition.CenterParent;
             Text = "Edit Message";
             TopMost = true;
+            KeyPress += EditMessageForm_KeyPress;
             ResumeLayout(false);
             PerformLayout();
         }

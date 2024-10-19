@@ -30,7 +30,7 @@ namespace WaifuAI.src.forms
             }
             else
             {
-                Message.Message = ed_message.Text;
+                Message.Message = ed_message.Text.ToLinuxFormat();
                 DialogResult = DialogResult.OK;
                 Close();
             }
@@ -45,7 +45,16 @@ namespace WaifuAI.src.forms
                 Close();
                 return;
             }
-            ed_message.Text = Message.Message;
+            ed_message.Text = Message.Message.ToWinFormat();
+        }
+
+        private void EditMessageForm_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
         }
     }
 }

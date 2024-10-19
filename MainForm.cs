@@ -24,6 +24,8 @@ namespace WaifuAI
         private ChatSession? _selectedSession = null;
         private bool _impersonatemode = false;
 
+        public static MarkdownPipeline CustomMarkDownPipeline = new MarkdownPipelineBuilder().UseSoftlineBreakAsHardlineBreak().UseEmojiAndSmiley().UseAutoLinks().Build();
+
         public MainForm()
         {
             InitializeComponent();
@@ -92,7 +94,7 @@ namespace WaifuAI
         {
             ed_log.Clear();
             var text = "====== New Generation ======\n\n" + e + "\n\n";
-            ed_log.Text = text.Replace("\n", Environment.NewLine);
+            ed_log.Text = text.ToWinFormat();
         }
 
         private async void OnStreamMessageReceived(object? sender, string e)
@@ -124,15 +126,16 @@ namespace WaifuAI
                 _impersonatemode = false;
                 Invoke((System.Windows.Forms.MethodInvoker)delegate
                 {
-                    ed_input.Text = e;
+                    ed_input.Text = e.ToWinFormat();
                 });
                 LLMSystem.InvalidatePromptCache();
             }
             else
             {
+                var stringfix = e.FixAsterisks();
                 var MsgPrefix = LLMSystem.GetMessagePrefix(AuthorRole.Assistant);
-                var msg = LLMSystem.Bot.History.LogMessage(AuthorRole.Assistant, e, LLMSystem.User, LLMSystem.Bot);
-                await WebEditLastMessage(MsgPrefix + e);
+                var msg = LLMSystem.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMSystem.User, LLMSystem.Bot);
+                await WebEditLastMessage(MsgPrefix + stringfix);
                 _currentgeneration = string.Empty;
                 _currentgenerationtokencount = 0;
                 Invoke((System.Windows.Forms.MethodInvoker)delegate
@@ -543,7 +546,7 @@ namespace WaifuAI
             _impersonatemode = false;
             if (!string.IsNullOrEmpty(ed_input.Text))
             {
-                var messagetext = LLMSystem.GetAwayString() + LLMSystem.ReplaceMacros(ed_input.Text.Replace(Environment.NewLine, LLMSystem.NewLine), LLMSystem.User, LLMSystem.Bot);
+                var messagetext = LLMSystem.ReplaceMacros(LLMSystem.GetAwayString() + ed_input.Text.ToLinuxFormat(), LLMSystem.User, LLMSystem.Bot);
                 var msg = new SingleMessage(AuthorRole.User, DateTime.Now, messagetext, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
                 await SendMessageToUI(msg);
                 // ready a new message for the bot's response
@@ -622,7 +625,7 @@ namespace WaifuAI
                     img = LLMSystem.Bot.Icon;
                     break;
             }
-            var text = Markdown.ToHtml(LLMSystem.GetMessagePrefix(singleMessage.Role) + singleMessage.Message);
+            var text = Markdown.ToHtml(LLMSystem.GetMessagePrefix(singleMessage.Role) + singleMessage.Message, CustomMarkDownPipeline);
             var coremsg = $@"
                     <div class='portrait'>
                         <img src='https://appassets.test/img/{img}' alt='Portrait' width='60'>
@@ -631,10 +634,7 @@ namespace WaifuAI
                         {text}
                     </div>";
 
-            coremsg = coremsg.Replace("\\", "\\\\")
-                .Replace("\"", "\\\"")
-                .Replace("\n", "\\n")
-                .Replace("\r", "\\r");
+            coremsg = coremsg.SanitizeForJS();
             var script = $"addHtmlAfterLastChatMessage(\"{coremsg}\");";
             await web_chat.CoreWebView2.ExecuteScriptAsync(script);
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
@@ -841,7 +841,7 @@ namespace WaifuAI
             }
             var dialogs = session.GetRawDialogs(int.MaxValue, false).Replace("\n", "\n\n");
             var inf = "# " + session.Title + LLMSystem.NewLine + LLMSystem.NewLine + "## Summary:" + LLMSystem.NewLine + LLMSystem.NewLine + session.Summary + LLMSystem.NewLine + LLMSystem.NewLine + "## Dialogs:" + LLMSystem.NewLine + LLMSystem.NewLine + dialogs;
-            web_sessioncontent.NavigateToString(Markdown.ToHtml(inf));
+            web_sessioncontent.NavigateToString(Markdown.ToHtml(inf, CustomMarkDownPipeline));
         }
 
         private async void bt_sessionrefresh_Click(object sender, EventArgs e)
@@ -1176,7 +1176,8 @@ namespace WaifuAI
                     img = LLMSystem.Bot.Icon;
                     break;
             }
-            return InjectDialogHtml(img, Markdown.ToHtml(LLMSystem.GetMessagePrefix(singleMessage.Role) + singleMessage.Message));
+            var html = Markdown.ToHtml(LLMSystem.GetMessagePrefix(singleMessage.Role) + singleMessage.Message, CustomMarkDownPipeline);
+            return InjectDialogHtml(img, html);
         }
 
         private async Task WebEditLastMessage(string newMessage)
@@ -1186,11 +1187,8 @@ namespace WaifuAI
                 await InvokeAsync(new Func<Task>(async () => await WebEditLastMessage(newMessage)));
                 return;
             }
-            var text = Markdown.ToHtml(newMessage);
-            text = text.Replace("\\", "\\\\")
-                .Replace("\"", "\\\"")
-                .Replace("\n", "\\n")
-                .Replace("\r", "\\r");
+            var text = Markdown.ToHtml(newMessage, CustomMarkDownPipeline);
+            text = text.SanitizeForJS();
             var script = $"updateMessageAtIndex(\"{text}\", document.getElementsByClassName('message-content').length - 1);";
             var result = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
@@ -1203,11 +1201,8 @@ namespace WaifuAI
                 await InvokeAsync(new Func<Task>(async () => await WebEditMessageByID(newMessage, index)));
                 return;
             }
-            var text = Markdown.ToHtml(newMessage);
-            text = text.Replace("\\", "\\\\")
-                .Replace("\"", "\\\"")
-                .Replace("\n", "\\n")
-                .Replace("\r", "\\r");
+            var text = Markdown.ToHtml(newMessage, CustomMarkDownPipeline);
+            text = text.SanitizeForJS();
             var script = $"updateMessageAtIndex(\"{text}\", {index});";
             await web_chat.CoreWebView2.ExecuteScriptAsync(script);
         }

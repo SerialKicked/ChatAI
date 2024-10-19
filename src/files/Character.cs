@@ -93,7 +93,6 @@ namespace WaifuAI.Files
             if (string.IsNullOrEmpty(UniqueName))
             {
                 History = new Chatlog();
-                //LLMChatManager.LTMSystem.Reset();
                 return;
             }
             var f = "data/chatlogs/" + UniqueName + ".json";
