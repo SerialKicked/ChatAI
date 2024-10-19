@@ -1345,12 +1345,12 @@ namespace WaifuAI
 
         private void ck_senseoftime_CheckedChanged(object sender, EventArgs e)
         {
-            ck_senseoftime.Checked = LLMSystem.Bot.SenseOfTime;
+            LLMSystem.Bot.SenseOfTime = ck_senseoftime.Checked;
         }
 
         private void ck_sessionmemory_CheckedChanged(object sender, EventArgs e)
         {
-            ck_sessionmemory.Checked = LLMSystem.Bot.SessionMemorySystem;
+            LLMSystem.Bot.SessionMemorySystem = ck_sessionmemory.Checked;
         }
     }
 }
