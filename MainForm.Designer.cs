@@ -249,9 +249,11 @@
             ed_input.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             ed_input.BackColor = Color.WhiteSmoke;
             ed_input.BorderStyle = BorderStyle.FixedSingle;
+            ed_input.Font = new Font("Segoe UI", 11F);
             ed_input.Location = new Point(212, 594);
             ed_input.Multiline = true;
             ed_input.Name = "ed_input";
+            ed_input.ScrollBars = ScrollBars.Vertical;
             ed_input.Size = new Size(553, 57);
             ed_input.TabIndex = 2;
             ed_input.KeyPress += ed_input_KeyPress;

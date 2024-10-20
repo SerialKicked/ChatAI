@@ -105,7 +105,7 @@ namespace WaifuAI
         {
             _currentgeneration += e;
             _currentgenerationtokencount++;
-            if (_currentgenerationtokencount > 2)
+            if (_currentgenerationtokencount > 1)
             {
                 _currentgenerationtokencount = 0;
                 if (!_impersonatemode)

@@ -45,8 +45,10 @@ namespace WaifuAI.src.forms
             ed_message.Location = new Point(12, 12);
             ed_message.Multiline = true;
             ed_message.Name = "ed_message";
+            ed_message.ScrollBars = ScrollBars.Vertical;
             ed_message.Size = new Size(498, 263);
             ed_message.TabIndex = 0;
+            ed_message.KeyPress += EditMessageForm_KeyPress;
             // 
             // bt_save
             // 

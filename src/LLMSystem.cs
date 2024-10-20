@@ -514,6 +514,23 @@ namespace WaifuAI
             return formattedDate;
         }
 
+        /// <summary>
+        /// Turn a time span into something clearly legible for a human
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static string TimeSpanToHumanString(TimeSpan span)
+        {
+            // Turn a time span into something clearly legible for a human
+            if (span.Days > 0)
+                return span.Days.ToString() + " days";
+            else if (span.Hours > 0)
+                return span.Hours.ToString() + " hours";
+            else if (span.Minutes > 0)
+                return span.Minutes.ToString() + " minutes";
+            else
+                return span.Seconds.ToString() + " seconds";
+        }
         internal static void RemoveLastMessage()
         {
             LLMSystem.History.RemoveLast();
