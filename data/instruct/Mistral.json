@@ -5,6 +5,7 @@
 	"SystemEnd": "[/INST]",
 	"UserStart": "[INST]",
 	"UserEnd": "[/INST]",
+	"BoSToken": "<s>",
 	"BotStart": "",
 	"BotEnd": "</s>",
 	"AddNamesToPrompt": false,

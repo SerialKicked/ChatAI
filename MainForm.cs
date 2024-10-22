@@ -8,6 +8,7 @@ using WaifuAI.Memory;
 using Microsoft.Web.WebView2.Core;
 using WaifuAI.src.forms;
 using System.Numerics;
+using AngleSharp;
 
 namespace WaifuAI
 {
@@ -546,7 +547,10 @@ namespace WaifuAI
         private async void SendMessage(object sender, EventArgs e)
         {
             if (LLMSystem.Status == SystemStatus.Busy)
+            {
+                LLMSystem.CancelGeneration();
                 return;
+            }
             _impersonatemode = false;
             if (!string.IsNullOrEmpty(ed_input.Text))
             {
@@ -1351,6 +1355,23 @@ namespace WaifuAI
         private void ck_sessionmemory_CheckedChanged(object sender, EventArgs e)
         {
             LLMSystem.Bot.SessionMemorySystem = ck_sessionmemory.Checked;
+        }
+
+        private async void button2_Click(object sender, EventArgs e)
+        {
+            var config = Configuration.Default.WithDefaultLoader();
+            var address = "https://jav.guru/";
+            var context = BrowsingContext.New(config);
+            var document = await context.OpenAsync(address);
+            var cellSelector = "div.inside-article";
+            var cells = document.QuerySelectorAll(cellSelector);
+            var titles = cells.Select(m => m.TextContent);
+            // write titles to listbox
+            listBox1.Items.Clear();
+            foreach (var title in titles)
+            {
+                listBox1.Items.Add(title);
+            }
         }
     }
 }

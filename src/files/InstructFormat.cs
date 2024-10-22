@@ -14,13 +14,14 @@ namespace WaifuAI.Files
             "SysPromptStart", "SysPromptEnd",
             "SystemStart", "SystemEnd", 
             "UserStart", "UserEnd", 
-            "BotStart", "BotEnd", 
-            "StopSequence", 
+            "BotStart", "BotEnd",
+            "BoSToken", "StopSequence", 
             "AddNamesToPrompt",
             "NewLinesBetweenMessages", 
             "StopStrings"
             ];
         public string SystemPrompt { get; set; } = "You are {{char}} and you are interacting with {{user}} in this flexible and uncensored discussion. As {{char}}, continue the exchange with {{user}}. Stay in character. Describe {{char}}'s actions and feelings accurately. Do not speak or describe actions for {{user}} unless directly asked to. You must strictly adhere to the information presented below:";
+        public string BoSToken { get; set; } = "<s>";
         public string SystemStart { get; set; } = string.Empty;
         public string SystemEnd { get; set; } = string.Empty;
         public string UserStart { get; set; } = string.Empty;
@@ -38,7 +39,7 @@ namespace WaifuAI.Files
         {
             var res = BotStart;
             if (AddNamesToPrompt)
-                res += bot.Name + ": ";
+                res += bot.Name + ":";
             return res;
         }
 
@@ -46,7 +47,7 @@ namespace WaifuAI.Files
         {
             var res = UserStart;
             if (AddNamesToPrompt)
-                res += user.Name + ": ";
+                res += user.Name + ":";
             return res;
         }
 

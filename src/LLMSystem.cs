@@ -207,6 +207,23 @@ namespace WaifuAI
             }
         }
 
+        public static bool CancelGeneration()
+        {
+            try
+            {
+                var mparams = new Body3() { };
+                var res = Client.AbortAsync(mparams).GetAwaiter().GetResult();
+                if (res.Success)
+                    Status = SystemStatus.Ready;
+                return res.Success;
+            }
+            catch (Exception)
+            {
+                //MessageBox.Show($"An error occured while counting tokens, estimate used instead. {ex.Message}");
+                return true; // or any default value you want to return in case of an error
+            }
+        }
+
         /// <summary>
         /// Connects to the LLM server and retrieves the needed info.
         /// </summary>
@@ -269,7 +286,7 @@ namespace WaifuAI
                     rawprompt.AppendLinuxLine(ctxinfo);
             }
 
-            var sysprompt = Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, User, Bot, rawprompt.ToString());
+            var sysprompt = Instruct.BoSToken + Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, User, Bot, rawprompt.ToString());
 
             systemPromptSize = GetTokenCount(sysprompt);
             tokencount += systemPromptSize;
@@ -466,7 +483,6 @@ namespace WaifuAI
             };
         }
 
-
         /// <summary>
         /// Returns an away string depending on the last chat's date.
         /// </summary>
@@ -531,6 +547,7 @@ namespace WaifuAI
             else
                 return span.Seconds.ToString() + " seconds";
         }
+
         internal static void RemoveLastMessage()
         {
             LLMSystem.History.RemoveLast();
