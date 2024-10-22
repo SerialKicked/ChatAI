@@ -162,7 +162,7 @@
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(844, 685);
+            tabControl1.Size = new Size(1047, 685);
             tabControl1.TabIndex = 1;
             // 
             // tabChat
@@ -177,7 +177,7 @@
             tabChat.Location = new Point(4, 27);
             tabChat.Name = "tabChat";
             tabChat.Padding = new Padding(3);
-            tabChat.Size = new Size(836, 654);
+            tabChat.Size = new Size(1039, 654);
             tabChat.TabIndex = 1;
             tabChat.Text = "Chat";
             tabChat.UseVisualStyleBackColor = true;
@@ -188,7 +188,7 @@
             bt_impersonate.BackColor = Color.Turquoise;
             bt_impersonate.FlatStyle = FlatStyle.Flat;
             bt_impersonate.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_impersonate.Location = new Point(707, 626);
+            bt_impersonate.Location = new Point(910, 626);
             bt_impersonate.Name = "bt_impersonate";
             bt_impersonate.Size = new Size(60, 25);
             bt_impersonate.TabIndex = 7;
@@ -203,7 +203,7 @@
             web_chat.DefaultBackgroundColor = Color.White;
             web_chat.Location = new Point(212, 3);
             web_chat.Name = "web_chat";
-            web_chat.Size = new Size(621, 585);
+            web_chat.Size = new Size(824, 585);
             web_chat.TabIndex = 6;
             web_chat.ZoomFactor = 1D;
             // 
@@ -213,7 +213,7 @@
             bt_delete.BackColor = Color.LightCoral;
             bt_delete.FlatStyle = FlatStyle.Flat;
             bt_delete.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_delete.Location = new Point(773, 626);
+            bt_delete.Location = new Point(976, 626);
             bt_delete.Name = "bt_delete";
             bt_delete.Size = new Size(60, 25);
             bt_delete.TabIndex = 5;
@@ -226,7 +226,7 @@
             bt_reroll.BackColor = Color.PaleGoldenrod;
             bt_reroll.FlatStyle = FlatStyle.Flat;
             bt_reroll.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_reroll.Location = new Point(773, 595);
+            bt_reroll.Location = new Point(976, 595);
             bt_reroll.Name = "bt_reroll";
             bt_reroll.Size = new Size(60, 25);
             bt_reroll.TabIndex = 4;
@@ -239,7 +239,7 @@
             bt_send.BackColor = Color.PaleGreen;
             bt_send.FlatStyle = FlatStyle.Flat;
             bt_send.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_send.Location = new Point(707, 595);
+            bt_send.Location = new Point(910, 595);
             bt_send.Name = "bt_send";
             bt_send.Size = new Size(60, 25);
             bt_send.TabIndex = 3;
@@ -256,7 +256,7 @@
             ed_input.Multiline = true;
             ed_input.Name = "ed_input";
             ed_input.ScrollBars = ScrollBars.Vertical;
-            ed_input.Size = new Size(489, 57);
+            ed_input.Size = new Size(692, 57);
             ed_input.TabIndex = 2;
             ed_input.KeyPress += ed_input_KeyPress;
             // 
@@ -715,7 +715,7 @@
             tabSysPrompt.Location = new Point(4, 27);
             tabSysPrompt.Name = "tabSysPrompt";
             tabSysPrompt.Padding = new Padding(3);
-            tabSysPrompt.Size = new Size(836, 654);
+            tabSysPrompt.Size = new Size(994, 654);
             tabSysPrompt.TabIndex = 5;
             tabSysPrompt.Text = "System Prompt Editor";
             tabSysPrompt.UseVisualStyleBackColor = true;
@@ -723,7 +723,7 @@
             // bt_promptsave
             // 
             bt_promptsave.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_promptsave.Location = new Point(414, 8);
+            bt_promptsave.Location = new Point(572, 8);
             bt_promptsave.Name = "bt_promptsave";
             bt_promptsave.Size = new Size(75, 23);
             bt_promptsave.TabIndex = 13;
@@ -747,7 +747,7 @@
             cb_promptlist.FormattingEnabled = true;
             cb_promptlist.Location = new Point(118, 8);
             cb_promptlist.Name = "cb_promptlist";
-            cb_promptlist.Size = new Size(290, 23);
+            cb_promptlist.Size = new Size(448, 23);
             cb_promptlist.TabIndex = 11;
             // 
             // pan_prompt
@@ -756,7 +756,7 @@
             pan_prompt.AutoScroll = true;
             pan_prompt.Location = new Point(8, 38);
             pan_prompt.Name = "pan_prompt";
-            pan_prompt.Size = new Size(820, 604);
+            pan_prompt.Size = new Size(978, 604);
             pan_prompt.TabIndex = 10;
             // 
             // tabSamplers
@@ -768,7 +768,7 @@
             tabSamplers.Location = new Point(4, 27);
             tabSamplers.Name = "tabSamplers";
             tabSamplers.Padding = new Padding(3);
-            tabSamplers.Size = new Size(836, 654);
+            tabSamplers.Size = new Size(994, 654);
             tabSamplers.TabIndex = 3;
             tabSamplers.Text = "Sampler Editor";
             tabSamplers.UseVisualStyleBackColor = true;
@@ -776,7 +776,7 @@
             // bt_savesampler
             // 
             bt_savesampler.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_savesampler.Location = new Point(414, 8);
+            bt_savesampler.Location = new Point(572, 8);
             bt_savesampler.Name = "bt_savesampler";
             bt_savesampler.Size = new Size(75, 23);
             bt_savesampler.TabIndex = 5;
@@ -800,7 +800,7 @@
             cb_samplerlist.FormattingEnabled = true;
             cb_samplerlist.Location = new Point(118, 8);
             cb_samplerlist.Name = "cb_samplerlist";
-            cb_samplerlist.Size = new Size(290, 23);
+            cb_samplerlist.Size = new Size(448, 23);
             cb_samplerlist.TabIndex = 1;
             // 
             // pan_samplers
@@ -809,7 +809,7 @@
             pan_samplers.AutoScroll = true;
             pan_samplers.Location = new Point(8, 38);
             pan_samplers.Name = "pan_samplers";
-            pan_samplers.Size = new Size(820, 606);
+            pan_samplers.Size = new Size(978, 606);
             pan_samplers.TabIndex = 0;
             // 
             // tabSettings
@@ -820,7 +820,7 @@
             tabSettings.Location = new Point(4, 27);
             tabSettings.Name = "tabSettings";
             tabSettings.Padding = new Padding(3);
-            tabSettings.Size = new Size(836, 654);
+            tabSettings.Size = new Size(994, 654);
             tabSettings.TabIndex = 4;
             tabSettings.Text = "Settings";
             tabSettings.UseVisualStyleBackColor = true;
@@ -1062,7 +1062,7 @@
             ed_log.Multiline = true;
             ed_log.Name = "ed_log";
             ed_log.ScrollBars = ScrollBars.Vertical;
-            ed_log.Size = new Size(417, 645);
+            ed_log.Size = new Size(575, 645);
             ed_log.TabIndex = 2;
             // 
             // tabAPI
@@ -1083,7 +1083,7 @@
             tabAPI.Location = new Point(4, 27);
             tabAPI.Name = "tabAPI";
             tabAPI.Padding = new Padding(3);
-            tabAPI.Size = new Size(900, 654);
+            tabAPI.Size = new Size(994, 654);
             tabAPI.TabIndex = 0;
             tabAPI.Text = "API Testing";
             tabAPI.UseVisualStyleBackColor = true;
@@ -1142,7 +1142,7 @@
             ed_generate.Multiline = true;
             ed_generate.Name = "ed_generate";
             ed_generate.ScrollBars = ScrollBars.Vertical;
-            ed_generate.Size = new Size(753, 81);
+            ed_generate.Size = new Size(837, 81);
             ed_generate.TabIndex = 7;
             ed_generate.Text = "<|system|>You are a helpful assistant<|user|>Hello, how are you doing?<|model|>";
             // 
@@ -1207,7 +1207,7 @@
             listBox1.Location = new Point(6, 238);
             listBox1.Name = "listBox1";
             listBox1.ScrollAlwaysVisible = true;
-            listBox1.Size = new Size(886, 199);
+            listBox1.Size = new Size(970, 199);
             listBox1.TabIndex = 0;
             // 
             // openFileDialog1
@@ -1218,7 +1218,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(844, 685);
+            ClientSize = new Size(1047, 685);
             Controls.Add(tabControl1);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";

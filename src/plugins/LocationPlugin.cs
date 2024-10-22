@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WaifuAI.Files;
 using WaifuAI.Memory;
+using WaifuAI.Web;
 
 namespace WaifuAI.Plugins
 

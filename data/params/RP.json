@@ -1,9 +1,9 @@
 {
-  "Description": "Default sampling settings. This should work with most models out of the box. Might be repetitive.",
-  "UniqueName": "Default",
-  "prompt":  "",
-  "rep_pen": 1.05,
+  "Description": "Creative sampler with emphasize on avoiding repetitions",
+  "UniqueName": "RP With MinP",
+  "rep_pen": 1.08,
   "rep_pen_range": 2048,
+  "prompt": "",
   "sampler_order": [
     6,
     0,
@@ -14,12 +14,12 @@
     5
   ],
   "sampler_seed": -1,
-  "temperature": 0.7,
+  "temperature": 1.1,
   "tfs": 1.0,
   "top_a": 0.0,
   "top_k": 0,
   "top_p": 1.0,
-  "min_p": 0.0,
+  "min_p": 0.1,
   "typical": 1.0,
   "use_default_badwordsids": false,
   "dynatemp_range": 0.0,
@@ -33,9 +33,9 @@
   "render_special": false,
   "bypass_eos": false,
   "banned_tokens": [],
-  "dry_multiplier": 0,
+  "dry_multiplier": 0.8,
   "dry_base": 1.75,
-  "dry_allowed_length": 0,
+  "dry_allowed_length": 2048,
   "dry_sequence_breakers": [
     "\n",
     ":",
@@ -43,5 +43,5 @@
     "*"
   ],
   "xtc_threshold": 0.1,
-  "xtc_probability": 0.33
+  "xtc_probability": 0.4
 }

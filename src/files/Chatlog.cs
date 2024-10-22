@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using WaifuAI.Memory;
+using WaifuAI.Web;
 
 namespace WaifuAI.Files
 {

@@ -4,9 +4,10 @@ using WaifuAI.Files;
 using System.Reflection;
 using Newtonsoft.Json;
 using Markdig;
-using WaifuAI.Memory;
+using WaifuAI.Web;
 using Microsoft.Web.WebView2.Core;
 using WaifuAI.src.forms;
+using WaifuAI.Memory;
 using System.Numerics;
 using AngleSharp;
 
@@ -1359,18 +1360,12 @@ namespace WaifuAI
 
         private async void button2_Click(object sender, EventArgs e)
         {
-            var config = Configuration.Default.WithDefaultLoader();
-            var address = "https://jav.guru/";
-            var context = BrowsingContext.New(config);
-            var document = await context.OpenAsync(address);
-            var cellSelector = "div.inside-article";
-            var cells = document.QuerySelectorAll(cellSelector);
-            var titles = cells.Select(m => m.TextContent);
-            // write titles to listbox
+            var scrap = new WebScraper();
+            var found = await scrap.ParseWebListing(DataFiles.Websites["java"].Address, DataFiles.Websites["java"]);
             listBox1.Items.Clear();
-            foreach (var title in titles)
+            foreach (var title in found.Entries)
             {
-                listBox1.Items.Add(title);
+                listBox1.Items.Add(title.Title);
             }
         }
     }

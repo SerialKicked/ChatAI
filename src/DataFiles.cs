@@ -5,8 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WaifuAI.Files;
 using WaifuAI.Memory;
+using WaifuAI.Files;
+using WaifuAI.Web;
 
 namespace WaifuAI
 {
@@ -18,6 +19,7 @@ namespace WaifuAI
         public static Dictionary<string, ModelMetaData> Models = [];
         public static Dictionary<string, WorldInfo> WorldInfos = [];
         public static Dictionary<string, SystemPrompt> SysPrompts = [];
+        public static Dictionary<string, WebsiteDefinition> Websites = [];
 
         /// <summary>
         /// Generic Loader for database items
@@ -62,6 +64,7 @@ namespace WaifuAI
             Characters = Load<Character>("data/chars/", "*.json");
             WorldInfos = Load<WorldInfo>("data/worlds/", "*.json");
             SysPrompts = Load<SystemPrompt>("data/sysprompts/", "*.json");
+            Websites = Load<WebsiteDefinition>("data/websites/", "*.json");
         }
     }
 }

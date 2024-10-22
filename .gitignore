@@ -367,3 +367,4 @@ FodyWeavers.xsd
 /data/img/*.png
 /data/img/*.jpg
 /data/models/*.gguf
+/data/websites/*.*
