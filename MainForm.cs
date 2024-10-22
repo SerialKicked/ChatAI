@@ -16,6 +16,7 @@ namespace WaifuAI
     public partial class MainForm : Form
     {
         public WaifuSettings Settings { get; set; } = new WaifuSettings();
+        public WebScraper WebScraper { get; set; } = new WebScraper();
 
         public SamplerSettings SelectedSamplerEditor { get; set; } = new SamplerSettings();
         public InstructFormat SelectedInstructEditor { get; set; } = new InstructFormat();
@@ -94,6 +95,35 @@ namespace WaifuAI
             LLMSystem.OnInferenceStreamed += OnStreamMessageReceived;
             LLMSystem.OnInferenceEnded += OnStreamInferenceEnded;
             LLMSystem.OnFullPromptReady += OnFullPromptReady;
+            LLMSystem.OnStatusChanged += OnStatusChanged;
+        }
+
+        private void OnStatusChanged(object? sender, SystemStatus e)
+        {
+            Invoke((System.Windows.Forms.MethodInvoker)delegate {
+            if (LLMSystem.Status == SystemStatus.Ready)
+            {
+                bt_delete.Enabled = true;
+                bt_connect.Enabled = true;
+                bt_send.Enabled = true;
+                bt_send.Text = "Send";
+                bt_reroll.Enabled = true;
+                bt_chattosessions.Enabled = true;
+                bt_newsession.Enabled = true;
+                bt_impersonate.Enabled = true;
+            }
+            else
+            {
+                bt_delete.Enabled = false;
+                bt_connect.Enabled = false;
+                bt_send.Enabled = true;
+                bt_send.Text = "Cancel";
+                bt_reroll.Enabled = false;
+                bt_chattosessions.Enabled = false;
+                bt_newsession.Enabled = false;
+                bt_impersonate.Enabled = false;
+            }
+            });
         }
 
         private void OnFullPromptReady(object? sender, string e)
@@ -546,7 +576,7 @@ namespace WaifuAI
         }
 
         private async void SendMessage(object sender, EventArgs e)
-        {
+        {  
             if (LLMSystem.Status == SystemStatus.Busy)
             {
                 LLMSystem.CancelGeneration();
@@ -557,6 +587,31 @@ namespace WaifuAI
             {
                 var messagetext = LLMSystem.ReplaceMacros(LLMSystem.GetAwayString() + ed_input.Text.ToLinuxFormat(), LLMSystem.User, LLMSystem.Bot);
                 var msg = new SingleMessage(AuthorRole.User, DateTime.Now, messagetext, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
+                if (ed_input.Text.StartsWith("/sys "))
+                {
+                    msg.Role = AuthorRole.System;
+                    // remove the /sys prefix
+                    msg.Message = msg.Message[5..].Trim();
+                }
+                else if (ed_input.Text.Contains("/scrape "))
+                {
+                    // retrieve first word after /scrape, and only the first word
+                    var scrape = ed_input.Text[8..].Trim();
+                    if (scrape.Contains(" "))
+                        scrape = scrape[..scrape.IndexOf(" ")];
+
+                    if (DataFiles.Websites.TryGetValue(scrape, out var web))
+                    {
+                        var listing = await WebScraper.ParseWebListing(web.Address, web, true);
+                        msg.Role = AuthorRole.System;
+                        msg.Message = listing.ExportToMarkdown();
+                    }
+                    else
+                    {
+                        ed_input.Text = string.Empty;
+                        return;
+                    }
+                }
                 await SendMessageToUI(msg);
                 // ready a new message for the bot's response
                 _currentgeneration = string.Empty;

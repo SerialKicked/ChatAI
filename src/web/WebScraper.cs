@@ -32,6 +32,32 @@ namespace WaifuAI.Web
         public List<WEntry> Entries = [];
         public int CurrentPage = 1;
         public int PageCount = 1;
+
+        public string ExportToMarkdown()
+        {
+            var result = new StringBuilder();
+            result.AppendLinuxLine($"{Title}").AppendLinuxLine();
+            foreach (var entry in Entries)
+            {
+                result.AppendLinuxLine("# " + entry.Title);
+                if (entry.Tags.Count > 0)
+                {
+                    var tags = new StringBuilder();
+                    // make comma separated list of tags
+                    foreach (var tag in entry.Tags)
+                    {
+                        tags.Append(tag.Name).Append(", ");
+                    }
+                    // remove last comma
+                    tags.Remove(tags.Length - 2, 2);
+                    result.AppendLinuxLine("## Tags: " + tags.ToString());
+                }
+                if (!string.IsNullOrEmpty(entry.Article))
+                    result.AppendLinuxLine("## Summary: " + entry.Article);
+                result.AppendLinuxLine();
+            }
+            return result.ToString();
+        }
     }
 
     public class WQuery
