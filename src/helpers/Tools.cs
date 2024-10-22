@@ -144,7 +144,7 @@ namespace WaifuAI
                 // skip small lines
                 if (lines[i].Length <= 2)
                     continue;
-                if (lines[i].StartsWith("*"))
+                if (lines[i].StartsWith('*'))
                 {
                     // remove the first character from lines[i]
                     lines[i] = lines[i][1..];
@@ -153,7 +153,7 @@ namespace WaifuAI
                 if (lines[i].Count(c => c == '*') % 2 == 1)
                 {
                     // If a line ends with but doesn't start with an asterisk, add one at the beginning
-                    if (lines[i].EndsWith("*") && !lines[i].StartsWith("*"))
+                    if (lines[i].EndsWith('*') && !lines[i].StartsWith('*'))
                     {
                         lines[i] = "*" + lines[i].Trim();
                     }

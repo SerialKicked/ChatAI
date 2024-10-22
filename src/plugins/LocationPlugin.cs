@@ -93,14 +93,14 @@ namespace WaifuAI.Plugins
             {
                 // Check if the user input contains any of the locations using the QueryLLM method
                 // Task.Run(async () => await QueryLLM(userinput, log)).Wait();
-                QueryLLM(userinput, log);
+                QueryLLM(userinput);
             }
             else if (ModelDetection && KeywordDetection)
             {
                 // Check if userinput triggers any entry in locations, if so, run QueryLLM
                 if (locations.FindEntries(log, userinput)?.Count > 0)
                 {
-                    QueryLLM(userinput, log);
+                    QueryLLM(userinput);
                     // Task.Run(async () => await QueryLLM(userinput, log)).Wait();
                 }
             }
@@ -113,7 +113,6 @@ namespace WaifuAI.Plugins
         private static void AddMovingInfSystemMessage(Chatlog log, WorldEntry newLoc)
         {
             var prompt = string.Format("{0} and {1} are moving to a new location: {2}. React accordingly.", LLMSystem.User.Name, LLMSystem.Bot.Name, newLoc.Name);
-            //var msg = new SingleMessage(AuthorRole.System, DateTime.Now, prompt, LLMChatManager.Bot.Name, LLMChatManager.User.Name, false);
             log.LogMessage(AuthorRole.System, prompt, LLMSystem.User, LLMSystem.Bot);
         }
 
@@ -157,7 +156,7 @@ namespace WaifuAI.Plugins
         /// <param name="inputText"></param>
         /// <param name="lb"></param>
         /// <returns></returns>
-        private void QueryLLM(string inputText, Chatlog log)
+        private void QueryLLM(string inputText)
         {
             var fullprompt = BuildCheckPrompt(inputText);
             var fullresponse = new StringBuilder();

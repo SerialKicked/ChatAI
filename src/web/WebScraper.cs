@@ -22,6 +22,7 @@ namespace WaifuAI.Web
         public string Link = string.Empty;
         public DateTime Date = default;
         public List<(string Name, string Link)> Tags = [];
+        public string Article = string.Empty;
     }
 
     public class WListing
@@ -79,6 +80,7 @@ namespace WaifuAI.Web
         public WQuery ListingDateSelector { get; set; } = new(); 
         public WQuery SubListingSelector { get; set;  } = new();
         public WQuery PageCounterSelector { get; } = new();
+        public WQuery PageContentSelector { get; } = new();
     }
 
 
@@ -96,11 +98,10 @@ namespace WaifuAI.Web
 
         public async Task<IHtmlCollection<IElement>> FindCells(string address, string cellselector)
         {
-            var document = await context.OpenAsync(Address);
+            var document = await context.OpenAsync(address);
             var cells = document.QuerySelectorAll(cellselector);
             return cells;
         }
-
 
         private DateTime StringToDate(string textdate, string format)
         {
@@ -115,7 +116,7 @@ namespace WaifuAI.Web
             }
         }
 
-        public async Task<WListing> ParseWebListing(string page, WebsiteDefinition web)
+        public async Task<WListing> ParseWebListing(string page, WebsiteDefinition web, bool innerscan)
         {
             var document = await context.OpenAsync(page);
             if (document == null)
@@ -156,6 +157,11 @@ namespace WaifuAI.Web
                 var dateinfo = web.ListingDateSelector.RunQuery(cell);
                 entry.Date = StringToDate(dateinfo, web.ListingDateFormat);
                 entries.Add(entry);
+                if (innerscan)
+                {
+                    var content = await GetPageContent(entry.Link, web);
+                    entry.Article = content;
+                }
             }
             res.Entries = entries;
             var pages = web.PageCounterSelector.RunQuery(document);
@@ -174,6 +180,19 @@ namespace WaifuAI.Web
                 }
             }
             return res;
+        }
+
+        public async Task<string> GetPageContent(string page, WebsiteDefinition web)
+        {
+            var document = await context.OpenAsync(page);
+            if (document == null)
+                return string.Empty;
+            var content = web.PageContentSelector.RunQuery(document);
+            if (!string.IsNullOrEmpty(content))
+            {
+                content = content.Trim('\n').Trim();
+            }
+            return content;
         }
 
     }

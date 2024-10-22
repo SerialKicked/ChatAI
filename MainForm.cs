@@ -1361,11 +1361,11 @@ namespace WaifuAI
         private async void button2_Click(object sender, EventArgs e)
         {
             var scrap = new WebScraper();
-            var found = await scrap.ParseWebListing(DataFiles.Websites["java"].Address, DataFiles.Websites["java"]);
+            var found = await scrap.ParseWebListing(DataFiles.Websites["java"].Address, DataFiles.Websites["java"], true);
             listBox1.Items.Clear();
             foreach (var title in found.Entries)
             {
-                listBox1.Items.Add(title.Title);
+                listBox1.Items.Add(title.Article);
             }
         }
     }

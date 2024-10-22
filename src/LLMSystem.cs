@@ -236,7 +236,7 @@ namespace WaifuAI
                 var result = await Client.TrueMaxContextLengthAsync();
                 MaxContextLength = result.Value;
                 var info = await Client.ModelAsync();
-                var index = info.Result.IndexOf("/");
+                var index = info.Result.IndexOf('/');
                 if (index > 0)
                     info.Result = info.Result[(index + 1)..];
                 CurrentModel = info.Result;

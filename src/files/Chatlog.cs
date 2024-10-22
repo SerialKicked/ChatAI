@@ -147,7 +147,7 @@ namespace WaifuAI.Files
                     case AuthorRole.SysPrompt:
                         if (ignoresystem)
                             continue;
-                        text = msg.Message.StartsWith("*") ? LLMSystem.NewLine + msg.Message.Trim() + LLMSystem.NewLine : LLMSystem.NewLine + "*" + msg.Message.Trim() + "*" + LLMSystem.NewLine;
+                        text = msg.Message.StartsWith('*') ? LLMSystem.NewLine + msg.Message.Trim() + LLMSystem.NewLine : LLMSystem.NewLine + "*" + msg.Message.Trim() + "*" + LLMSystem.NewLine;
                         break;
                     case AuthorRole.User:
                     case AuthorRole.Assistant:
