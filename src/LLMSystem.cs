@@ -17,7 +17,7 @@ using static LLama.Common.ChatHistory;
 
 namespace WaifuAI
 {
-    enum SystemStatus { NotInit, Ready, Busy }
+    enum SystemStatus { NotInit, Ready, Busy, Automated }
     enum SystemPromptSection { MainPrompt, BotBio, UserBio, Scenario, Memory, ContextInfo }
 
     public class InsertPrompt(string prompt, AuthorRole role = AuthorRole.SysPrompt, int depth = 1)
@@ -45,6 +45,8 @@ namespace WaifuAI
         public static string CurrentModel { get; private set; } = string.Empty;
         public static string Backend { get; private set; } = string.Empty;
         public static double ForceTemperature { get; set; } = 0.7;
+        
+        public static LLMWebsite? Website = null;
 
         public static EventHandler<string>? OnFullPromptReady;
         /// <summary> Called during inference each time the LLM outputs a new token </summary>
@@ -136,7 +138,8 @@ namespace WaifuAI
                         response = editedresponse;
                 }
                 RaiseOnInferenceEnded(response);
-                Status = SystemStatus.Ready;
+                if (Status != SystemStatus.Automated)
+                    Status = SystemStatus.Ready;
             }
             else
             {
@@ -391,8 +394,6 @@ namespace WaifuAI
         {
             if (Status == SystemStatus.Busy)
                 return;
-            //if (logtohistory)
-            //    Bot.History.LogMessage(message);
             await StartGeneration(message.Role, message.Message);
         }
 
@@ -425,6 +426,20 @@ namespace WaifuAI
             }
         }
 
+        public static async Task QueryWebsite(WebsiteDefinition webdef, string userinput)
+        {
+            StartAutomation();
+            if (Website != null)
+            {
+                Website.Stop();
+            }
+            Website = new LLMWebsite(webdef, userinput);
+            await Website.Start();
+        }
+
+        public static void StartAutomation() => Status = SystemStatus.Automated;
+        public static void StopAutomation() => Status = SystemStatus.Ready;
+
         /// <summary>
         /// Starts the generation process for the bot.
         /// </summary>
@@ -435,14 +450,14 @@ namespace WaifuAI
         {
             if (Status == SystemStatus.Busy)
                 return;
-            Status = SystemStatus.Busy;
+            if (Status != SystemStatus.Automated)
+                Status = SystemStatus.Busy;
 
             var inputText = userInput;
             if (!string.IsNullOrEmpty(inputText))
                 foreach (var ctxplug in Bot.Plugins)
                     if (ctxplug.ReplaceUserInput(ReplaceMacros(inputText, User, Bot), History, out var ctxinfo))
                         inputText = ctxinfo;
-
             StreamingTextProgress = string.Empty;
             GenerationInput genparams = Sampler.GetCopy();
             _LastGeneratedPrompt = await GenerateFullPrompt(MsgSender, inputText);

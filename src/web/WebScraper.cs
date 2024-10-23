@@ -3,9 +3,11 @@ using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using Fluid.Filters;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Newtonsoft.Json;
 using Parlot.Fluent;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +17,114 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace WaifuAI.Web
 {
+    public class LLMWebsite(WebsiteDefinition website, string basegoal)
+    {
+        private WebScraper crawler = new();
+
+        private WebsiteDefinition Website { get; set; } = website;
+        private string _basegoal = basegoal;
+        private int _failures = 0;
+        private PageType _location = PageType.FrontPage;
+        private int _historyCount = 0;
+
+        public void NewSettings(WebsiteDefinition website, string basegoal)
+        {
+            Website = website;
+            _basegoal = basegoal;
+            _failures = 0;
+        }
+
+        public async Task Start()
+        {
+            _location = PageType.FrontPage;
+            LLMSystem.OnInferenceEnded += LLMSystem_OnInferenceEnded;
+            _historyCount = LLMSystem.History.Messages.Count - 1;
+
+            var prompt = Website.RenderFrontPage(_basegoal);
+            await LLMSystem.SendMessageToBot(new SingleMessage(AuthorRole.System, DateTime.Now, prompt, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+        }
+
+        public async Task DoPage(WLink page)
+        {
+            _location = page.Category;
+            var prompt = await Website.RenderPage(page.ID, _basegoal, crawler);
+            await LLMSystem.SendMessageToBot(new SingleMessage(AuthorRole.System, DateTime.Now, prompt, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+        }
+
+        public void Stop() 
+        {
+            LLMSystem.OnInferenceEnded -= LLMSystem_OnInferenceEnded;
+            if (LLMSystem.History.Messages.Count > _historyCount)
+            {
+                // Resize History.Messages count to _historyCount
+                LLMSystem.History.Messages.RemoveRange(_historyCount, LLMSystem.History.Messages.Count - _historyCount);
+            }
+            LLMSystem.StopAutomation();
+        }
+        private async Task FailureToBrowse()
+        {
+            Stop();
+            var text = new StringBuilder("{{char}} attempted to browse the web but failed. {{char}}'s goal was: " + _basegoal);
+            var message = new SingleMessage(AuthorRole.System, DateTime.Now, LLMSystem.ReplaceMacros(text.ToString()), LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
+            await LLMSystem.SendMessageToBot(message);
+        }
+
+        private async Task TurnInResult(WEntry wEntry)
+        {
+            Stop();
+            var text = new StringBuilder();
+            text.AppendLinuxLine("After searching the net, {{char}} found the following link:");
+            text.AppendLinuxLine(wEntry.ToString()).AppendLinuxLine();
+            text.Append("Inform {{user}} about the link you've just found, integrating this information seamlessly into the conversation.");
+            var message = new SingleMessage(AuthorRole.System, DateTime.Now, LLMSystem.ReplaceMacros(text.ToString()), LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
+            await LLMSystem.SendMessageToBot(message);
+        }
+
+
+        private async void LLMSystem_OnInferenceEnded(object? sender, string e)
+        {
+            var response = e;
+            switch (_location)
+            {
+                case PageType.FrontPage:
+                    {
+                        if (int.TryParse(response, out var index) && index < Website.MainLinks.Count)
+                        {
+                            //LLMSystem.RemoveLastMessage();
+                            await DoPage(Website.MainLinks[index]);
+                        }
+                        else
+                        {
+                            // call failure and leave class logic
+                            await FailureToBrowse();
+                        }
+                    }
+                    break;
+                case PageType.ListingPage:
+                    {
+                        if (int.TryParse(response, out var index) && index < Website.CurrentListing.Entries.Count)
+                        {
+                            //LLMSystem.RemoveLastMessage();
+                            await TurnInResult(Website.CurrentListing.Entries[index]);
+                        }
+                        else
+                        {
+                            await FailureToBrowse();
+                            // call failure and leave class logic
+                        }
+                    }
+                    break;
+                case PageType.ArticlePage:
+                    break;
+                case PageType.SearchPage:
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+
     public class WEntry
     {
         public string Title = string.Empty;
@@ -23,6 +133,28 @@ namespace WaifuAI.Web
         public DateTime Date = default;
         public List<(string Name, string Link)> Tags = [];
         public string Article = string.Empty;
+
+        public override string ToString()
+        {
+            var str = new StringBuilder();
+            str.AppendLinuxLine($"**{Title}**");
+            if (Tags.Count > 0)
+            {
+                var tags = new StringBuilder();
+                // make comma separated list of tags
+                foreach (var tag in Tags)
+                {
+                    tags.Append(tag.Name).Append(", ");
+                }
+                // remove last comma
+                tags.Remove(tags.Length - 2, 2);
+                str.AppendLinuxLine("- Tags: " + tags.ToString());
+            }
+            if (!string.IsNullOrEmpty(Article))
+                str.AppendLinuxLine("- Summary: " + Article.Replace("\n\n", " ").Replace("\n", " ").Trim());
+            str.AppendLinuxLine($"- Link: [On Website]({Link})");
+            return str.ToString();
+        }
     }
 
     public class WListing
@@ -52,7 +184,7 @@ namespace WaifuAI.Web
                     }
                     // remove last comma
                     tags.Remove(tags.Length - 2, 2);
-                    result.AppendLinuxLine("(Tags: " + tags.ToString());
+                    result.AppendLinuxLine("(Tags: " + tags.ToString()+")");
                 }
                 if (!string.IsNullOrEmpty(entry.Article))
                     result.AppendLinuxLine("Summary: " + entry.Article.Replace("\n\n", " ").Replace("\n", " ").Trim());
@@ -108,7 +240,8 @@ namespace WaifuAI.Web
         public string ID { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string Body { get; set; } = string.Empty;
-        public PageType Category { get; set; } = PageType.FrontPage;
+        public PageType Category { get; set; } = PageType.ListingPage;
+        public bool InnerScan { get; set; } = false;
         public string URL { get; set; } = string.Empty;
     }
 
@@ -128,6 +261,8 @@ namespace WaifuAI.Web
         public WQuery SubListingSelector { get; set;  } = new();
         public WQuery PageCounterSelector { get; } = new();
         public WQuery PageContentSelector { get; } = new();
+
+        [JsonIgnore] public WListing CurrentListing = new();
 
         public string RenderFrontPage(string Goal)
         {
@@ -149,7 +284,7 @@ namespace WaifuAI.Web
             return str.ToString();
         }
 
-        public string RenderPage(string LinkID, string Goal)
+        public async Task<string> RenderPage(string LinkID, string Goal, WebScraper scraper)
         {
             var link = MainLinks.FirstOrDefault(l => l.ID == LinkID);
             if (link == null)
@@ -158,8 +293,32 @@ namespace WaifuAI.Web
             str.AppendLinuxLine($"# {link.Title}");
             str.AppendLinuxLine($"{link.Body}").AppendLinuxLine();
 
-
-
+            if (link.Category == PageType.ListingPage)
+            {
+                CurrentListing = await scraper.ParseWebListing(link.URL, this, link.InnerScan);
+                str.AppendLinuxLine("## Available Links");
+                var x = 0;
+                foreach (var entry in CurrentListing.Entries)
+                {
+                    str.AppendLinuxLine($"{x}. {entry.Title}");
+                    x++;
+                    if (entry.Tags.Count > 0)
+                    {
+                        var tags = new StringBuilder();
+                        // make comma separated list of tags
+                        foreach (var tag in entry.Tags)
+                        {
+                            tags.Append(tag.Name).Append(", ");
+                        }
+                        // remove last comma
+                        tags.Remove(tags.Length - 2, 2);
+                        str.AppendLinuxLine("(Tags: " + tags.ToString() + ")");
+                    }
+                    if (!string.IsNullOrEmpty(entry.Article))
+                        str.AppendLinuxLine("Summary: " + entry.Article.Replace("\n\n", " ").Replace("\n", " ").Trim());
+                }
+                str.AppendLinuxLine();
+            }
 
             str.AppendLinuxLine("## Instructions");
             switch (link.Category)

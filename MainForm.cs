@@ -100,41 +100,47 @@ namespace WaifuAI
 
         private void OnStatusChanged(object? sender, SystemStatus e)
         {
-            Invoke((System.Windows.Forms.MethodInvoker)delegate {
-            if (LLMSystem.Status == SystemStatus.Ready)
+            Invoke((System.Windows.Forms.MethodInvoker)delegate
             {
-                bt_delete.Enabled = true;
-                bt_connect.Enabled = true;
-                bt_send.Enabled = true;
-                bt_send.Text = "Send";
-                bt_reroll.Enabled = true;
-                bt_chattosessions.Enabled = true;
-                bt_newsession.Enabled = true;
-                bt_impersonate.Enabled = true;
-            }
-            else
-            {
-                bt_delete.Enabled = false;
-                bt_connect.Enabled = false;
-                bt_send.Enabled = true;
-                bt_send.Text = "Cancel";
-                bt_reroll.Enabled = false;
-                bt_chattosessions.Enabled = false;
-                bt_newsession.Enabled = false;
-                bt_impersonate.Enabled = false;
-            }
+                if (LLMSystem.Status == SystemStatus.Ready)
+                {
+                    bt_delete.Enabled = true;
+                    bt_connect.Enabled = true;
+                    bt_send.Enabled = true;
+                    bt_send.Text = "Send";
+                    bt_reroll.Enabled = true;
+                    bt_chattosessions.Enabled = true;
+                    bt_newsession.Enabled = true;
+                    bt_impersonate.Enabled = true;
+                }
+                else
+                {
+                    bt_delete.Enabled = false;
+                    bt_connect.Enabled = false;
+                    bt_send.Enabled = true;
+                    bt_send.Text = "Cancel";
+                    bt_reroll.Enabled = false;
+                    bt_chattosessions.Enabled = false;
+                    bt_newsession.Enabled = false;
+                    bt_impersonate.Enabled = false;
+                }
             });
         }
 
         private void OnFullPromptReady(object? sender, string e)
         {
-            ed_log.Clear();
-            var text = "====== New Generation ======\n\n" + e + "\n\n";
-            ed_log.Text = text.ToWinFormat();
+            Invoke((System.Windows.Forms.MethodInvoker)delegate
+            {
+                ed_log.Clear();
+                var text = "====== New Generation ======\n\n" + e + "\n\n";
+                ed_log.Text = text.ToWinFormat();
+            });
         }
 
         private async void OnStreamMessageReceived(object? sender, string e)
         {
+            if (LLMSystem.Status == SystemStatus.Automated)
+                return;
             _currentgeneration += e;
             _currentgenerationtokencount++;
             if (_currentgenerationtokencount > 1)
@@ -157,6 +163,8 @@ namespace WaifuAI
 
         private async void OnStreamInferenceEnded(object? sender, string e)
         {
+            if (LLMSystem.Status == SystemStatus.Automated)
+                return;
             if (_impersonatemode)
             {
                 _impersonatemode = false;
@@ -576,7 +584,7 @@ namespace WaifuAI
         }
 
         private async void SendMessage(object sender, EventArgs e)
-        {  
+        {
             if (LLMSystem.Status == SystemStatus.Busy)
             {
                 LLMSystem.CancelGeneration();
@@ -1288,6 +1296,8 @@ namespace WaifuAI
                 web_chat.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets.test", AppContext.BaseDirectory + "data\\", CoreWebView2HostResourceAccessKind.Allow);
                 web_chat.CoreWebView2.DOMContentLoaded += OnWebChatContentLoaded!; // Add event handler
                 web_chat.CoreWebView2.WebMessageReceived += OnWebChatWebMessageReceived!;
+                web_chat.CoreWebView2.NewWindowRequested += OnNewWindowRequested;
+                web_chat.CoreWebView2.NavigationStarting += OnNavigationStarting;
             }
             var html = string.Empty;
             var start = LLMSystem.History.Messages.Count - Settings.MaxMessagesOnScreen;
@@ -1298,6 +1308,31 @@ namespace WaifuAI
                 html += AddHtmlMessage(LLMSystem.History.Messages[i]);
             }
             web_chat.NavigateToString(InjectDialogCSS(html));
+        }
+
+        private void OnNavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs e)
+        {
+            var url = e.Uri;
+            if (url.StartsWith("https://") || url.StartsWith("http://"))
+            {
+                e.Cancel = true; // Prevent the WebView2 control from opening the link
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+            }
+        }
+
+        private void OnNewWindowRequested(object? sender, CoreWebView2NewWindowRequestedEventArgs e)
+        {
+            e.Handled = true; // Prevent the WebView2 control from opening the link
+            var url = e.Uri;
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
         }
 
         private async void OnWebChatContentLoaded(object sender, CoreWebView2DOMContentLoadedEventArgs e)
@@ -1428,6 +1463,18 @@ namespace WaifuAI
             {
                 listBox1.Items.Add(title.Article);
             }
+        }
+
+        private async void button3_Click(object sender, EventArgs e)
+        {
+            await SendMessageToUI(
+                new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is browsing the internet...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+            await LLMSystem.QueryWebsite(DataFiles.Websites["java"], "Find a sexy video for Guillaume.");
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
