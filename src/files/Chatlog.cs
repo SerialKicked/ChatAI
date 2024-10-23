@@ -14,8 +14,6 @@ namespace WaifuAI.Files
         public DateTime Date = date;
         public string CharID = chara;
         public string UserID = user;
-        public bool Temp = false;
-
         [JsonIgnore] public Character User => !string.IsNullOrEmpty(UserID) && DataFiles.Characters.TryGetValue(UserID, out var u) ? u : LLMSystem.User;
         [JsonIgnore] public Character Bot => !string.IsNullOrEmpty(CharID) && DataFiles.Characters.TryGetValue(CharID, out var c) ? c : LLMSystem.Bot;
         [JsonIgnore] public Character? Sender => Role == AuthorRole.User? User : Role == AuthorRole.Assistant ? Bot : null;

@@ -753,6 +753,7 @@ namespace WaifuAI
                 num_ragmaxretrieve.Value = Settings.MaxRAGEntries;
                 LLMSystem.RAGIndex = Settings.RAGPosition;
                 num_ragindex.Value = Settings.RAGPosition;
+                LLMSystem.ScenarioOverride = Settings.ScenarioOverride;
             }
         }
 
@@ -775,6 +776,7 @@ namespace WaifuAI
                 Settings.ReservedSessionTokens = LLMSystem.ReservedSessionTokens;
                 Settings.MaxRAGEntries = LLMSystem.MaxRAGEntries;
                 Settings.RAGPosition = LLMSystem.RAGIndex;
+                Settings.ScenarioOverride = LLMSystem.ScenarioOverride;
                 var str = JsonConvert.SerializeObject(Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
             }
@@ -1285,6 +1287,13 @@ namespace WaifuAI
         private void label4_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void bt_scenario_Click(object sender, EventArgs e)
+        {
+            var editForm = new ScenarioEditForm();
+            editForm.ShowDialog();
+            editForm.Dispose();
         }
     }
 }

@@ -48,7 +48,8 @@ namespace WaifuAI
         public static string CurrentModel { get; private set; } = string.Empty;
         public static string Backend { get; private set; } = string.Empty;
         public static double ForceTemperature { get; set; } = 0.7;
-        
+        public static string ScenarioOverride { get; set; } = string.Empty;
+
         public static LLMWebsite? Website = null;
 
         public static EventHandler<string>? OnFullPromptReady;
@@ -177,7 +178,7 @@ namespace WaifuAI
                .Replace("{{date}}", DateToHumanString(DateTime.Now))
                .Replace("{{time}}", DateTime.Now.ToShortTimeString())
                .Replace("{{day}}", DateTime.Now.DayOfWeek.ToString())
-               .Replace("{{scenario}}", character.GetScenario(user.Name))
+               .Replace("{{scenario}}", string.IsNullOrWhiteSpace(ScenarioOverride) ? character.GetScenario(user.Name) : ScenarioOverride)
                .Replace("{{instructprompt}}", Instruct.SystemPrompt);
             return res.ToString();
         }
