@@ -37,9 +37,11 @@ namespace WaifuAI.Web
         {
             var result = new StringBuilder();
             result.AppendLinuxLine($"{Title}").AppendLinuxLine();
+            var x = 0;
             foreach (var entry in Entries)
             {
-                result.AppendLinuxLine("# " + entry.Title);
+                result.AppendLinuxLine($"{x}. {entry.Title}");
+                x++;
                 if (entry.Tags.Count > 0)
                 {
                     var tags = new StringBuilder();
@@ -50,10 +52,10 @@ namespace WaifuAI.Web
                     }
                     // remove last comma
                     tags.Remove(tags.Length - 2, 2);
-                    result.AppendLinuxLine("## Tags: " + tags.ToString());
+                    result.AppendLinuxLine("(Tags: " + tags.ToString());
                 }
                 if (!string.IsNullOrEmpty(entry.Article))
-                    result.AppendLinuxLine("## Summary: " + entry.Article);
+                    result.AppendLinuxLine("Summary: " + entry.Article.Replace("\n\n", " ").Replace("\n", " ").Trim());
                 result.AppendLinuxLine();
             }
             return result.ToString();
@@ -93,11 +95,30 @@ namespace WaifuAI.Web
         }
     }
 
+    public enum PageType
+    {
+        FrontPage,
+        ListingPage,
+        ArticlePage,
+        SearchPage
+    }
+
+    public class WLink
+    {
+        public string ID { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Body { get; set; } = string.Empty;
+        public PageType Category { get; set; } = PageType.FrontPage;
+        public string URL { get; set; } = string.Empty;
+    }
+
     public class WebsiteDefinition : BaseFile
     {
         public string WebsiteName { get; set; } = "";
+        public string WebsiteInfo { get; set; } = "";
         public string CommandID { get; set; } = "";
         public string Address { get; set; } = "";
+        public List<WLink> MainLinks { get; set; } = [];
         public string ListingCellSelector { get; set; } = "";
         public string ListingDateFormat { get; set; } = "d MMM, yy";
         public WQuery ListingTitleSelector { get; set; } = new();
@@ -107,6 +128,61 @@ namespace WaifuAI.Web
         public WQuery SubListingSelector { get; set;  } = new();
         public WQuery PageCounterSelector { get; } = new();
         public WQuery PageContentSelector { get; } = new();
+
+        public string RenderFrontPage(string Goal)
+        {
+            var str = new StringBuilder();
+            str.AppendLinuxLine($"# {WebsiteName}");
+            str.AppendLinuxLine($"{WebsiteInfo}").AppendLinuxLine();
+            str.AppendLinuxLine("## Available Links");
+            var x = 0;
+            foreach (var item in MainLinks)
+            {
+                str.AppendLinuxLine($"{x}. {item.Title}");
+                x++;
+            }
+            str.AppendLinuxLine();
+            str.AppendLinuxLine("## Instructions");
+            str.AppendLinuxLine("To retrieve information from this website, type the number corresponding to the link you want to visit. Only write the number, nothing else.");
+            if (!string.IsNullOrEmpty(Goal))
+                str.AppendLinuxLine(Goal);
+            return str.ToString();
+        }
+
+        public string RenderPage(string LinkID, string Goal)
+        {
+            var link = MainLinks.FirstOrDefault(l => l.ID == LinkID);
+            if (link == null)
+                return string.Empty;
+            var str = new StringBuilder();
+            str.AppendLinuxLine($"# {link.Title}");
+            str.AppendLinuxLine($"{link.Body}").AppendLinuxLine();
+
+
+
+
+            str.AppendLinuxLine("## Instructions");
+            switch (link.Category)
+            {
+                case PageType.FrontPage:
+                    str.AppendLinuxLine("To retrieve information from this website, type the number corresponding to the link you want to visit. Only write the number, nothing else.");
+                    break;
+                case PageType.ListingPage:
+                    str.AppendLinuxLine("To open one of the links above, type the number corresponding to the link you want to visit, only write the number, nothing else. Any other input will send you back to the front page.");
+                    break;
+                case PageType.ArticlePage:
+                    str.AppendLinuxLine("You have selected this page. If you want to send it to {{user}}, type SEND. Nothing else. Any other input will send you back to the front page.");
+                    break;
+                case PageType.SearchPage:
+                    str.AppendLinuxLine("Type the search terms you're looking for to complete your request. Only type those search terms and nothing else.");
+                    break;
+                default:
+                    break;
+            }
+            if (!string.IsNullOrEmpty(Goal))
+                str.AppendLinuxLine(Goal);
+            return str.ToString();
+        }
     }
 
 

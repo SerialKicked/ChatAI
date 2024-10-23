@@ -127,6 +127,8 @@ namespace WaifuAI
             // "null", "stop", "length"
             if (e.Data.finish_reason != "null")
             {
+                if (!string.IsNullOrEmpty(e.Data.token))
+                    StreamingTextProgress += e.Data.token;
                 var response = StreamingTextProgress.Trim();
                 foreach (var ctxplug in Bot.Plugins)
                 {
@@ -389,8 +391,8 @@ namespace WaifuAI
         {
             if (Status == SystemStatus.Busy)
                 return;
-            if (logtohistory)
-                Bot.History.LogMessage(message);
+            //if (logtohistory)
+            //    Bot.History.LogMessage(message);
             await StartGeneration(message.Role, message.Message);
         }
 
@@ -450,6 +452,8 @@ namespace WaifuAI
             genparams.Max_length = MaxReplyLength;
             genparams.Stop_sequence = Instruct.GetStoppingStrings(User, Bot);
             genparams.Prompt = _LastGeneratedPrompt;
+            if (!string.IsNullOrEmpty(userInput))
+                Bot.History.LogMessage(MsgSender, userInput, User, Bot);
 
             RaiseOnFullPromptReady(genparams.Prompt);
             await Client.GenerateTextStreamAsync(genparams);

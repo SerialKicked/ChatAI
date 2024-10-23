@@ -113,6 +113,7 @@ namespace WaifuAI.Plugins
         private static void AddMovingInfSystemMessage(Chatlog log, WorldEntry newLoc)
         {
             var prompt = string.Format("{0} and {1} are moving to a new location: {2}. React accordingly.", LLMSystem.User.Name, LLMSystem.Bot.Name, newLoc.Name);
+            //var msg = new SingleMessage(AuthorRole.System, DateTime.Now, prompt, LLMChatManager.Bot.Name, LLMChatManager.User.Name, false);
             log.LogMessage(AuthorRole.System, prompt, LLMSystem.User, LLMSystem.Bot);
         }
 

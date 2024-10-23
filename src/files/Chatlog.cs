@@ -39,6 +39,8 @@ namespace WaifuAI.Files
 
         public async Task<string> GenerateNewSummary()
         {
+            var saveAddNames = LLMSystem.Instruct.AddNamesToPrompt;
+            LLMSystem.Instruct.AddNamesToPrompt = false;
 
             var msgtxt = "You are an automated system designed to summarize chat sessions and stories." + LLMSystem.NewLine +
                 LLMSystem.NewLine +
@@ -61,7 +63,7 @@ namespace WaifuAI.Files
             var tokencount = LLMSystem.GetTokenCount(msg);
 
             var availtokens = LLMSystem.MaxContextLength - tokencount - 1024;
-            var docs = GetRawDialogs(availtokens, true);
+            var docs = GetRawDialogs(availtokens, false);
             msgtxt = "You are an automated system designed to summarize chat sessions and stories." + LLMSystem.NewLine +
                 LLMSystem.NewLine +
                 "# Character Information:" + LLMSystem.NewLine +
@@ -79,7 +81,7 @@ namespace WaifuAI.Files
             var prompt = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, msgtxt);
 
             var llmparams = LLMSystem.Sampler.GetCopy();
-            llmparams.Prompt = prompt;
+            llmparams.Prompt = prompt + LLMSystem.Instruct.GetResponseStart(LLMSystem.Bot);
             llmparams.Max_length = 1024;
             llmparams.Max_context_length = LLMSystem.MaxContextLength;
             llmparams.Grammar = string.Empty;
@@ -90,6 +92,7 @@ namespace WaifuAI.Files
             {
                 finalstr += item.Text;
             }
+            LLMSystem.Instruct.AddNamesToPrompt = saveAddNames;
             return finalstr.Trim();
         }
 

@@ -597,8 +597,8 @@ namespace WaifuAI
                 {
                     // retrieve first word after /scrape, and only the first word
                     var scrape = ed_input.Text[8..].Trim();
-                    if (scrape.Contains(" "))
-                        scrape = scrape[..scrape.IndexOf(" ")];
+                    if (scrape.Contains(' '))
+                        scrape = scrape[..scrape.IndexOf(' ')];
 
                     if (DataFiles.Websites.TryGetValue(scrape, out var web))
                     {
@@ -1112,6 +1112,7 @@ namespace WaifuAI
                     overflow-y: auto;
                     overflow-x: hidden;
                     padding: 16px;
+                    font-size: 18px;
                     width: 100%;
                     box-sizing: border-box;
                     background-image: url('https://appassets.test/ui/background.jpg');
@@ -1124,6 +1125,11 @@ namespace WaifuAI
                 em { color: yellow; }
                 strong { color: Tomato }
                 a { color: gold }
+                h1 { font-size: 1.3em; }
+                h2 { font-size: 1.25em; }
+                h3 { font-size: 1.2em; }
+                h4 { font-size: 1.15em; }
+                h5 { font-size: 1.1em; }
 
                 .chat-message {
                     display: flex;
