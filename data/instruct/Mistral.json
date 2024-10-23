@@ -1,5 +1,5 @@
 {
-	"SysPromptStart": "[INST]",
+	"SysPromptStart": "[INST]# SYSTEM PROMPT\n",
 	"SysPromptEnd": "[/INST]Understood.</s>",
 	"SystemStart": "[INST]",
 	"SystemEnd": "[/INST]",

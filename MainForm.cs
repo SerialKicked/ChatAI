@@ -21,6 +21,8 @@ namespace WaifuAI
         public SamplerSettings SelectedSamplerEditor { get; set; } = new SamplerSettings();
         public InstructFormat SelectedInstructEditor { get; set; } = new InstructFormat();
         public SystemPrompt SelectedPromptEditor { get; set; } = new SystemPrompt();
+        public WorldInfo SelectedWorldEditor { get; set; } = new WorldInfo();
+        public WorldEntry SelectedWorldEntryEditor { get; set; } = new WorldEntry();
 
         private string? _currentgeneration = null;
         private int _currentgenerationtokencount = 0;
@@ -266,6 +268,23 @@ namespace WaifuAI
                 CreateInstructControls(pan_instruct, SelectedInstructEditor);
             };
             CreateInstructControls(pan_instruct, SelectedInstructEditor);
+        }
+
+        private void SetupWorldEditor(string ForceID = "")
+        {
+            cb_worlds.Items.Clear();
+            foreach (var item in DataFiles.WorldInfos)
+            {
+                cb_worlds.Items.Add(item.Value.UniqueName);
+            }
+            var idwant = 0;
+            if (ForceID != "")
+                idwant = cb_worlds.Items.IndexOf(ForceID);
+            if (cb_worlds.Items.Count > 0)
+            {
+                cb_worlds.SelectedIndex = idwant;
+
+            }
         }
 
         /// <summary>
@@ -1282,11 +1301,6 @@ namespace WaifuAI
             await SendMessageToUI(
                 new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is browsing the internet...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
             await LLMSystem.QueryWebsite(DataFiles.Websites["java"], !string.IsNullOrEmpty(ed_input.Text) ? ed_input.Text : "Find a sexy video for Guillaume.");
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void bt_scenario_Click(object sender, EventArgs e)

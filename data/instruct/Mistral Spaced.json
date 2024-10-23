@@ -1,13 +1,13 @@
 {
-	"SysPromptStart": "[INST] ",
-	"SysPromptEnd": "[/INST]Understood.</s>",
+	"SysPromptStart": "[INST] # SYSTEM PROMPT\n",
+	"SysPromptEnd": "[/INST] Understood.</s>",
 	"SystemStart": "[INST] ",
-	"SystemEnd": "[/INST] ",
+	"SystemEnd": "[/INST]",
 	"UserStart": "[INST] ",
-	"UserEnd": "[/INST] ",
-	"BoSToken": "<s>",
+	"UserEnd": "[/INST]",
 	"BotStart": "",
 	"BotEnd": "</s>",
+	"BoSToken": "<s>",
 	"AddNamesToPrompt": false,
 	"NewLinesBetweenMessages": false
 }

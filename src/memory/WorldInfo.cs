@@ -60,7 +60,6 @@ namespace WaifuAI.Memory
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public int ScanDepth { get; set; } = 1;
-        public int ActivationDuration { get; set; } = 1;
         public List<WorldEntry> Entries { get; set; } = [];
         private readonly List<ActiveLink> activeEntries = [];
 
@@ -81,7 +80,7 @@ namespace WaifuAI.Memory
                 if (!entry.Enabled || active.Any(a => a.RecordID == i))
                     continue;
                 if (entry.CheckKeywords(message))
-                    activeEntries.Add(new ActiveLink { RecordID = i, DurationLeft = ActivationDuration });
+                    activeEntries.Add(new ActiveLink { RecordID = i, DurationLeft = entry.Duration });
             }
             return activeEntries.Select(a => Entries[a.RecordID]).ToList();
         }

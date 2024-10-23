@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            tabControl1 = new TabControl();
+            tabMain = new TabControl();
             tabChat = new TabPage();
             bt_impersonate = new Button();
             web_chat = new Microsoft.Web.WebView2.WinForms.WebView2();
@@ -74,6 +74,22 @@
             listSession = new ListView();
             columnHeader1 = new ColumnHeader();
             columnHeader2 = new ColumnHeader();
+            tabDocs = new TabPage();
+            tabWorldInfo = new TabPage();
+            panel3 = new Panel();
+            groupBox8 = new GroupBox();
+            groupBox7 = new GroupBox();
+            groupBox6 = new GroupBox();
+            bt_delwentry = new Button();
+            bt_addwentry = new Button();
+            label18 = new Label();
+            lb_worldentries = new ListBox();
+            label17 = new Label();
+            label16 = new Label();
+            num_scandepth = new NumericUpDown();
+            ed_worlddesc = new TextBox();
+            groupBox3 = new GroupBox();
+            cb_worlds = new ComboBox();
             tabInstruct = new TabPage();
             bt_instructsave = new Button();
             label2 = new Label();
@@ -111,7 +127,30 @@
             ck_ragtitles = new CheckBox();
             ed_log = new TextBox();
             openFileDialog1 = new OpenFileDialog();
-            tabControl1.SuspendLayout();
+            fontDialog1 = new FontDialog();
+            label19 = new Label();
+            ed_wentryname = new TextBox();
+            ed_wentrymem = new TextBox();
+            label20 = new Label();
+            ck_wentryenabled = new CheckBox();
+            label21 = new Label();
+            ed_wentrykw1 = new TextBox();
+            ed_wentrykw2 = new TextBox();
+            label22 = new Label();
+            cb_wentrykwlink = new ComboBox();
+            label23 = new Label();
+            label24 = new Label();
+            cb_wentrylocation = new ComboBox();
+            num_wentryposition = new NumericUpDown();
+            label25 = new Label();
+            ck_wentrycasesensitive = new CheckBox();
+            label26 = new Label();
+            num_wentryduration = new NumericUpDown();
+            num_wentrypriority = new NumericUpDown();
+            label27 = new Label();
+            bt_wentrysave = new Button();
+            bt_worldsave = new Button();
+            tabMain.SuspendLayout();
             tabChat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
             panel1.SuspendLayout();
@@ -124,6 +163,13 @@
             tabHistory.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_sessioncontent).BeginInit();
             panel2.SuspendLayout();
+            tabWorldInfo.SuspendLayout();
+            panel3.SuspendLayout();
+            groupBox8.SuspendLayout();
+            groupBox7.SuspendLayout();
+            groupBox6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)num_scandepth).BeginInit();
+            groupBox3.SuspendLayout();
             tabInstruct.SuspendLayout();
             tabSysPrompt.SuspendLayout();
             tabSamplers.SuspendLayout();
@@ -133,23 +179,28 @@
             ((System.ComponentModel.ISupportInitialize)num_ragindex).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_ragmaxretrieve).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_ragcutoff).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)num_wentryposition).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)num_wentryduration).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)num_wentrypriority).BeginInit();
             SuspendLayout();
             // 
-            // tabControl1
+            // tabMain
             // 
-            tabControl1.Appearance = TabAppearance.FlatButtons;
-            tabControl1.Controls.Add(tabChat);
-            tabControl1.Controls.Add(tabHistory);
-            tabControl1.Controls.Add(tabInstruct);
-            tabControl1.Controls.Add(tabSysPrompt);
-            tabControl1.Controls.Add(tabSamplers);
-            tabControl1.Controls.Add(tabSettings);
-            tabControl1.Dock = DockStyle.Fill;
-            tabControl1.Location = new Point(0, 0);
-            tabControl1.Name = "tabControl1";
-            tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1047, 694);
-            tabControl1.TabIndex = 1;
+            tabMain.Appearance = TabAppearance.FlatButtons;
+            tabMain.Controls.Add(tabChat);
+            tabMain.Controls.Add(tabHistory);
+            tabMain.Controls.Add(tabDocs);
+            tabMain.Controls.Add(tabWorldInfo);
+            tabMain.Controls.Add(tabInstruct);
+            tabMain.Controls.Add(tabSysPrompt);
+            tabMain.Controls.Add(tabSamplers);
+            tabMain.Controls.Add(tabSettings);
+            tabMain.Dock = DockStyle.Fill;
+            tabMain.Location = new Point(0, 0);
+            tabMain.Name = "tabMain";
+            tabMain.SelectedIndex = 0;
+            tabMain.Size = new Size(1047, 694);
+            tabMain.TabIndex = 1;
             // 
             // tabChat
             // 
@@ -664,6 +715,194 @@
             columnHeader2.Text = "Date";
             columnHeader2.Width = 80;
             // 
+            // tabDocs
+            // 
+            tabDocs.Location = new Point(4, 27);
+            tabDocs.Name = "tabDocs";
+            tabDocs.Size = new Size(1039, 663);
+            tabDocs.TabIndex = 7;
+            tabDocs.Text = "Documents";
+            tabDocs.UseVisualStyleBackColor = true;
+            // 
+            // tabWorldInfo
+            // 
+            tabWorldInfo.Controls.Add(panel3);
+            tabWorldInfo.Controls.Add(groupBox6);
+            tabWorldInfo.Controls.Add(groupBox3);
+            tabWorldInfo.Location = new Point(4, 27);
+            tabWorldInfo.Name = "tabWorldInfo";
+            tabWorldInfo.Size = new Size(1039, 663);
+            tabWorldInfo.TabIndex = 8;
+            tabWorldInfo.Text = "World Info";
+            tabWorldInfo.UseVisualStyleBackColor = true;
+            // 
+            // panel3
+            // 
+            panel3.Controls.Add(groupBox8);
+            panel3.Controls.Add(groupBox7);
+            panel3.Dock = DockStyle.Fill;
+            panel3.Location = new Point(241, 57);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(798, 606);
+            panel3.TabIndex = 4;
+            // 
+            // groupBox8
+            // 
+            groupBox8.Controls.Add(bt_wentrysave);
+            groupBox8.Controls.Add(label27);
+            groupBox8.Controls.Add(num_wentrypriority);
+            groupBox8.Controls.Add(label26);
+            groupBox8.Controls.Add(num_wentryduration);
+            groupBox8.Controls.Add(ck_wentrycasesensitive);
+            groupBox8.Controls.Add(label25);
+            groupBox8.Controls.Add(num_wentryposition);
+            groupBox8.Controls.Add(label24);
+            groupBox8.Controls.Add(cb_wentrylocation);
+            groupBox8.Controls.Add(label23);
+            groupBox8.Controls.Add(cb_wentrykwlink);
+            groupBox8.Controls.Add(ed_wentrykw2);
+            groupBox8.Controls.Add(label22);
+            groupBox8.Controls.Add(ed_wentrykw1);
+            groupBox8.Controls.Add(label21);
+            groupBox8.Controls.Add(ck_wentryenabled);
+            groupBox8.Dock = DockStyle.Fill;
+            groupBox8.Location = new Point(0, 246);
+            groupBox8.Name = "groupBox8";
+            groupBox8.Size = new Size(798, 360);
+            groupBox8.TabIndex = 1;
+            groupBox8.TabStop = false;
+            groupBox8.Text = "Entry Settings";
+            // 
+            // groupBox7
+            // 
+            groupBox7.Controls.Add(label20);
+            groupBox7.Controls.Add(ed_wentrymem);
+            groupBox7.Controls.Add(ed_wentryname);
+            groupBox7.Controls.Add(label19);
+            groupBox7.Dock = DockStyle.Top;
+            groupBox7.Location = new Point(0, 0);
+            groupBox7.Name = "groupBox7";
+            groupBox7.Size = new Size(798, 246);
+            groupBox7.TabIndex = 0;
+            groupBox7.TabStop = false;
+            groupBox7.Text = "Entry Info";
+            // 
+            // groupBox6
+            // 
+            groupBox6.Controls.Add(bt_delwentry);
+            groupBox6.Controls.Add(bt_addwentry);
+            groupBox6.Controls.Add(label18);
+            groupBox6.Controls.Add(lb_worldentries);
+            groupBox6.Controls.Add(label17);
+            groupBox6.Controls.Add(label16);
+            groupBox6.Controls.Add(num_scandepth);
+            groupBox6.Controls.Add(ed_worlddesc);
+            groupBox6.Dock = DockStyle.Left;
+            groupBox6.Location = new Point(0, 57);
+            groupBox6.Name = "groupBox6";
+            groupBox6.Size = new Size(241, 606);
+            groupBox6.TabIndex = 3;
+            groupBox6.TabStop = false;
+            groupBox6.Text = "World Settings";
+            // 
+            // bt_delwentry
+            // 
+            bt_delwentry.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            bt_delwentry.Location = new Point(145, 578);
+            bt_delwentry.Name = "bt_delwentry";
+            bt_delwentry.Size = new Size(90, 23);
+            bt_delwentry.TabIndex = 7;
+            bt_delwentry.Text = "Delete";
+            bt_delwentry.UseVisualStyleBackColor = true;
+            // 
+            // bt_addwentry
+            // 
+            bt_addwentry.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            bt_addwentry.Location = new Point(3, 578);
+            bt_addwentry.Name = "bt_addwentry";
+            bt_addwentry.Size = new Size(90, 23);
+            bt_addwentry.TabIndex = 6;
+            bt_addwentry.Text = "Add New";
+            bt_addwentry.UseVisualStyleBackColor = true;
+            // 
+            // label18
+            // 
+            label18.AutoSize = true;
+            label18.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label18.Location = new Point(3, 160);
+            label18.Name = "label18";
+            label18.Size = new Size(71, 15);
+            label18.TabIndex = 5;
+            label18.Text = "Scan Depth";
+            // 
+            // lb_worldentries
+            // 
+            lb_worldentries.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lb_worldentries.FormattingEnabled = true;
+            lb_worldentries.ItemHeight = 15;
+            lb_worldentries.Location = new Point(3, 178);
+            lb_worldentries.Name = "lb_worldentries";
+            lb_worldentries.Size = new Size(232, 394);
+            lb_worldentries.TabIndex = 4;
+            // 
+            // label17
+            // 
+            label17.AutoSize = true;
+            label17.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label17.Location = new Point(3, 116);
+            label17.Name = "label17";
+            label17.Size = new Size(71, 15);
+            label17.TabIndex = 3;
+            label17.Text = "Scan Depth";
+            // 
+            // label16
+            // 
+            label16.AutoSize = true;
+            label16.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label16.Location = new Point(3, 19);
+            label16.Name = "label16";
+            label16.Size = new Size(71, 15);
+            label16.TabIndex = 2;
+            label16.Text = "Description";
+            // 
+            // num_scandepth
+            // 
+            num_scandepth.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            num_scandepth.Location = new Point(3, 134);
+            num_scandepth.Name = "num_scandepth";
+            num_scandepth.Size = new Size(232, 23);
+            num_scandepth.TabIndex = 1;
+            // 
+            // ed_worlddesc
+            // 
+            ed_worlddesc.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            ed_worlddesc.Location = new Point(3, 37);
+            ed_worlddesc.Multiline = true;
+            ed_worlddesc.Name = "ed_worlddesc";
+            ed_worlddesc.ScrollBars = ScrollBars.Vertical;
+            ed_worlddesc.Size = new Size(232, 76);
+            ed_worlddesc.TabIndex = 0;
+            // 
+            // groupBox3
+            // 
+            groupBox3.Controls.Add(bt_worldsave);
+            groupBox3.Controls.Add(cb_worlds);
+            groupBox3.Dock = DockStyle.Top;
+            groupBox3.Location = new Point(0, 0);
+            groupBox3.Name = "groupBox3";
+            groupBox3.Size = new Size(1039, 57);
+            groupBox3.TabIndex = 0;
+            groupBox3.TabStop = false;
+            groupBox3.Text = "File Selection";
+            // 
+            // cb_worlds
+            // 
+            cb_worlds.FormattingEnabled = true;
+            cb_worlds.Location = new Point(8, 22);
+            cb_worlds.Name = "cb_worlds";
+            cb_worlds.Size = new Size(537, 23);
+            cb_worlds.TabIndex = 0;
+            // 
             // tabInstruct
             // 
             tabInstruct.Controls.Add(bt_instructsave);
@@ -681,7 +920,7 @@
             // bt_instructsave
             // 
             bt_instructsave.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_instructsave.Location = new Point(414, 7);
+            bt_instructsave.Location = new Point(572, 9);
             bt_instructsave.Name = "bt_instructsave";
             bt_instructsave.Size = new Size(75, 23);
             bt_instructsave.TabIndex = 9;
@@ -705,7 +944,7 @@
             cb_instructlist.FormattingEnabled = true;
             cb_instructlist.Location = new Point(118, 8);
             cb_instructlist.Name = "cb_instructlist";
-            cb_instructlist.Size = new Size(290, 23);
+            cb_instructlist.Size = new Size(448, 23);
             cb_instructlist.TabIndex = 7;
             // 
             // pan_instruct
@@ -714,7 +953,7 @@
             pan_instruct.AutoScroll = true;
             pan_instruct.Location = new Point(8, 38);
             pan_instruct.Name = "pan_instruct";
-            pan_instruct.Size = new Size(825, 608);
+            pan_instruct.Size = new Size(1023, 608);
             pan_instruct.TabIndex = 6;
             // 
             // tabSysPrompt
@@ -767,7 +1006,7 @@
             pan_prompt.AutoScroll = true;
             pan_prompt.Location = new Point(8, 38);
             pan_prompt.Name = "pan_prompt";
-            pan_prompt.Size = new Size(978, 604);
+            pan_prompt.Size = new Size(1023, 604);
             pan_prompt.TabIndex = 10;
             // 
             // tabSamplers
@@ -820,7 +1059,7 @@
             pan_samplers.AutoScroll = true;
             pan_samplers.Location = new Point(8, 38);
             pan_samplers.Name = "pan_samplers";
-            pan_samplers.Size = new Size(978, 606);
+            pan_samplers.Size = new Size(1023, 606);
             pan_samplers.TabIndex = 0;
             // 
             // tabSettings
@@ -1080,17 +1319,212 @@
             // 
             openFileDialog1.FileName = "openFileDialog1";
             // 
+            // label19
+            // 
+            label19.AutoSize = true;
+            label19.Location = new Point(6, 19);
+            label19.Name = "label19";
+            label19.Size = new Size(39, 15);
+            label19.TabIndex = 0;
+            label19.Text = "Name";
+            // 
+            // ed_wentryname
+            // 
+            ed_wentryname.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            ed_wentryname.Location = new Point(6, 37);
+            ed_wentryname.Name = "ed_wentryname";
+            ed_wentryname.Size = new Size(784, 23);
+            ed_wentryname.TabIndex = 1;
+            // 
+            // ed_wentrymem
+            // 
+            ed_wentrymem.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            ed_wentrymem.Location = new Point(6, 81);
+            ed_wentrymem.Multiline = true;
+            ed_wentrymem.Name = "ed_wentrymem";
+            ed_wentrymem.ScrollBars = ScrollBars.Vertical;
+            ed_wentrymem.Size = new Size(784, 159);
+            ed_wentrymem.TabIndex = 2;
+            // 
+            // label20
+            // 
+            label20.AutoSize = true;
+            label20.Location = new Point(6, 63);
+            label20.Name = "label20";
+            label20.Size = new Size(52, 15);
+            label20.TabIndex = 3;
+            label20.Text = "Memory";
+            // 
+            // ck_wentryenabled
+            // 
+            ck_wentryenabled.AutoSize = true;
+            ck_wentryenabled.Location = new Point(6, 22);
+            ck_wentryenabled.Name = "ck_wentryenabled";
+            ck_wentryenabled.Size = new Size(68, 19);
+            ck_wentryenabled.TabIndex = 0;
+            ck_wentryenabled.Text = "Enabled";
+            ck_wentryenabled.UseVisualStyleBackColor = true;
+            // 
+            // label21
+            // 
+            label21.AutoSize = true;
+            label21.Location = new Point(6, 56);
+            label21.Name = "label21";
+            label21.Size = new Size(67, 15);
+            label21.TabIndex = 1;
+            label21.Text = "Keywords 1";
+            // 
+            // ed_wentrykw1
+            // 
+            ed_wentrykw1.Location = new Point(6, 74);
+            ed_wentrykw1.Name = "ed_wentrykw1";
+            ed_wentrykw1.Size = new Size(299, 23);
+            ed_wentrykw1.TabIndex = 2;
+            // 
+            // ed_wentrykw2
+            // 
+            ed_wentrykw2.Location = new Point(447, 74);
+            ed_wentrykw2.Name = "ed_wentrykw2";
+            ed_wentrykw2.Size = new Size(299, 23);
+            ed_wentrykw2.TabIndex = 4;
+            // 
+            // label22
+            // 
+            label22.AutoSize = true;
+            label22.Location = new Point(447, 56);
+            label22.Name = "label22";
+            label22.Size = new Size(67, 15);
+            label22.TabIndex = 3;
+            label22.Text = "Keywords 2";
+            // 
+            // cb_wentrykwlink
+            // 
+            cb_wentrykwlink.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_wentrykwlink.FormattingEnabled = true;
+            cb_wentrykwlink.Items.AddRange(new object[] { "And", "Or", "Not" });
+            cb_wentrykwlink.Location = new Point(311, 74);
+            cb_wentrykwlink.Name = "cb_wentrykwlink";
+            cb_wentrykwlink.Size = new Size(130, 23);
+            cb_wentrykwlink.TabIndex = 5;
+            // 
+            // label23
+            // 
+            label23.AutoSize = true;
+            label23.Location = new Point(311, 56);
+            label23.Name = "label23";
+            label23.Size = new Size(78, 15);
+            label23.TabIndex = 6;
+            label23.Text = "Keyword Link";
+            // 
+            // label24
+            // 
+            label24.AutoSize = true;
+            label24.Location = new Point(6, 129);
+            label24.Name = "label24";
+            label24.Size = new Size(67, 15);
+            label24.TabIndex = 8;
+            label24.Text = "Positioning";
+            // 
+            // cb_wentrylocation
+            // 
+            cb_wentrylocation.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_wentrylocation.FormattingEnabled = true;
+            cb_wentrylocation.Items.AddRange(new object[] { "System Prompt", "Chat" });
+            cb_wentrylocation.Location = new Point(6, 147);
+            cb_wentrylocation.Name = "cb_wentrylocation";
+            cb_wentrylocation.Size = new Size(182, 23);
+            cb_wentrylocation.TabIndex = 7;
+            // 
+            // num_wentryposition
+            // 
+            num_wentryposition.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            num_wentryposition.Location = new Point(194, 147);
+            num_wentryposition.Name = "num_wentryposition";
+            num_wentryposition.Size = new Size(110, 23);
+            num_wentryposition.TabIndex = 9;
+            // 
+            // label25
+            // 
+            label25.AutoSize = true;
+            label25.Location = new Point(194, 129);
+            label25.Name = "label25";
+            label25.Size = new Size(36, 15);
+            label25.TabIndex = 10;
+            label25.Text = "Index";
+            // 
+            // ck_wentrycasesensitive
+            // 
+            ck_wentrycasesensitive.AutoSize = true;
+            ck_wentrycasesensitive.Location = new Point(6, 103);
+            ck_wentrycasesensitive.Name = "ck_wentrycasesensitive";
+            ck_wentrycasesensitive.Size = new Size(100, 19);
+            ck_wentrycasesensitive.TabIndex = 11;
+            ck_wentrycasesensitive.Text = "Case Sensitive";
+            ck_wentrycasesensitive.UseVisualStyleBackColor = true;
+            // 
+            // label26
+            // 
+            label26.AutoSize = true;
+            label26.Location = new Point(310, 129);
+            label26.Name = "label26";
+            label26.Size = new Size(53, 15);
+            label26.TabIndex = 13;
+            label26.Text = "Duration";
+            // 
+            // num_wentryduration
+            // 
+            num_wentryduration.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            num_wentryduration.Location = new Point(310, 147);
+            num_wentryduration.Name = "num_wentryduration";
+            num_wentryduration.Size = new Size(110, 23);
+            num_wentryduration.TabIndex = 12;
+            // 
+            // num_wentrypriority
+            // 
+            num_wentrypriority.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            num_wentrypriority.Location = new Point(426, 147);
+            num_wentrypriority.Name = "num_wentrypriority";
+            num_wentrypriority.Size = new Size(110, 23);
+            num_wentrypriority.TabIndex = 14;
+            // 
+            // label27
+            // 
+            label27.AutoSize = true;
+            label27.Location = new Point(426, 129);
+            label27.Name = "label27";
+            label27.Size = new Size(45, 15);
+            label27.TabIndex = 15;
+            label27.Text = "Priority";
+            // 
+            // bt_wentrysave
+            // 
+            bt_wentrysave.Location = new Point(544, 147);
+            bt_wentrysave.Name = "bt_wentrysave";
+            bt_wentrysave.Size = new Size(202, 23);
+            bt_wentrysave.TabIndex = 16;
+            bt_wentrysave.Text = "Save Entry Settings";
+            bt_wentrysave.UseVisualStyleBackColor = true;
+            // 
+            // bt_worldsave
+            // 
+            bt_worldsave.Location = new Point(551, 22);
+            bt_worldsave.Name = "bt_worldsave";
+            bt_worldsave.Size = new Size(110, 23);
+            bt_worldsave.TabIndex = 1;
+            bt_worldsave.Text = "Save";
+            bt_worldsave.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1047, 694);
-            Controls.Add(tabControl1);
+            Controls.Add(tabMain);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
             Text = "w(AI)fu";
             FormClosing += MainForm_FormClosing;
-            tabControl1.ResumeLayout(false);
+            tabMain.ResumeLayout(false);
             tabChat.ResumeLayout(false);
             tabChat.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).EndInit();
@@ -1108,6 +1542,16 @@
             ((System.ComponentModel.ISupportInitialize)web_sessioncontent).EndInit();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
+            tabWorldInfo.ResumeLayout(false);
+            panel3.ResumeLayout(false);
+            groupBox8.ResumeLayout(false);
+            groupBox8.PerformLayout();
+            groupBox7.ResumeLayout(false);
+            groupBox7.PerformLayout();
+            groupBox6.ResumeLayout(false);
+            groupBox6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)num_scandepth).EndInit();
+            groupBox3.ResumeLayout(false);
             tabInstruct.ResumeLayout(false);
             tabSysPrompt.ResumeLayout(false);
             tabSamplers.ResumeLayout(false);
@@ -1119,11 +1563,14 @@
             ((System.ComponentModel.ISupportInitialize)num_ragindex).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_ragmaxretrieve).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_ragcutoff).EndInit();
+            ((System.ComponentModel.ISupportInitialize)num_wentryposition).EndInit();
+            ((System.ComponentModel.ISupportInitialize)num_wentryduration).EndInit();
+            ((System.ComponentModel.ISupportInitialize)num_wentrypriority).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
-        private TabControl tabControl1;
+        private TabControl tabMain;
         private TabPage tabChat;
         private TabPage tabInstruct;
         private TabPage tabSamplers;
@@ -1205,5 +1652,45 @@
         private CheckBox checkBox1;
         private Button bt_Video;
         private Button bt_scenario;
+        private TabPage tabDocs;
+        private TabPage tabWorldInfo;
+        private Panel panel3;
+        private GroupBox groupBox3;
+        private Button bt_wentrysave;
+        private ComboBox cb_worlds;
+        private GroupBox groupBox6;
+        private Label label18;
+        private ListBox lb_worldentries;
+        private Label label17;
+        private Label label16;
+        private NumericUpDown num_scandepth;
+        private TextBox ed_worlddesc;
+        private Button bt_delwentry;
+        private Button bt_addwentry;
+        private FontDialog fontDialog1;
+        private GroupBox groupBox8;
+        private GroupBox groupBox7;
+        private NumericUpDown num_wentryposition;
+        private TextBox ed_wentrykw1;
+        private ListBox listBox1;
+        private Label label20;
+        private TextBox ed_wentrymem;
+        private TextBox ed_wentryname;
+        private Label label19;
+        private CheckBox ck_wentryenabled;
+        private Label label23;
+        private ComboBox cb_wentrykwlink;
+        private TextBox ed_wentrykw2;
+        private Label label22;
+        private Label label21;
+        private Label label25;
+        private Label label24;
+        private ComboBox cb_wentrylocation;
+        private CheckBox ck_wentrycasesensitive;
+        private Label label26;
+        private NumericUpDown num_wentryduration;
+        private Label label27;
+        private NumericUpDown num_wentrypriority;
+        private Button bt_worldsave;
     }
 }
