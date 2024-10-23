@@ -78,7 +78,28 @@
             tabWorldInfo = new TabPage();
             panel3 = new Panel();
             groupBox8 = new GroupBox();
+            bt_wentrysave = new Button();
+            label27 = new Label();
+            num_wentrypriority = new NumericUpDown();
+            label26 = new Label();
+            num_wentryduration = new NumericUpDown();
+            ck_wentrycasesensitive = new CheckBox();
+            label25 = new Label();
+            num_wentryposition = new NumericUpDown();
+            label24 = new Label();
+            cb_wentrylocation = new ComboBox();
+            label23 = new Label();
+            cb_wentrykwlink = new ComboBox();
+            ed_wentrykw2 = new TextBox();
+            label22 = new Label();
+            ed_wentrykw1 = new TextBox();
+            label21 = new Label();
+            ck_wentryenabled = new CheckBox();
             groupBox7 = new GroupBox();
+            label20 = new Label();
+            ed_wentrymem = new TextBox();
+            ed_wentryname = new TextBox();
+            label19 = new Label();
             groupBox6 = new GroupBox();
             bt_delwentry = new Button();
             bt_addwentry = new Button();
@@ -89,6 +110,7 @@
             num_scandepth = new NumericUpDown();
             ed_worlddesc = new TextBox();
             groupBox3 = new GroupBox();
+            bt_worldsave = new Button();
             cb_worlds = new ComboBox();
             tabInstruct = new TabPage();
             bt_instructsave = new Button();
@@ -128,28 +150,6 @@
             ed_log = new TextBox();
             openFileDialog1 = new OpenFileDialog();
             fontDialog1 = new FontDialog();
-            label19 = new Label();
-            ed_wentryname = new TextBox();
-            ed_wentrymem = new TextBox();
-            label20 = new Label();
-            ck_wentryenabled = new CheckBox();
-            label21 = new Label();
-            ed_wentrykw1 = new TextBox();
-            ed_wentrykw2 = new TextBox();
-            label22 = new Label();
-            cb_wentrykwlink = new ComboBox();
-            label23 = new Label();
-            label24 = new Label();
-            cb_wentrylocation = new ComboBox();
-            num_wentryposition = new NumericUpDown();
-            label25 = new Label();
-            ck_wentrycasesensitive = new CheckBox();
-            label26 = new Label();
-            num_wentryduration = new NumericUpDown();
-            num_wentrypriority = new NumericUpDown();
-            label27 = new Label();
-            bt_wentrysave = new Button();
-            bt_worldsave = new Button();
             tabMain.SuspendLayout();
             tabChat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
@@ -166,6 +166,9 @@
             tabWorldInfo.SuspendLayout();
             panel3.SuspendLayout();
             groupBox8.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)num_wentrypriority).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)num_wentryduration).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)num_wentryposition).BeginInit();
             groupBox7.SuspendLayout();
             groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_scandepth).BeginInit();
@@ -179,9 +182,6 @@
             ((System.ComponentModel.ISupportInitialize)num_ragindex).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_ragmaxretrieve).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_ragcutoff).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_wentryposition).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_wentryduration).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_wentrypriority).BeginInit();
             SuspendLayout();
             // 
             // tabMain
@@ -773,6 +773,157 @@
             groupBox8.TabStop = false;
             groupBox8.Text = "Entry Settings";
             // 
+            // bt_wentrysave
+            // 
+            bt_wentrysave.Location = new Point(563, 147);
+            bt_wentrysave.Name = "bt_wentrysave";
+            bt_wentrysave.Size = new Size(183, 23);
+            bt_wentrysave.TabIndex = 16;
+            bt_wentrysave.Text = "Save Entry Settings";
+            bt_wentrysave.UseVisualStyleBackColor = true;
+            bt_wentrysave.Click += bt_wentrysave_Click;
+            // 
+            // label27
+            // 
+            label27.AutoSize = true;
+            label27.Location = new Point(426, 129);
+            label27.Name = "label27";
+            label27.Size = new Size(45, 15);
+            label27.TabIndex = 15;
+            label27.Text = "Priority";
+            // 
+            // num_wentrypriority
+            // 
+            num_wentrypriority.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            num_wentrypriority.Location = new Point(426, 147);
+            num_wentrypriority.Name = "num_wentrypriority";
+            num_wentrypriority.Size = new Size(110, 23);
+            num_wentrypriority.TabIndex = 14;
+            // 
+            // label26
+            // 
+            label26.AutoSize = true;
+            label26.Location = new Point(310, 129);
+            label26.Name = "label26";
+            label26.Size = new Size(53, 15);
+            label26.TabIndex = 13;
+            label26.Text = "Duration";
+            // 
+            // num_wentryduration
+            // 
+            num_wentryduration.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            num_wentryduration.Location = new Point(310, 147);
+            num_wentryduration.Name = "num_wentryduration";
+            num_wentryduration.Size = new Size(110, 23);
+            num_wentryduration.TabIndex = 12;
+            // 
+            // ck_wentrycasesensitive
+            // 
+            ck_wentrycasesensitive.AutoSize = true;
+            ck_wentrycasesensitive.Location = new Point(6, 103);
+            ck_wentrycasesensitive.Name = "ck_wentrycasesensitive";
+            ck_wentrycasesensitive.Size = new Size(100, 19);
+            ck_wentrycasesensitive.TabIndex = 11;
+            ck_wentrycasesensitive.Text = "Case Sensitive";
+            ck_wentrycasesensitive.UseVisualStyleBackColor = true;
+            // 
+            // label25
+            // 
+            label25.AutoSize = true;
+            label25.Location = new Point(194, 129);
+            label25.Name = "label25";
+            label25.Size = new Size(36, 15);
+            label25.TabIndex = 10;
+            label25.Text = "Index";
+            // 
+            // num_wentryposition
+            // 
+            num_wentryposition.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            num_wentryposition.Location = new Point(194, 147);
+            num_wentryposition.Name = "num_wentryposition";
+            num_wentryposition.Size = new Size(110, 23);
+            num_wentryposition.TabIndex = 9;
+            // 
+            // label24
+            // 
+            label24.AutoSize = true;
+            label24.Location = new Point(6, 129);
+            label24.Name = "label24";
+            label24.Size = new Size(67, 15);
+            label24.TabIndex = 8;
+            label24.Text = "Positioning";
+            // 
+            // cb_wentrylocation
+            // 
+            cb_wentrylocation.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_wentrylocation.FormattingEnabled = true;
+            cb_wentrylocation.Items.AddRange(new object[] { "System Prompt", "Chat" });
+            cb_wentrylocation.Location = new Point(6, 147);
+            cb_wentrylocation.Name = "cb_wentrylocation";
+            cb_wentrylocation.Size = new Size(182, 23);
+            cb_wentrylocation.TabIndex = 7;
+            // 
+            // label23
+            // 
+            label23.AutoSize = true;
+            label23.Location = new Point(311, 56);
+            label23.Name = "label23";
+            label23.Size = new Size(78, 15);
+            label23.TabIndex = 6;
+            label23.Text = "Keyword Link";
+            // 
+            // cb_wentrykwlink
+            // 
+            cb_wentrykwlink.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_wentrykwlink.FormattingEnabled = true;
+            cb_wentrykwlink.Items.AddRange(new object[] { "And", "Or", "Not" });
+            cb_wentrykwlink.Location = new Point(311, 74);
+            cb_wentrykwlink.Name = "cb_wentrykwlink";
+            cb_wentrykwlink.Size = new Size(130, 23);
+            cb_wentrykwlink.TabIndex = 5;
+            // 
+            // ed_wentrykw2
+            // 
+            ed_wentrykw2.Location = new Point(447, 74);
+            ed_wentrykw2.Name = "ed_wentrykw2";
+            ed_wentrykw2.Size = new Size(299, 23);
+            ed_wentrykw2.TabIndex = 4;
+            // 
+            // label22
+            // 
+            label22.AutoSize = true;
+            label22.Location = new Point(447, 56);
+            label22.Name = "label22";
+            label22.Size = new Size(67, 15);
+            label22.TabIndex = 3;
+            label22.Text = "Keywords 2";
+            // 
+            // ed_wentrykw1
+            // 
+            ed_wentrykw1.Location = new Point(6, 74);
+            ed_wentrykw1.Name = "ed_wentrykw1";
+            ed_wentrykw1.Size = new Size(299, 23);
+            ed_wentrykw1.TabIndex = 2;
+            // 
+            // label21
+            // 
+            label21.AutoSize = true;
+            label21.Location = new Point(6, 56);
+            label21.Name = "label21";
+            label21.Size = new Size(67, 15);
+            label21.TabIndex = 1;
+            label21.Text = "Keywords 1";
+            // 
+            // ck_wentryenabled
+            // 
+            ck_wentryenabled.AutoSize = true;
+            ck_wentryenabled.Location = new Point(6, 22);
+            ck_wentryenabled.Name = "ck_wentryenabled";
+            ck_wentryenabled.Size = new Size(68, 19);
+            ck_wentryenabled.TabIndex = 0;
+            ck_wentryenabled.Text = "Enabled";
+            ck_wentryenabled.UseVisualStyleBackColor = true;
+            // 
             // groupBox7
             // 
             groupBox7.Controls.Add(label20);
@@ -786,6 +937,42 @@
             groupBox7.TabIndex = 0;
             groupBox7.TabStop = false;
             groupBox7.Text = "Entry Info";
+            // 
+            // label20
+            // 
+            label20.AutoSize = true;
+            label20.Location = new Point(6, 63);
+            label20.Name = "label20";
+            label20.Size = new Size(52, 15);
+            label20.TabIndex = 3;
+            label20.Text = "Memory";
+            // 
+            // ed_wentrymem
+            // 
+            ed_wentrymem.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            ed_wentrymem.Location = new Point(6, 81);
+            ed_wentrymem.Multiline = true;
+            ed_wentrymem.Name = "ed_wentrymem";
+            ed_wentrymem.ScrollBars = ScrollBars.Vertical;
+            ed_wentrymem.Size = new Size(784, 159);
+            ed_wentrymem.TabIndex = 2;
+            // 
+            // ed_wentryname
+            // 
+            ed_wentryname.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            ed_wentryname.Location = new Point(6, 37);
+            ed_wentryname.Name = "ed_wentryname";
+            ed_wentryname.Size = new Size(784, 23);
+            ed_wentryname.TabIndex = 1;
+            // 
+            // label19
+            // 
+            label19.AutoSize = true;
+            label19.Location = new Point(6, 19);
+            label19.Name = "label19";
+            label19.Size = new Size(39, 15);
+            label19.TabIndex = 0;
+            label19.Text = "Name";
             // 
             // groupBox6
             // 
@@ -844,6 +1031,7 @@
             lb_worldentries.Name = "lb_worldentries";
             lb_worldentries.Size = new Size(232, 394);
             lb_worldentries.TabIndex = 4;
+            lb_worldentries.SelectedIndexChanged += lb_worldentries_SelectedIndexChanged;
             // 
             // label17
             // 
@@ -872,6 +1060,7 @@
             num_scandepth.Name = "num_scandepth";
             num_scandepth.Size = new Size(232, 23);
             num_scandepth.TabIndex = 1;
+            num_scandepth.ValueChanged += num_scandepth_ValueChanged;
             // 
             // ed_worlddesc
             // 
@@ -882,6 +1071,7 @@
             ed_worlddesc.ScrollBars = ScrollBars.Vertical;
             ed_worlddesc.Size = new Size(232, 76);
             ed_worlddesc.TabIndex = 0;
+            ed_worlddesc.KeyPress += ed_worlddesc_KeyPress;
             // 
             // groupBox3
             // 
@@ -894,6 +1084,16 @@
             groupBox3.TabIndex = 0;
             groupBox3.TabStop = false;
             groupBox3.Text = "File Selection";
+            // 
+            // bt_worldsave
+            // 
+            bt_worldsave.Location = new Point(551, 22);
+            bt_worldsave.Name = "bt_worldsave";
+            bt_worldsave.Size = new Size(110, 23);
+            bt_worldsave.TabIndex = 1;
+            bt_worldsave.Text = "Save";
+            bt_worldsave.UseVisualStyleBackColor = true;
+            bt_worldsave.Click += bt_worldsave_Click;
             // 
             // cb_worlds
             // 
@@ -1319,201 +1519,6 @@
             // 
             openFileDialog1.FileName = "openFileDialog1";
             // 
-            // label19
-            // 
-            label19.AutoSize = true;
-            label19.Location = new Point(6, 19);
-            label19.Name = "label19";
-            label19.Size = new Size(39, 15);
-            label19.TabIndex = 0;
-            label19.Text = "Name";
-            // 
-            // ed_wentryname
-            // 
-            ed_wentryname.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            ed_wentryname.Location = new Point(6, 37);
-            ed_wentryname.Name = "ed_wentryname";
-            ed_wentryname.Size = new Size(784, 23);
-            ed_wentryname.TabIndex = 1;
-            // 
-            // ed_wentrymem
-            // 
-            ed_wentrymem.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            ed_wentrymem.Location = new Point(6, 81);
-            ed_wentrymem.Multiline = true;
-            ed_wentrymem.Name = "ed_wentrymem";
-            ed_wentrymem.ScrollBars = ScrollBars.Vertical;
-            ed_wentrymem.Size = new Size(784, 159);
-            ed_wentrymem.TabIndex = 2;
-            // 
-            // label20
-            // 
-            label20.AutoSize = true;
-            label20.Location = new Point(6, 63);
-            label20.Name = "label20";
-            label20.Size = new Size(52, 15);
-            label20.TabIndex = 3;
-            label20.Text = "Memory";
-            // 
-            // ck_wentryenabled
-            // 
-            ck_wentryenabled.AutoSize = true;
-            ck_wentryenabled.Location = new Point(6, 22);
-            ck_wentryenabled.Name = "ck_wentryenabled";
-            ck_wentryenabled.Size = new Size(68, 19);
-            ck_wentryenabled.TabIndex = 0;
-            ck_wentryenabled.Text = "Enabled";
-            ck_wentryenabled.UseVisualStyleBackColor = true;
-            // 
-            // label21
-            // 
-            label21.AutoSize = true;
-            label21.Location = new Point(6, 56);
-            label21.Name = "label21";
-            label21.Size = new Size(67, 15);
-            label21.TabIndex = 1;
-            label21.Text = "Keywords 1";
-            // 
-            // ed_wentrykw1
-            // 
-            ed_wentrykw1.Location = new Point(6, 74);
-            ed_wentrykw1.Name = "ed_wentrykw1";
-            ed_wentrykw1.Size = new Size(299, 23);
-            ed_wentrykw1.TabIndex = 2;
-            // 
-            // ed_wentrykw2
-            // 
-            ed_wentrykw2.Location = new Point(447, 74);
-            ed_wentrykw2.Name = "ed_wentrykw2";
-            ed_wentrykw2.Size = new Size(299, 23);
-            ed_wentrykw2.TabIndex = 4;
-            // 
-            // label22
-            // 
-            label22.AutoSize = true;
-            label22.Location = new Point(447, 56);
-            label22.Name = "label22";
-            label22.Size = new Size(67, 15);
-            label22.TabIndex = 3;
-            label22.Text = "Keywords 2";
-            // 
-            // cb_wentrykwlink
-            // 
-            cb_wentrykwlink.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_wentrykwlink.FormattingEnabled = true;
-            cb_wentrykwlink.Items.AddRange(new object[] { "And", "Or", "Not" });
-            cb_wentrykwlink.Location = new Point(311, 74);
-            cb_wentrykwlink.Name = "cb_wentrykwlink";
-            cb_wentrykwlink.Size = new Size(130, 23);
-            cb_wentrykwlink.TabIndex = 5;
-            // 
-            // label23
-            // 
-            label23.AutoSize = true;
-            label23.Location = new Point(311, 56);
-            label23.Name = "label23";
-            label23.Size = new Size(78, 15);
-            label23.TabIndex = 6;
-            label23.Text = "Keyword Link";
-            // 
-            // label24
-            // 
-            label24.AutoSize = true;
-            label24.Location = new Point(6, 129);
-            label24.Name = "label24";
-            label24.Size = new Size(67, 15);
-            label24.TabIndex = 8;
-            label24.Text = "Positioning";
-            // 
-            // cb_wentrylocation
-            // 
-            cb_wentrylocation.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_wentrylocation.FormattingEnabled = true;
-            cb_wentrylocation.Items.AddRange(new object[] { "System Prompt", "Chat" });
-            cb_wentrylocation.Location = new Point(6, 147);
-            cb_wentrylocation.Name = "cb_wentrylocation";
-            cb_wentrylocation.Size = new Size(182, 23);
-            cb_wentrylocation.TabIndex = 7;
-            // 
-            // num_wentryposition
-            // 
-            num_wentryposition.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            num_wentryposition.Location = new Point(194, 147);
-            num_wentryposition.Name = "num_wentryposition";
-            num_wentryposition.Size = new Size(110, 23);
-            num_wentryposition.TabIndex = 9;
-            // 
-            // label25
-            // 
-            label25.AutoSize = true;
-            label25.Location = new Point(194, 129);
-            label25.Name = "label25";
-            label25.Size = new Size(36, 15);
-            label25.TabIndex = 10;
-            label25.Text = "Index";
-            // 
-            // ck_wentrycasesensitive
-            // 
-            ck_wentrycasesensitive.AutoSize = true;
-            ck_wentrycasesensitive.Location = new Point(6, 103);
-            ck_wentrycasesensitive.Name = "ck_wentrycasesensitive";
-            ck_wentrycasesensitive.Size = new Size(100, 19);
-            ck_wentrycasesensitive.TabIndex = 11;
-            ck_wentrycasesensitive.Text = "Case Sensitive";
-            ck_wentrycasesensitive.UseVisualStyleBackColor = true;
-            // 
-            // label26
-            // 
-            label26.AutoSize = true;
-            label26.Location = new Point(310, 129);
-            label26.Name = "label26";
-            label26.Size = new Size(53, 15);
-            label26.TabIndex = 13;
-            label26.Text = "Duration";
-            // 
-            // num_wentryduration
-            // 
-            num_wentryduration.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            num_wentryduration.Location = new Point(310, 147);
-            num_wentryduration.Name = "num_wentryduration";
-            num_wentryduration.Size = new Size(110, 23);
-            num_wentryduration.TabIndex = 12;
-            // 
-            // num_wentrypriority
-            // 
-            num_wentrypriority.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            num_wentrypriority.Location = new Point(426, 147);
-            num_wentrypriority.Name = "num_wentrypriority";
-            num_wentrypriority.Size = new Size(110, 23);
-            num_wentrypriority.TabIndex = 14;
-            // 
-            // label27
-            // 
-            label27.AutoSize = true;
-            label27.Location = new Point(426, 129);
-            label27.Name = "label27";
-            label27.Size = new Size(45, 15);
-            label27.TabIndex = 15;
-            label27.Text = "Priority";
-            // 
-            // bt_wentrysave
-            // 
-            bt_wentrysave.Location = new Point(544, 147);
-            bt_wentrysave.Name = "bt_wentrysave";
-            bt_wentrysave.Size = new Size(202, 23);
-            bt_wentrysave.TabIndex = 16;
-            bt_wentrysave.Text = "Save Entry Settings";
-            bt_wentrysave.UseVisualStyleBackColor = true;
-            // 
-            // bt_worldsave
-            // 
-            bt_worldsave.Location = new Point(551, 22);
-            bt_worldsave.Name = "bt_worldsave";
-            bt_worldsave.Size = new Size(110, 23);
-            bt_worldsave.TabIndex = 1;
-            bt_worldsave.Text = "Save";
-            bt_worldsave.UseVisualStyleBackColor = true;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1546,6 +1551,9 @@
             panel3.ResumeLayout(false);
             groupBox8.ResumeLayout(false);
             groupBox8.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)num_wentrypriority).EndInit();
+            ((System.ComponentModel.ISupportInitialize)num_wentryduration).EndInit();
+            ((System.ComponentModel.ISupportInitialize)num_wentryposition).EndInit();
             groupBox7.ResumeLayout(false);
             groupBox7.PerformLayout();
             groupBox6.ResumeLayout(false);
@@ -1563,9 +1571,6 @@
             ((System.ComponentModel.ISupportInitialize)num_ragindex).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_ragmaxretrieve).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_ragcutoff).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_wentryposition).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_wentryduration).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_wentrypriority).EndInit();
             ResumeLayout(false);
         }
 

@@ -52,6 +52,7 @@ namespace WaifuAI
             bt_embedall.Click += EmbedAllSessions!;
             SetupSamplerEditor();
             SetupInstructEditor();
+            SetupWorldEditor();
             SetupPromptEditor();
             SetupChatMenu();
         }
@@ -270,22 +271,111 @@ namespace WaifuAI
             CreateInstructControls(pan_instruct, SelectedInstructEditor);
         }
 
-        private void SetupWorldEditor(string ForceID = "")
+        private void SetupWorldEditor(string ForceID = "", int forceEntry = 0)
         {
             cb_worlds.Items.Clear();
             foreach (var item in DataFiles.WorldInfos)
             {
                 cb_worlds.Items.Add(item.Value.UniqueName);
             }
-            var idwant = 0;
-            if (ForceID != "")
-                idwant = cb_worlds.Items.IndexOf(ForceID);
+            var idwant = (ForceID != "") ? cb_worlds.Items.IndexOf(ForceID) : 0;
             if (cb_worlds.Items.Count > 0)
             {
                 cb_worlds.SelectedIndex = idwant;
+                SelectedWorldEditor = DataFiles.WorldInfos[cb_worlds.SelectedItem!.ToString()!].Copy<WorldInfo>()!;
+            }
+            cb_worlds.SelectedIndexChanged += (sender, e) =>
+            {
+                var wid = cb_worlds.SelectedItem?.ToString();
+                if (DataFiles.WorldInfos.TryGetValue(wid!, out var wi))
+                {
+                    SelectedWorldEditor = wi.Copy<WorldInfo>()!;
+                    LoadWorldSettings(SelectedWorldEditor, forceEntry);
+                }
+            };
+        }
 
+        private void LoadWorldSettings(WorldInfo selectedWorldEditor, int forceEntry = 0)
+        {
+            ed_worlddesc.Text = selectedWorldEditor.Description;
+            num_scandepth.Value = selectedWorldEditor.ScanDepth;
+            lb_worldentries.Items.Clear();
+            foreach (var item in selectedWorldEditor.Entries)
+            {
+                lb_worldentries.Items.Add(item.Name);
+            }
+            if (lb_worldentries.Items.Count > 0)
+            {
+                var selentry = forceEntry < lb_worldentries.Items.Count ? forceEntry : 0;
+                SelectedWorldEntryEditor = selectedWorldEditor.Entries[selentry];
+                lb_worldentries.SelectedIndex = selentry;
             }
         }
+
+        private void lb_worldentries_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var id = lb_worldentries.SelectedIndex;
+            if (id < 0 || SelectedWorldEditor.Entries.Count <= id)
+                return;
+            SelectedWorldEntryEditor = SelectedWorldEditor.Entries[id];
+            LoadWorldEntry(SelectedWorldEntryEditor);
+        }
+
+        private void LoadWorldEntry(WorldEntry worldEntry)
+        {
+            ed_wentryname.Text = worldEntry.Name;
+            ed_wentrymem.Text = worldEntry.Message.ToWinFormat();
+            // Convert worldEntry's keywords to a comma separated string to show in ed_wentrykw1.Text
+            ed_wentrykw1.Text = string.Join(",", worldEntry.KeyWordsMain);
+            ed_wentrykw2.Text = string.Join(",", worldEntry.KeyWordsSecondary);
+            num_wentryduration.Value = worldEntry.Duration;
+            num_wentryposition.Value = worldEntry.PositionIndex;
+            num_wentrypriority.Value = worldEntry.Priority;
+            cb_wentrykwlink.SelectedIndex = (int)worldEntry.WordLink;
+            cb_wentrylocation.SelectedIndex = (int)worldEntry.Position;
+            ck_wentrycasesensitive.Checked = worldEntry.CaseSensitive;
+            ck_wentryenabled.Checked = worldEntry.Enabled;
+        }
+
+        private void SaveWorldEntry()
+        {
+            SelectedWorldEntryEditor.Name = ed_wentryname.Text;
+            SelectedWorldEntryEditor.Message = ed_wentrymem.Text.ToLinuxFormat();
+            SelectedWorldEntryEditor.KeyWordsMain = ed_wentrykw1.Text.Split(',').ToList();
+            SelectedWorldEntryEditor.KeyWordsSecondary = ed_wentrykw2.Text.Split(',').ToList();
+            SelectedWorldEntryEditor.Duration = (int)num_wentryduration.Value;
+            SelectedWorldEntryEditor.PositionIndex = (int)num_wentryposition.Value;
+            SelectedWorldEntryEditor.Priority = (int)num_wentrypriority.Value;
+            SelectedWorldEntryEditor.WordLink = (KeyWordLink)cb_wentrykwlink.SelectedIndex;
+            SelectedWorldEntryEditor.Position = (WEPosition)cb_wentrylocation.SelectedIndex;
+            SelectedWorldEntryEditor.CaseSensitive = ck_wentrycasesensitive.Checked;
+            SelectedWorldEntryEditor.Enabled = ck_wentryenabled.Checked;
+        }
+
+        private void SaveWorldInfo()
+        {
+            SelectedWorldEditor.Description = ed_worlddesc.Text;
+            SelectedWorldEditor.ScanDepth = (int)num_scandepth.Value;
+            var NewName = cb_samplerlist.Text;
+            if (string.IsNullOrWhiteSpace(NewName))
+            {
+                MessageBox.Show("Please select a valide name for the new sampler");
+                return;
+            }
+            // If name already exists ask for confirmation
+            if (DataFiles.Inference.ContainsKey(NewName) && (MessageBox.Show("This sampler already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
+                return;
+            SelectedWorldEditor.UniqueName = NewName;
+            DataFiles.WorldInfos[NewName] = SelectedWorldEditor;
+
+            (SelectedWorldEditor as IFile).SaveToFile("data/worlds/" + NewName + ".json");
+        }
+
+        private void bt_wentrysave_Click(object sender, EventArgs e)
+        {
+            SaveWorldEntry();
+        }
+
 
         /// <summary>
         /// Initialize the instruction format editor panel
@@ -1308,6 +1398,21 @@ namespace WaifuAI
             var editForm = new ScenarioEditForm();
             editForm.ShowDialog();
             editForm.Dispose();
+        }
+
+        private void num_scandepth_ValueChanged(object sender, EventArgs e)
+        {
+            SelectedWorldEditor.ScanDepth = (int)num_scandepth.Value;
+        }
+
+        private void ed_worlddesc_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            SelectedWorldEditor.Description = ed_worlddesc.Text;
+        }
+
+        private void bt_worldsave_Click(object sender, EventArgs e)
+        {
+            SaveWorldInfo();
         }
     }
 }
