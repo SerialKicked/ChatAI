@@ -283,6 +283,7 @@ namespace WaifuAI
             {
                 cb_worlds.SelectedIndex = idwant;
                 SelectedWorldEditor = DataFiles.WorldInfos[cb_worlds.SelectedItem!.ToString()!].Copy<WorldInfo>()!;
+                LoadWorldSettings(SelectedWorldEditor, forceEntry);
             }
             cb_worlds.SelectedIndexChanged += (sender, e) =>
             {
@@ -1413,6 +1414,25 @@ namespace WaifuAI
         private void bt_worldsave_Click(object sender, EventArgs e)
         {
             SaveWorldInfo();
+        }
+
+        private void bt_delwentry_Click(object sender, EventArgs e)
+        {
+            if (SelectedWorldEditor?.Entries.Count > 0 && lb_worldentries.Items.Count > 0 && lb_worldentries.SelectedIndex >= 0)
+            {
+                var idx = lb_worldentries.SelectedIndex;
+                SelectedWorldEditor.Entries.RemoveAt(idx);
+                lb_worldentries.Items.RemoveAt(idx);
+                LoadWorldSettings(SelectedWorldEditor);
+            }
+        }
+
+        private void bt_addwentry_Click(object sender, EventArgs e)
+        {
+            SelectedWorldEntryEditor = new WorldEntry() { Name = "New Entry" };
+            SelectedWorldEditor.Entries.Add(SelectedWorldEntryEditor);
+            lb_worldentries.Items.Add(SelectedWorldEntryEditor.Name);
+            lb_worldentries.SelectedIndex = lb_worldentries.Items.Count - 1;
         }
     }
 }

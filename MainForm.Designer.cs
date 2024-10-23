@@ -1001,6 +1001,7 @@
             bt_delwentry.TabIndex = 7;
             bt_delwentry.Text = "Delete";
             bt_delwentry.UseVisualStyleBackColor = true;
+            bt_delwentry.Click += bt_delwentry_Click;
             // 
             // bt_addwentry
             // 
@@ -1011,6 +1012,7 @@
             bt_addwentry.TabIndex = 6;
             bt_addwentry.Text = "Add New";
             bt_addwentry.UseVisualStyleBackColor = true;
+            bt_addwentry.Click += bt_addwentry_Click;
             // 
             // label18
             // 
