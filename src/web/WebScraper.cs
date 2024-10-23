@@ -74,8 +74,7 @@ namespace WaifuAI.Web
             Stop();
             var text = new StringBuilder("{{char}} attempted to browse the web but failed. {{char}}'s goal was: " + _basegoal);
             var message = new SingleMessage(AuthorRole.System, DateTime.Now, LLMSystem.ReplaceMacros(text.ToString()), LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
-            //LLMSystem.History.Messages.Add(message);
-            LLMSystem.UI_RefreshChat();
+            LLMSystem.UI_RefreshChat!();
             await LLMSystem.SendMessageToBot(message);
         }
 
@@ -85,9 +84,9 @@ namespace WaifuAI.Web
             var text = new StringBuilder();
             text.AppendLinuxLine("After searching the net, {{char}} found the following link:");
             text.AppendLinuxLine(wEntry.ToString()).AppendLinuxLine();
-            text.Append("Inform {{user}} about the link you've just found, integrating this information seamlessly into the conversation.");
+            text.Append("Inform {{user}} about the link you've just found, integrate this information seamlessly into the conversation, and make sure to include the link.");
             var message = new SingleMessage(AuthorRole.System, DateTime.Now, LLMSystem.ReplaceMacros(text.ToString()), LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
-            LLMSystem.UI_RefreshChat();
+            LLMSystem.UI_RefreshChat!();
             await LLMSystem.SendMessageToBot(message);
         }
 
