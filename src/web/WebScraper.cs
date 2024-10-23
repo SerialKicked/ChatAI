@@ -38,8 +38,8 @@ namespace WaifuAI.Web
         {
             _location = PageType.FrontPage;
             LLMSystem.OnInferenceEnded += LLMSystem_OnInferenceEnded;
-            _historyCount = LLMSystem.History.Messages.Count - 1;
-
+            _historyCount = LLMSystem.History.Messages.Count;
+            LLMSystem.Sampler.Grammar = "root ::= ([0-9][0-9]?[0-9]?)";
             var prompt = Website.RenderFrontPage(_basegoal);
             await LLMSystem.SendMessageToBot(new SingleMessage(AuthorRole.System, DateTime.Now, prompt, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
         }
@@ -59,13 +59,22 @@ namespace WaifuAI.Web
                 // Resize History.Messages count to _historyCount
                 LLMSystem.History.Messages.RemoveRange(_historyCount, LLMSystem.History.Messages.Count - _historyCount);
             }
+            LLMSystem.Sampler.Grammar = string.Empty;
             LLMSystem.StopAutomation();
         }
+
+        public void KillEvent()
+        {
+            LLMSystem.OnInferenceEnded -= LLMSystem_OnInferenceEnded;
+        }
+
+
         private async Task FailureToBrowse()
         {
             Stop();
             var text = new StringBuilder("{{char}} attempted to browse the web but failed. {{char}}'s goal was: " + _basegoal);
             var message = new SingleMessage(AuthorRole.System, DateTime.Now, LLMSystem.ReplaceMacros(text.ToString()), LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
+            //LLMSystem.History.Messages.Add(message);
             await LLMSystem.SendMessageToBot(message);
         }
 

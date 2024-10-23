@@ -428,11 +428,11 @@ namespace WaifuAI
 
         public static async Task QueryWebsite(WebsiteDefinition webdef, string userinput)
         {
-            StartAutomation();
             if (Website != null)
             {
-                Website.Stop();
+                Website.KillEvent();
             }
+            StartAutomation();
             Website = new LLMWebsite(webdef, userinput);
             await Website.Start();
         }
