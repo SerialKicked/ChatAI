@@ -75,6 +75,7 @@ namespace WaifuAI.Web
             var text = new StringBuilder("{{char}} attempted to browse the web but failed. {{char}}'s goal was: " + _basegoal);
             var message = new SingleMessage(AuthorRole.System, DateTime.Now, LLMSystem.ReplaceMacros(text.ToString()), LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
             //LLMSystem.History.Messages.Add(message);
+            LLMSystem.UI_RefreshChat();
             await LLMSystem.SendMessageToBot(message);
         }
 
@@ -86,6 +87,7 @@ namespace WaifuAI.Web
             text.AppendLinuxLine(wEntry.ToString()).AppendLinuxLine();
             text.Append("Inform {{user}} about the link you've just found, integrating this information seamlessly into the conversation.");
             var message = new SingleMessage(AuthorRole.System, DateTime.Now, LLMSystem.ReplaceMacros(text.ToString()), LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
+            LLMSystem.UI_RefreshChat();
             await LLMSystem.SendMessageToBot(message);
         }
 
@@ -161,7 +163,7 @@ namespace WaifuAI.Web
             }
             if (!string.IsNullOrEmpty(Article))
                 str.AppendLinuxLine("- Summary: " + Article.Replace("\n\n", " ").Replace("\n", " ").Trim());
-            str.AppendLinuxLine($"- Link: [On Website]({Link})");
+            str.AppendLinuxLine($"- [Link]({Link})");
             return str.ToString();
         }
     }
@@ -276,7 +278,8 @@ namespace WaifuAI.Web
         public string RenderFrontPage(string Goal)
         {
             var str = new StringBuilder();
-            str.AppendLinuxLine($"# {WebsiteName}");
+            str.AppendLinuxLine($"# LLM Web Browser");
+            str.AppendLinuxLine($"## {WebsiteName}");
             str.AppendLinuxLine($"{WebsiteInfo}").AppendLinuxLine();
             str.AppendLinuxLine("## Available Links");
             var x = 0;
@@ -287,9 +290,9 @@ namespace WaifuAI.Web
             }
             str.AppendLinuxLine();
             str.AppendLinuxLine("## Instructions");
-            str.AppendLinuxLine("To retrieve information from this website, type the number corresponding to the link you want to visit. Only write the number, nothing else.");
             if (!string.IsNullOrEmpty(Goal))
                 str.AppendLinuxLine(Goal);
+            str.AppendLinuxLine("To retrieve information from this website, type the number corresponding to the link you want to visit. Only write the number, and nothing else. Example output: 1");
             return str.ToString();
         }
 
@@ -299,7 +302,8 @@ namespace WaifuAI.Web
             if (link == null)
                 return string.Empty;
             var str = new StringBuilder();
-            str.AppendLinuxLine($"# {link.Title}");
+            str.AppendLinuxLine($"# LLM Web Browser");
+            str.AppendLinuxLine($"## {link.Title}");
             str.AppendLinuxLine($"{link.Body}").AppendLinuxLine();
 
             if (link.Category == PageType.ListingPage)
@@ -330,10 +334,12 @@ namespace WaifuAI.Web
             }
 
             str.AppendLinuxLine("## Instructions");
+            if (!string.IsNullOrEmpty(Goal))
+                str.AppendLinuxLine(Goal);
             switch (link.Category)
             {
                 case PageType.FrontPage:
-                    str.AppendLinuxLine("To retrieve information from this website, type the number corresponding to the link you want to visit. Only write the number, nothing else.");
+                    str.AppendLinuxLine("To retrieve information from this website, type the number corresponding to the link you want to visit. Only write the number, and nothing else. Example output: 1");
                     break;
                 case PageType.ListingPage:
                     str.AppendLinuxLine("To open one of the links above, type the number corresponding to the link you want to visit, only write the number, nothing else. Any other input will send you back to the front page.");
@@ -347,8 +353,6 @@ namespace WaifuAI.Web
                 default:
                     break;
             }
-            if (!string.IsNullOrEmpty(Goal))
-                str.AppendLinuxLine(Goal);
             return str.ToString();
         }
     }

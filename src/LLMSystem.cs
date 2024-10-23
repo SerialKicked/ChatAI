@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using System.Globalization;
 using static LLama.Common.ChatHistory;
+using System;
 
 namespace WaifuAI
 {
@@ -26,6 +27,8 @@ namespace WaifuAI
         public string Prompt = prompt;
         public int Depth = depth;
     }
+
+    public delegate void BasicDelegateFunction();
 
     static class LLMSystem
     {
@@ -59,6 +62,10 @@ namespace WaifuAI
         private static void RaiseOnStatusChange(SystemStatus newStatus) => OnStatusChanged?.Invoke(null, newStatus);
         private static void RaiseOnInferenceStreamed(string addedString) => OnInferenceStreamed?.Invoke(null, addedString);
         private static void RaiseOnInferenceEnded(string fullString) => OnInferenceEnded?.Invoke(null, fullString);
+
+
+        public static BasicDelegateFunction? UI_RefreshChat = null;
+
 
         public static SystemStatus Status
         {

@@ -26,6 +26,7 @@ namespace WaifuAI
         private int _currentgenerationtokencount = 0;
         private ChatSession? _selectedSession = null;
         private bool _impersonatemode = false;
+        private bool _forcereload = false;
 
         public static MarkdownPipeline CustomMarkDownPipeline { get; } = new MarkdownPipelineBuilder()
             .UseSoftlineBreakAsHardlineBreak()
@@ -91,6 +92,7 @@ namespace WaifuAI
             LoadSettings();
             RAGSystem.Enabled = true;
             ck_ragenabled.Checked = RAGSystem.Enabled;
+            LLMSystem.UI_RefreshChat = ForceWebChatReload;
             LLMSystem.Init();
             LLMSystem.OnInferenceStreamed += OnStreamMessageReceived;
             LLMSystem.OnInferenceEnded += OnStreamInferenceEnded;
@@ -182,10 +184,14 @@ namespace WaifuAI
                 await WebEditLastMessage(MsgPrefix + stringfix);
                 _currentgeneration = string.Empty;
                 _currentgenerationtokencount = 0;
-                Invoke((System.Windows.Forms.MethodInvoker)delegate
+                if (_forcereload)
                 {
-                    ShowCurrentSessionInfo();
-                });
+                    _forcereload = false;
+                    Invoke((System.Windows.Forms.MethodInvoker)delegate
+                    {
+                        WebChatLoad();
+                    });
+                }
             }
             LLMSystem.Bot.SaveChatHistory();
         }
@@ -1286,6 +1292,11 @@ namespace WaifuAI
             await web_chat.CoreWebView2.ExecuteScriptAsync(script);
         }
 
+        public void ForceWebChatReload()
+        {
+            _forcereload = true;
+        }
+
         private async Task WebChatLoad()
         {
             if (web_chat.CoreWebView2 == null)
@@ -1469,7 +1480,7 @@ namespace WaifuAI
         {
             await SendMessageToUI(
                 new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is browsing the internet...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
-            await LLMSystem.QueryWebsite(DataFiles.Websites["java"], "Find a sexy video for Guillaume.");
+            await LLMSystem.QueryWebsite(DataFiles.Websites["java"], !string.IsNullOrEmpty(ed_input.Text) ? ed_input.Text : "Find a sexy video for Guillaume.");
         }
 
         private void label4_Click(object sender, EventArgs e)
