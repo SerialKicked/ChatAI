@@ -145,7 +145,7 @@ namespace WaifuAI
                 var response = StreamingTextProgress.Trim();
                 foreach (var ctxplug in Bot.Plugins)
                 {
-                    if (ctxplug.ReplaceUserInput(ReplaceMacros(response, User, Bot), History, out var editedresponse))
+                    if (ctxplug.ReplaceOutput(ReplaceMacros(response, User, Bot), History, out var editedresponse))
                         response = editedresponse;
                 }
                 RaiseOnInferenceEnded(response);
@@ -276,12 +276,13 @@ namespace WaifuAI
             var tokencount = string.IsNullOrEmpty(msg) ? 0 :GetTokenCount(msg);
             var rawprompt = new StringBuilder(RawSystemPrompt(User, Bot));
             var inserts = new Dictionary<int, string>();
+            var searchmessage = string.IsNullOrWhiteSpace(newMessage) ? History.GetLastUserMessageContent() : newMessage;
             if (Bot.MyWorlds.Count > 0)
             {
                 _currentWorldEntries = [];
                 foreach (var world in Bot.MyWorlds)
                 {
-                    _currentWorldEntries.AddRange(world.FindEntries(History, newMessage));
+                    _currentWorldEntries.AddRange(world.FindEntries(History, searchmessage));
                 }
                 var entries = _currentWorldEntries.FindAll(e => e.Position == WEPosition.SystemPrompt);
                 if (entries.Count > 0)
@@ -299,7 +300,7 @@ namespace WaifuAI
             }
             foreach (var ctxplug in Bot.Plugins)
             {
-                if (ctxplug.AddToSystemPrompt(newMessage, History, out var ctxinfo))
+                if (ctxplug.AddToSystemPrompt(searchmessage, History, out var ctxinfo))
                     rawprompt.AppendLinuxLine(ctxinfo);
             }
 
@@ -311,7 +312,6 @@ namespace WaifuAI
             usedGuidInSession = [];
             if (Bot.UseRAG && RAGSystem.Enabled)
             {
-                var searchmessage = string.IsNullOrWhiteSpace(newMessage) ? History.GetLastUserMessageContent() : newMessage;
                 var search = await RAGSystem.Search(ReplaceMacros(searchmessage), MaxRAGEntries);
                 memprompt = MemoriesToMessage(search);
                 if (!string.IsNullOrEmpty(memprompt))
@@ -469,10 +469,13 @@ namespace WaifuAI
                 Status = SystemStatus.Busy;
 
             var inputText = userInput;
-            if (!string.IsNullOrEmpty(inputText))
+            if (!string.IsNullOrEmpty(inputText) && Status != SystemStatus.Automated)
                 foreach (var ctxplug in Bot.Plugins)
-                    if (ctxplug.ReplaceUserInput(ReplaceMacros(inputText, User, Bot), History, out var ctxinfo))
-                        inputText = ctxinfo;
+                {
+                    var plugres = await ctxplug.ReplaceUserInput(ReplaceMacros(inputText, User, Bot));
+                    if (plugres.IsHandled && !string.IsNullOrEmpty(plugres.Response))
+                        inputText = plugres.Response;
+                }
             StreamingTextProgress = string.Empty;
             GenerationInput genparams = Sampler.GetCopy();
             _LastGeneratedPrompt = await GenerateFullPrompt(MsgSender, inputText);

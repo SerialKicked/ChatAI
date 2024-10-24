@@ -12,11 +12,10 @@ using WaifuAI.Memory;
 using WaifuAI.Web;
 
 namespace WaifuAI.Plugins
-
 {
-    internal class BrowsePlugin : ContextPlugin
+    public class BrowsePlugin : ContextPlugin
     {
-        private readonly string[] kwEnter = [ "website ", "browse " ];
+        private readonly string[] kwEnter = [ "website ", "browse ", " web", "browsing", "find a ", "search for" ];
         public bool KeywordDetection { get; set; } = true;
         public bool ModelDetection { get; set; } = true;
 
@@ -57,18 +56,18 @@ namespace WaifuAI.Plugins
         /// <param name="log"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        public override bool ReplaceUserInput(string userinput, Chatlog log, out string response)
+        public override async Task<PluginResponse> ReplaceUserInput(string userinput)
         {
             if (kwEnter.Any(kw => userinput.Contains(kw, StringComparison.OrdinalIgnoreCase)))
             {
-                var x = QueryLLM(userinput).GetAwaiter().GetResult();
+                var x = await QueryLLM(userinput);
                 if (!string.IsNullOrEmpty(x))
                 {
-                    
+                    return new PluginResponse { IsHandled = false, Response = x }; // call the website plugin
+                    // call the website plugin
                 }
             }
-            response = string.Empty;
-            return false;
+            return new PluginResponse { IsHandled = false, Response = null }; // call the website plugin
         }
 
         #endregion
@@ -132,8 +131,8 @@ namespace WaifuAI.Plugins
             if (string.IsNullOrEmpty(finalstr))
                 return string.Empty;
             if (finalstr.Equals("no", StringComparison.InvariantCultureIgnoreCase) || !int.TryParse(finalstr, out var found) || found > websites.Count)
-                return string.Empty;
-            return websites[found - 1].UniqueName;
+                return string.Empty; 
+            return found == 0 ? string.Empty : websites[found-1].UniqueName;
         }
     }
 }

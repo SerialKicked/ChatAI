@@ -8,6 +8,6 @@ namespace WaifuAI.Plugins
 
         bool AddToSystemPrompt(string userinput, Chatlog log, out string response);
         bool ReplaceOutput(string botoutput, Chatlog log, out string response);
-        bool ReplaceUserInput(string botoutput, Chatlog log, out string response);
+        Task<PluginResponse> ReplaceUserInput(string userinput);
     }
 }

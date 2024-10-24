@@ -61,6 +61,10 @@ namespace WaifuAI.Files
             {
                 Plugins.Add(new LocationPlugin(Locations) { ModelDetection = true, KeywordDetection = true });
             }
+            if (LLMSystem.WebBrowsingPlugin)
+            {
+                Plugins.Add(new BrowsePlugin());
+            }
             LoadChatHistory();
             // load world info
             MyWorlds = DataFiles.WorldInfos.Values.Where(wi => Worlds.Contains(wi.UniqueName)).ToList();

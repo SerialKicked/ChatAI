@@ -58,7 +58,7 @@ namespace WaifuAI.Plugins
         public override bool ReplaceOutput(string botoutput, Chatlog log, out string response)
         {
             response = string.Empty;
-            return ReplaceUserInput(botoutput, log, out response); 
+            return false; 
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace WaifuAI.Plugins
         /// <param name="log"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        public override bool ReplaceUserInput(string userinput, Chatlog log, out string response)
+        public override async Task<PluginResponse> ReplaceUserInput(string userinput)
         {
             if (KeywordDetection && !ModelDetection)
             {
@@ -79,7 +79,7 @@ namespace WaifuAI.Plugins
                     string punctuation = index != -1 ? userinput.Substring(index, 1) : string.Empty;
                     if (string.IsNullOrEmpty(punctuation) || punctuation == ".")
                     {
-                        var loc = locations.FindEntries(log, userinput).FirstOrDefault();
+                        var loc = locations.FindEntries(LLMSystem.History, userinput).FirstOrDefault();
                         if (loc != null)
                         {
                             LLMSystem.logger?.LogInformation("LocationPlugin KW Only: {output}", loc.Name);
@@ -93,19 +93,18 @@ namespace WaifuAI.Plugins
             {
                 // Check if the user input contains any of the locations using the QueryLLM method
                 // Task.Run(async () => await QueryLLM(userinput, log)).Wait();
-                QueryLLM(userinput);
+                await QueryLLM(userinput);
             }
             else if (ModelDetection && KeywordDetection)
             {
                 // Check if userinput triggers any entry in locations, if so, run QueryLLM
-                if (locations.FindEntries(log, userinput)?.Count > 0)
+                if (locations.FindEntries(LLMSystem.History, userinput)?.Count > 0)
                 {
-                    QueryLLM(userinput);
+                    await QueryLLM(userinput);
                     // Task.Run(async () => await QueryLLM(userinput, log)).Wait();
                 }
             }
-            response = string.Empty;
-            return false;
+            return new PluginResponse { IsHandled = false, Response = null };
         }
 
         #endregion
@@ -157,14 +156,14 @@ namespace WaifuAI.Plugins
         /// <param name="inputText"></param>
         /// <param name="lb"></param>
         /// <returns></returns>
-        private void QueryLLM(string inputText)
+        private async Task QueryLLM(string inputText)
         {
             var fullprompt = BuildCheckPrompt(inputText);
             var fullresponse = new StringBuilder();
             var llmparams = LLMSystem.Sampler.GetCopy();
             llmparams.Temperature = 0;
             llmparams.Prompt = fullprompt;
-            var result = LLMSystem.Client.GenerateAsync(llmparams).GetAwaiter().GetResult();
+            var result = await LLMSystem.Client.GenerateAsync(llmparams);
             string finalstr = string.Empty;
             foreach (var item in result.Results)
             {
