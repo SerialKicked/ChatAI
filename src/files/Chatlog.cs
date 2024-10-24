@@ -47,6 +47,7 @@ namespace WaifuAI.Files
                 "{{charbio}}" + LLMSystem.NewLine +
                 "## Name: {{user}}" + LLMSystem.NewLine +
                 "{{userbio}}" + LLMSystem.NewLine + LLMSystem.NewLine +
+                "# Chat Starting Date: " + LLMSystem.DateToHumanString(StartTime) + LLMSystem.NewLine +
                 "# Chat Duration: " + LLMSystem.TimeSpanToHumanString(Duration) + LLMSystem.NewLine +
                 "# Chat Session:" + LLMSystem.NewLine +
                 "" + LLMSystem.NewLine +
@@ -69,6 +70,7 @@ namespace WaifuAI.Files
                 "{{charbio}}" + LLMSystem.NewLine +
                 "## Name: {{user}}" + LLMSystem.NewLine +
                 "{{userbio}}" + LLMSystem.NewLine + LLMSystem.NewLine +
+                "# Chat Starting Date: " + LLMSystem.DateToHumanString(StartTime) + LLMSystem.NewLine +
                 "# Chat Duration: " + LLMSystem.TimeSpanToHumanString(Duration) + LLMSystem.NewLine +
                 "# Chat Session:" + LLMSystem.NewLine +
                 docs + LLMSystem.NewLine +

@@ -537,13 +537,14 @@ namespace WaifuAI
             if (timespan <= new TimeSpan(2, 0, 0))
                 return string.Empty;
 
-            var msgtxt = (DateTime.Now.Date != History.Messages.Last().Date.Date) || (timespan > new TimeSpan(12, 0, 0)) ? "It's {{day}}, {{date}} at {{time}}." : string.Empty;
+            var msgtxt = (DateTime.Now.Date != History.Messages.Last().Date.Date) || (timespan > new TimeSpan(12, 0, 0)) ? 
+                $"We're {DateToHumanString(DateTime.Now)}." : string.Empty;
             if (timespan.Days > 1)
-                msgtxt += " Your last chat was " + timespan.Days.ToString() + " days ago.";
+                msgtxt += $" Your last chat was {timespan.Days} days ago. " + "It is {{time}} now.";
             else if (timespan.Days == 1)
-                msgtxt += " The last chat was yesterday.";
+                msgtxt += " The last chat happened yesterday. It is {time} now.";
             else
-                msgtxt += " The last chat was about " + timespan.Hours.ToString() + " hours ago.";
+                msgtxt += $" The last chat was about {timespan.Hours} hours ago. " + "It is {time} now.";
             msgtxt = "*" + msgtxt.Trim() + "* ";
             return ReplaceMacros(msgtxt, User, Bot);
         }
