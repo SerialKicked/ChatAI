@@ -73,9 +73,18 @@ namespace WaifuAI.Plugins
         /// <returns></returns>
         public override async Task<PluginResponse> ReplaceUserInput(string userinput)
         {
-            if (kwEnter.Any(kw => userinput.Contains(kw, StringComparison.OrdinalIgnoreCase)))
+            List<string> test = [];
+            string foundCommand = string.Empty;
+            foreach (var item in DataFiles.Websites)
             {
-                var x = await QueryLLM(userinput);
+                test.Add(item.Value.CommandID);
+                if (userinput.Contains(item.Value.CommandID, StringComparison.OrdinalIgnoreCase))
+                    foundCommand = item.Key;
+            }
+
+            if (!string.IsNullOrEmpty(foundCommand) || kwEnter.Any(kw => userinput.Contains(kw, StringComparison.OrdinalIgnoreCase)))
+            {
+                var x = await QueryLLM(userinput, foundCommand);
                 if (!string.IsNullOrEmpty(x))
                 {
                     LLMSystem.AddNamesToPrompt = false;
@@ -214,7 +223,7 @@ namespace WaifuAI.Plugins
             return text.ToString();
         }
 
-        private string TaskSelectionPrompt(string userinput)
+        private string TaskSelectionPrompt(string userinput, string cmd)
         {
             websites = [];
             var prompt = new StringBuilder();
@@ -224,6 +233,8 @@ namespace WaifuAI.Plugins
             var x = 1;
             foreach (var item in DataFiles.Websites)
             {
+                if (!string.IsNullOrEmpty(cmd) && item.Key != cmd)
+                    continue;
                 prompt.AppendLinuxLine($"{x}. {item.Value.TaskQuery}");
                 x++;
                 websites.Add(item.Value);
@@ -256,9 +267,9 @@ namespace WaifuAI.Plugins
         /// <param name="inputText"></param>
         /// <param name="lb"></param>
         /// <returns></returns>
-        private async Task<string> QueryLLM(string inputText)
+        private async Task<string> QueryLLM(string inputText, string cmd)
         {
-            var fullprompt = TaskSelectionPrompt(inputText);
+            var fullprompt = TaskSelectionPrompt(inputText, cmd);
             var llmparams = LLMSystem.Sampler.GetCopy();
             llmparams.Temperature = 0;
             llmparams.Prompt = fullprompt;

@@ -157,6 +157,9 @@
     <None Update="data\ui\background.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="data\websites\hentaimama.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="data\websites\java.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

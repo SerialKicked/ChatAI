@@ -94,6 +94,8 @@ namespace WaifuAI.Web
         public string RunQuery(IParentNode element)
         {
             var found = element;
+            if (found == null)
+                return string.Empty;
             foreach (var selector in Selectors)
             {
                 found = found.QuerySelector(selector);
@@ -357,13 +359,13 @@ namespace WaifuAI.Web
                 }
                 // retrieve posting date
                 var dateinfo = web.ListingDateSelector.RunQuery(cell);
-                entry.Date = StringToDate(dateinfo, web.ListingDateFormat);
-                entries.Add(entry);
+                entry.Date = !string.IsNullOrEmpty(dateinfo) ? StringToDate(dateinfo, web.ListingDateFormat) : DateTime.Now;
                 if (innerscan)
                 {
                     var content = await GetPageContent(entry.Link, web);
                     entry.Article = content;
                 }
+                entries.Add(entry);
             }
             res.Entries = entries;
             var pages = web.PageCounterSelector.RunQuery(document);
