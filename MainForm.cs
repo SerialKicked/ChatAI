@@ -87,6 +87,7 @@ namespace WaifuAI
             RAGSystem.Enabled = true;
             ck_ragenabled.Checked = RAGSystem.Enabled;
             LLMSystem.UI_RefreshChat = ForceWebChatReload;
+            LLMSystem.UI_ChangeMessage = ForceUpdateLastMessage;
             LLMSystem.Init();
             LLMSystem.OnInferenceStreamed += OnStreamMessageReceived;
             LLMSystem.OnInferenceEnded += OnStreamInferenceEnded;
@@ -1221,6 +1222,10 @@ namespace WaifuAI
         public void ForceWebChatReload()
         {
             _forcereload = true;
+        }
+        public void ForceUpdateLastMessage(string update)
+        {
+            WebEditLastMessage(update);
         }
 
         private async Task WebChatLoad()

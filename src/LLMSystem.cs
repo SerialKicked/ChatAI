@@ -29,6 +29,7 @@ namespace WaifuAI
     }
 
     public delegate void BasicDelegateFunction();
+    public delegate void UpdateMessageFunction(string update);
 
     static class LLMSystem
     {
@@ -66,6 +67,7 @@ namespace WaifuAI
 
 
         public static BasicDelegateFunction? UI_RefreshChat = null;
+        public static UpdateMessageFunction? UI_ChangeMessage = null;
 
 
         public static SystemStatus Status
@@ -458,15 +460,16 @@ namespace WaifuAI
                 Status = SystemStatus.Busy;
 
             var inputText = userInput;
+            var lastuserinput = string.IsNullOrEmpty(userInput) ? History.GetLastUserMessageContent() : userInput;
             var insertmessages = new List<string>();
-            if (!string.IsNullOrEmpty(inputText) && Status != SystemStatus.Automated)
+            if (!string.IsNullOrEmpty(lastuserinput) && Status != SystemStatus.Automated)
                 foreach (var ctxplug in Bot.Plugins)
                 {
-                    var plugres = await ctxplug.ReplaceUserInput(ReplaceMacros(inputText, User, Bot));
+                    var plugres = await ctxplug.ReplaceUserInput(ReplaceMacros(lastuserinput, User, Bot));
                     if (plugres.IsHandled && !string.IsNullOrEmpty(plugres.Response))
                     {
                         if (plugres.Replace)
-                            inputText = plugres.Response;
+                            lastuserinput = plugres.Response;
                         else
                             insertmessages.Add(plugres.Response);
                     }

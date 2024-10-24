@@ -81,6 +81,11 @@ namespace WaifuAI.Plugins
                     if (DataFiles.Websites.TryGetValue(x, out var site))
                     {
                         Website = site;
+                        LLMSystem.UI_ChangeMessage!($"**{LLMSystem.Bot.Name}:** *I am browsing {Website.WebsiteName}...*");
+                    }
+                    else
+                    {
+                        return new PluginResponse { IsHandled = false, Response = null };
                     }
                     // call the website plugin here
                     var webresult = await StartWebNavigation(userinput);
@@ -110,7 +115,7 @@ namespace WaifuAI.Plugins
             promptbuilder.AppendLinuxLine($"- **{LLMSystem.Bot.Name}:** {LLMSystem.Bot.GetBio(LLMSystem.User.Name).RemoveNewLines()}");
             promptbuilder.AppendLinuxLine();
             promptbuilder.AppendLinuxLine("# Recent Chatlog:");
-            promptbuilder.AppendLinuxLine(LLMSystem.History.GetRawDialogs(500, true));
+            promptbuilder.AppendLinuxLine(LLMSystem.History.GetRawDialogs(600, false));
             return promptbuilder.ToString();
         }
 
@@ -167,6 +172,7 @@ namespace WaifuAI.Plugins
         public async Task<WebNavigationResult> DoPage(WLink page)
         {
             _location = page.Category;
+            LLMSystem.UI_ChangeMessage!($"**{LLMSystem.Bot.Name}:** *I am browsing {page.Title}...*");
             var websiterender = await Website!.RenderPage(page.ID, string.Empty, crawler);
             var promptbuilder = new StringBuilder(BuildInitialPrompt());
             promptbuilder.AppendLinuxLine();
