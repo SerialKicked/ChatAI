@@ -123,6 +123,7 @@ namespace WaifuAI.Web
         FrontPage,
         ListingPage,
         ArticlePage,
+        MetaPage,
         SearchPage
     }
 
@@ -144,6 +145,7 @@ namespace WaifuAI.Web
         public string CommandID { get; set; } = "";
         public string Address { get; set; } = "";
         public List<WLink> MainLinks { get; set; } = [];
+        public Dictionary<string, List<WLink>> SubLinks { get; set; } = [];
         public string ListingCellSelector { get; set; } = "";
         public string ListingDateFormat { get; set; } = "d MMM, yy";
         public WQuery ListingTitleSelector { get; set; } = new();
@@ -163,7 +165,7 @@ namespace WaifuAI.Web
             str.AppendLinuxLine($"## {WebsiteName}");
             str.AppendLinuxLine($"{WebsiteInfo}").AppendLinuxLine();
             str.AppendLinuxLine("## Available Links");
-            var x = 0;
+            var x = 1;
             foreach (var item in MainLinks)
             {
                 str.AppendLinuxLine($"{x}. {item.Title}");
@@ -172,12 +174,12 @@ namespace WaifuAI.Web
             if (!string.IsNullOrEmpty(Goal))
             {
                 str.AppendLinuxLine();
-                str.AppendLinuxLine("# Goal;");
+                str.AppendLinuxLine("# Goal:");
                 str.AppendLinuxLine(Goal);
             }
             str.AppendLinuxLine();
             str.AppendLinuxLine("# Rules:");
-            str.AppendLinuxLine("- If one of the links above corresponds to the request, answer with the corresponding number only, nothing else. Example: 1");
+            str.AppendLinuxLine("- If one of the links above corresponds to the request, answer with the corresponding number only, nothing else.");
             str.AppendLinuxLine("- If no task in the list above corresponds to what the user requested, state the reason why.");
             str.AppendLinuxLine("- Pick one single option.");
             str.AppendLinuxLine("- Do not add any commentary or names.");
@@ -187,6 +189,14 @@ namespace WaifuAI.Web
         public async Task<string> RenderPage(string LinkID, string Goal, WebScraper scraper)
         {
             var link = MainLinks.FirstOrDefault(l => l.ID == LinkID);
+            if (link == null)
+            {
+                // search for link in sublinks
+                foreach (var sublist in SubLinks)
+                {
+                    link = sublist.Value.FirstOrDefault(l => l.ID == LinkID);
+                }
+            }
             if (link == null)
                 return string.Empty;
             var str = new StringBuilder();
@@ -198,7 +208,7 @@ namespace WaifuAI.Web
             {
                 CurrentListing = await scraper.ParseWebListing(link.URL, this, link.InnerScan);
                 str.AppendLinuxLine("## Available Links");
-                var x = 0;
+                var x = 1;
                 foreach (var entry in CurrentListing.Entries)
                 {
                     str.AppendLinuxLine($"{x}. {entry.Title}");
@@ -220,6 +230,21 @@ namespace WaifuAI.Web
                 }
                 str.AppendLinuxLine();
             }
+            else if(link.Category == PageType.ArticlePage)
+            {
+                var content = await scraper.GetPageContent(link.URL, this);
+                str.AppendLinuxLine(content);
+            }
+            else if (link.Category == PageType.MetaPage)
+            {
+                str.AppendLinuxLine("## Available Links");
+                var x = 1;
+                foreach (var item in SubLinks[LinkID])
+                {
+                    str.AppendLinuxLine($"{x}. {item.Title}");
+                    x++;
+                }
+            }
 
             if (!string.IsNullOrEmpty(Goal))
             {
@@ -227,27 +252,29 @@ namespace WaifuAI.Web
                 str.AppendLinuxLine("# Goal:");
                 str.AppendLinuxLine(Goal);
             }
+            str.AppendLinuxLine();
             str.AppendLinuxLine("# Rules:");
             switch (link.Category)
             {
                 case PageType.FrontPage:
+                case PageType.MetaPage:
                     str.AppendLinuxLine("- Retrieve information from this website to complete your goal.");
                     str.AppendLinuxLine("- Type the number corresponding to the link you want to visit.");
-                    str.AppendLinuxLine("- Only write the number and nothing else. Example output: 1");
+                    str.AppendLinuxLine("- Only write the number and nothing else.");
                     break;
                 case PageType.ListingPage:
-                    str.AppendLinuxLine("- If one of the links above corresponds to the request, answer with the corresponding number only, nothing else. Example: 1");
-                    str.AppendLinuxLine("- If no task in the list above corresponds to what the user requested, state the reason why.");
-                    str.AppendLinuxLine("- Pick one single option.");
-                    str.AppendLinuxLine("- Do not add any commentary or names.");
+                    str.AppendLinuxLine("- If one of the links above corresponds to the request, answer with the corresponding number only, nothing else.");
+                    str.AppendLinuxLine("- If no task in the list above correspond to what the user requested, pick something close.");
+                    str.AppendLinuxLine("- Pick one single option. Do not add any commentary or names.");
                     break;
                 case PageType.ArticlePage:
                     str.AppendLinuxLine("- You have selected this page.");
                     str.AppendLinuxLine("- If you want to send it to {{user}}, type 1. Any other number will send you back to front page.");
-                    str.AppendLinuxLine("- Only write the number and nothing else. Example output: 1");
+                    str.AppendLinuxLine("- Only write the number and nothing else.");
                     break;
                 case PageType.SearchPage:
-                    str.AppendLinuxLine("Type the search terms you're looking for to complete your request. Only type those search terms and nothing else.");
+                    str.AppendLinuxLine("- Type the search terms you're looking for to complete your request. Only type those search terms and nothing else.");
+                    str.AppendLinuxLine("- Use few but descriptive words about the topic.");
                     break;
                 default:
                     break;

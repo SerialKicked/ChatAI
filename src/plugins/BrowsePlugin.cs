@@ -15,10 +15,11 @@ using WaifuAI.Web;
 
 namespace WaifuAI.Plugins
 {
-    public class WebNavigationResult(bool isSuccess, string? response)
+    public class WebNavigationResult(bool isSuccess, string? response, string? subPageLink)
     {
         public bool IsSuccess { get; set; } = isSuccess;
         public string? Response { get; set; } = response;
+        public string SubPageLink { get; set; } = subPageLink;
     }
 
     public class BrowsePlugin : ContextPlugin
@@ -142,7 +143,7 @@ namespace WaifuAI.Plugins
         private async Task<WebNavigationResult> StartWebNavigation(string basegoal)
         {
             if (Website == null)
-                return new WebNavigationResult(false, "Website not found.");
+                return new WebNavigationResult(false, "Website not found.", string.Empty);
             _basegoal = basegoal;
             _location = PageType.FrontPage;
             var promptbuilder = new StringBuilder(BuildInitialPrompt());
@@ -158,14 +159,14 @@ namespace WaifuAI.Plugins
 
             var response = await SendQuery(sysprompt, true);
             if (string.IsNullOrEmpty(response))
-                return new WebNavigationResult(false, null);
-            if (int.TryParse(response, out var index) && index < Website.MainLinks.Count)
+                return new WebNavigationResult(false, "Failed to navigate the website properly.", null);
+            if (int.TryParse(response, out var index) && index <= Website.MainLinks.Count && index > 0)
             {
-                return await DoPage(Website.MainLinks[index]);
+                return await DoPage(Website.MainLinks[index-1]);
             }
             else
             {
-                return new WebNavigationResult(false, "Failed to navigate the website properly.");
+                return new WebNavigationResult(false, "Failed to navigate the website properly.", null);
             }
         }
 
@@ -185,15 +186,22 @@ namespace WaifuAI.Plugins
                 sysprompt += LLMSystem.Instruct.BotStart;
             var response = await SendQuery(sysprompt, true);
             if (string.IsNullOrEmpty(response))
-                return new WebNavigationResult(false, "Null Answer");
+                return new WebNavigationResult(false, "Null Answer", null);
             switch (_location)
             {
+                case PageType.MetaPage:
+                    {
+                        var metalinks = Website.SubLinks[page.ID];
+                        if (metalinks?.Count > 0 && int.TryParse(response, out var metaindex) && metaindex <= metalinks.Count && metaindex > 0)
+                            return await DoPage(metalinks[metaindex - 1]);
+                        return new WebNavigationResult(false, "Failed to navigate meta page", null);
+                    }
                 case PageType.ListingPage:
-                    if (int.TryParse(response, out var index) && index < Website.CurrentListing.Entries.Count)
-                        return new WebNavigationResult(true, TurnInResult(Website.CurrentListing.Entries[index]));
-                    return new WebNavigationResult(false, "Failed to navigate the listing properly.");
+                    if (int.TryParse(response, out var index) && index <= Website.CurrentListing.Entries.Count && index > 0)
+                        return new WebNavigationResult(true, TurnInResult(Website.CurrentListing.Entries[index-1]), null);
+                    return new WebNavigationResult(false, "Failed to navigate the listing properly.", null);
                 default:
-                    return new WebNavigationResult(false, "The request page type is not handled yet.");
+                    return new WebNavigationResult(false, "The request page type is not handled yet.", null);
             }
         }
 
@@ -205,7 +213,6 @@ namespace WaifuAI.Plugins
             text.Append("Inform {{user}} about the link you've just found, integrate this information seamlessly into the conversation, and make sure to include the link.");
             return text.ToString();
         }
-
 
         private string TaskSelectionPrompt(string userinput)
         {

@@ -542,9 +542,9 @@ namespace WaifuAI
             if (timespan.Days > 1)
                 msgtxt += $" Your last chat was {timespan.Days} days ago. " + "It is {{time}} now.";
             else if (timespan.Days == 1)
-                msgtxt += " The last chat happened yesterday. It is {time} now.";
+                msgtxt += " The last chat happened yesterday. It is {{time}} now.";
             else
-                msgtxt += $" The last chat was about {timespan.Hours} hours ago. " + "It is {time} now.";
+                msgtxt += $" The last chat was about {timespan.Hours} hours ago. " + "It is {{time}} now.";
             msgtxt = "*" + msgtxt.Trim() + "* ";
             return ReplaceMacros(msgtxt, User, Bot);
         }
