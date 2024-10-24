@@ -68,7 +68,6 @@ namespace WaifuAI.Web
             LLMSystem.OnInferenceEnded -= LLMSystem_OnInferenceEnded;
         }
 
-
         private async Task FailureToBrowse()
         {
             Stop();
@@ -89,7 +88,6 @@ namespace WaifuAI.Web
             LLMSystem.UI_RefreshChat!();
             await LLMSystem.SendMessageToBot(message);
         }
-
 
         private async void LLMSystem_OnInferenceEnded(object? sender, string e)
         {
@@ -258,6 +256,7 @@ namespace WaifuAI.Web
     public class WebsiteDefinition : BaseFile
     {
         public string WebsiteName { get; set; } = "";
+        public string TaskQuery { get; set; } = "";
         public string WebsiteInfo { get; set; } = "";
         public string CommandID { get; set; } = "";
         public string Address { get; set; } = "";

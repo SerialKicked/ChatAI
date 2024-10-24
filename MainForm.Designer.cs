@@ -150,6 +150,7 @@
             ed_log = new TextBox();
             openFileDialog1 = new OpenFileDialog();
             fontDialog1 = new FontDialog();
+            ck_ragweb = new CheckBox();
             tabMain.SuspendLayout();
             tabChat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
@@ -1283,7 +1284,7 @@
             groupBox2.Controls.Add(bt_importworld);
             groupBox2.Controls.Add(bt_ImportSTChat);
             groupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox2.Location = new Point(8, 217);
+            groupBox2.Location = new Point(8, 247);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(402, 98);
             groupBox2.TabIndex = 24;
@@ -1325,6 +1326,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(ck_ragweb);
             groupBox1.Controls.Add(checkBox1);
             groupBox1.Controls.Add(ck_ragdocs);
             groupBox1.Controls.Add(label15);
@@ -1342,7 +1344,7 @@
             groupBox1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox1.Location = new Point(8, 6);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(402, 205);
+            groupBox1.Size = new Size(402, 223);
             groupBox1.TabIndex = 23;
             groupBox1.TabStop = false;
             groupBox1.Text = "RAG System";
@@ -1463,7 +1465,7 @@
             // bt_embedall
             // 
             bt_embedall.Font = new Font("Segoe UI", 9F);
-            bt_embedall.Location = new Point(182, 138);
+            bt_embedall.Location = new Point(182, 165);
             bt_embedall.Name = "bt_embedall";
             bt_embedall.Size = new Size(214, 23);
             bt_embedall.TabIndex = 22;
@@ -1472,7 +1474,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(182, 167);
+            button1.Location = new Point(182, 194);
             button1.Name = "button1";
             button1.Size = new Size(214, 23);
             button1.TabIndex = 2;
@@ -1520,6 +1522,17 @@
             // openFileDialog1
             // 
             openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // ck_ragweb
+            // 
+            ck_ragweb.AutoSize = true;
+            ck_ragweb.Font = new Font("Segoe UI", 9F);
+            ck_ragweb.Location = new Point(195, 122);
+            ck_ragweb.Name = "ck_ragweb";
+            ck_ragweb.Size = new Size(105, 19);
+            ck_ragweb.TabIndex = 31;
+            ck_ragweb.Text = "Internet Search";
+            ck_ragweb.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -1699,5 +1712,6 @@
         private Label label27;
         private NumericUpDown num_wentrypriority;
         private Button bt_worldsave;
+        private CheckBox ck_ragweb;
     }
 }

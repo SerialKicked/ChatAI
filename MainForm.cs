@@ -864,6 +864,8 @@ namespace WaifuAI
                 LLMSystem.RAGIndex = Settings.RAGPosition;
                 num_ragindex.Value = Settings.RAGPosition;
                 LLMSystem.ScenarioOverride = Settings.ScenarioOverride;
+                LLMSystem.WebBrowsingPlugin = Settings.InternetSearch;
+                ck_ragweb.Checked = Settings.InternetSearch;
             }
         }
 
@@ -879,6 +881,7 @@ namespace WaifuAI
                 Settings.MaxTotalTokens = LLMSystem.MaxContextLength;
                 Settings.MaxResponseTokens = LLMSystem.MaxReplyLength;
                 Settings.Temperature = (double)num_temperature.Value;
+                Settings.InternetSearch = LLMSystem.WebBrowsingPlugin;
                 Settings.RAGHeurisitc = RAGSystem.Heuristic;
                 Settings.RAGUseSummaries = RAGSystem.UseSummaries;
                 Settings.RAGUseTitles = RAGSystem.UseTitles;
@@ -948,6 +951,7 @@ namespace WaifuAI
             RAGSystem.DistanceCutOff = (float)num_ragcutoff.Value;
             LLMSystem.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
             LLMSystem.RAGIndex = (int)num_ragindex.Value;
+            LLMSystem.WebBrowsingPlugin = ck_ragweb.Checked;
             if (cb_ragheuristic.SelectedIndex == 0)
                 RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
             else if (cb_ragheuristic.SelectedIndex == 1)

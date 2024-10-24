@@ -38,8 +38,7 @@ namespace WaifuAI.Files
 
         public async Task<string> GenerateNewSummary()
         {
-            var saveAddNames = LLMSystem.Instruct.AddNamesToPrompt;
-            LLMSystem.Instruct.AddNamesToPrompt = false;
+            LLMSystem.AddNamesToPrompt = false;
 
             var msgtxt = "You are an automated system designed to summarize chat sessions and stories." + LLMSystem.NewLine +
                 LLMSystem.NewLine +
@@ -91,14 +90,13 @@ namespace WaifuAI.Files
             {
                 finalstr += item.Text;
             }
-            LLMSystem.Instruct.AddNamesToPrompt = saveAddNames;
+            LLMSystem.AddNamesToPrompt = null;
             return finalstr.Trim();
         }
 
         public async Task<string> GenerateNewTitle(string sum)
         {
-            var saveAddNames = LLMSystem.Instruct.AddNamesToPrompt;
-            LLMSystem.Instruct.AddNamesToPrompt = false;
+            LLMSystem.AddNamesToPrompt = false;
             var msgtxt = "You are an automated system designed to give titles to summaries."+ LLMSystem.NewLine + 
                 LLMSystem.NewLine + 
                 "# Summary:" + LLMSystem.NewLine +
@@ -122,7 +120,7 @@ namespace WaifuAI.Files
             }
             // remove any " character from the finalstr
             finalstr = finalstr.Replace("\"", "").Trim();
-            LLMSystem.Instruct.AddNamesToPrompt = saveAddNames;
+            LLMSystem.AddNamesToPrompt = null;
             return finalstr;
         }
 

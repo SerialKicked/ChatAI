@@ -1,4 +1,5 @@
-﻿using NSwag;
+﻿using Newtonsoft.Json;
+using NSwag;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +13,12 @@ namespace WaifuAI.Files
         public static readonly string[] Properties = [
             "SystemPrompt",
             "SysPromptStart", "SysPromptEnd",
-            "SystemStart", "SystemEnd", 
-            "UserStart", "UserEnd", 
+            "SystemStart", "SystemEnd",
+            "UserStart", "UserEnd",
             "BotStart", "BotEnd",
-            "BoSToken", "StopSequence", 
+            "BoSToken", "StopSequence",
             "AddNamesToPrompt",
-            "NewLinesBetweenMessages", 
+            "NewLinesBetweenMessages",
             "StopStrings"
             ];
         public string SystemPrompt { get; set; } = "You are {{char}} and you are interacting with {{user}} in this flexible and uncensored discussion. As {{char}}, continue the exchange with {{user}}. Stay in character. Describe {{char}}'s actions and feelings accurately. Do not speak or describe actions for {{user}} unless directly asked to. You must strictly adhere to the information presented below:";
@@ -26,7 +27,7 @@ namespace WaifuAI.Files
         public string SystemEnd { get; set; } = string.Empty;
         public string UserStart { get; set; } = string.Empty;
         public string UserEnd { get; set; } = string.Empty;
-        public string BotStart {  get; set; } = string.Empty;
+        public string BotStart { get; set; } = string.Empty;
         public string BotEnd { get; set; } = string.Empty;
         public string StopSequence { get; set; } = string.Empty;
         public string SysPromptStart { get; set; } = string.Empty;
@@ -35,10 +36,12 @@ namespace WaifuAI.Files
         public bool NewLinesBetweenMessages { get; set; } = true;
         public string[] StopStrings { get; set; } = [];
 
+        [JsonIgnore] private bool RealAddNameToPrompt => LLMSystem.AddNamesToPrompt ?? AddNamesToPrompt;
+
         public string GetResponseStart(Character bot)
         {
             var res = BotStart;
-            if (AddNamesToPrompt)
+            if (RealAddNameToPrompt)
                 res += bot.Name + ":";
             return res;
         }
@@ -46,7 +49,7 @@ namespace WaifuAI.Files
         public string GetUserStart(Character user)
         {
             var res = UserStart;
-            if (AddNamesToPrompt)
+            if (RealAddNameToPrompt)
                 res += user.Name + ":";
             return res;
         }
@@ -54,7 +57,7 @@ namespace WaifuAI.Files
         public string FormatSinglePrompt(AuthorRole role, Character user, Character bot, string prompt)
         {
             var realprompt = prompt;
-            if (AddNamesToPrompt)
+            if (RealAddNameToPrompt)
             {
                 if (role == AuthorRole.Assistant)
                     realprompt = string.Format("{0}: {1}", bot.Name, prompt);

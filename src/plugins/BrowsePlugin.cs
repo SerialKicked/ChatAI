@@ -47,7 +47,7 @@ namespace WaifuAI.Plugins
         public override bool ReplaceOutput(string botoutput, Chatlog log, out string response)
         {
             response = string.Empty;
-            return ReplaceUserInput(botoutput, log, out response); 
+            return false; // ReplaceUserInput(botoutput, log, out response); 
         }
 
         /// <summary>
@@ -74,32 +74,31 @@ namespace WaifuAI.Plugins
         #endregion
 
 
-        private string BuildCheckPrompt(string userinput)
+        private string TaskSelectionPrompt(string userinput)
         {
             websites = [];
             var prompt = new StringBuilder();
-            prompt.AppendLinuxLine("Your goal is to determine if the user asked you to retrive information from one of the websites specified below.");
+            prompt.AppendLinuxLine("Your goal is to determine if the user asked you to complete one of the following tasks:");
             prompt.AppendLinuxLine();
-            prompt.AppendLinuxLine("# Available Websites:");
-            var i = 1;
-            foreach (var loc in DataFiles.Websites)
+            prompt.AppendLinuxLine("# Available Tasks:");
+            var x = 1;
+            foreach (var item in DataFiles.Websites)
             {
-                prompt.AppendLinuxLine(i.ToString() + ". " + loc.Value.WebsiteName);
-                prompt.AppendLinuxLine(loc.Value.WebsiteInfo);
-                websites.Add(loc.Value);
-                i++;
+                prompt.AppendLinuxLine($"{x}. {item.Value.TaskQuery}");
+                x++;
+                websites.Add(item.Value);
             }
-            prompt.AppendLinuxLine(i.ToString() + ". Stack Overflow");
-            prompt.AppendLinuxLine("Q&A website for programming related tasks.");
-
+            prompt.AppendLinuxLine($"{x}. Retrieve weather info about a particular location.");
+            prompt.AppendLinuxLine();
             prompt.AppendLinuxLine("# Rules:");
-            prompt.AppendLinuxLine("- If no website in the list above correspond to what the user requested, answer: No");
-            prompt.AppendLinuxLine("- Otherwise, pick the most likely website from the list by answer with the corresponding number.").AppendLinuxLine();
+            prompt.AppendLinuxLine("- If one of the tasks above corresponds to the user input, answer with the corresponding number only, nothing else.");
+            prompt.AppendLinuxLine("- If no task in the list above corresponds to what the user requested, answer: 0");
+            prompt.AppendLinuxLine("- Do not add any commentary.").AppendLinuxLine();
             prompt.AppendLinuxLine("# Examples:");
-            prompt.AppendLinuxLine("User: Can you check the web and look what's wrong with my C# script?");
-            prompt.AppendLinuxLine("Response: " + i.ToString());
+            prompt.AppendLinuxLine("User: Do you know what's the meteo in Paris?");
+            prompt.AppendLinuxLine("Response: " + x.ToString());
             prompt.AppendLinuxLine("User: See you soon.");
-            prompt.AppendLinuxLine("Response: No").AppendLinuxLine();
+            prompt.AppendLinuxLine("Response: 0").AppendLinuxLine();
             prompt.AppendLinuxLine("# User message to be evaluated:");
             prompt.AppendLinuxLine(userinput);
 
@@ -118,11 +117,12 @@ namespace WaifuAI.Plugins
         /// <returns></returns>
         private async Task<string> QueryLLM(string inputText)
         {
-            var fullprompt = BuildCheckPrompt(inputText);
+            var fullprompt = TaskSelectionPrompt(inputText);
             var fullresponse = new StringBuilder();
             var llmparams = LLMSystem.Sampler.GetCopy();
             llmparams.Temperature = 0;
             llmparams.Prompt = fullprompt;
+
             var result = await LLMSystem.Client.GenerateAsync(llmparams);
             string finalstr = string.Empty;
             foreach (var item in result.Results)
