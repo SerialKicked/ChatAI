@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             tabMain = new TabControl();
             tabChat = new TabPage();
@@ -127,12 +128,15 @@
             cb_samplerlist = new ComboBox();
             pan_samplers = new Panel();
             tabSettings = new TabPage();
+            groupBox9 = new GroupBox();
+            ck_webgrammar = new CheckBox();
+            ck_webkeyword = new CheckBox();
+            ck_ragweb = new CheckBox();
             groupBox2 = new GroupBox();
             bt_chattosessions = new Button();
             bt_importworld = new Button();
             bt_ImportSTChat = new Button();
             groupBox1 = new GroupBox();
-            ck_ragweb = new CheckBox();
             checkBox1 = new CheckBox();
             ck_ragdocs = new CheckBox();
             label15 = new Label();
@@ -150,6 +154,7 @@
             ed_log = new TextBox();
             openFileDialog1 = new OpenFileDialog();
             fontDialog1 = new FontDialog();
+            HelptoolTip = new ToolTip(components);
             tabMain.SuspendLayout();
             tabChat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
@@ -177,6 +182,7 @@
             tabSysPrompt.SuspendLayout();
             tabSamplers.SuspendLayout();
             tabSettings.SuspendLayout();
+            groupBox9.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_ragindex).BeginInit();
@@ -1253,6 +1259,7 @@
             // 
             // tabSettings
             // 
+            tabSettings.Controls.Add(groupBox9);
             tabSettings.Controls.Add(groupBox2);
             tabSettings.Controls.Add(groupBox1);
             tabSettings.Controls.Add(ed_log);
@@ -1264,13 +1271,59 @@
             tabSettings.Text = "Settings";
             tabSettings.UseVisualStyleBackColor = true;
             // 
+            // groupBox9
+            // 
+            groupBox9.Controls.Add(ck_webgrammar);
+            groupBox9.Controls.Add(ck_webkeyword);
+            groupBox9.Controls.Add(ck_ragweb);
+            groupBox9.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            groupBox9.Location = new Point(8, 235);
+            groupBox9.Name = "groupBox9";
+            groupBox9.Size = new Size(402, 100);
+            groupBox9.TabIndex = 25;
+            groupBox9.TabStop = false;
+            groupBox9.Text = "Internet Browsing";
+            // 
+            // ck_webgrammar
+            // 
+            ck_webgrammar.AutoSize = true;
+            ck_webgrammar.Font = new Font("Segoe UI", 9F);
+            ck_webgrammar.Location = new Point(6, 72);
+            ck_webgrammar.Name = "ck_webgrammar";
+            ck_webgrammar.Size = new Size(119, 19);
+            ck_webgrammar.TabIndex = 33;
+            ck_webgrammar.Text = "Enforce Grammar";
+            ck_webgrammar.UseVisualStyleBackColor = true;
+            // 
+            // ck_webkeyword
+            // 
+            ck_webkeyword.AutoSize = true;
+            ck_webkeyword.Font = new Font("Segoe UI", 9F);
+            ck_webkeyword.Location = new Point(6, 47);
+            ck_webkeyword.Name = "ck_webkeyword";
+            ck_webkeyword.Size = new Size(123, 19);
+            ck_webkeyword.TabIndex = 32;
+            ck_webkeyword.Text = "Keyword activated";
+            ck_webkeyword.UseVisualStyleBackColor = true;
+            // 
+            // ck_ragweb
+            // 
+            ck_ragweb.AutoSize = true;
+            ck_ragweb.Font = new Font("Segoe UI", 9F);
+            ck_ragweb.Location = new Point(6, 22);
+            ck_ragweb.Name = "ck_ragweb";
+            ck_ragweb.Size = new Size(201, 19);
+            ck_ragweb.TabIndex = 31;
+            ck_ragweb.Text = "Allow LLM to browse the internet";
+            ck_ragweb.UseVisualStyleBackColor = true;
+            // 
             // groupBox2
             // 
             groupBox2.Controls.Add(bt_chattosessions);
             groupBox2.Controls.Add(bt_importworld);
             groupBox2.Controls.Add(bt_ImportSTChat);
             groupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox2.Location = new Point(8, 247);
+            groupBox2.Location = new Point(8, 341);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(402, 98);
             groupBox2.TabIndex = 24;
@@ -1312,7 +1365,6 @@
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(ck_ragweb);
             groupBox1.Controls.Add(checkBox1);
             groupBox1.Controls.Add(ck_ragdocs);
             groupBox1.Controls.Add(label15);
@@ -1334,17 +1386,6 @@
             groupBox1.TabIndex = 23;
             groupBox1.TabStop = false;
             groupBox1.Text = "RAG System";
-            // 
-            // ck_ragweb
-            // 
-            ck_ragweb.AutoSize = true;
-            ck_ragweb.Font = new Font("Segoe UI", 9F);
-            ck_ragweb.Location = new Point(195, 122);
-            ck_ragweb.Name = "ck_ragweb";
-            ck_ragweb.Size = new Size(105, 19);
-            ck_ragweb.TabIndex = 31;
-            ck_ragweb.Text = "Internet Search";
-            ck_ragweb.UseVisualStyleBackColor = true;
             // 
             // checkBox1
             // 
@@ -1520,6 +1561,15 @@
             // 
             openFileDialog1.FileName = "openFileDialog1";
             // 
+            // HelptoolTip
+            // 
+            HelptoolTip.AutoPopDelay = 5000;
+            HelptoolTip.InitialDelay = 300;
+            HelptoolTip.IsBalloon = true;
+            HelptoolTip.ReshowDelay = 100;
+            HelptoolTip.ToolTipIcon = ToolTipIcon.Info;
+            HelptoolTip.ToolTipTitle = "Help and Tips";
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1566,6 +1616,8 @@
             tabSamplers.ResumeLayout(false);
             tabSettings.ResumeLayout(false);
             tabSettings.PerformLayout();
+            groupBox9.ResumeLayout(false);
+            groupBox9.PerformLayout();
             groupBox2.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
@@ -1697,5 +1749,9 @@
         private NumericUpDown num_wentrypriority;
         private Button bt_worldsave;
         private CheckBox ck_ragweb;
+        private GroupBox groupBox9;
+        private CheckBox ck_webgrammar;
+        private CheckBox ck_webkeyword;
+        private ToolTip HelptoolTip;
     }
 }

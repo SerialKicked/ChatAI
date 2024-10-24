@@ -23,11 +23,11 @@ namespace WaifuAI.Plugins
 
     public class BrowsePlugin : ContextPlugin
     {
-        private readonly string[] kwEnter = [ "website", "browse ", " web", "browsing", "find a ", "search for", "look for", "find me" ];
+        private readonly string[] kwEnter = [ "website", "browse", " web", "browsing", "find a ", "search for ", "look for ", "find me" ];
         public bool KeywordDetection { get; set; } = true;
         public bool ModelDetection { get; set; } = true;
         public bool EnforceCorrectGrammar { get; set; } = false;
-        public double Temperature { get; set; } = 0;
+        public double Temperature { get; set; } = 0.3;
 
         private List<WebsiteDefinition> websites = [];
         private WebsiteDefinition? Website;
@@ -122,7 +122,7 @@ namespace WaifuAI.Plugins
         private async Task<string> SendQuery(string prompt, bool customGrammar = false)
         {
             var llmparams = LLMSystem.Sampler.GetCopy();
-            llmparams.Temperature = 0.3;
+            llmparams.Temperature = Temperature;
             llmparams.Prompt = prompt;
             llmparams.Rep_pen = 1;
             llmparams.Dry_base = 0;

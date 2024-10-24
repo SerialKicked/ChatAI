@@ -39,6 +39,9 @@ namespace WaifuAI
         public MainForm()
         {
             InitializeComponent();
+            HelptoolTip.SetToolTip(ck_ragweb, "Allows the LLM to browse compatible websites for information.");
+            HelptoolTip.SetToolTip(ck_webgrammar, "If checked, the LLM will be better at navigating the website, but its results will be less accurate." + Environment.NewLine + "Only enable if the LLM is consistently failing at browsing the web.");
+            HelptoolTip.SetToolTip(ck_webkeyword, "If checked, the web logic will only be run if some internet related keywords are found in the user's request (faster, less accurate)." + Environment.NewLine + "If unckecked, all user inputs will be processed twice, once to check if the web should be visited, and another time for the normal response from the bot (slower, more accurate).");
             // Chat related events
             bt_connect.Click += Connect!;
             bt_send.Click += SendMessage!;
