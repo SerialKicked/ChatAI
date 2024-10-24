@@ -195,6 +195,8 @@ namespace WaifuAI.Web
                 foreach (var sublist in SubLinks)
                 {
                     link = sublist.Value.FirstOrDefault(l => l.ID == LinkID);
+                    if (link != null)
+                        break;
                 }
             }
             if (link == null)
