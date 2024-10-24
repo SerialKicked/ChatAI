@@ -596,5 +596,38 @@ namespace WaifuAI.Files
             var content = JsonConvert.SerializeObject(this);
             File.WriteAllText(pPath, content);
         }
+
+        public string GetRawDialogs(int maxTokens, bool ignoresystem)
+        {
+            var sb = new StringBuilder();
+            var totaltks = maxTokens;
+
+            for (int i = Messages.Count - 1; i >= 0; i--)
+            {
+                var msg = Messages[i];
+                var text = string.Empty;
+                switch (msg.Role)
+                {
+                    case AuthorRole.System:
+                    case AuthorRole.SysPrompt:
+                        if (ignoresystem)
+                            continue;
+                        text = msg.Message.StartsWith('*') ? LLMSystem.NewLine + msg.Message.Trim() + LLMSystem.NewLine : LLMSystem.NewLine + "*" + msg.Message.Trim() + "*" + LLMSystem.NewLine;
+                        break;
+                    case AuthorRole.User:
+                    case AuthorRole.Assistant:
+                        text = "**" + msg.Sender?.Name + ":** " + msg.Message.RemoveNewLines() + LLMSystem.NewLine;
+                        break;
+                }
+                if (text == string.Empty)
+                    continue;
+                var tks = LLMSystem.GetTokenCount(text);
+                totaltks -= tks;
+                if (totaltks <= 0)
+                    return sb.ToString();
+                sb.Insert(0, text);
+            }
+            return sb.ToString();
+        }
     }
 }

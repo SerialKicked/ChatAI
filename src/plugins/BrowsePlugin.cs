@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AngleSharp.Dom;
+using AngleSharp.Io;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic.Logging;
 using System;
 using System.CodeDom.Compiler;
@@ -13,13 +15,25 @@ using WaifuAI.Web;
 
 namespace WaifuAI.Plugins
 {
+    public class WebNavigationResult(bool isSuccess, string? response)
+    {
+        public bool IsSuccess { get; set; } = isSuccess;
+        public string? Response { get; set; } = response;
+    }
+
     public class BrowsePlugin : ContextPlugin
     {
-        private readonly string[] kwEnter = [ "website ", "browse ", " web", "browsing", "find a ", "search for" ];
+        private readonly string[] kwEnter = [ "website", "browse ", " web", "browsing", "find a ", "search for", "look for", "find me" ];
         public bool KeywordDetection { get; set; } = true;
         public bool ModelDetection { get; set; } = true;
+        public bool EnforceCorrectGrammar { get; set; } = false;
+        public double Temperature { get; set; } = 0;
 
         private List<WebsiteDefinition> websites = [];
+        private WebsiteDefinition? Website;
+        private string _basegoal = string.Empty;
+        private PageType _location;
+        private readonly WebScraper crawler = new();
 
         #region *** Interface Implementation ***
 
@@ -63,14 +77,128 @@ namespace WaifuAI.Plugins
                 var x = await QueryLLM(userinput);
                 if (!string.IsNullOrEmpty(x))
                 {
-                    return new PluginResponse { IsHandled = false, Response = x }; // call the website plugin
-                    // call the website plugin
+                    LLMSystem.AddNamesToPrompt = false;
+                    if (DataFiles.Websites.TryGetValue(x, out var site))
+                    {
+                        Website = site;
+                    }
+                    // call the website plugin here
+                    var webresult = await StartWebNavigation(userinput);
+                    var output = new PluginResponse 
+                    { 
+                        IsHandled = webresult.IsSuccess, 
+                        Response = webresult.Response,
+                        AuthorRole = AuthorRole.System,
+                        Replace = false
+                    };
+                    LLMSystem.AddNamesToPrompt = null;
+                    return output;
                 }
             }
             return new PluginResponse { IsHandled = false, Response = null }; // call the website plugin
         }
 
         #endregion
+
+        private string BuildInitialPrompt()
+        {
+            var promptbuilder = new StringBuilder();
+            promptbuilder.AppendLinuxLine("You are a web browsing agent. Your goal is to find the requested information while taking the information presented in the chatlog below into consideration.");
+            promptbuilder.AppendLinuxLine();
+            promptbuilder.AppendLinuxLine("# Characters:");
+            promptbuilder.AppendLinuxLine($"- **{LLMSystem.User.Name}:** {LLMSystem.User.GetBio(LLMSystem.Bot.Name).RemoveNewLines()}");
+            promptbuilder.AppendLinuxLine($"- **{LLMSystem.Bot.Name}:** {LLMSystem.Bot.GetBio(LLMSystem.User.Name).RemoveNewLines()}");
+            promptbuilder.AppendLinuxLine();
+            promptbuilder.AppendLinuxLine("# Recent Chatlog:");
+            promptbuilder.AppendLinuxLine(LLMSystem.History.GetRawDialogs(500, true));
+            return promptbuilder.ToString();
+        }
+
+        private async Task<string> SendQuery(string prompt, bool customGrammar = false)
+        {
+            var llmparams = LLMSystem.Sampler.GetCopy();
+            llmparams.Temperature = 0.3;
+            llmparams.Prompt = prompt;
+            llmparams.Rep_pen = 1;
+            llmparams.Dry_base = 0;
+            llmparams.Xtc_probability = 0;
+            if (EnforceCorrectGrammar && customGrammar)
+                llmparams.Grammar = "root ::= ([0-9][0-9]?[0-9]?)";
+
+            var result = await LLMSystem.Client.GenerateAsync(llmparams);
+            string response = string.Empty;
+            foreach (var item in result.Results)
+                response += item.Text;
+            // strip anything that is not a number from response
+            response = new string(response.Where(c => char.IsDigit(c)).ToArray());
+            return response;
+        }
+
+        private async Task<WebNavigationResult> StartWebNavigation(string basegoal)
+        {
+            if (Website == null)
+                return new WebNavigationResult(false, "Website not found.");
+            _basegoal = basegoal;
+            _location = PageType.FrontPage;
+            var promptbuilder = new StringBuilder(BuildInitialPrompt());
+            promptbuilder.AppendLinuxLine();
+            promptbuilder.AppendLinuxLine(Website.RenderFrontPage(string.Empty));
+            promptbuilder.AppendLinuxLine("# Goal:");
+            promptbuilder.AppendLinuxLine($"Complete this request from {LLMSystem.User.Name}: {_basegoal}");
+            var sysprompt = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, promptbuilder.ToString());
+
+            if (!string.IsNullOrEmpty(LLMSystem.Instruct.BotStart))
+                sysprompt += LLMSystem.Instruct.BotStart;
+            sysprompt = LLMSystem.Instruct.BoSToken + sysprompt;
+
+            var response = await SendQuery(sysprompt, true);
+            if (string.IsNullOrEmpty(response))
+                return new WebNavigationResult(false, null);
+            if (int.TryParse(response, out var index) && index < Website.MainLinks.Count)
+            {
+                return await DoPage(Website.MainLinks[index]);
+            }
+            else
+            {
+                return new WebNavigationResult(false, "Failed to navigate the website properly.");
+            }
+        }
+
+        public async Task<WebNavigationResult> DoPage(WLink page)
+        {
+            _location = page.Category;
+            var websiterender = await Website!.RenderPage(page.ID, string.Empty, crawler);
+            var promptbuilder = new StringBuilder(BuildInitialPrompt());
+            promptbuilder.AppendLinuxLine();
+            promptbuilder.AppendLinuxLine(websiterender);
+            promptbuilder.AppendLinuxLine("# Goal:");
+            promptbuilder.AppendLinuxLine($"Complete this request from {LLMSystem.User.Name}: {_basegoal}");
+            var sysprompt = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, promptbuilder.ToString());
+
+            if (!string.IsNullOrEmpty(LLMSystem.Instruct.BotStart))
+                sysprompt += LLMSystem.Instruct.BotStart;
+            var response = await SendQuery(sysprompt, true);
+            if (string.IsNullOrEmpty(response))
+                return new WebNavigationResult(false, "Null Answer");
+            switch (_location)
+            {
+                case PageType.ListingPage:
+                    if (int.TryParse(response, out var index) && index < Website.CurrentListing.Entries.Count)
+                        return new WebNavigationResult(true, TurnInResult(Website.CurrentListing.Entries[index]));
+                    return new WebNavigationResult(false, "Failed to navigate the listing properly.");
+                default:
+                    return new WebNavigationResult(false, "The request page type is not handled yet.");
+            }
+        }
+
+        private string TurnInResult(WEntry wEntry)
+        {
+            var text = new StringBuilder();
+            text.AppendLinuxLine("After searching the net, {{char}} found the following link:");
+            text.AppendLinuxLine(wEntry.ToString()).AppendLinuxLine();
+            text.Append("Inform {{user}} about the link you've just found, integrate this information seamlessly into the conversation, and make sure to include the link.");
+            return text.ToString();
+        }
 
 
         private string TaskSelectionPrompt(string userinput)
@@ -92,7 +220,8 @@ namespace WaifuAI.Plugins
             prompt.AppendLinuxLine("# Rules:");
             prompt.AppendLinuxLine("- If one of the tasks above corresponds to the user input, answer with the corresponding number only, nothing else.");
             prompt.AppendLinuxLine("- If no task in the list above corresponds to what the user requested, answer: 0");
-            prompt.AppendLinuxLine("- Do not add any commentary.").AppendLinuxLine();
+            prompt.AppendLinuxLine("- Pick one single option.");
+            prompt.AppendLinuxLine("- Do not add any commentary or names.").AppendLinuxLine();
             prompt.AppendLinuxLine("# Examples:");
             prompt.AppendLinuxLine("User: Do you know what's the meteo in Paris?");
             prompt.AppendLinuxLine("Response: " + x.ToString());
@@ -117,7 +246,6 @@ namespace WaifuAI.Plugins
         private async Task<string> QueryLLM(string inputText)
         {
             var fullprompt = TaskSelectionPrompt(inputText);
-            var fullresponse = new StringBuilder();
             var llmparams = LLMSystem.Sampler.GetCopy();
             llmparams.Temperature = 0;
             llmparams.Prompt = fullprompt;

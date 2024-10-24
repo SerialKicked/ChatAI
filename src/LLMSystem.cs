@@ -52,8 +52,6 @@ namespace WaifuAI
         public static bool? AddNamesToPrompt { get; set; } = null;
         public static bool WebBrowsingPlugin { get; set; } = false;
 
-        public static LLMWebsite? Website = null;
-
         public static EventHandler<string>? OnFullPromptReady;
         /// <summary> Called during inference each time the LLM outputs a new token </summary>
         public static EventHandler<string>? OnInferenceStreamed;
@@ -270,10 +268,12 @@ namespace WaifuAI
         /// </summary>
         /// <param name="newMessage">Added message from the user</param>
         /// <returns></returns>
-        private static async Task<string> GenerateFullPrompt(AuthorRole MsgSender, string newMessage)
+        private static async Task<string> GenerateFullPrompt(AuthorRole MsgSender, string newMessage, string? pluginMessage = null)
         {
             var msg = string.IsNullOrEmpty(newMessage) ? string.Empty : Instruct.FormatSinglePrompt(MsgSender, User, Bot, newMessage);
+            var pluginmsg = string.IsNullOrEmpty(pluginMessage) ? string.Empty : Instruct.FormatSinglePrompt(AuthorRole.System, User, Bot, pluginMessage);
             var tokencount = string.IsNullOrEmpty(msg) ? 0 :GetTokenCount(msg);
+            tokencount += string.IsNullOrEmpty(pluginmsg) ? 0 : GetTokenCount(pluginmsg);
             var rawprompt = new StringBuilder(RawSystemPrompt(User, Bot));
             var inserts = new Dictionary<int, string>();
             var searchmessage = string.IsNullOrWhiteSpace(newMessage) ? History.GetLastUserMessageContent() : newMessage;
@@ -348,8 +348,8 @@ namespace WaifuAI
             else
             {
                 var res = !string.IsNullOrEmpty(memprompt) && RAGIndex == -1 ?
-                    sysprompt + NewLine + memprompt + history + msg + Instruct.GetResponseStart(Bot) :
-                    sysprompt + NewLine + history + msg + Instruct.GetResponseStart(Bot);
+                    sysprompt + NewLine + memprompt + history + msg + pluginmsg + Instruct.GetResponseStart(Bot) :
+                    sysprompt + NewLine + history + msg + pluginmsg + Instruct.GetResponseStart(Bot);
                 return res;
             }
         }
@@ -405,7 +405,7 @@ namespace WaifuAI
         /// <param name="userInput"></param>
         /// <param name="logtohistory"></param>
         /// <returns></returns>
-        public static async Task SendMessageToBot(SingleMessage message, bool logtohistory = true)
+        public static async Task SendMessageToBot(SingleMessage message)
         {
             if (Status == SystemStatus.Busy)
                 return;
@@ -441,17 +441,6 @@ namespace WaifuAI
             }
         }
 
-        public static async Task QueryWebsite(WebsiteDefinition webdef, string userinput)
-        {
-            if (Website != null)
-            {
-                Website.KillEvent();
-            }
-            StartAutomation();
-            Website = new LLMWebsite(webdef, userinput);
-            await Website.Start();
-        }
-
         public static void StartAutomation() => Status = SystemStatus.Automated;
         public static void StopAutomation() => Status = SystemStatus.Ready;
 
@@ -469,16 +458,27 @@ namespace WaifuAI
                 Status = SystemStatus.Busy;
 
             var inputText = userInput;
+            var insertmessages = new List<string>();
             if (!string.IsNullOrEmpty(inputText) && Status != SystemStatus.Automated)
                 foreach (var ctxplug in Bot.Plugins)
                 {
                     var plugres = await ctxplug.ReplaceUserInput(ReplaceMacros(inputText, User, Bot));
                     if (plugres.IsHandled && !string.IsNullOrEmpty(plugres.Response))
-                        inputText = plugres.Response;
+                    {
+                        if (plugres.Replace)
+                            inputText = plugres.Response;
+                        else
+                            insertmessages.Add(plugres.Response);
+                    }
                 }
+            var pluginmessage = string.Empty;
+            foreach (var item in insertmessages)
+                pluginmessage += item + NewLine;
+            pluginmessage = pluginmessage.Trim('\n');
+
             StreamingTextProgress = string.Empty;
             GenerationInput genparams = Sampler.GetCopy();
-            _LastGeneratedPrompt = await GenerateFullPrompt(MsgSender, inputText);
+            _LastGeneratedPrompt = await GenerateFullPrompt(MsgSender, inputText, pluginmessage);
             if (ForceTemperature >= 0)
                 genparams.Temperature = ForceTemperature;
             genparams.Max_context_length = MaxContextLength;

@@ -12,6 +12,8 @@ namespace WaifuAI.Plugins
     {
         public bool IsHandled { get; set; }
         public string? Response { get; set; }
+        public bool Replace { get; set; } = true;
+        public AuthorRole AuthorRole { get; set; } = AuthorRole.User;
     }
 
     public abstract class ContextPlugin : BaseFile, IContextPlugin

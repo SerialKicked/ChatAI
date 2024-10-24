@@ -825,6 +825,17 @@ namespace WaifuAI
             {
                 var str = File.ReadAllText("settings.json");
                 Settings = JsonConvert.DeserializeObject<WaifuSettings>(str)!;
+                RAGSystem.Heuristic = Settings.RAGHeurisitc;
+                RAGSystem.UseSummaries = Settings.RAGUseSummaries;
+                RAGSystem.UseTitles = Settings.RAGUseTitles;
+                RAGSystem.DistanceCutOff = Settings.RAGDistanceCutOff;
+                LLMSystem.MaxContextLength = Settings.MaxTotalTokens;
+                LLMSystem.MaxReplyLength = Settings.MaxResponseTokens;
+                LLMSystem.ReservedSessionTokens = Settings.ReservedSessionTokens;
+                LLMSystem.MaxRAGEntries = Settings.MaxRAGEntries;
+                LLMSystem.RAGIndex = Settings.RAGPosition;
+                LLMSystem.ScenarioOverride = Settings.ScenarioOverride;
+                LLMSystem.WebBrowsingPlugin = Settings.InternetSearch;
                 // set cb_user to the settings.UserFile value if it's in the list, otherwise set index to 0.
                 cb_user.SelectedIndex = cb_user.Items.Contains(Settings.UserFile) ? cb_user.Items.IndexOf(Settings.UserFile) : 0;
                 // set cb_infer to the settings.InferenceFile value if it's in the list, otherwise set index to 0.
@@ -838,7 +849,6 @@ namespace WaifuAI
                 num_maxcontext.Value = Settings.MaxTotalTokens;
                 num_maxresponse.Value = Settings.MaxResponseTokens;
                 num_temperature.Value = (decimal)Settings.Temperature;
-                RAGSystem.Heuristic = Settings.RAGHeurisitc;
                 switch (RAGSystem.Heuristic)
                 {
                     case HNSW.Net.NeighbourSelectionHeuristic.SelectSimple:
@@ -850,21 +860,11 @@ namespace WaifuAI
                     default:
                         break;
                 }
-                RAGSystem.UseSummaries = Settings.RAGUseSummaries;
                 ck_ragsummaries.Checked = Settings.RAGUseSummaries;
-                RAGSystem.UseTitles = Settings.RAGUseTitles;
                 ck_ragtitles.Checked = Settings.RAGUseTitles;
-                RAGSystem.DistanceCutOff = Settings.RAGDistanceCutOff;
                 num_ragcutoff.Value = (decimal)Settings.RAGDistanceCutOff;
-                LLMSystem.MaxContextLength = Settings.MaxTotalTokens;
-                LLMSystem.MaxReplyLength = Settings.MaxResponseTokens;
-                LLMSystem.ReservedSessionTokens = Settings.ReservedSessionTokens;
-                LLMSystem.MaxRAGEntries = Settings.MaxRAGEntries;
                 num_ragmaxretrieve.Value = Settings.MaxRAGEntries;
-                LLMSystem.RAGIndex = Settings.RAGPosition;
                 num_ragindex.Value = Settings.RAGPosition;
-                LLMSystem.ScenarioOverride = Settings.ScenarioOverride;
-                LLMSystem.WebBrowsingPlugin = Settings.InternetSearch;
                 ck_ragweb.Checked = Settings.InternetSearch;
             }
         }
@@ -1389,13 +1389,6 @@ namespace WaifuAI
         private void ck_sessionmemory_CheckedChanged(object sender, EventArgs e)
         {
             LLMSystem.Bot.SessionMemorySystem = ck_sessionmemory.Checked;
-        }
-
-        private async void button3_Click(object sender, EventArgs e)
-        {
-            await SendMessageToUI(
-                new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is browsing the internet...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
-            await LLMSystem.QueryWebsite(DataFiles.Websites["java"], !string.IsNullOrEmpty(ed_input.Text) ? ed_input.Text : "Find a sexy video for Guillaume.");
         }
 
         private void bt_scenario_Click(object sender, EventArgs e)

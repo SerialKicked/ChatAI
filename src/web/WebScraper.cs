@@ -13,126 +13,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WaifuAI.Files;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace WaifuAI.Web
 {
-    public class LLMWebsite(WebsiteDefinition website, string basegoal)
-    {
-        private WebScraper crawler = new();
-
-        private WebsiteDefinition Website { get; set; } = website;
-        private string _basegoal = basegoal;
-        private int _failures = 0;
-        private PageType _location = PageType.FrontPage;
-        private int _historyCount = 0;
-
-        public void NewSettings(WebsiteDefinition website, string basegoal)
-        {
-            Website = website;
-            _basegoal = basegoal;
-            _failures = 0;
-        }
-
-        public async Task Start()
-        {
-            _location = PageType.FrontPage;
-            LLMSystem.OnInferenceEnded += LLMSystem_OnInferenceEnded;
-            _historyCount = LLMSystem.History.Messages.Count;
-            LLMSystem.Sampler.Grammar = "root ::= ([0-9][0-9]?[0-9]?)";
-            var prompt = Website.RenderFrontPage(_basegoal);
-            await LLMSystem.SendMessageToBot(new SingleMessage(AuthorRole.System, DateTime.Now, prompt, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
-        }
-
-        public async Task DoPage(WLink page)
-        {
-            _location = page.Category;
-            var prompt = await Website.RenderPage(page.ID, _basegoal, crawler);
-            await LLMSystem.SendMessageToBot(new SingleMessage(AuthorRole.System, DateTime.Now, prompt, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
-        }
-
-        public void Stop() 
-        {
-            LLMSystem.OnInferenceEnded -= LLMSystem_OnInferenceEnded;
-            if (LLMSystem.History.Messages.Count > _historyCount)
-            {
-                // Resize History.Messages count to _historyCount
-                LLMSystem.History.Messages.RemoveRange(_historyCount, LLMSystem.History.Messages.Count - _historyCount);
-            }
-            LLMSystem.Sampler.Grammar = string.Empty;
-            LLMSystem.StopAutomation();
-        }
-
-        public void KillEvent()
-        {
-            LLMSystem.OnInferenceEnded -= LLMSystem_OnInferenceEnded;
-        }
-
-        private async Task FailureToBrowse()
-        {
-            Stop();
-            var text = new StringBuilder("{{char}} attempted to browse the web but failed. {{char}}'s goal was: " + _basegoal);
-            var message = new SingleMessage(AuthorRole.System, DateTime.Now, LLMSystem.ReplaceMacros(text.ToString()), LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
-            LLMSystem.UI_RefreshChat!();
-            await LLMSystem.SendMessageToBot(message);
-        }
-
-        private async Task TurnInResult(WEntry wEntry)
-        {
-            Stop();
-            var text = new StringBuilder();
-            text.AppendLinuxLine("After searching the net, {{char}} found the following link:");
-            text.AppendLinuxLine(wEntry.ToString()).AppendLinuxLine();
-            text.Append("Inform {{user}} about the link you've just found, integrate this information seamlessly into the conversation, and make sure to include the link.");
-            var message = new SingleMessage(AuthorRole.System, DateTime.Now, LLMSystem.ReplaceMacros(text.ToString()), LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
-            LLMSystem.UI_RefreshChat!();
-            await LLMSystem.SendMessageToBot(message);
-        }
-
-        private async void LLMSystem_OnInferenceEnded(object? sender, string e)
-        {
-            var response = e;
-            switch (_location)
-            {
-                case PageType.FrontPage:
-                    {
-                        if (int.TryParse(response, out var index) && index < Website.MainLinks.Count)
-                        {
-                            //LLMSystem.RemoveLastMessage();
-                            await DoPage(Website.MainLinks[index]);
-                        }
-                        else
-                        {
-                            // call failure and leave class logic
-                            await FailureToBrowse();
-                        }
-                    }
-                    break;
-                case PageType.ListingPage:
-                    {
-                        if (int.TryParse(response, out var index) && index < Website.CurrentListing.Entries.Count)
-                        {
-                            //LLMSystem.RemoveLastMessage();
-                            await TurnInResult(Website.CurrentListing.Entries[index]);
-                        }
-                        else
-                        {
-                            await FailureToBrowse();
-                            // call failure and leave class logic
-                        }
-                    }
-                    break;
-                case PageType.ArticlePage:
-                    break;
-                case PageType.SearchPage:
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-
     public class WEntry
     {
         public string Title = string.Empty;
@@ -286,11 +169,18 @@ namespace WaifuAI.Web
                 str.AppendLinuxLine($"{x}. {item.Title}");
                 x++;
             }
-            str.AppendLinuxLine();
-            str.AppendLinuxLine("## Instructions");
             if (!string.IsNullOrEmpty(Goal))
+            {
+                str.AppendLinuxLine();
+                str.AppendLinuxLine("# Goal;");
                 str.AppendLinuxLine(Goal);
-            str.AppendLinuxLine("To retrieve information from this website, type the number corresponding to the link you want to visit. Only write the number, and nothing else. Example output: 1");
+            }
+            str.AppendLinuxLine();
+            str.AppendLinuxLine("# Rules:");
+            str.AppendLinuxLine("- If one of the links above corresponds to the request, answer with the corresponding number only, nothing else. Example: 1");
+            str.AppendLinuxLine("- If no task in the list above corresponds to what the user requested, state the reason why.");
+            str.AppendLinuxLine("- Pick one single option.");
+            str.AppendLinuxLine("- Do not add any commentary or names.");
             return str.ToString();
         }
 
@@ -331,19 +221,30 @@ namespace WaifuAI.Web
                 str.AppendLinuxLine();
             }
 
-            str.AppendLinuxLine("## Instructions");
             if (!string.IsNullOrEmpty(Goal))
+            {
+                str.AppendLinuxLine();
+                str.AppendLinuxLine("# Goal:");
                 str.AppendLinuxLine(Goal);
+            }
+            str.AppendLinuxLine("# Rules:");
             switch (link.Category)
             {
                 case PageType.FrontPage:
-                    str.AppendLinuxLine("To retrieve information from this website, type the number corresponding to the link you want to visit. Only write the number, and nothing else. Example output: 1");
+                    str.AppendLinuxLine("- Retrieve information from this website to complete your goal.");
+                    str.AppendLinuxLine("- Type the number corresponding to the link you want to visit.");
+                    str.AppendLinuxLine("- Only write the number and nothing else. Example output: 1");
                     break;
                 case PageType.ListingPage:
-                    str.AppendLinuxLine("To open one of the links above, type the number corresponding to the link you want to visit, only write the number, nothing else. Any other input will send you back to the front page.");
+                    str.AppendLinuxLine("- If one of the links above corresponds to the request, answer with the corresponding number only, nothing else. Example: 1");
+                    str.AppendLinuxLine("- If no task in the list above corresponds to what the user requested, state the reason why.");
+                    str.AppendLinuxLine("- Pick one single option.");
+                    str.AppendLinuxLine("- Do not add any commentary or names.");
                     break;
                 case PageType.ArticlePage:
-                    str.AppendLinuxLine("You have selected this page. If you want to send it to {{user}}, type SEND. Nothing else. Any other input will send you back to the front page.");
+                    str.AppendLinuxLine("- You have selected this page.");
+                    str.AppendLinuxLine("- If you want to send it to {{user}}, type 1. Any other number will send you back to front page.");
+                    str.AppendLinuxLine("- Only write the number and nothing else. Example output: 1");
                     break;
                 case PageType.SearchPage:
                     str.AppendLinuxLine("Type the search terms you're looking for to complete your request. Only type those search terms and nothing else.");

@@ -40,7 +40,6 @@
             panel1 = new Panel();
             groupBox5 = new GroupBox();
             bt_scenario = new Button();
-            bt_Video = new Button();
             ck_sessionmemory = new CheckBox();
             ck_senseoftime = new CheckBox();
             label3 = new Label();
@@ -133,6 +132,7 @@
             bt_importworld = new Button();
             bt_ImportSTChat = new Button();
             groupBox1 = new GroupBox();
+            ck_ragweb = new CheckBox();
             checkBox1 = new CheckBox();
             ck_ragdocs = new CheckBox();
             label15 = new Label();
@@ -150,7 +150,6 @@
             ed_log = new TextBox();
             openFileDialog1 = new OpenFileDialog();
             fontDialog1 = new FontDialog();
-            ck_ragweb = new CheckBox();
             tabMain.SuspendLayout();
             tabChat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
@@ -314,7 +313,6 @@
             // 
             groupBox5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             groupBox5.Controls.Add(bt_scenario);
-            groupBox5.Controls.Add(bt_Video);
             groupBox5.Controls.Add(ck_sessionmemory);
             groupBox5.Controls.Add(ck_senseoftime);
             groupBox5.Controls.Add(label3);
@@ -344,18 +342,6 @@
             bt_scenario.Text = "Change Scenario";
             bt_scenario.UseVisualStyleBackColor = true;
             bt_scenario.Click += bt_scenario_Click;
-            // 
-            // bt_Video
-            // 
-            bt_Video.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            bt_Video.Font = new Font("Segoe UI", 9F);
-            bt_Video.Location = new Point(6, 321);
-            bt_Video.Name = "bt_Video";
-            bt_Video.Size = new Size(175, 23);
-            bt_Video.TabIndex = 25;
-            bt_Video.Text = "Request Link";
-            bt_Video.UseVisualStyleBackColor = true;
-            bt_Video.Click += button3_Click;
             // 
             // ck_sessionmemory
             // 
@@ -1349,6 +1335,17 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "RAG System";
             // 
+            // ck_ragweb
+            // 
+            ck_ragweb.AutoSize = true;
+            ck_ragweb.Font = new Font("Segoe UI", 9F);
+            ck_ragweb.Location = new Point(195, 122);
+            ck_ragweb.Name = "ck_ragweb";
+            ck_ragweb.Size = new Size(105, 19);
+            ck_ragweb.TabIndex = 31;
+            ck_ragweb.Text = "Internet Search";
+            ck_ragweb.UseVisualStyleBackColor = true;
+            // 
             // checkBox1
             // 
             checkBox1.AutoSize = true;
@@ -1523,17 +1520,6 @@
             // 
             openFileDialog1.FileName = "openFileDialog1";
             // 
-            // ck_ragweb
-            // 
-            ck_ragweb.AutoSize = true;
-            ck_ragweb.Font = new Font("Segoe UI", 9F);
-            ck_ragweb.Location = new Point(195, 122);
-            ck_ragweb.Name = "ck_ragweb";
-            ck_ragweb.Size = new Size(105, 19);
-            ck_ragweb.TabIndex = 31;
-            ck_ragweb.Text = "Internet Search";
-            ck_ragweb.UseVisualStyleBackColor = true;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1670,7 +1656,6 @@
         private CheckBox ck_senseoftime;
         private CheckBox ck_sessionmemory;
         private CheckBox checkBox1;
-        private Button bt_Video;
         private Button bt_scenario;
         private TabPage tabDocs;
         private TabPage tabWorldInfo;
@@ -1692,7 +1677,6 @@
         private GroupBox groupBox7;
         private NumericUpDown num_wentryposition;
         private TextBox ed_wentrykw1;
-        private ListBox listBox1;
         private Label label20;
         private TextBox ed_wentrymem;
         private TextBox ed_wentryname;

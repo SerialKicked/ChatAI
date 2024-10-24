@@ -40,7 +40,7 @@ namespace WaifuAI.Files
             Mirostat = 0;
             Mirostat_eta = 0.1;
             Mirostat_tau = 5;
-            this.Banned_tokens = new List<string>();
+            this.Banned_tokens = [];
             this.Bypass_eos = false;
             this.Sampler_seed = -1;
             this.Trim_stop = false;

@@ -135,6 +135,8 @@ namespace WaifuAI
                 .Replace("\r", "\\r");
         }
 
+        public static string RemoveNewLines(this string text) => text.ToLinuxFormat().Replace("\n\n", " ").Replace('\n', ' ').Replace("  ", " ").Trim();
+
         public static string FixAsterisks(this string text)
         {
             // Automatically close asterisks if they are not closed before the end of each paragraph delimited by a newline
