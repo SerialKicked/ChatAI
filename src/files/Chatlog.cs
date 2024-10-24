@@ -301,6 +301,8 @@ namespace WaifuAI.Files
                 for (int i = Sessions.Count - 1; i >= 0; i--)
                 {
                     var session = Sessions[i];
+                    if (LLMSystem.usedGuidInSession.Contains(session.Guid))
+                        continue;
                     var summarytokencount = session.GetFormatedSummaryTokenCount();
                     var sessiontokencount = GetTotalTokens(session.Messages);
                     // If all session can fit, or if that session's end is less than 7 days ago, or we have too few messages
@@ -586,6 +588,10 @@ namespace WaifuAI.Files
             return (tokencount, duration);
         }
 
+        public string GetLastUserMessageContent()
+        {
+            return Messages.LastOrDefault(m => m.Role == AuthorRole.User)?.Message ?? string.Empty;
+        }
 
         public void SaveToFile(string pPath) 
         {

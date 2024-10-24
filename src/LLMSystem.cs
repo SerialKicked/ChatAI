@@ -121,6 +121,7 @@ namespace WaifuAI
         public static KClient Client = new(_httpclient);
         private static int maxContextLength = 4096;
         private static InstructFormat instruct = new();
+        public static HashSet<Guid> usedGuidInSession = [];
 
         public static void Init()
         {
@@ -305,9 +306,11 @@ namespace WaifuAI
             systemPromptSize = GetTokenCount(sysprompt);
             tokencount += systemPromptSize;
             var memprompt = string.Empty;
+            usedGuidInSession = [];
             if (Bot.UseRAG && RAGSystem.Enabled)
             {
-                var search = await RAGSystem.Search(ReplaceMacros(newMessage), MaxRAGEntries);
+                var searchmessage = string.IsNullOrWhiteSpace(newMessage) ? History.GetLastUserMessageContent() : newMessage;
+                var search = await RAGSystem.Search(ReplaceMacros(searchmessage), MaxRAGEntries);
                 memprompt = MemoriesToMessage(search);
                 if (!string.IsNullOrEmpty(memprompt))
                 {
@@ -321,6 +324,8 @@ namespace WaifuAI
                         if (!inserts.TryAdd(RAGIndex, memprompt))
                             inserts[RAGIndex] += NewLine + memprompt;
                     }
+                    foreach (var item in search)
+                        usedGuidInSession.Add(item.session.Guid);
                 }
             }
             if (string.IsNullOrEmpty(newMessage) && MsgSender == AuthorRole.User)
