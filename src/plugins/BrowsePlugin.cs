@@ -28,7 +28,7 @@ namespace WaifuAI.Plugins
         public bool KeywordDetection { get; set; } = true;
         public bool ModelDetection { get; set; } = true;
         public bool EnforceCorrectGrammar { get; set; } = false;
-        public double Temperature { get; set; } = 0.3;
+        public double Temperature { get; set; } = 0.5;
 
         private List<WebsiteDefinition> websites = [];
         private WebsiteDefinition? Website;
@@ -99,6 +99,15 @@ namespace WaifuAI.Plugins
                     }
                     // call the website plugin here
                     var webresult = await StartWebNavigation(userinput);
+                    if (webresult.IsSuccess)
+                    {
+                        LLMSystem.UI_ChangeMessage!($"**{LLMSystem.Bot.Name}:** *I am writing a message...*");
+                    }
+                    else
+                    {
+                        LLMSystem.UI_ChangeMessage!($"**{LLMSystem.Bot.Name}:** *I am writing a message (web navigation failed)...*");
+                    }
+
                     var output = new PluginResponse 
                     { 
                         IsHandled = webresult.IsSuccess, 
