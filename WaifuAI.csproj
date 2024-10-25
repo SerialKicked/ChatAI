@@ -136,10 +136,10 @@
     <None Update="data\instruct\Metharme.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="data\instruct\Mistral Spaced.json">
+    <None Update="data\instruct\Mistral Small.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="data\instruct\Mistral.json">
+    <None Update="data\instruct\Mistral Nemo.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="data\models\gte-large.Q6_K.gguf">
