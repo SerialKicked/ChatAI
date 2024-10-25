@@ -28,13 +28,17 @@ namespace WaifuAI.Plugins
         public bool KeywordDetection { get; set; } = true;
         public bool ModelDetection { get; set; } = true;
         public bool EnforceCorrectGrammar { get; set; } = false;
+        public bool NavigationHistory { get; set; } = false;
         public double Temperature { get; set; } = 0.5;
+
+        public Dictionary<string,string> WebsiteSpecificInfo { get; set; } = [];
 
         private List<WebsiteDefinition> websites = [];
         private WebsiteDefinition? Website;
         private string _basegoal = string.Empty;
         private PageType _location;
         private readonly WebScraper crawler = new();
+        private string _currenthistory = string.Empty;
 
         #region *** Interface Implementation ***
 
@@ -82,7 +86,7 @@ namespace WaifuAI.Plugins
                     foundCommand = item.Key;
             }
 
-            if (!string.IsNullOrEmpty(foundCommand) || kwEnter.Any(kw => userinput.Contains(kw, StringComparison.OrdinalIgnoreCase)))
+            if (!string.IsNullOrEmpty(foundCommand) || (KeywordDetection && kwEnter.Any(kw => userinput.Contains(kw, StringComparison.OrdinalIgnoreCase))))
             {
                 var x = await QueryLLM(userinput, foundCommand);
                 if (!string.IsNullOrEmpty(x))
@@ -164,6 +168,7 @@ namespace WaifuAI.Plugins
                 return new WebNavigationResult(false, "Website not found.", string.Empty);
             _basegoal = basegoal;
             _location = PageType.FrontPage;
+            _currenthistory = string.Empty;
             var promptbuilder = new StringBuilder(BuildInitialPrompt());
             promptbuilder.AppendLinuxLine();
             promptbuilder.AppendLinuxLine(Website.RenderFrontPage(string.Empty));
@@ -174,12 +179,14 @@ namespace WaifuAI.Plugins
             if (!string.IsNullOrEmpty(LLMSystem.Instruct.BotStart))
                 sysprompt += LLMSystem.Instruct.BotStart;
             sysprompt = LLMSystem.Instruct.BoSToken + sysprompt;
+            _currenthistory = sysprompt;
 
             var response = await SendQuery(sysprompt, true);
             if (string.IsNullOrEmpty(response))
                 return new WebNavigationResult(false, "Failed to navigate the website properly.", null);
             if (int.TryParse(response, out var index) && index <= Website.MainLinks.Count && index > 0)
             {
+                _currenthistory += response + LLMSystem.Instruct.BotEnd;
                 return await DoPage(Website.MainLinks[index-1]);
             }
             else
@@ -193,8 +200,12 @@ namespace WaifuAI.Plugins
             _location = page.Category;
             LLMSystem.UI_ChangeMessage!($"**{LLMSystem.Bot.Name}:** *I am browsing {page.Title}...*");
             var websiterender = await Website!.RenderPage(page.ID, string.Empty, crawler);
-            var promptbuilder = new StringBuilder(BuildInitialPrompt());
-            promptbuilder.AppendLinuxLine();
+            var promptbuilder = new StringBuilder();
+            if (!NavigationHistory)
+            {
+                promptbuilder.AppendLinuxLine(BuildInitialPrompt());
+                promptbuilder.AppendLinuxLine();
+            }
             promptbuilder.AppendLinuxLine(websiterender);
             promptbuilder.AppendLinuxLine("# Goal:");
             promptbuilder.AppendLinuxLine($"Complete this request from {LLMSystem.User.Name}: {_basegoal}");
@@ -202,9 +213,12 @@ namespace WaifuAI.Plugins
 
             if (!string.IsNullOrEmpty(LLMSystem.Instruct.BotStart))
                 sysprompt += LLMSystem.Instruct.BotStart;
+            if (NavigationHistory)
+                sysprompt = _currenthistory + sysprompt;
             var response = await SendQuery(sysprompt, true);
             if (string.IsNullOrEmpty(response))
                 return new WebNavigationResult(false, "Null Answer", null);
+            _currenthistory =  sysprompt + response + LLMSystem.Instruct.BotEnd;
             switch (_location)
             {
                 case PageType.MetaPage:
