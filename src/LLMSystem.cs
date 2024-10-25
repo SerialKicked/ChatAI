@@ -344,7 +344,7 @@ namespace WaifuAI
             {
                 var res = !string.IsNullOrEmpty(memprompt) && RAGIndex == -1 ?
                     sysprompt + NewLine + memprompt + history + msg + Instruct.GetUserStart(User) :
-                    sysprompt + NewLine + history + msg + Instruct.GetUserStart(User);
+                    sysprompt + NewLine + history + msg + Instruct.GetUserStart(User).TrimEnd();
                 return res;
             }
             else

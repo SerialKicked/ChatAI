@@ -761,6 +761,7 @@ namespace WaifuAI
             await WebEditLastMessage("*" + LLMSystem.Bot.UniqueName + " is thinking...*");
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
+            await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await LLMSystem.RerollLastMessage();
         }
 
