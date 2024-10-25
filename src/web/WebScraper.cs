@@ -141,6 +141,7 @@ namespace WaifuAI.Web
 
     public class WebsiteDefinition : BaseFile
     {
+        public bool AllowComplexNavigation = false;
         public string WebsiteName { get; set; } = "";
         public string TaskQuery { get; set; } = "";
         public string WebsiteInfo { get; set; } = "";
@@ -265,11 +266,16 @@ namespace WaifuAI.Web
                 case PageType.MetaPage:
                     str.AppendLinuxLine("- Retrieve information from this website to complete your goal.");
                     str.AppendLinuxLine("- Type the number corresponding to the link you want to visit.");
+                    if (AllowComplexNavigation)
+                        str.AppendLinuxLine("- Enter 0 to return to the main page and pick another link.");
                     str.AppendLinuxLine("- Only write the number and nothing else.");
                     break;
                 case PageType.ListingPage:
                     str.AppendLinuxLine("- If one of the links above corresponds to the request, answer with the corresponding number only, nothing else.");
-                    str.AppendLinuxLine("- If no task in the list above correspond to what the user requested, pick something close.");
+                    if (AllowComplexNavigation)
+                        str.AppendLinuxLine("- Enter 0 to return to the main page and pick another link.");
+                    else
+                        str.AppendLinuxLine("- If no task in the list above correspond to what the user requested, pick something close.");
                     str.AppendLinuxLine("- Pick one single option. Do not add any commentary or names.");
                     break;
                 case PageType.ArticlePage:

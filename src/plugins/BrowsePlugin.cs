@@ -102,6 +102,7 @@ namespace WaifuAI.Plugins
                         return new PluginResponse { IsHandled = false, Response = null };
                     }
                     // call the website plugin here
+                    _currenthistory = string.Empty;
                     var webresult = await StartWebNavigation(userinput);
                     if (webresult.IsSuccess)
                     {
@@ -166,11 +167,15 @@ namespace WaifuAI.Plugins
         {
             if (Website == null)
                 return new WebNavigationResult(false, "Website not found.", string.Empty);
+            Website.AllowComplexNavigation = NavigationHistory;
             _basegoal = basegoal;
             _location = PageType.FrontPage;
-            _currenthistory = string.Empty;
-            var promptbuilder = new StringBuilder(BuildInitialPrompt());
-            promptbuilder.AppendLinuxLine();
+            var promptbuilder = new StringBuilder();
+            if (!NavigationHistory || string.IsNullOrWhiteSpace(_currenthistory))
+            {
+                promptbuilder.Append(BuildInitialPrompt());
+                promptbuilder.AppendLinuxLine();
+            }
             promptbuilder.AppendLinuxLine(Website.RenderFrontPage(string.Empty));
             promptbuilder.AppendLinuxLine("# Goal:");
             promptbuilder.AppendLinuxLine($"Complete this request from {LLMSystem.User.Name}: {_basegoal}");
@@ -178,8 +183,9 @@ namespace WaifuAI.Plugins
 
             if (!string.IsNullOrEmpty(LLMSystem.Instruct.BotStart))
                 sysprompt += LLMSystem.Instruct.BotStart;
-            sysprompt = LLMSystem.Instruct.BoSToken + sysprompt;
-            _currenthistory = sysprompt;
+            if (string.IsNullOrWhiteSpace(_currenthistory))
+                sysprompt = LLMSystem.Instruct.BoSToken + sysprompt;
+            _currenthistory += sysprompt;
 
             var response = await SendQuery(sysprompt, true);
             if (string.IsNullOrEmpty(response))
@@ -224,14 +230,26 @@ namespace WaifuAI.Plugins
                 case PageType.MetaPage:
                     {
                         var metalinks = Website.SubLinks[page.ID];
-                        if (metalinks?.Count > 0 && int.TryParse(response, out var metaindex) && metaindex <= metalinks.Count && metaindex > 0)
-                            return await DoPage(metalinks[metaindex - 1]);
+                        if (int.TryParse(response, out var metaindex))
+                        {
+                            if (metalinks?.Count > 0 &&  metaindex <= metalinks.Count && metaindex > 0)
+                                return await DoPage(metalinks[metaindex - 1]);
+                            else if (NavigationHistory && metaindex == 0)
+                                return await StartWebNavigation(_basegoal);
+                        }
                         return new WebNavigationResult(false, "Failed to navigate meta page", null);
                     }
                 case PageType.ListingPage:
-                    if (int.TryParse(response, out var index) && index <= Website.CurrentListing.Entries.Count && index > 0)
-                        return new WebNavigationResult(true, TurnInResult(Website.CurrentListing.Entries[index-1]), null);
-                    return new WebNavigationResult(false, "Failed to navigate the listing properly.", null);
+                    {
+                        if (int.TryParse(response, out var index))
+                        {
+                            if (index <= Website.CurrentListing.Entries.Count && index > 0)
+                                return new WebNavigationResult(true, TurnInResult(Website.CurrentListing.Entries[index - 1]), null);
+                            else if (NavigationHistory && index == 0)
+                                return await StartWebNavigation(_basegoal);
+                        }
+                        return new WebNavigationResult(false, "Failed to navigate the listing properly.", null);
+                    }
                 default:
                     return new WebNavigationResult(false, "The request page type is not handled yet.", null);
             }
