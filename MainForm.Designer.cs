@@ -128,6 +128,13 @@
             cb_samplerlist = new ComboBox();
             pan_samplers = new Panel();
             tabSettings = new TabPage();
+            groupBox10 = new GroupBox();
+            num_msgcount = new NumericUpDown();
+            label30 = new Label();
+            num_fontsize = new NumericUpDown();
+            label29 = new Label();
+            cb_background = new ComboBox();
+            label28 = new Label();
             groupBox9 = new GroupBox();
             ck_webgrammar = new CheckBox();
             ck_webkeyword = new CheckBox();
@@ -182,6 +189,9 @@
             tabSysPrompt.SuspendLayout();
             tabSamplers.SuspendLayout();
             tabSettings.SuspendLayout();
+            groupBox10.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)num_msgcount).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)num_fontsize).BeginInit();
             groupBox9.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -1259,6 +1269,7 @@
             // 
             // tabSettings
             // 
+            tabSettings.Controls.Add(groupBox10);
             tabSettings.Controls.Add(groupBox9);
             tabSettings.Controls.Add(groupBox2);
             tabSettings.Controls.Add(groupBox1);
@@ -1270,6 +1281,87 @@
             tabSettings.TabIndex = 4;
             tabSettings.Text = "Settings";
             tabSettings.UseVisualStyleBackColor = true;
+            // 
+            // groupBox10
+            // 
+            groupBox10.Controls.Add(num_msgcount);
+            groupBox10.Controls.Add(label30);
+            groupBox10.Controls.Add(num_fontsize);
+            groupBox10.Controls.Add(label29);
+            groupBox10.Controls.Add(cb_background);
+            groupBox10.Controls.Add(label28);
+            groupBox10.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            groupBox10.Location = new Point(8, 445);
+            groupBox10.Name = "groupBox10";
+            groupBox10.Size = new Size(402, 75);
+            groupBox10.TabIndex = 26;
+            groupBox10.TabStop = false;
+            groupBox10.Text = "User Interface";
+            // 
+            // num_msgcount
+            // 
+            num_msgcount.Font = new Font("Segoe UI", 9F);
+            num_msgcount.Increment = new decimal(new int[] { 20, 0, 0, 0 });
+            num_msgcount.Location = new Point(292, 37);
+            num_msgcount.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            num_msgcount.Minimum = new decimal(new int[] { 20, 0, 0, 0 });
+            num_msgcount.Name = "num_msgcount";
+            num_msgcount.Size = new Size(79, 23);
+            num_msgcount.TabIndex = 29;
+            num_msgcount.Value = new decimal(new int[] { 20, 0, 0, 0 });
+            num_msgcount.ValueChanged += num_msgcount_ValueChanged;
+            // 
+            // label30
+            // 
+            label30.AutoSize = true;
+            label30.Font = new Font("Segoe UI", 9F);
+            label30.Location = new Point(292, 18);
+            label30.Name = "label30";
+            label30.Size = new Size(97, 15);
+            label30.TabIndex = 30;
+            label30.Text = "Shown Messages";
+            // 
+            // num_fontsize
+            // 
+            num_fontsize.Font = new Font("Segoe UI", 9F);
+            num_fontsize.Location = new Point(207, 37);
+            num_fontsize.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
+            num_fontsize.Minimum = new decimal(new int[] { 6, 0, 0, 0 });
+            num_fontsize.Name = "num_fontsize";
+            num_fontsize.Size = new Size(79, 23);
+            num_fontsize.TabIndex = 27;
+            num_fontsize.Value = new decimal(new int[] { 7, 0, 0, 0 });
+            num_fontsize.ValueChanged += num_fontsize_ValueChanged;
+            // 
+            // label29
+            // 
+            label29.AutoSize = true;
+            label29.Font = new Font("Segoe UI", 9F);
+            label29.Location = new Point(207, 19);
+            label29.Name = "label29";
+            label29.Size = new Size(54, 15);
+            label29.TabIndex = 28;
+            label29.Text = "Font Size";
+            // 
+            // cb_background
+            // 
+            cb_background.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_background.Font = new Font("Segoe UI", 9F);
+            cb_background.Location = new Point(6, 37);
+            cb_background.Name = "cb_background";
+            cb_background.Size = new Size(195, 23);
+            cb_background.TabIndex = 27;
+            cb_background.SelectedIndexChanged += cb_background_SelectedIndexChanged;
+            // 
+            // label28
+            // 
+            label28.AutoSize = true;
+            label28.Font = new Font("Segoe UI", 9F);
+            label28.Location = new Point(6, 19);
+            label28.Name = "label28";
+            label28.Size = new Size(99, 15);
+            label28.TabIndex = 26;
+            label28.Text = "Chat Background";
             // 
             // groupBox9
             // 
@@ -1549,6 +1641,7 @@
             // ed_log
             // 
             ed_log.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            ed_log.BorderStyle = BorderStyle.FixedSingle;
             ed_log.Font = new Font("Segoe UI", 9F);
             ed_log.Location = new Point(416, 6);
             ed_log.Multiline = true;
@@ -1616,6 +1709,10 @@
             tabSamplers.ResumeLayout(false);
             tabSettings.ResumeLayout(false);
             tabSettings.PerformLayout();
+            groupBox10.ResumeLayout(false);
+            groupBox10.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)num_msgcount).EndInit();
+            ((System.ComponentModel.ISupportInitialize)num_fontsize).EndInit();
             groupBox9.ResumeLayout(false);
             groupBox9.PerformLayout();
             groupBox2.ResumeLayout(false);
@@ -1753,5 +1850,12 @@
         private CheckBox ck_webgrammar;
         private CheckBox ck_webkeyword;
         private ToolTip HelptoolTip;
+        private GroupBox groupBox10;
+        private NumericUpDown num_msgcount;
+        private Label label30;
+        private NumericUpDown num_fontsize;
+        private Label label29;
+        private ComboBox cb_background;
+        private Label label28;
     }
 }

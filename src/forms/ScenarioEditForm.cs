@@ -30,8 +30,11 @@ namespace WaifuAI.src.forms
 
         private void ScenarioEditForm_KeyPress(object sender, KeyPressEventArgs e)
         {
-            DialogResult = DialogResult.Cancel;
-            Close();
+            if (e.KeyChar == (char)Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)

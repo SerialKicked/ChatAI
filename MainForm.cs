@@ -10,6 +10,7 @@ using WaifuAI.src.forms;
 using WaifuAI.Memory;
 using System.Numerics;
 using AngleSharp;
+using YamlDotNet.Serialization;
 
 namespace WaifuAI
 {
@@ -29,6 +30,7 @@ namespace WaifuAI
         private ChatSession? _selectedSession = null;
         private bool _impersonatemode = false;
         private bool _forcereload = false;
+        private bool _editopened = false;
 
         public static MarkdownPipeline CustomMarkDownPipeline { get; } = new MarkdownPipelineBuilder()
             .UseSoftlineBreakAsHardlineBreak()
@@ -39,6 +41,12 @@ namespace WaifuAI
         public MainForm()
         {
             InitializeComponent();
+            // load all the image files in data/backgrounds to the cb_background combobox
+            foreach (var file in System.IO.Directory.GetFiles("data/background"))
+            {
+                cb_background.Items.Add(System.IO.Path.GetFileName(file));
+            }
+
             HelptoolTip.SetToolTip(ck_ragweb, "Allows the LLM to browse compatible websites for information.");
             HelptoolTip.SetToolTip(ck_webgrammar, "If checked, the LLM will be better at navigating the website, but its results will be less accurate." + Environment.NewLine + "Only enable if the LLM is consistently failing at browsing the web.");
             HelptoolTip.SetToolTip(ck_webkeyword, "If checked, the web logic will only be run if some internet related keywords are found in the user's request (faster, less accurate)." + Environment.NewLine + "If unckecked, all user inputs will be processed twice, once to check if the web should be visited, and another time for the normal response from the bot (slower, more accurate).");
@@ -758,6 +766,7 @@ namespace WaifuAI
             if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.Messages.Count == 0)
                 return;
             _impersonatemode = false;
+            await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await WebEditLastMessage("*" + LLMSystem.Bot.UniqueName + " is thinking...*");
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
@@ -871,6 +880,9 @@ namespace WaifuAI
                 num_ragmaxretrieve.Value = Settings.MaxRAGEntries;
                 num_ragindex.Value = Settings.RAGPosition;
                 ck_ragweb.Checked = Settings.InternetSearch;
+                cb_background.SelectedIndex = cb_background.Items.IndexOf(Settings.BackgroundFile);
+                num_fontsize.Value = Settings.FontSize;
+                num_msgcount.Value = Settings.MaxMessagesOnScreen;
             }
         }
 
@@ -895,6 +907,9 @@ namespace WaifuAI
                 Settings.MaxRAGEntries = LLMSystem.MaxRAGEntries;
                 Settings.RAGPosition = LLMSystem.RAGIndex;
                 Settings.ScenarioOverride = LLMSystem.ScenarioOverride;
+                Settings.FontSize = (int)num_fontsize.Value;
+                Settings.MaxMessagesOnScreen = (int)num_msgcount.Value;
+                Settings.BackgroundFile = cb_background.SelectedItem?.ToString() ?? "bedroom_cozy.jpg";
                 var str = JsonConvert.SerializeObject(Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
             }
@@ -1044,62 +1059,55 @@ namespace WaifuAI
             LLMSystem.Bot.SaveChatHistory();
         }
 
-        #endregion
-
-        #region *** Web Chat Control Handling ***
-
-        private static string InjectDialogCSS(string htmlContent)
+        private string InjectDialogCSS(string htmlContent)
         {
-            string css = @"
+            string css = $@"
             <style>
-                body { 
+                body {{ 
                     max-height: 100%;
                     overflow-y: auto;
                     overflow-x: hidden;
                     padding: 16px;
-                    font-size: 18px;
+                    font-size: {Settings.FontSize}px;
                     width: 100%;
                     box-sizing: border-box;
-                    background-image: url('https://appassets.test/ui/background.jpg');
+                    background-image: url('https://appassets.test/background/{Settings.BackgroundFile}');
                     background-size: cover; /* Ensures the image covers the entire background */
                     background-attachment: fixed; /* Keeps the background image fixed in place */
                     background-position: center; /* Centers the background image */
                     background-repeat: no-repeat; /* Prevents the background image from repeating */
+                }}
+                em {{ color: yellow; }}
+                strong {{ color: Tomato }}
+                a {{ color: gold }}
+                h1 {{ font-size: 1.3em; }}
+                h2 {{ font-size: 1.25em; }}
+                h3 {{ font-size: 1.2em; }}
+                h4 {{ font-size: 1.15em; }}
+                h5 {{ font-size: 1.1em; }}
 
-                }
-                em { color: yellow; }
-                strong { color: Tomato }
-                a { color: gold }
-                h1 { font-size: 1.3em; }
-                h2 { font-size: 1.25em; }
-                h3 { font-size: 1.2em; }
-                h4 { font-size: 1.15em; }
-                h5 { font-size: 1.1em; }
-
-                .chat-message {
+                .chat-message {{
                     display: flex;
                     align-items: flex-start;
                     margin-bottom: 10px;
                     border: 1px solid gray;
                     background-color: rgba(0, 0, 0, 0.75);
                     color: rgb(200, 200, 200);
-                }
-                .chatContainer {
-                }
+                }}
+                .chatContainer {{
+                }}
 
-                .portrait {
+                .portrait {{
                     flex: 0 0 70px;
                     padding: 10px;
                     margin-right: 0px;
-                }
+                }}
 
-                .message-content {
+                .message-content {{
                     flex: 1;
                     word-wrap: break-word;
                     padding-right: 10px;
-                }
-
-
+                }}
             </style>";
             string scripts = @"
             <script>
@@ -1139,6 +1147,9 @@ namespace WaifuAI
 
         private void EditMessage(int messageIndex)
         {
+            if (_editopened)
+                return;
+            _editopened = true;
             try
             {
                 Task.Run(() =>
@@ -1157,6 +1168,7 @@ namespace WaifuAI
                         });
                     }
                     editForm.Dispose();
+                    _editopened = false;
                 });
             }
             catch (Exception ex)
@@ -1439,6 +1451,28 @@ namespace WaifuAI
             SelectedWorldEditor.Entries.Add(SelectedWorldEntryEditor);
             lb_worldentries.Items.Add(SelectedWorldEntryEditor.Name);
             lb_worldentries.SelectedIndex = lb_worldentries.Items.Count - 1;
+        }
+
+        private void num_msgcount_ValueChanged(object sender, EventArgs e)
+        {
+            Settings.MaxMessagesOnScreen = (int)num_msgcount.Value;
+        }
+
+        private void num_fontsize_ValueChanged(object sender, EventArgs e)
+        {
+            Settings.FontSize = (int)num_fontsize.Value;
+            WebChatLoad();
+        }
+
+        private void cb_background_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Settings.BackgroundFile = cb_background.SelectedItem?.ToString() ?? "bedroom_cozy.jpg";
+            WebChatLoad();
+        }
+
+        private void ed_input_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

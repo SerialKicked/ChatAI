@@ -46,6 +46,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="data\background\beach_day.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="data\background\beach_night.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="data\background\bedroom cyber.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="data\chars\Assistant.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -166,8 +175,8 @@
     <None Update="data\sysprompts\_sysprompt go here.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="data\ui\background.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="data\background\bedroom_cozy.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="data\websites\hentaimama.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -184,5 +193,9 @@
     <None Update="data\worlds\_world info here.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="data\ui\" />
   </ItemGroup>
 </Project>
