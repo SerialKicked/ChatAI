@@ -160,6 +160,7 @@ namespace WaifuAI.Web
 
         [JsonIgnore] public WListing CurrentListing = new();
 
+
         public string RenderFrontPage(string Goal)
         {
             var str = new StringBuilder();
@@ -295,14 +296,34 @@ namespace WaifuAI.Web
         private readonly IConfiguration config = Configuration.Default.WithDefaultLoader();
         private readonly IBrowsingContext context;
 
+        private Dictionary<string, IDocument> Cache = [];
+
+
         public WebScraper() 
         {
             context = BrowsingContext.New(config);
         }
 
+        public void ClearCache()
+        {
+            Cache.Clear();
+        }
+
         public async Task<IHtmlCollection<IElement>> FindCells(string address, string cellselector)
         {
-            var document = await context.OpenAsync(address);
+            IDocument? document = null;
+            if (Cache.TryGetValue(address, out var cache))
+            {
+                document = cache;
+            }
+            else
+            {
+                document = await context.OpenAsync(address);
+                if (document != null)
+                    Cache[address] = document;
+            }
+            if (document == null)
+                return default;
             var cells = document.QuerySelectorAll(cellselector);
             return cells;
         }
@@ -322,7 +343,17 @@ namespace WaifuAI.Web
 
         public async Task<WListing> ParseWebListing(string page, WebsiteDefinition web, bool innerscan)
         {
-            var document = await context.OpenAsync(page);
+            IDocument? document = null;
+            if (Cache.TryGetValue(page, out var cache))
+            {
+                document = cache;
+            }
+            else
+            {
+                document = await context.OpenAsync(page);
+                if (document != null)
+                    Cache[page] = document;
+            }
             if (document == null)
                 return new WListing();
             var res = new WListing()
@@ -388,7 +419,17 @@ namespace WaifuAI.Web
 
         public async Task<string> GetPageContent(string page, WebsiteDefinition web)
         {
-            var document = await context.OpenAsync(page);
+            IDocument? document = null;
+            if (Cache.TryGetValue(page, out var cache))
+            {
+                document = cache;
+            }
+            else
+            {
+                document = await context.OpenAsync(page);
+                if (document != null)
+                    Cache[page] = document;
+            }
             if (document == null)
                 return string.Empty;
             var content = web.PageContentSelector.RunQuery(document);

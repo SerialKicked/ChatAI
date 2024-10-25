@@ -538,7 +538,7 @@ namespace WaifuAI
                 return string.Empty;
 
             var msgtxt = (DateTime.Now.Date != History.Messages.Last().Date.Date) || (timespan > new TimeSpan(12, 0, 0)) ? 
-                $"We're {DateToHumanString(DateTime.Now)}." : string.Empty;
+                $"We're {DateTime.Now.DayOfWeek} {DateToHumanString(DateTime.Now)}." : string.Empty;
             if (timespan.Days > 1)
                 msgtxt += $" Your last chat was {timespan.Days} days ago. " + "It is {{time}} now.";
             else if (timespan.Days == 1)
