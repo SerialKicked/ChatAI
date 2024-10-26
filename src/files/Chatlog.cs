@@ -203,39 +203,62 @@ namespace WaifuAI.Files
             return sb.ToString();
         }
 
-        public string GetRawSummary(string title = "Chat Session")
+        public string GetRawSummary(string title = "Chat Session", bool NaturalLanguage = false)
         {
             var sb = new StringBuilder();
-            sb.AppendLinuxLine("# "+ LLMSystem.ReplaceMacros(title));
-            if (StartTime.Date == EndTime.Date)
-                sb.AppendLinuxLine("## Date: " + StartTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(StartTime));
+            var tit = LLMSystem.ReplaceMacros(title);
+            if (!NaturalLanguage)
+            {
+                sb.AppendLinuxLine("# " + tit);
+                if (StartTime.Date == EndTime.Date)
+                    sb.AppendLinuxLine("## Date: " + StartTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(StartTime));
+                else
+                    sb.AppendLinuxLine("## From " + StartTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(StartTime) + " to " + EndTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(EndTime));
+                sb.AppendLinuxLine("## Title: " + Title.Trim());
+                sb.AppendLinuxLine("## Summary: " + LLMSystem.NewLine + Summary.Replace("\n\n", " ").Trim() + LLMSystem.NewLine);
+            }
             else
-                sb.AppendLinuxLine("## From " + StartTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(StartTime) + " to " + EndTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(EndTime));
-            sb.AppendLinuxLine("## Title: " + Title.Trim());
-            sb.AppendLinuxLine("## Summary: " + LLMSystem.NewLine + Summary.Replace("\n\n"," ").Trim() + LLMSystem.NewLine);
+            {
+                if (StartTime.Date == EndTime.Date)
+                    sb.AppendLinuxLine($"{tit} on the {StartTime.DayOfWeek} {LLMSystem.DateToHumanString(StartTime)}: *{Title.Trim()}* {Summary.RemoveNewLines()}");
+                else
+                    sb.AppendLinuxLine($"{tit} from the {StartTime.DayOfWeek} {LLMSystem.DateToHumanString(StartTime)}, to the {EndTime.DayOfWeek} {LLMSystem.DateToHumanString(EndTime)}: *{Title.Trim()}* {Summary.RemoveNewLines()}");
+            }
             return sb.ToString();
         }
 
-        public string GetRawMemory()
+        public string GetRawMemory(bool Natural = false)
         {
             var sb = new StringBuilder();
-            sb.AppendLinuxLine("# " + Title.Trim());
-            if (StartTime.Date == EndTime.Date)
-                sb.AppendLinuxLine("## Date: " + StartTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(StartTime));
+            if (!Natural)
+            {
+                sb.AppendLinuxLine("# " + Title.Trim());
+                if (StartTime.Date == EndTime.Date)
+                    sb.AppendLinuxLine("## Date: " + StartTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(StartTime));
+                else
+                    sb.AppendLinuxLine("## From " + StartTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(StartTime) + " to " + EndTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(EndTime));
+                sb.AppendLinuxLine("## Memory: " + Summary.RemoveNewLines());
+            }
             else
-                sb.AppendLinuxLine("## From " + StartTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(StartTime) + " to " + EndTime.DayOfWeek.ToString() + " " + LLMSystem.DateToHumanString(EndTime));
-            sb.AppendLinuxLine("## Memory: " + Summary.Replace("\n\n", " ").Trim());
+            {
+                if (StartTime.Date == EndTime.Date)
+                    sb.AppendLinuxLine($"On {StartTime.DayOfWeek}, {LLMSystem.DateToHumanString(StartTime)}, the following event took place from {LLMSystem.Bot.Name}'s perspective. {Summary.RemoveNewLines()}");
+                else
+                    sb.AppendLinuxLine($"Between the {StartTime.DayOfWeek} {LLMSystem.DateToHumanString(StartTime)} and the {EndTime.DayOfWeek} {LLMSystem.DateToHumanString(EndTime)}, the following event took place from {LLMSystem.Bot.Name}'s perspective. {Summary.RemoveNewLines()}");
+
+            }
+
             return sb.ToString();
         }
 
-        public string GetFormatedSummary(string title = "Chat Session")
+        public string GetFormatedSummary(string title = "Chat Session", bool NaturalLanguage = false)
         {
-            return LLMSystem.Instruct.FormatSingleMessage(new SingleMessage(AuthorRole.System, DateTime.Now, GetRawSummary(title), LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+            return LLMSystem.Instruct.FormatSingleMessage(new SingleMessage(AuthorRole.System, DateTime.Now, GetRawSummary(title, NaturalLanguage), LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
         }
 
-        public int GetFormatedSummaryTokenCount()
+        public int GetFormatedSummaryTokenCount(bool NaturalLanguage = false)
         {
-            return LLMSystem.GetTokenCount(GetFormatedSummary());
+            return LLMSystem.GetTokenCount(GetFormatedSummary(NaturalLanguage: NaturalLanguage));
         }
     }
 
@@ -303,7 +326,7 @@ namespace WaifuAI.Files
                     var session = Sessions[i];
                     if (LLMSystem.usedGuidInSession.Contains(session.Guid))
                         continue;
-                    var summarytokencount = session.GetFormatedSummaryTokenCount();
+                    var summarytokencount = session.GetFormatedSummaryTokenCount(!LLMSystem.MarkdownMemoryFormating);
                     var sessiontokencount = GetTotalTokens(session.Messages);
                     // If all session can fit, or if that session's end is less than 7 days ago, or we have too few messages
                     if (sessiontokencount <= tokensleft || ((DateTime.Now - session.EndTime) < new TimeSpan(7, 0, 0, 0)))
@@ -323,7 +346,7 @@ namespace WaifuAI.Files
                         if (summarytokencount <= availSessionMemTokens)
                         {
                             availSessionMemTokens -= summarytokencount;
-                            sb.Insert(0, session.GetFormatedSummary());
+                            sb.Insert(0, session.GetFormatedSummary(NaturalLanguage: !LLMSystem.MarkdownMemoryFormating));
                             CheckAndAddMemories();
                             entrydepth++;
                         }

@@ -52,6 +52,7 @@ namespace WaifuAI
         public static string ScenarioOverride { get; set; } = string.Empty;
         public static bool? AddNamesToPrompt { get; set; } = null;
         public static bool WebBrowsingPlugin { get; set; } = false;
+        public static bool MarkdownMemoryFormating { get; set; } = false;
 
         public static EventHandler<string>? OnFullPromptReady;
         /// <summary> Called during inference each time the LLM outputs a new token </summary>
@@ -361,10 +362,10 @@ namespace WaifuAI
             if (memories.Count == 0)
                 return string.Empty;
             var stbuild = new StringBuilder();
-            stbuild.AppendLinuxLine("The message from {{user}} at the bottom triggered the following memories:");
+            stbuild.AppendLinuxLine("The message from {{user}} at the bottom triggered the following memories in {{char}}'s mind:");
             foreach (var (session, _, _) in memories)
             {
-                stbuild.AppendLinuxLine(session.GetRawMemory());
+                stbuild.AppendLinuxLine(session.GetRawMemory(!MarkdownMemoryFormating));
             }
             return stbuild.ToString();
         }

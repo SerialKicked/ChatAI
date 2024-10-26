@@ -195,6 +195,7 @@ namespace WaifuAI
                     _forcereload = false;
                     Invoke((System.Windows.Forms.MethodInvoker)delegate
                     {
+                        ShowCurrentSessionInfo();
                         WebChatLoad();
                     });
                 }
@@ -712,6 +713,7 @@ namespace WaifuAI
             _impersonatemode = false;
             if (!string.IsNullOrEmpty(ed_input.Text))
             {
+                ShowCurrentSessionInfo();
                 var messagetext = LLMSystem.ReplaceMacros(LLMSystem.GetAwayString() + ed_input.Text.ToLinuxFormat(), LLMSystem.User, LLMSystem.Bot);
                 var msg = new SingleMessage(AuthorRole.User, DateTime.Now, messagetext, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
                 if (ed_input.Text.StartsWith("/sys "))
@@ -767,7 +769,7 @@ namespace WaifuAI
                 return;
             _impersonatemode = false;
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
-            await WebEditLastMessage("*" + LLMSystem.Bot.UniqueName + " is thinking...*");
+            await WebEditLastMessage($"**{LLMSystem.Bot.Name}:** *I am thinking...*");
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
