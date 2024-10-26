@@ -116,6 +116,7 @@ namespace WaifuAI
                     bt_connect.Enabled = true;
                     bt_send.Enabled = true;
                     bt_send.Text = "Send";
+                    bt_send.BackColor = System.Drawing.Color.PaleGreen;
                     bt_reroll.Enabled = true;
                     bt_chattosessions.Enabled = true;
                     bt_newsession.Enabled = true;
@@ -127,6 +128,7 @@ namespace WaifuAI
                     bt_connect.Enabled = false;
                     bt_send.Enabled = true;
                     bt_send.Text = "Cancel";
+                    bt_send.BackColor = System.Drawing.Color.OrangeRed;
                     bt_reroll.Enabled = false;
                     bt_chattosessions.Enabled = false;
                     bt_newsession.Enabled = false;
@@ -1363,10 +1365,18 @@ namespace WaifuAI
         private void ed_input_KeyPress(object sender, KeyPressEventArgs e)
         {
             // if user pressed Shift + Enter send message
-            if (e.KeyChar == (char)13 && ModifierKeys == Keys.Shift)
+            if (e.KeyChar == (char)13)
             {
                 e.Handled = true;
-                SendMessage(sender, e);
+                if (ModifierKeys == Keys.Shift)
+                {
+                    int caretPosition = ed_input.SelectionStart;
+                    ed_input.Text = ed_input.Text.Insert(caretPosition, Environment.NewLine);
+                    ed_input.SelectionStart = caretPosition + Environment.NewLine.Length;
+                    //ed_input.Text += Environment.NewLine;
+                }
+                else
+                    SendMessage(sender, e);
             }
         }
 
@@ -1476,5 +1486,6 @@ namespace WaifuAI
         {
 
         }
+
     }
 }

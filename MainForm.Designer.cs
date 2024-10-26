@@ -241,7 +241,7 @@
             bt_impersonate.BackColor = Color.Turquoise;
             bt_impersonate.FlatStyle = FlatStyle.Flat;
             bt_impersonate.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_impersonate.Location = new Point(910, 635);
+            bt_impersonate.Location = new Point(976, 573);
             bt_impersonate.Name = "bt_impersonate";
             bt_impersonate.Size = new Size(60, 25);
             bt_impersonate.TabIndex = 7;
@@ -256,7 +256,7 @@
             web_chat.DefaultBackgroundColor = Color.White;
             web_chat.Location = new Point(212, 3);
             web_chat.Name = "web_chat";
-            web_chat.Size = new Size(824, 594);
+            web_chat.Size = new Size(824, 564);
             web_chat.TabIndex = 6;
             web_chat.ZoomFactor = 1D;
             // 
@@ -292,9 +292,9 @@
             bt_send.BackColor = Color.PaleGreen;
             bt_send.FlatStyle = FlatStyle.Flat;
             bt_send.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_send.Location = new Point(910, 604);
+            bt_send.Location = new Point(910, 574);
             bt_send.Name = "bt_send";
-            bt_send.Size = new Size(60, 25);
+            bt_send.Size = new Size(60, 86);
             bt_send.TabIndex = 3;
             bt_send.Text = "Send";
             bt_send.UseVisualStyleBackColor = false;
@@ -305,11 +305,11 @@
             ed_input.BackColor = Color.WhiteSmoke;
             ed_input.BorderStyle = BorderStyle.FixedSingle;
             ed_input.Font = new Font("Segoe UI", 11F);
-            ed_input.Location = new Point(212, 603);
+            ed_input.Location = new Point(212, 573);
             ed_input.Multiline = true;
             ed_input.Name = "ed_input";
             ed_input.ScrollBars = ScrollBars.Vertical;
-            ed_input.Size = new Size(692, 57);
+            ed_input.Size = new Size(692, 87);
             ed_input.TabIndex = 2;
             ed_input.KeyPress += ed_input_KeyPress;
             // 
