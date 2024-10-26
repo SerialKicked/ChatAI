@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using System.Globalization;
 using static LLama.Common.ChatHistory;
 using System;
+using WaifuAI.Plugins;
 
 namespace WaifuAI
 {
@@ -70,6 +71,8 @@ namespace WaifuAI
         public static BasicDelegateFunction? UI_RefreshChat = null;
         public static UpdateMessageFunction? UI_ChangeMessage = null;
 
+        public static List<IContextPlugin> ContextPlugins { get; private set; } = [];
+
 
         public static SystemStatus Status
         {
@@ -97,7 +100,7 @@ namespace WaifuAI
         public static ILogger? logger = null;
 
         // Default/Current Characters, Users, Instruct format, and inference parameters
-        private static Character bot = new() { IsUser = false, Name = "Assistant", Bio = "You are an helpful AI assistant whose goal is to answer questions and complete tasks.", UniqueName = string.Empty };
+        private static Character bot = new() { IsUser = false, Name = "Bot", Bio = "You are an helpful AI assistant whose goal is to answer questions and complete tasks.", UniqueName = string.Empty };
         public static Character User = new() { IsUser = true, Name = "User", UniqueName = string.Empty };
         public static InstructFormat Instruct { 
             get => instruct; 
@@ -133,6 +136,10 @@ namespace WaifuAI
             Client.BaseUrl = "http://localhost:5001";
             Client.ReadResponseAsString = true;
             Client.StreamingMessageReceived += Client_StreamingMessageReceived;
+            // Load plugins
+            ContextPlugins = [];
+            ContextPlugins.Add(new BrowsePlugin());
+            ContextPlugins.Add(new LocationPlugin("Locations"));
             Status = SystemStatus.Ready;
         }
 
@@ -144,9 +151,9 @@ namespace WaifuAI
                 if (!string.IsNullOrEmpty(e.Data.token))
                     StreamingTextProgress += e.Data.token;
                 var response = StreamingTextProgress.Trim();
-                foreach (var ctxplug in Bot.Plugins)
+                foreach (var ctxplug in ContextPlugins)
                 {
-                    if (ctxplug.ReplaceOutput(ReplaceMacros(response, User, Bot), History, out var editedresponse))
+                    if (ctxplug.Enabled && ctxplug.ReplaceOutput(ReplaceMacros(response, User, Bot), History, out var editedresponse))
                         response = editedresponse;
                 }
                 RaiseOnInferenceEnded(response);
@@ -301,9 +308,9 @@ namespace WaifuAI
                         inserts[item.PositionIndex] += NewLine + item.Message;
                 }
             }
-            foreach (var ctxplug in Bot.Plugins)
+            foreach (var ctxplug in ContextPlugins)
             {
-                if (ctxplug.AddToSystemPrompt(searchmessage, History, out var ctxinfo))
+                if (ctxplug.Enabled && ctxplug.AddToSystemPrompt(searchmessage, History, out var ctxinfo))
                     rawprompt.AppendLinuxLine(ctxinfo);
             }
 
@@ -464,8 +471,10 @@ namespace WaifuAI
             var lastuserinput = string.IsNullOrEmpty(userInput) ? History.GetLastUserMessageContent() : userInput;
             var insertmessages = new List<string>();
             if (!string.IsNullOrEmpty(lastuserinput) && Status != SystemStatus.Automated)
-                foreach (var ctxplug in Bot.Plugins)
+                foreach (var ctxplug in ContextPlugins)
                 {
+                    if (!ctxplug.Enabled)
+                        continue;
                     var plugres = await ctxplug.ReplaceUserInput(ReplaceMacros(lastuserinput, User, Bot));
                     if (plugres.IsHandled && !string.IsNullOrEmpty(plugres.Response))
                     {

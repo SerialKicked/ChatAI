@@ -13,8 +13,11 @@ using WaifuAI.Web;
 namespace WaifuAI.Plugins
 
 {
-    internal class LocationPlugin(string? world) : ContextPlugin
+    internal class LocationPlugin(string? world) : IContextPlugin
     {
+        public string PluginID { get; } = "Location";
+        public bool Enabled { get; set; } = false;
+
         private readonly string[] kwEnter = [ "go to ", "move to ", "get to " ];
         private readonly WorldInfo locations = !string.IsNullOrEmpty(world) && DataFiles.WorldInfos.TryGetValue(world, out var info) ? info : new();
         private WorldEntry? currentLocation = null;
@@ -34,7 +37,7 @@ namespace WaifuAI.Plugins
         /// <param name="log">chatlog</param>
         /// <param name="response">contains the bit to be added to sysprompt (out)</param>
         /// <returns></returns>
-        public override bool AddToSystemPrompt(string userinput, Chatlog log, out string response)
+        public bool AddToSystemPrompt(string userinput, Chatlog log, out string response)
         {
             if (currentLocation == null || (!ModelDetection && !KeywordDetection))
             {
@@ -55,7 +58,7 @@ namespace WaifuAI.Plugins
         /// <param name="log"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        public override bool ReplaceOutput(string botoutput, Chatlog log, out string response)
+        public bool ReplaceOutput(string botoutput, Chatlog log, out string response)
         {
             response = string.Empty;
             return false; 
@@ -68,7 +71,7 @@ namespace WaifuAI.Plugins
         /// <param name="log"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        public override async Task<PluginResponse> ReplaceUserInput(string userinput)
+        public async Task<PluginResponse> ReplaceUserInput(string userinput)
         {
             if (KeywordDetection && !ModelDetection)
             {

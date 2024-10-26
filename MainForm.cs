@@ -70,6 +70,7 @@ namespace WaifuAI
 
         private void SetupChatMenu()
         {
+            LLMSystem.Init();
             cb_bot.Items.Clear();
             cb_user.Items.Clear();
             foreach (var item in DataFiles.Characters)
@@ -99,7 +100,6 @@ namespace WaifuAI
             ck_ragenabled.Checked = RAGSystem.Enabled;
             LLMSystem.UI_RefreshChat = ForceWebChatReload;
             LLMSystem.UI_ChangeMessage = ForceUpdateLastMessage;
-            LLMSystem.Init();
             LLMSystem.OnInferenceStreamed += OnStreamMessageReceived;
             LLMSystem.OnInferenceEnded += OnStreamInferenceEnded;
             LLMSystem.OnFullPromptReady += OnFullPromptReady;
@@ -357,8 +357,8 @@ namespace WaifuAI
         {
             SelectedWorldEntryEditor.Name = ed_wentryname.Text;
             SelectedWorldEntryEditor.Message = ed_wentrymem.Text.ToLinuxFormat();
-            SelectedWorldEntryEditor.KeyWordsMain = ed_wentrykw1.Text.Split(',').ToList();
-            SelectedWorldEntryEditor.KeyWordsSecondary = ed_wentrykw2.Text.Split(',').ToList();
+            SelectedWorldEntryEditor.KeyWordsMain = ed_wentrykw1.Text.Split(',')?.ToList() ?? [];
+            SelectedWorldEntryEditor.KeyWordsSecondary = ed_wentrykw2.Text.Split(',')?.ToList() ?? [];
             SelectedWorldEntryEditor.Duration = (int)num_wentryduration.Value;
             SelectedWorldEntryEditor.PositionIndex = (int)num_wentryposition.Value;
             SelectedWorldEntryEditor.Priority = (int)num_wentrypriority.Value;
@@ -1243,9 +1243,9 @@ namespace WaifuAI
         {
             _forcereload = true;
         }
-        public void ForceUpdateLastMessage(string update)
+        public async void ForceUpdateLastMessage(string update)
         {
-            WebEditLastMessage(update);
+            await WebEditLastMessage(update);
         }
 
         private async Task WebChatLoad()
@@ -1470,16 +1470,16 @@ namespace WaifuAI
             Settings.MaxMessagesOnScreen = (int)num_msgcount.Value;
         }
 
-        private void num_fontsize_ValueChanged(object sender, EventArgs e)
+        private async void num_fontsize_ValueChanged(object sender, EventArgs e)
         {
             Settings.FontSize = (int)num_fontsize.Value;
-            WebChatLoad();
+            await WebChatLoad();
         }
 
-        private void cb_background_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cb_background_SelectedIndexChanged(object sender, EventArgs e)
         {
             Settings.BackgroundFile = cb_background.SelectedItem?.ToString() ?? "bedroom_cozy.jpg";
-            WebChatLoad();
+            await WebChatLoad();
         }
 
         private void ed_input_TextChanged(object sender, EventArgs e)

@@ -26,7 +26,7 @@ namespace WaifuAI.Files
         /// <summary> WorldInfo applied to this character </summary>
         public List<string> Worlds { get; set; } = [];
         /// <summary> Optional world info being used for the Location plugin </summary>
-        public string Locations { get; set; } = string.Empty;
+        public List<string> Plugins { get; set; } = [];
         /// <summary> If set to true, older chat sessions will be summarized, allowing for a advanced form of memory </summary>
         public bool SessionMemorySystem { get; set; } = false;
         /// <summary> If set to true, this bot will stay informed about the spacing between user messages </summary>
@@ -38,7 +38,6 @@ namespace WaifuAI.Files
 
         [JsonIgnore] public List<WorldInfo> MyWorlds { get; private set; } = [];
         [JsonIgnore] public Chatlog History { get; private set; } = new();
-        [JsonIgnore] public List<ContextPlugin> Plugins { get; set; } = [];
         [JsonIgnore] public Image  Portrait => GetPortrait();
         private Image? _image = null;
 
@@ -57,13 +56,9 @@ namespace WaifuAI.Files
             if (IsUser)
                 return;
             // Location plugin
-            if (!string.IsNullOrEmpty(Locations))
+            foreach (var item in LLMSystem.ContextPlugins)
             {
-                Plugins.Add(new LocationPlugin(Locations) { ModelDetection = true, KeywordDetection = true });
-            }
-            if (LLMSystem.WebBrowsingPlugin)
-            {
-                Plugins.Add(new BrowsePlugin());
+                item.Enabled = Plugins.Contains(item.PluginID);
             }
             LoadChatHistory();
             // load world info
@@ -75,14 +70,9 @@ namespace WaifuAI.Files
             var f = "data/sessions/" + UniqueName + ".json";
         }
 
-        public void ResetSession()
-        {
-        }
-
         public void EndSession(bool backup = false)
         {
             SaveChatHistory(backup);
-            Plugins.Clear();
         }
 
         public void SaveChatHistory(bool backup = false)

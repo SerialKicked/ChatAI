@@ -315,9 +315,9 @@ namespace WaifuAI.Web
             Cache.Clear();
         }
 
-        public async Task<IHtmlCollection<IElement>> FindCells(string address, string cellselector)
+        public async Task<IHtmlCollection<IElement>?> FindCells(string address, string cellselector)
         {
-            IDocument? document = null;
+            IDocument? document;
             if (Cache.TryGetValue(address, out var cache))
             {
                 document = cache;
@@ -334,7 +334,7 @@ namespace WaifuAI.Web
             return cells;
         }
 
-        private DateTime StringToDate(string textdate, string format)
+        private static DateTime StringToDate(string textdate, string format)
         {
             // Parse the string into a DateTime object
             if (DateTime.TryParseExact(textdate, format, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out DateTime date))
@@ -349,7 +349,7 @@ namespace WaifuAI.Web
 
         public async Task<WListing> ParseWebListing(string page, WebsiteDefinition web, bool innerscan)
         {
-            IDocument? document = null;
+            IDocument? document;
             if (Cache.TryGetValue(page, out var cache))
             {
                 document = cache;
@@ -425,7 +425,7 @@ namespace WaifuAI.Web
 
         public async Task<string> GetPageContent(string page, WebsiteDefinition web)
         {
-            IDocument? document = null;
+            IDocument? document;
             if (Cache.TryGetValue(page, out var cache))
             {
                 document = cache;

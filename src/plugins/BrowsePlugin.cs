@@ -19,11 +19,14 @@ namespace WaifuAI.Plugins
     {
         public bool IsSuccess { get; set; } = isSuccess;
         public string? Response { get; set; } = response;
-        public string SubPageLink { get; set; } = subPageLink;
+        public string? SubPageLink { get; set; } = subPageLink;
     }
 
-    public class BrowsePlugin : ContextPlugin
+    public class BrowsePlugin : IContextPlugin
     {
+        public string PluginID { get; } = "Browser";
+        public bool Enabled { get; set; } = false;
+
         private readonly string[] kwEnter = [ "website", "browse", " web", "browsing", "find a ", "search for ", "look for ", "find me" ];
         public bool KeywordDetection { get; set; } = true;
         public bool ModelDetection { get; set; } = true;
@@ -33,7 +36,6 @@ namespace WaifuAI.Plugins
         public double MaxTemperature { get; set; } = 0.6;
 
         private Random RNG = new();
-
 
         public Dictionary<string,string> WebsiteSpecificInfo { get; set; } = [];
 
@@ -53,7 +55,7 @@ namespace WaifuAI.Plugins
         /// <param name="log">chatlog</param>
         /// <param name="response">contains the bit to be added to sysprompt (out)</param>
         /// <returns></returns>
-        public override bool AddToSystemPrompt(string userinput, Chatlog log, out string response)
+        public bool AddToSystemPrompt(string userinput, Chatlog log, out string response)
         {
             response = string.Empty;
             return false;
@@ -66,7 +68,7 @@ namespace WaifuAI.Plugins
         /// <param name="log"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        public override bool ReplaceOutput(string botoutput, Chatlog log, out string response)
+        public bool ReplaceOutput(string botoutput, Chatlog log, out string response)
         {
             response = string.Empty;
             return false; // ReplaceUserInput(botoutput, log, out response); 
@@ -79,7 +81,7 @@ namespace WaifuAI.Plugins
         /// <param name="log"></param>
         /// <param name="response"></param>
         /// <returns></returns>
-        public override async Task<PluginResponse> ReplaceUserInput(string userinput)
+        public async Task<PluginResponse> ReplaceUserInput(string userinput)
         {
             List<string> test = [];
             string foundCommand = string.Empty;
@@ -264,7 +266,7 @@ namespace WaifuAI.Plugins
             var text = new StringBuilder();
             text.AppendLinuxLine("After searching the net, {{char}} found the following link:");
             text.AppendLinuxLine(wEntry.ToString()).AppendLinuxLine();
-            text.Append("Inform {{user}} about the link you've just found, integrate this information seamlessly into the conversation, and make sure to include the link.");
+            text.Append("Inform {{user}} about the link you've just found. Integrate this information seamlessly into the conversation. Make sure to include the link to the page.");
             return text.ToString();
         }
 
