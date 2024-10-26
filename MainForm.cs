@@ -1136,19 +1136,26 @@ namespace WaifuAI
                         console.warn('No chat messages found.');
                     }
                 }
-                document.addEventListener('DOMContentLoaded', (event) => {
+                document.addEventListener('DOMContentLoaded', (event) => 
+                {
                     const chatContainer = document.getElementById('chatContainer');
-                    chatContainer.addEventListener('dblclick', (event) => {
-                        if (event.target.classList.contains('chat-message')) {
-                            const index = Array.from(chatContainer.children).indexOf(event.target);
+                    chatContainer.addEventListener('dblclick', (event) => 
+                    {
+                        let targetElement = event.target;
+                        while (targetElement && !targetElement.classList.contains('chat-message')) 
+                        {
+                            targetElement = targetElement.parentElement;
+                        }
+                        if (targetElement && targetElement.classList.contains('chat-message')) 
+                        {
+                            const index = Array.from(chatContainer.children).indexOf(targetElement);
                             window.chrome.webview.postMessage({ type: 'EditMessage', index: index + 1 });
                         }
                     });
-                });            
+                });         
             </script>";
             return $"<html><head>{css}</head><body>{scripts}<div id='chatContainer'>{htmlContent}<br/></div></body></html>";
         }
-
         private void EditMessage(int messageIndex)
         {
             if (_editopened)
