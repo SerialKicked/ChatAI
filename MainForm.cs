@@ -1443,6 +1443,7 @@ namespace WaifuAI
             editForm.ShowDialog();
             editForm.Dispose();
             bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.ScenarioOverride) ? Color.Black : Color.DarkGreen;
+            LLMSystem.InvalidatePromptCache();
         }
 
         private void num_scandepth_ValueChanged(object sender, EventArgs e)
@@ -1499,6 +1500,7 @@ namespace WaifuAI
         private void ck_forceNames_CheckedChanged(object sender, EventArgs e)
         {
             LLMSystem.Instruct.AddNamesToPrompt = ck_forceNames.Checked;
+            LLMSystem.InvalidatePromptCache();
         }
     }
 }
