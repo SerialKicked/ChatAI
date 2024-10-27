@@ -11,6 +11,7 @@ using WaifuAI.Memory;
 using System.Numerics;
 using AngleSharp;
 using YamlDotNet.Serialization;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace WaifuAI
 {
@@ -73,6 +74,7 @@ namespace WaifuAI
             LLMSystem.Init();
             cb_bot.Items.Clear();
             cb_user.Items.Clear();
+            bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.ScenarioOverride) ? Color.Black : Color.DarkGreen;
             foreach (var item in DataFiles.Characters)
             {
                 if (item.Value.IsUser)
@@ -110,6 +112,7 @@ namespace WaifuAI
         {
             Invoke((System.Windows.Forms.MethodInvoker)delegate
             {
+                bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.ScenarioOverride) ? Color.Black : Color.DarkGreen;
                 if (LLMSystem.Status == SystemStatus.Ready)
                 {
                     bt_delete.Enabled = true;
@@ -1436,6 +1439,7 @@ namespace WaifuAI
             var editForm = new ScenarioEditForm();
             editForm.ShowDialog();
             editForm.Dispose();
+            bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.ScenarioOverride) ? Color.Black : Color.DarkGreen;
         }
 
         private void num_scandepth_ValueChanged(object sender, EventArgs e)

@@ -242,9 +242,9 @@ namespace WaifuAI.Files
             else
             {
                 if (StartTime.Date == EndTime.Date)
-                    sb.AppendLinuxLine($"On {StartTime.DayOfWeek}, {LLMSystem.DateToHumanString(StartTime)}, the following event took place from {LLMSystem.Bot.Name}'s perspective. {Summary.RemoveNewLines()}");
+                    sb.AppendLinuxLine($"On {StartTime.DayOfWeek}, {LLMSystem.DateToHumanString(StartTime)}, the following events took place from {LLMSystem.Bot.Name}'s perspective. {Summary.RemoveNewLines()}");
                 else
-                    sb.AppendLinuxLine($"Between the {StartTime.DayOfWeek} {LLMSystem.DateToHumanString(StartTime)} and the {EndTime.DayOfWeek} {LLMSystem.DateToHumanString(EndTime)}, the following event took place from {LLMSystem.Bot.Name}'s perspective. {Summary.RemoveNewLines()}");
+                    sb.AppendLinuxLine($"Between the {StartTime.DayOfWeek} {LLMSystem.DateToHumanString(StartTime)} and the {EndTime.DayOfWeek} {LLMSystem.DateToHumanString(EndTime)}, the following event took places from {LLMSystem.Bot.Name}'s perspective. {Summary.RemoveNewLines()}");
 
             }
 
