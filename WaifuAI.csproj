@@ -6,11 +6,11 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationIcon>icons8-critical-thinking-doodle-96.ico</ApplicationIcon>
+    <ApplicationIcon>w(AI)fu.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="icons8-critical-thinking-doodle-96.ico" />
+    <Content Include="w(AI)fu.ico" />
   </ItemGroup>
 
   <ItemGroup>

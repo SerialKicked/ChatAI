@@ -51,7 +51,7 @@ namespace WaifuAI
         public static string Backend { get; private set; } = string.Empty;
         public static double ForceTemperature { get; set; } = 0.7;
         public static string ScenarioOverride { get; set; } = string.Empty;
-        public static bool? AddNamesToPrompt { get; set; } = null;
+        public static bool? NamesInPromptOverride { get; set; } = null;
         public static bool WebBrowsingPlugin { get; set; } = false;
         public static bool MarkdownMemoryFormating { get; set; } = false;
 
@@ -600,13 +600,13 @@ namespace WaifuAI
                 return span.Seconds.ToString() + " seconds";
         }
 
-        internal static void RemoveLastMessage()
+        public static void RemoveLastMessage()
         {
             LLMSystem.History.RemoveLast();
             InvalidatePromptCache();
         }
 
-        internal static void InvalidatePromptCache()
+        public static void InvalidatePromptCache()
         {
             _LastGeneratedPrompt = string.Empty;
         }

@@ -867,6 +867,7 @@ namespace WaifuAI
                 cb_bot.SelectedIndex = cb_bot.Items.Contains(Settings.BotFile) ? cb_bot.Items.IndexOf(Settings.BotFile) : 0;
                 // set cb_sysprompt to the settings.PromptFile value if it's in the list, otherwise set index to 0.
                 cb_sysprompt.SelectedIndex = cb_sysprompt.Items.Contains(Settings.PromptFile) ? cb_sysprompt.Items.IndexOf(Settings.PromptFile) : 0;
+                num_maxcontext.Maximum = Settings.MaxTotalTokens;
                 num_maxcontext.Value = Settings.MaxTotalTokens;
                 num_maxresponse.Value = Settings.MaxResponseTokens;
                 num_temperature.Value = (decimal)Settings.Temperature;
@@ -1361,8 +1362,10 @@ namespace WaifuAI
         private void cb_instruct_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cb_instruct.SelectedItem is string key && !string.IsNullOrEmpty(key))
+            {
                 LLMSystem.Instruct = DataFiles.Instruct[key];
-
+                ck_forceNames.Checked = LLMSystem.Instruct.AddNamesToPrompt;
+            }
         }
 
         private void cb_infer_SelectedIndexChanged(object sender, EventArgs e)
@@ -1493,10 +1496,9 @@ namespace WaifuAI
             await WebChatLoad();
         }
 
-        private void ed_input_TextChanged(object sender, EventArgs e)
+        private void ck_forceNames_CheckedChanged(object sender, EventArgs e)
         {
-
+            LLMSystem.Instruct.AddNamesToPrompt = ck_forceNames.Checked;
         }
-
     }
 }

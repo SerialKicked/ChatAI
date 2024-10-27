@@ -7,6 +7,6 @@
 	"UserEnd": "<|im_end|>",
 	"BotStart": "<|im_start|>assistant\n",
 	"BotEnd": "<|im_end|>",
-	"AddNamesToPrompt": true,
+	"AddNamesToPrompt": false,
 	"NewLinesBetweenMessages": true
 }

@@ -53,6 +53,7 @@
             label11 = new Label();
             cb_sysprompt = new ComboBox();
             groupBox4 = new GroupBox();
+            ck_forceNames = new CheckBox();
             label5 = new Label();
             cb_instruct = new ComboBox();
             label6 = new Label();
@@ -341,9 +342,9 @@
             groupBox5.Controls.Add(label11);
             groupBox5.Controls.Add(cb_sysprompt);
             groupBox5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox5.Location = new Point(6, 274);
+            groupBox5.Location = new Point(6, 298);
             groupBox5.Name = "groupBox5";
-            groupBox5.Size = new Size(187, 379);
+            groupBox5.Size = new Size(187, 355);
             groupBox5.TabIndex = 25;
             groupBox5.TabStop = false;
             groupBox5.Text = "Chat Settings";
@@ -364,7 +365,7 @@
             ck_sessionmemory.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             ck_sessionmemory.AutoSize = true;
             ck_sessionmemory.Font = new Font("Segoe UI", 9F);
-            ck_sessionmemory.Location = new Point(6, 246);
+            ck_sessionmemory.Location = new Point(6, 251);
             ck_sessionmemory.Name = "ck_sessionmemory";
             ck_sessionmemory.Size = new Size(113, 19);
             ck_sessionmemory.TabIndex = 24;
@@ -377,11 +378,11 @@
             ck_senseoftime.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             ck_senseoftime.AutoSize = true;
             ck_senseoftime.Font = new Font("Segoe UI", 9F);
-            ck_senseoftime.Location = new Point(6, 271);
+            ck_senseoftime.Location = new Point(6, 276);
             ck_senseoftime.Name = "ck_senseoftime";
-            ck_senseoftime.Size = new Size(97, 19);
+            ck_senseoftime.Size = new Size(99, 19);
             ck_senseoftime.TabIndex = 23;
-            ck_senseoftime.Text = "Sense of time";
+            ck_senseoftime.Text = "Sense of Time";
             ck_senseoftime.UseVisualStyleBackColor = true;
             ck_senseoftime.CheckedChanged += ck_senseoftime_CheckedChanged;
             // 
@@ -422,7 +423,7 @@
             ck_ragenabled.Checked = true;
             ck_ragenabled.CheckState = CheckState.Checked;
             ck_ragenabled.Font = new Font("Segoe UI", 9F);
-            ck_ragenabled.Location = new Point(6, 296);
+            ck_ragenabled.Location = new Point(6, 301);
             ck_ragenabled.Name = "ck_ragenabled";
             ck_ragenabled.Size = new Size(94, 19);
             ck_ragenabled.TabIndex = 20;
@@ -454,7 +455,7 @@
             // 
             bt_newsession.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             bt_newsession.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_newsession.Location = new Point(6, 350);
+            bt_newsession.Location = new Point(6, 326);
             bt_newsession.Name = "bt_newsession";
             bt_newsession.Size = new Size(175, 23);
             bt_newsession.TabIndex = 21;
@@ -483,6 +484,7 @@
             // 
             // groupBox4
             // 
+            groupBox4.Controls.Add(ck_forceNames);
             groupBox4.Controls.Add(label5);
             groupBox4.Controls.Add(cb_instruct);
             groupBox4.Controls.Add(label6);
@@ -492,10 +494,22 @@
             groupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox4.Location = new Point(6, 105);
             groupBox4.Name = "groupBox4";
-            groupBox4.Size = new Size(187, 163);
+            groupBox4.Size = new Size(187, 187);
             groupBox4.TabIndex = 24;
             groupBox4.TabStop = false;
             groupBox4.Text = "Inference Settings";
+            // 
+            // ck_forceNames
+            // 
+            ck_forceNames.AutoSize = true;
+            ck_forceNames.Font = new Font("Segoe UI", 9F);
+            ck_forceNames.Location = new Point(6, 66);
+            ck_forceNames.Name = "ck_forceNames";
+            ck_forceNames.Size = new Size(143, 19);
+            ck_forceNames.TabIndex = 25;
+            ck_forceNames.Text = "Add names to prompt";
+            ck_forceNames.UseVisualStyleBackColor = true;
+            ck_forceNames.CheckedChanged += ck_forceNames_CheckedChanged;
             // 
             // label5
             // 
@@ -521,7 +535,7 @@
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 9F);
-            label6.Location = new Point(6, 63);
+            label6.Location = new Point(6, 96);
             label6.Name = "label6";
             label6.Size = new Size(102, 15);
             label6.TabIndex = 6;
@@ -531,7 +545,7 @@
             // 
             cb_infer.DropDownStyle = ComboBoxStyle.DropDownList;
             cb_infer.Font = new Font("Segoe UI", 9F);
-            cb_infer.Location = new Point(6, 81);
+            cb_infer.Location = new Point(6, 114);
             cb_infer.Name = "cb_infer";
             cb_infer.Size = new Size(175, 23);
             cb_infer.TabIndex = 7;
@@ -541,7 +555,7 @@
             // 
             label9.AutoSize = true;
             label9.Font = new Font("Segoe UI", 9F);
-            label9.Location = new Point(6, 107);
+            label9.Location = new Point(6, 140);
             label9.Name = "label9";
             label9.Size = new Size(121, 15);
             label9.TabIndex = 16;
@@ -552,7 +566,7 @@
             num_temperature.DecimalPlaces = 2;
             num_temperature.Font = new Font("Segoe UI", 9F);
             num_temperature.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_temperature.Location = new Point(6, 125);
+            num_temperature.Location = new Point(6, 158);
             num_temperature.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
             num_temperature.Name = "num_temperature";
             num_temperature.Size = new Size(175, 23);
@@ -1857,5 +1871,6 @@
         private Label label29;
         private ComboBox cb_background;
         private Label label28;
+        private CheckBox ck_forceNames;
     }
 }

@@ -36,7 +36,7 @@ namespace WaifuAI.Files
         public bool NewLinesBetweenMessages { get; set; } = true;
         public string[] StopStrings { get; set; } = [];
 
-        [JsonIgnore] private bool RealAddNameToPrompt => LLMSystem.AddNamesToPrompt ?? AddNamesToPrompt;
+        [JsonIgnore] private bool RealAddNameToPrompt => LLMSystem.NamesInPromptOverride ?? AddNamesToPrompt;
 
         public string GetResponseStart(Character bot)
         {

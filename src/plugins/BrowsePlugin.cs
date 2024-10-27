@@ -94,10 +94,10 @@ namespace WaifuAI.Plugins
 
             if (!string.IsNullOrEmpty(foundCommand) || (KeywordDetection && kwEnter.Any(kw => userinput.Contains(kw, StringComparison.OrdinalIgnoreCase))))
             {
+                LLMSystem.NamesInPromptOverride = false;
                 var x = await QueryLLM(userinput, foundCommand);
                 if (!string.IsNullOrEmpty(x))
                 {
-                    LLMSystem.AddNamesToPrompt = false;
                     if (DataFiles.Websites.TryGetValue(x, out var site))
                     {
                         Website = site;
@@ -105,6 +105,7 @@ namespace WaifuAI.Plugins
                     }
                     else
                     {
+                        LLMSystem.NamesInPromptOverride = null;
                         return new PluginResponse { IsHandled = false, Response = null };
                     }
                     // call the website plugin here
@@ -126,10 +127,11 @@ namespace WaifuAI.Plugins
                         AuthorRole = AuthorRole.System,
                         Replace = false
                     };
-                    LLMSystem.AddNamesToPrompt = null;
+                    LLMSystem.NamesInPromptOverride = null;
                     return output;
                 }
             }
+            LLMSystem.NamesInPromptOverride = null;
             return new PluginResponse { IsHandled = false, Response = null }; // call the website plugin
         }
 

@@ -7,6 +7,6 @@
 	"UserEnd": "",
 	"BotStart": "### Response:",
 	"BotEnd": "",
-	"AddNamesToPrompt": true,
+	"AddNamesToPrompt": false,
 	"NewLinesBetweenMessages": true
 }
