@@ -773,7 +773,7 @@ namespace WaifuAI
 
         private async void RerollMessage(object sender, EventArgs e)
         {
-            if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.Messages.Count == 0)
+            if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.Messages.Count == 0 || LLMSystem.History.LastMessage()?.Role != AuthorRole.Assistant)
                 return;
             _impersonatemode = false;
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
