@@ -130,6 +130,12 @@
             cb_samplerlist = new ComboBox();
             pan_samplers = new Panel();
             tabSettings = new TabPage();
+            groupBox12 = new GroupBox();
+            ed_log = new TextBox();
+            groupBox11 = new GroupBox();
+            ck_markdown = new CheckBox();
+            num_memtokens = new NumericUpDown();
+            label32 = new Label();
             groupBox10 = new GroupBox();
             num_msgcount = new NumericUpDown();
             label30 = new Label();
@@ -160,7 +166,6 @@
             button1 = new Button();
             ck_ragsummaries = new CheckBox();
             ck_ragtitles = new CheckBox();
-            ed_log = new TextBox();
             openFileDialog1 = new OpenFileDialog();
             fontDialog1 = new FontDialog();
             HelptoolTip = new ToolTip(components);
@@ -191,6 +196,9 @@
             tabSysPrompt.SuspendLayout();
             tabSamplers.SuspendLayout();
             tabSettings.SuspendLayout();
+            groupBox12.SuspendLayout();
+            groupBox11.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)num_memtokens).BeginInit();
             groupBox10.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_msgcount).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_fontsize).BeginInit();
@@ -1298,11 +1306,12 @@
             // 
             // tabSettings
             // 
+            tabSettings.Controls.Add(groupBox12);
+            tabSettings.Controls.Add(groupBox11);
             tabSettings.Controls.Add(groupBox10);
             tabSettings.Controls.Add(groupBox9);
             tabSettings.Controls.Add(groupBox2);
             tabSettings.Controls.Add(groupBox1);
-            tabSettings.Controls.Add(ed_log);
             tabSettings.Location = new Point(4, 27);
             tabSettings.Name = "tabSettings";
             tabSettings.Padding = new Padding(3);
@@ -1310,6 +1319,79 @@
             tabSettings.TabIndex = 4;
             tabSettings.Text = "Settings";
             tabSettings.UseVisualStyleBackColor = true;
+            // 
+            // groupBox12
+            // 
+            groupBox12.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox12.Controls.Add(ed_log);
+            groupBox12.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            groupBox12.Location = new Point(416, 6);
+            groupBox12.Name = "groupBox12";
+            groupBox12.Size = new Size(615, 645);
+            groupBox12.TabIndex = 28;
+            groupBox12.TabStop = false;
+            groupBox12.Text = "Last Prompt";
+            // 
+            // ed_log
+            // 
+            ed_log.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            ed_log.BackColor = SystemColors.Control;
+            ed_log.BorderStyle = BorderStyle.None;
+            ed_log.Font = new Font("Segoe UI", 9F);
+            ed_log.Location = new Point(6, 16);
+            ed_log.Multiline = true;
+            ed_log.Name = "ed_log";
+            ed_log.ScrollBars = ScrollBars.Vertical;
+            ed_log.Size = new Size(603, 623);
+            ed_log.TabIndex = 2;
+            // 
+            // groupBox11
+            // 
+            groupBox11.Controls.Add(ck_markdown);
+            groupBox11.Controls.Add(num_memtokens);
+            groupBox11.Controls.Add(label32);
+            groupBox11.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            groupBox11.Location = new Point(8, 526);
+            groupBox11.Name = "groupBox11";
+            groupBox11.Size = new Size(402, 125);
+            groupBox11.TabIndex = 27;
+            groupBox11.TabStop = false;
+            groupBox11.Text = "Session Memory System";
+            // 
+            // ck_markdown
+            // 
+            ck_markdown.AutoSize = true;
+            ck_markdown.Font = new Font("Segoe UI", 9F);
+            ck_markdown.Location = new Point(6, 22);
+            ck_markdown.Name = "ck_markdown";
+            ck_markdown.Size = new Size(167, 19);
+            ck_markdown.TabIndex = 32;
+            ck_markdown.Text = "Use Markdown Formatting";
+            ck_markdown.UseVisualStyleBackColor = true;
+            ck_markdown.CheckedChanged += ck_markdown_CheckedChanged;
+            // 
+            // num_memtokens
+            // 
+            num_memtokens.Font = new Font("Segoe UI", 9F);
+            num_memtokens.Increment = new decimal(new int[] { 512, 0, 0, 0 });
+            num_memtokens.Location = new Point(6, 62);
+            num_memtokens.Maximum = new decimal(new int[] { 4096, 0, 0, 0 });
+            num_memtokens.Minimum = new decimal(new int[] { 512, 0, 0, 0 });
+            num_memtokens.Name = "num_memtokens";
+            num_memtokens.Size = new Size(125, 23);
+            num_memtokens.TabIndex = 27;
+            num_memtokens.Value = new decimal(new int[] { 2048, 0, 0, 0 });
+            num_memtokens.ValueChanged += num_memtokens_ValueChanged;
+            // 
+            // label32
+            // 
+            label32.AutoSize = true;
+            label32.Font = new Font("Segoe UI", 9F);
+            label32.Location = new Point(6, 44);
+            label32.Name = "label32";
+            label32.Size = new Size(93, 15);
+            label32.TabIndex = 28;
+            label32.Text = "Reserved Tokens";
             // 
             // groupBox10
             // 
@@ -1667,18 +1749,6 @@
             ck_ragtitles.Text = "Search Titles";
             ck_ragtitles.UseVisualStyleBackColor = true;
             // 
-            // ed_log
-            // 
-            ed_log.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            ed_log.BorderStyle = BorderStyle.FixedSingle;
-            ed_log.Font = new Font("Segoe UI", 9F);
-            ed_log.Location = new Point(416, 6);
-            ed_log.Multiline = true;
-            ed_log.Name = "ed_log";
-            ed_log.ScrollBars = ScrollBars.Vertical;
-            ed_log.Size = new Size(615, 645);
-            ed_log.TabIndex = 2;
-            // 
             // openFileDialog1
             // 
             openFileDialog1.FileName = "openFileDialog1";
@@ -1737,7 +1807,11 @@
             tabSysPrompt.ResumeLayout(false);
             tabSamplers.ResumeLayout(false);
             tabSettings.ResumeLayout(false);
-            tabSettings.PerformLayout();
+            groupBox12.ResumeLayout(false);
+            groupBox12.PerformLayout();
+            groupBox11.ResumeLayout(false);
+            groupBox11.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)num_memtokens).EndInit();
             groupBox10.ResumeLayout(false);
             groupBox10.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)num_msgcount).EndInit();
@@ -1888,5 +1962,10 @@
         private Label label28;
         private CheckBox ck_forceNames;
         private CheckBox ck_worldinfo;
+        private GroupBox groupBox11;
+        private CheckBox ck_markdown;
+        private NumericUpDown num_memtokens;
+        private Label label32;
+        private GroupBox groupBox12;
     }
 }

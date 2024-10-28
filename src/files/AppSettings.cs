@@ -28,6 +28,6 @@ namespace WaifuAI.Files
         public int MaxMessagesOnScreen { get; set; } = 100;
         public int FontSize { get; set; } = 18;
         public string BackgroundFile { get; set; } = "bedroom_cozy.jpg";
-
+        public bool MarkdownMemoryFormating { get; set; } = false;
     }
 }

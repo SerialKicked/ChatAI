@@ -32,6 +32,7 @@ namespace WaifuAI
         private bool _impersonatemode = false;
         private bool _forcereload = false;
         private bool _editopened = false;
+        private bool _isinitloading = true;
 
         public static MarkdownPipeline CustomMarkDownPipeline { get; } = new MarkdownPipelineBuilder()
             .UseSoftlineBreakAsHardlineBreak()
@@ -67,6 +68,7 @@ namespace WaifuAI
             SetupWorldEditor();
             SetupPromptEditor();
             SetupChatMenu();
+            _isinitloading = false;
         }
 
         private void SetupChatMenu()
@@ -854,6 +856,7 @@ namespace WaifuAI
                 LLMSystem.MaxContextLength = Settings.MaxTotalTokens;
                 LLMSystem.MaxReplyLength = Settings.MaxResponseTokens;
                 LLMSystem.ReservedSessionTokens = Settings.ReservedSessionTokens;
+                LLMSystem.MarkdownMemoryFormating = Settings.MarkdownMemoryFormating;
                 LLMSystem.MaxRAGEntries = Settings.MaxRAGEntries;
                 LLMSystem.RAGIndex = Settings.RAGPosition;
                 LLMSystem.ScenarioOverride = Settings.ScenarioOverride;
@@ -872,6 +875,8 @@ namespace WaifuAI
                 num_maxcontext.Value = Settings.MaxTotalTokens;
                 num_maxresponse.Value = Settings.MaxResponseTokens;
                 num_temperature.Value = (decimal)Settings.Temperature;
+                num_memtokens.Value = Settings.ReservedSessionTokens;
+                ck_markdown.Checked = Settings.MarkdownMemoryFormating;
                 switch (RAGSystem.Heuristic)
                 {
                     case HNSW.Net.NeighbourSelectionHeuristic.SelectSimple:
@@ -913,6 +918,7 @@ namespace WaifuAI
                 Settings.RAGUseTitles = RAGSystem.UseTitles;
                 Settings.RAGDistanceCutOff = RAGSystem.DistanceCutOff;
                 Settings.ReservedSessionTokens = LLMSystem.ReservedSessionTokens;
+                Settings.MarkdownMemoryFormating = LLMSystem.MarkdownMemoryFormating;
                 Settings.MaxRAGEntries = LLMSystem.MaxRAGEntries;
                 Settings.RAGPosition = LLMSystem.RAGIndex;
                 Settings.ScenarioOverride = LLMSystem.ScenarioOverride;
@@ -1283,7 +1289,8 @@ namespace WaifuAI
             {
                 html += AddHtmlMessage(LLMSystem.History.Messages[i]);
             }
-            web_chat.NavigateToString(InjectDialogCSS(html));
+            html = InjectDialogCSS(html);
+            web_chat.NavigateToString(html);
         }
 
         private void OnNavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs e)
@@ -1491,13 +1498,15 @@ namespace WaifuAI
         private async void num_fontsize_ValueChanged(object sender, EventArgs e)
         {
             Settings.FontSize = (int)num_fontsize.Value;
-            await WebChatLoad();
+            if (!_isinitloading)
+                await WebChatLoad();
         }
 
         private async void cb_background_SelectedIndexChanged(object sender, EventArgs e)
         {
             Settings.BackgroundFile = cb_background.SelectedItem?.ToString() ?? "bedroom_cozy.jpg";
-            await WebChatLoad();
+            if (!_isinitloading)
+                await WebChatLoad();
         }
 
         private void ck_forceNames_CheckedChanged(object sender, EventArgs e)
@@ -1509,6 +1518,16 @@ namespace WaifuAI
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
             LLMSystem.WorldInfo = ck_worldinfo.Checked;
+        }
+
+        private void num_memtokens_ValueChanged(object sender, EventArgs e)
+        {
+            LLMSystem.ReservedSessionTokens = (int)num_memtokens.Value;
+        }
+
+        private void ck_markdown_CheckedChanged(object sender, EventArgs e)
+        {
+            LLMSystem.MarkdownMemoryFormating = ck_markdown.Checked;
         }
     }
 }
