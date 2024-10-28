@@ -54,6 +54,7 @@ namespace WaifuAI
         public static bool? NamesInPromptOverride { get; set; } = null;
         public static bool WebBrowsingPlugin { get; set; } = false;
         public static bool MarkdownMemoryFormating { get; set; } = false;
+        public static bool WorldInfo { get; set; } = true;
 
         public static EventHandler<string>? OnFullPromptReady;
         /// <summary> Called during inference each time the LLM outputs a new token </summary>
@@ -287,7 +288,7 @@ namespace WaifuAI
             var rawprompt = new StringBuilder(RawSystemPrompt(User, Bot));
             var inserts = new Dictionary<int, string>();
             var searchmessage = string.IsNullOrWhiteSpace(newMessage) ? History.GetLastUserMessageContent() : newMessage;
-            if (Bot.MyWorlds.Count > 0)
+            if (WorldInfo && Bot.MyWorlds.Count > 0)
             {
                 _currentWorldEntries = [];
                 foreach (var world in Bot.MyWorlds)
@@ -514,8 +515,8 @@ namespace WaifuAI
         {
             return role switch
             {
-                AuthorRole.System => "**SYSTEM:** ",
-                AuthorRole.SysPrompt => "**SYS PROMPT:** ",
+                AuthorRole.System => "",
+                AuthorRole.SysPrompt => "",
                 AuthorRole.User => "**" + User.Name + ":** ",
                 AuthorRole.Assistant => "**" + Bot.Name + ":** ",
                 _ => "**Error:** ",

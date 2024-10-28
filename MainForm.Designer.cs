@@ -40,6 +40,7 @@
             ed_input = new TextBox();
             panel1 = new Panel();
             groupBox5 = new GroupBox();
+            ck_worldinfo = new CheckBox();
             bt_scenario = new Button();
             ck_sessionmemory = new CheckBox();
             ck_senseoftime = new CheckBox();
@@ -329,6 +330,7 @@
             // groupBox5
             // 
             groupBox5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            groupBox5.Controls.Add(ck_worldinfo);
             groupBox5.Controls.Add(bt_scenario);
             groupBox5.Controls.Add(ck_sessionmemory);
             groupBox5.Controls.Add(ck_senseoftime);
@@ -348,6 +350,19 @@
             groupBox5.TabIndex = 25;
             groupBox5.TabStop = false;
             groupBox5.Text = "Chat Settings";
+            // 
+            // ck_worldinfo
+            // 
+            ck_worldinfo.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            ck_worldinfo.AutoSize = true;
+            ck_worldinfo.Font = new Font("Segoe UI", 9F);
+            ck_worldinfo.Location = new Point(6, 226);
+            ck_worldinfo.Name = "ck_worldinfo";
+            ck_worldinfo.Size = new Size(127, 19);
+            ck_worldinfo.TabIndex = 27;
+            ck_worldinfo.Text = "World Info Enabled";
+            ck_worldinfo.UseVisualStyleBackColor = true;
+            ck_worldinfo.CheckedChanged += checkBox2_CheckedChanged;
             // 
             // bt_scenario
             // 
@@ -1872,5 +1887,6 @@
         private ComboBox cb_background;
         private Label label28;
         private CheckBox ck_forceNames;
+        private CheckBox ck_worldinfo;
     }
 }

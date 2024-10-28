@@ -100,6 +100,7 @@ namespace WaifuAI
             LoadSettings();
             RAGSystem.Enabled = true;
             ck_ragenabled.Checked = RAGSystem.Enabled;
+            ck_worldinfo.Checked = LLMSystem.WorldInfo;
             LLMSystem.UI_RefreshChat = ForceWebChatReload;
             LLMSystem.UI_ChangeMessage = ForceUpdateLastMessage;
             LLMSystem.OnInferenceStreamed += OnStreamMessageReceived;
@@ -1162,7 +1163,7 @@ namespace WaifuAI
         }
         private void EditMessage(int messageIndex)
         {
-            if (_editopened)
+            if (_editopened || LLMSystem.Status == SystemStatus.Busy)
                 return;
             _editopened = true;
             try
@@ -1173,6 +1174,8 @@ namespace WaifuAI
                     if (realid < 0)
                         realid = 0;
                     realid += messageIndex - 1;
+                    if (realid >= LLMSystem.History.Messages.Count)
+                        return;
                     var editForm = new EditMessageForm(LLMSystem.History.Messages[realid].Guid);
                     if (editForm.ShowDialog() == DialogResult.OK && editForm.Message != null)
                     {
@@ -1501,6 +1504,11 @@ namespace WaifuAI
         {
             LLMSystem.Instruct.AddNamesToPrompt = ck_forceNames.Checked;
             LLMSystem.InvalidatePromptCache();
+        }
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            LLMSystem.WorldInfo = ck_worldinfo.Checked;
         }
     }
 }
