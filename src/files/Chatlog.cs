@@ -85,12 +85,7 @@ namespace WaifuAI.Files
             llmparams.Max_context_length = LLMSystem.MaxContextLength;
             llmparams.Grammar = string.Empty;
             llmparams.Temperature = 0.5f;
-            var result = await LLMSystem.Client.GenerateAsync(llmparams);
-            string finalstr = string.Empty;
-            foreach (var item in result.Results)
-            {
-                finalstr += item.Text;
-            }
+            var finalstr = await LLMSystem.SimpleQuery(llmparams);
             LLMSystem.NamesInPromptOverride = null;
             return finalstr.Trim();
         }
@@ -113,12 +108,7 @@ namespace WaifuAI.Files
             llmparams.Max_length = 350;
             llmparams.Temperature = 0.4f;
             llmparams.Max_context_length = LLMSystem.MaxContextLength;
-            var result = await LLMSystem.Client.GenerateAsync(llmparams);
-            string finalstr = string.Empty;
-            foreach (var item in result.Results)
-            {
-                finalstr += item.Text;
-            }
+            var finalstr = await LLMSystem.SimpleQuery(llmparams);
             // remove any " character from the finalstr
             finalstr = finalstr.Replace("\"", "").Trim();
             LLMSystem.NamesInPromptOverride = null;

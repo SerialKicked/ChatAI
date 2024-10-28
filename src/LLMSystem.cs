@@ -611,5 +611,20 @@ namespace WaifuAI
         {
             _LastGeneratedPrompt = string.Empty;
         }
+
+        public static async Task<string> SimpleQuery(SamplerSettings llmparams)
+        {
+            var oldst = status;
+            Status = SystemStatus.Busy;
+            var result = await Client.GenerateAsync(llmparams);
+            string finalstr = string.Empty;
+            foreach (var item in result.Results)
+            {
+                finalstr += item.Text;
+            }
+            status = oldst;
+            return string.IsNullOrEmpty(finalstr) ? string.Empty : finalstr;
+        }
+
     }
 }

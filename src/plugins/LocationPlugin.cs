@@ -166,12 +166,7 @@ namespace WaifuAI.Plugins
             var llmparams = LLMSystem.Sampler.GetCopy();
             llmparams.Temperature = 0;
             llmparams.Prompt = fullprompt;
-            var result = await LLMSystem.Client.GenerateAsync(llmparams);
-            string finalstr = string.Empty;
-            foreach (var item in result.Results)
-            {
-                finalstr += item.Text;
-            }
+            var finalstr = await LLMSystem.SimpleQuery(llmparams);
             LLMSystem.logger?.LogInformation("LocationPlugin Result: {output}", finalstr);
             if (string.IsNullOrEmpty(finalstr))
                 return;

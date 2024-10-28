@@ -115,32 +115,39 @@ namespace WaifuAI
         {
             Invoke((System.Windows.Forms.MethodInvoker)delegate
             {
-                bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.ScenarioOverride) ? Color.Black : Color.DarkGreen;
-                if (LLMSystem.Status == SystemStatus.Ready)
-                {
-                    bt_delete.Enabled = true;
-                    bt_connect.Enabled = true;
-                    bt_send.Enabled = true;
-                    bt_send.Text = "Send";
-                    bt_send.BackColor = System.Drawing.Color.PaleGreen;
-                    bt_reroll.Enabled = true;
-                    bt_chattosessions.Enabled = true;
-                    bt_newsession.Enabled = true;
-                    bt_impersonate.Enabled = true;
-                }
-                else
-                {
-                    bt_delete.Enabled = false;
-                    bt_connect.Enabled = false;
-                    bt_send.Enabled = true;
-                    bt_send.Text = "Cancel";
-                    bt_send.BackColor = System.Drawing.Color.OrangeRed;
-                    bt_reroll.Enabled = false;
-                    bt_chattosessions.Enabled = false;
-                    bt_newsession.Enabled = false;
-                    bt_impersonate.Enabled = false;
-                }
+                UpdateUIState();
             });
+        }
+
+        private void UpdateUIState()
+        {
+            bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.ScenarioOverride) ? Color.Black : Color.DarkGreen;
+            if (LLMSystem.Status == SystemStatus.Ready)
+            {
+                bt_delete.Enabled = true;
+                bt_connect.Enabled = true;
+                bt_send.Enabled = true;
+                bt_send.Text = "Send";
+                bt_send.BackColor = System.Drawing.Color.PaleGreen;
+                bt_reroll.Enabled = true;
+                bt_chattosessions.Enabled = true;
+                bt_newsession.Enabled = true;
+                bt_impersonate.Enabled = true;
+            }
+            else
+            {
+                bt_delete.Enabled = false;
+                bt_connect.Enabled = false;
+                bt_send.Enabled = true;
+                bt_send.Text = "Cancel";
+                bt_send.BackColor = System.Drawing.Color.OrangeRed;
+                bt_reroll.Enabled = false;
+                bt_chattosessions.Enabled = false;
+                bt_newsession.Enabled = false;
+                bt_impersonate.Enabled = false;
+            }
+            ShowCurrentSessionInfo();
+
         }
 
         private void OnFullPromptReady(object? sender, string e)
@@ -203,7 +210,6 @@ namespace WaifuAI
                     _forcereload = false;
                     Invoke((System.Windows.Forms.MethodInvoker)delegate
                     {
-                        ShowCurrentSessionInfo();
                         WebChatLoad();
                     });
                 }
@@ -721,7 +727,6 @@ namespace WaifuAI
             _impersonatemode = false;
             if (!string.IsNullOrEmpty(ed_input.Text))
             {
-                ShowCurrentSessionInfo();
                 var messagetext = LLMSystem.ReplaceMacros(LLMSystem.GetAwayString() + ed_input.Text.ToLinuxFormat(), LLMSystem.User, LLMSystem.Bot);
                 var msg = new SingleMessage(AuthorRole.User, DateTime.Now, messagetext, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
                 if (ed_input.Text.StartsWith("/sys "))
@@ -1167,6 +1172,7 @@ namespace WaifuAI
             </script>";
             return $"<html><head>{css}</head><body>{scripts}<div id='chatContainer'>{htmlContent}<br/></div></body></html>";
         }
+
         private void EditMessage(int messageIndex)
         {
             if (_editopened || LLMSystem.Status == SystemStatus.Busy)
@@ -1347,9 +1353,9 @@ namespace WaifuAI
                 LLMSystem.Bot = DataFiles.Characters[key];
                 await LoadHistoryToUI();
                 LoadChatHistoryTab();
-                ShowCurrentSessionInfo();
                 ck_senseoftime.Checked = LLMSystem.Bot.SenseOfTime;
                 ck_sessionmemory.Checked = LLMSystem.Bot.SessionMemorySystem;
+                UpdateUIState();
             }
         }
 

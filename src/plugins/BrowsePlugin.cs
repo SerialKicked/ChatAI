@@ -162,10 +162,7 @@ namespace WaifuAI.Plugins
             if (EnforceCorrectGrammar && customGrammar)
                 llmparams.Grammar = "root ::= ([0-9][0-9]?[0-9]?)";
 
-            var result = await LLMSystem.Client.GenerateAsync(llmparams);
-            string response = string.Empty;
-            foreach (var item in result.Results)
-                response += item.Text;
+            var response = await LLMSystem.SimpleQuery(llmparams);
             // strip anything that is not a number from response
             response = new string(response.Where(c => char.IsDigit(c)).ToArray());
             return response;
@@ -322,13 +319,7 @@ namespace WaifuAI.Plugins
             var llmparams = LLMSystem.Sampler.GetCopy();
             llmparams.Temperature = 0;
             llmparams.Prompt = fullprompt;
-
-            var result = await LLMSystem.Client.GenerateAsync(llmparams);
-            string finalstr = string.Empty;
-            foreach (var item in result.Results)
-            {
-                finalstr += item.Text;
-            }
+            var finalstr = await LLMSystem.SimpleQuery(llmparams);
             if (string.IsNullOrEmpty(finalstr))
                 return string.Empty;
             if (finalstr.Equals("no", StringComparison.InvariantCultureIgnoreCase) || !int.TryParse(finalstr, out var found) || found > websites.Count)
