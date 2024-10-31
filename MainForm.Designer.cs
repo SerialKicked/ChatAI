@@ -80,7 +80,6 @@
             tabWorldInfo = new TabPage();
             panel3 = new Panel();
             groupBox8 = new GroupBox();
-            bt_wentrysave = new Button();
             label27 = new Label();
             num_wentrypriority = new NumericUpDown();
             label26 = new Label();
@@ -788,7 +787,6 @@
             // 
             // groupBox8
             // 
-            groupBox8.Controls.Add(bt_wentrysave);
             groupBox8.Controls.Add(label27);
             groupBox8.Controls.Add(num_wentrypriority);
             groupBox8.Controls.Add(label26);
@@ -812,16 +810,6 @@
             groupBox8.TabIndex = 1;
             groupBox8.TabStop = false;
             groupBox8.Text = "Entry Settings";
-            // 
-            // bt_wentrysave
-            // 
-            bt_wentrysave.Location = new Point(542, 147);
-            bt_wentrysave.Name = "bt_wentrysave";
-            bt_wentrysave.Size = new Size(204, 23);
-            bt_wentrysave.TabIndex = 16;
-            bt_wentrysave.Text = "Save Entry Settings";
-            bt_wentrysave.UseVisualStyleBackColor = true;
-            bt_wentrysave.Click += bt_wentrysave_Click;
             // 
             // label27
             // 
@@ -1920,7 +1908,6 @@
         private TabPage tabWorldInfo;
         private Panel panel3;
         private GroupBox groupBox3;
-        private Button bt_wentrysave;
         private ComboBox cb_worlds;
         private GroupBox groupBox6;
         private Label label18;

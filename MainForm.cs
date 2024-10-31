@@ -354,6 +354,7 @@ namespace WaifuAI
 
         private void LoadWorldEntry(WorldEntry worldEntry)
         {
+            var sv = _isinitloading;
             _isinitloading = true;
             ed_wentryname.Text = worldEntry.Name;
             ed_wentrymem.Text = worldEntry.Message.ToWinFormat();
@@ -367,7 +368,7 @@ namespace WaifuAI
             cb_wentrylocation.SelectedIndex = (int)worldEntry.Position;
             ck_wentrycasesensitive.Checked = worldEntry.CaseSensitive;
             ck_wentryenabled.Checked = worldEntry.Enabled;
-            _isinitloading = false;
+            _isinitloading = sv;
         }
 
         private void SaveWorldEntry()
@@ -422,11 +423,12 @@ namespace WaifuAI
             (SelectedWorldEditor as IFile).SaveToFile("data/worlds/" + NewName + ".json");
         }
 
-        private void bt_wentrysave_Click(object sender, EventArgs e)
+        private void UpdateWorldEntryEvent(object sender, EventArgs e)
         {
+            if (_isinitloading)
+                return;
             SaveWorldEntry();
         }
-
 
         /// <summary>
         /// Initialize the instruction format editor panel
@@ -1292,6 +1294,7 @@ namespace WaifuAI
         {
             _forcereload = true;
         }
+
         public async void ForceUpdateLastMessage(string update)
         {
             await WebEditLastMessage(update);
@@ -1559,11 +1562,5 @@ namespace WaifuAI
             LLMSystem.MarkdownMemoryFormating = ck_markdown.Checked;
         }
 
-        private void UpdateWorldEntryEvent(object sender, EventArgs e)
-        {
-            if (_isinitloading)
-                return;
-            SaveWorldEntry();
-        }
     }
 }
