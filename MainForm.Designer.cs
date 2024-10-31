@@ -335,6 +335,7 @@
             bt_impersonate.TabIndex = 7;
             bt_impersonate.Text = "For Me";
             bt_impersonate.UseVisualStyleBackColor = false;
+            bt_impersonate.Click += Impersonate;
             // 
             // web_chat
             // 
@@ -360,6 +361,7 @@
             bt_delete.TabIndex = 5;
             bt_delete.Text = "Delete";
             bt_delete.UseVisualStyleBackColor = false;
+            bt_delete.Click += DeleteLastMessage;
             // 
             // bt_reroll
             // 
@@ -373,6 +375,7 @@
             bt_reroll.TabIndex = 4;
             bt_reroll.Text = "ReRoll";
             bt_reroll.UseVisualStyleBackColor = false;
+            bt_reroll.Click += RerollMessage;
             // 
             // bt_send
             // 
@@ -386,6 +389,7 @@
             bt_send.TabIndex = 3;
             bt_send.Text = "Send";
             bt_send.UseVisualStyleBackColor = false;
+            bt_send.Click += SendMessage;
             // 
             // ed_input
             // 
@@ -562,6 +566,7 @@
             bt_newsession.TabIndex = 21;
             bt_newsession.Text = "Start New Session";
             bt_newsession.UseVisualStyleBackColor = true;
+            bt_newsession.Click += StartNewSession;
             // 
             // label11
             // 
@@ -745,6 +750,7 @@
             bt_connect.TabIndex = 14;
             bt_connect.Text = "Connect";
             bt_connect.UseVisualStyleBackColor = true;
+            bt_connect.Click += Connect;
             // 
             // tabHistory
             // 
