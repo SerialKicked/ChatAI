@@ -838,6 +838,7 @@
             num_wentrypriority.Name = "num_wentrypriority";
             num_wentrypriority.Size = new Size(110, 23);
             num_wentrypriority.TabIndex = 14;
+            num_wentrypriority.ValueChanged += UpdateWorldEntryEvent;
             // 
             // label26
             // 
@@ -854,6 +855,7 @@
             num_wentryduration.Name = "num_wentryduration";
             num_wentryduration.Size = new Size(110, 23);
             num_wentryduration.TabIndex = 12;
+            num_wentryduration.ValueChanged += UpdateWorldEntryEvent;
             // 
             // ck_wentrycasesensitive
             // 
@@ -880,6 +882,7 @@
             num_wentryposition.Name = "num_wentryposition";
             num_wentryposition.Size = new Size(110, 23);
             num_wentryposition.TabIndex = 9;
+            num_wentryposition.ValueChanged += UpdateWorldEntryEvent;
             // 
             // label24
             // 
@@ -899,6 +902,7 @@
             cb_wentrylocation.Name = "cb_wentrylocation";
             cb_wentrylocation.Size = new Size(182, 23);
             cb_wentrylocation.TabIndex = 7;
+            cb_wentrylocation.SelectedIndexChanged += UpdateWorldEntryEvent;
             // 
             // label23
             // 
@@ -918,6 +922,7 @@
             cb_wentrykwlink.Name = "cb_wentrykwlink";
             cb_wentrykwlink.Size = new Size(130, 23);
             cb_wentrykwlink.TabIndex = 5;
+            cb_wentrykwlink.SelectedIndexChanged += UpdateWorldEntryEvent;
             // 
             // ed_wentrykw2
             // 
@@ -925,6 +930,7 @@
             ed_wentrykw2.Name = "ed_wentrykw2";
             ed_wentrykw2.Size = new Size(299, 23);
             ed_wentrykw2.TabIndex = 4;
+            ed_wentrykw2.TextChanged += UpdateWorldEntryEvent;
             // 
             // label22
             // 
@@ -941,6 +947,7 @@
             ed_wentrykw1.Name = "ed_wentrykw1";
             ed_wentrykw1.Size = new Size(299, 23);
             ed_wentrykw1.TabIndex = 2;
+            ed_wentrykw1.TextChanged += UpdateWorldEntryEvent;
             // 
             // label21
             // 
@@ -960,6 +967,7 @@
             ck_wentryenabled.TabIndex = 0;
             ck_wentryenabled.Text = "Enabled";
             ck_wentryenabled.UseVisualStyleBackColor = true;
+            ck_wentryenabled.CheckedChanged += UpdateWorldEntryEvent;
             // 
             // groupBox7
             // 
@@ -993,6 +1001,7 @@
             ed_wentrymem.ScrollBars = ScrollBars.Vertical;
             ed_wentrymem.Size = new Size(784, 159);
             ed_wentrymem.TabIndex = 2;
+            ed_wentrymem.TextChanged += UpdateWorldEntryEvent;
             // 
             // ed_wentryname
             // 
@@ -1001,6 +1010,7 @@
             ed_wentryname.Name = "ed_wentryname";
             ed_wentryname.Size = new Size(784, 23);
             ed_wentryname.TabIndex = 1;
+            ed_wentryname.TextChanged += UpdateWorldEntryEvent;
             // 
             // label19
             // 

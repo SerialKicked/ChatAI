@@ -354,6 +354,7 @@ namespace WaifuAI
 
         private void LoadWorldEntry(WorldEntry worldEntry)
         {
+            _isinitloading = true;
             ed_wentryname.Text = worldEntry.Name;
             ed_wentrymem.Text = worldEntry.Message.ToWinFormat();
             // Convert worldEntry's keywords to a comma separated string to show in ed_wentrykw1.Text
@@ -366,14 +367,29 @@ namespace WaifuAI
             cb_wentrylocation.SelectedIndex = (int)worldEntry.Position;
             ck_wentrycasesensitive.Checked = worldEntry.CaseSensitive;
             ck_wentryenabled.Checked = worldEntry.Enabled;
+            _isinitloading = false;
         }
 
         private void SaveWorldEntry()
         {
             SelectedWorldEntryEditor.Name = ed_wentryname.Text;
             SelectedWorldEntryEditor.Message = ed_wentrymem.Text.ToLinuxFormat();
-            SelectedWorldEntryEditor.KeyWordsMain = ed_wentrykw1.Text.Split(',')?.ToList() ?? [];
-            SelectedWorldEntryEditor.KeyWordsSecondary = ed_wentrykw2.Text.Split(',')?.ToList() ?? [];
+            if (!string.IsNullOrWhiteSpace(ed_wentrykw1.Text))
+            {
+                SelectedWorldEntryEditor.KeyWordsMain = ed_wentrykw1.Text.Split(',')?.ToList() ?? [];
+            }
+            else
+            {
+                SelectedWorldEntryEditor.KeyWordsMain = [];
+            }
+            if (!string.IsNullOrWhiteSpace(ed_wentrykw2.Text))
+            {
+                SelectedWorldEntryEditor.KeyWordsSecondary = ed_wentrykw2.Text.Split(',')?.ToList() ?? [];
+            }
+            else
+            {
+                SelectedWorldEntryEditor.KeyWordsSecondary = [];
+            }
             SelectedWorldEntryEditor.Duration = (int)num_wentryduration.Value;
             SelectedWorldEntryEditor.PositionIndex = (int)num_wentryposition.Value;
             SelectedWorldEntryEditor.Priority = (int)num_wentrypriority.Value;
@@ -381,6 +397,10 @@ namespace WaifuAI
             SelectedWorldEntryEditor.Position = (WEPosition)cb_wentrylocation.SelectedIndex;
             SelectedWorldEntryEditor.CaseSensitive = ck_wentrycasesensitive.Checked;
             SelectedWorldEntryEditor.Enabled = ck_wentryenabled.Checked;
+
+            var idx = SelectedWorldEditor.Entries.IndexOf(SelectedWorldEntryEditor);
+            if (idx >= 0 && idx < lb_worldentries.Items.Count)
+                lb_worldentries.Items[idx] = SelectedWorldEntryEditor.Name;
         }
 
         private void SaveWorldInfo()
@@ -1537,6 +1557,13 @@ namespace WaifuAI
         private void ck_markdown_CheckedChanged(object sender, EventArgs e)
         {
             LLMSystem.MarkdownMemoryFormating = ck_markdown.Checked;
+        }
+
+        private void UpdateWorldEntryEvent(object sender, EventArgs e)
+        {
+            if (_isinitloading)
+                return;
+            SaveWorldEntry();
         }
     }
 }
