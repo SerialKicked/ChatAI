@@ -245,7 +245,7 @@ namespace WaifuAI
             return tcs.Task;
         }
 
-        #region *** Editor Related Functions ***
+        #region *** Sampler Editor ***
 
         /// <summary>
         /// Initialize the inference settings editor panel
@@ -269,10 +269,98 @@ namespace WaifuAI
             cb_samplerlist.SelectedIndexChanged += (sender, e) =>
             {
                 SelectedSamplerEditor = DataFiles.Inference[cb_samplerlist.SelectedItem!.ToString()!].GetCopy();
-                CreateSamplerControls(pan_samplers, SelectedSamplerEditor);
+                LoadSamplerSettings(SelectedSamplerEditor);
             };
-            CreateSamplerControls(pan_samplers, SelectedSamplerEditor);
+            LoadSamplerSettings(SelectedSamplerEditor);
         }
+
+        private void LoadSamplerSettings(SamplerSettings selected)
+        {
+            num_temp.Value = (decimal)selected.Temperature;
+            num_seed.Value = selected.Sampler_seed;
+            num_topk.Value = selected.Top_k;
+            num_topp.Value = (decimal)selected.Top_p;
+            num_typical.Value = (decimal)selected.Typical;
+            num_minp.Value = (decimal)selected.Min_p;
+            num_topa.Value = (decimal)selected.Top_a;
+            num_tfs.Value = (decimal)selected.Tfs;
+            num_reppen.Value = (decimal)selected.Rep_pen;
+            num_reppenrange.Value = selected.Rep_pen_range;
+            cb_miro.SelectedIndex = (int)selected.Mirostat;
+            num_meta.Value = (decimal)selected.Mirostat_eta;
+            num_mtau.Value = (decimal)selected.Mirostat_tau;
+            num_xtcthres.Value = (decimal)selected.Xtc_threshold;
+            num_xtcprob.Value = (decimal)selected.Xtc_probability;
+            num_drybase.Value = (decimal)selected.Dry_base;
+            num_drymul.Value = (decimal)selected.Dry_multiplier;
+            num_dryrange.Value = selected.Dry_allowed_length;
+            num_dynexpo.Value = (decimal)selected.Dynatemp_exponent;
+            num_dynrange.Value = (decimal)selected.Dynatemp_range;
+            ck_ignoreeos.Checked = selected.Bypass_eos;
+            ck_renderspecial.Checked = selected.Render_special;
+            ck_trimstop.Checked = selected.Trim_stop;
+        }
+
+        private SamplerSettings SaveSamplerUIToSettiongs()
+        {
+            return new SamplerSettings()
+            {
+                Temperature = (double)num_temp.Value,
+                Sampler_seed = (int)num_seed.Value,
+                Top_k = (int)num_topk.Value,
+                Top_p = (double)num_topp.Value,
+                Typical = (double)num_typical.Value,
+                Min_p = (double)num_minp.Value,
+                Top_a = (double)num_topa.Value,
+                Tfs = (double)num_tfs.Value,
+                Rep_pen = (double)num_reppen.Value,
+                Rep_pen_range = (int)num_reppenrange.Value,
+                Mirostat = (double)cb_miro.SelectedIndex,
+                Mirostat_eta = (double)num_meta.Value,
+                Mirostat_tau = (int)num_mtau.Value,
+                Xtc_threshold = (double)num_xtcthres.Value,
+                Xtc_probability = (double)num_xtcprob.Value,
+                Dry_base = (double)num_drybase.Value,
+                Dry_multiplier = (double)num_drymul.Value,
+                Dry_allowed_length = (int)num_dryrange.Value,
+                Dynatemp_exponent = (double)num_dynexpo.Value,
+                Dynatemp_range = (int)num_dynrange.Value,
+                Bypass_eos = ck_ignoreeos.Checked,
+                Render_special = ck_renderspecial.Checked,
+                Trim_stop = ck_trimstop.Checked,
+                Sampler_order = [6, 0, 1, 3, 4, 2, 5],
+                Dry_sequence_breakers = ["\n", ":", "\"", "*"],
+                Max_context_length = 8192,
+                Max_length = 512,
+                Prompt = "",
+                Memory = "",
+                Images = []
+            };
+        }
+
+        private void bt_savesampler_Click(object sender, EventArgs e)
+        {
+            var NewName = cb_samplerlist.Text;
+            if (string.IsNullOrWhiteSpace(NewName))
+            {
+                MessageBox.Show("Please select a valide name for the new sampler");
+                return;
+            }
+            // If name already exists ask for confirmation
+            if (DataFiles.Inference.ContainsKey(NewName) && (MessageBox.Show("This sampler already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
+                return;
+            SelectedSamplerEditor = SaveSamplerUIToSettiongs();
+            SelectedSamplerEditor.UniqueName = NewName;
+            DataFiles.Inference[NewName] = SelectedSamplerEditor;
+            (SelectedSamplerEditor as IFile).SaveToFile("data/params/" + NewName + ".json");
+            SetupSamplerEditor(NewName);
+        }
+
+
+        #endregion
+
+        #region *** Other Editor Related Functions ***
+
 
         /// <summary>
         /// Initialize the instruction format editor panel
@@ -458,108 +546,6 @@ namespace WaifuAI
         }
 
         /// <summary>
-        /// Create the editor for the inference sampling settings
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="generationInput"></param>
-        private static void CreateSamplerControls(Control target, SamplerSettings generationInput)
-        {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8605 // Converting null literal or possible null value to non-nullable type.
-            target.Controls.Clear();
-            int yPos = 10;
-            Type type = typeof(GenerationInput);
-            PropertyInfo[] properties = type.GetProperties();
-            int xMargin = 500;
-            bool ApplyMargin = true;
-            string[] ignore = ["UniqueName", "Prompt", "Memory", "Max_length", "Images", "Logit_bias", "AdditionalProperties", "Dry_sequence_breakers"];
-
-            var lst = new List<PropertyInfo>(properties);
-            // sort lst alphabetically
-            lst.Sort((a, b) => a.Name.CompareTo(b.Name));
-
-            foreach (var property in lst)
-            {
-                if (ignore.Contains(property.Name))
-                    continue;
-                Label label = new() { Text = property.Name + ":", Location = new Point(10, yPos), Width = 240 };
-                Control? control = null;
-                if (property.PropertyType == typeof(int))
-                {
-                    control = new NumericUpDown { Minimum = -1, Maximum = int.MaxValue, Value = (int)property.GetValue(generationInput), Location = new Point(150, yPos), Width = 100 };
-                    ((NumericUpDown)control).ValueChanged += (sender, e) => property.SetValue(generationInput, (int)((NumericUpDown)control).Value);
-                }
-                else if (property.PropertyType == typeof(double))
-                {
-                    control = new NumericUpDown { Value = (decimal)(double)property.GetValue(generationInput), Location = new Point(150, yPos), Width = 100, DecimalPlaces = 2, Increment = 0.01M };
-                    ((NumericUpDown)control).ValueChanged += (sender, e) => property.SetValue(generationInput, (double)((NumericUpDown)control).Value);
-                }
-                else if (property.PropertyType == typeof(string))
-                {
-                    control = new TextBox { Text = (string)property.GetValue(generationInput), Location = new Point(150, yPos), Width = 200 };
-                    ((TextBox)control).TextChanged += (sender, e) => property.SetValue(generationInput, ((TextBox)control).Text);
-                }
-                else if (property.PropertyType == typeof(bool))
-                {
-                    control = new CheckBox { Checked = (bool)property.GetValue(generationInput), Location = new Point(150, yPos) };
-                    ((CheckBox)control).CheckedChanged += (sender, e) => property.SetValue(generationInput, ((CheckBox)control).Checked);
-                }
-                else if (property.PropertyType == typeof(ICollection<int>))
-                {
-                    control = new TextBox { Text = string.Join(",", (ICollection<int>)property.GetValue(generationInput)!), Location = new Point(150, yPos), Width = 200 };
-
-                    ((TextBox)control).TextChanged += (sender, e) =>
-                    {
-                        try
-                        {
-                            property.SetValue(generationInput, ((TextBox)control).Text.Split(',').Select(int.Parse).ToList());
-                        }
-                        catch (Exception)
-                        {
-                            // ignore until good input
-                        }
-                    };
-                }
-                else if (property.PropertyType == typeof(ICollection<string>))
-                {
-                    control = new TextBox { Text = string.Join(",", (ICollection<string>)property.GetValue(generationInput) ?? []), Location = new Point(150, yPos), Width = 200 };
-                    ((TextBox)control).TextChanged += (sender, e) =>
-                    {
-                        try
-                        {
-                            property.SetValue(generationInput, ((TextBox)control).Text.Split(',').ToList());
-                        }
-                        catch (Exception)
-                        {
-                            // ignore until good input
-                        }
-                    };
-                }
-
-                if (control != null)
-                {
-                    if (ApplyMargin)
-                    {
-                        label.Location = new Point(10 + xMargin, yPos);
-                        control.Location = new Point(250 + xMargin, yPos);
-                    }
-                    else
-                    {
-                        label.Location = new Point(10, yPos);
-                        control.Location = new Point(250, yPos);
-                        yPos += 30;
-                    }
-
-                    target.Controls.Add(label);
-                    target.Controls.Add(control);
-                    ApplyMargin = !ApplyMargin;
-                }
-            }
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning restore CS8605 // Converting null literal or possible null value to non-nullable type.
-        }
-
-        /// <summary>
         /// Create the editor for the instruction format settings
         /// </summary>
         /// <param name="target"></param>
@@ -691,23 +677,6 @@ namespace WaifuAI
             }
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning restore CS8605 // Converting null literal or possible null value to non-nullable type.
-        }
-
-        private void bt_savesampler_Click(object sender, EventArgs e)
-        {
-            var NewName = cb_samplerlist.Text;
-            if (string.IsNullOrWhiteSpace(NewName))
-            {
-                MessageBox.Show("Please select a valide name for the new sampler");
-                return;
-            }
-            // If name already exists ask for confirmation
-            if (DataFiles.Inference.ContainsKey(NewName) && (MessageBox.Show("This sampler already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
-                return;
-            SelectedSamplerEditor.UniqueName = NewName;
-            DataFiles.Inference[NewName] = SelectedSamplerEditor;
-            (SelectedSamplerEditor as IFile).SaveToFile("data/params/" + NewName + ".json");
-            SetupSamplerEditor(NewName);
         }
 
         private void bt_instructsave_Click(object sender, EventArgs e)

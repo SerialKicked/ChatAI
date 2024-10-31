@@ -190,8 +190,7 @@ namespace WaifuAI
                .Replace("{{date}}", DateToHumanString(DateTime.Now))
                .Replace("{{time}}", DateTime.Now.ToShortTimeString())
                .Replace("{{day}}", DateTime.Now.DayOfWeek.ToString())
-               .Replace("{{scenario}}", string.IsNullOrWhiteSpace(ScenarioOverride) ? 
-                    character.GetScenario(user.Name) : ReplaceMacros(ScenarioOverride, user, character))
+               .Replace("{{scenario}}", string.IsNullOrWhiteSpace(ScenarioOverride) ? character.GetScenario(user.Name) : ScenarioOverride)
                .Replace("{{instructprompt}}", Instruct.SystemPrompt);
             return res.ToString();
         }
