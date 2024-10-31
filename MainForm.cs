@@ -44,9 +44,9 @@ namespace WaifuAI
         {
             InitializeComponent();
             // load all the image files in data/backgrounds to the cb_background combobox
-            foreach (var file in System.IO.Directory.GetFiles("data/background"))
+            foreach (var file in Directory.GetFiles("data/background"))
             {
-                cb_background.Items.Add(System.IO.Path.GetFileName(file));
+                cb_background.Items.Add(Path.GetFileName(file));
             }
 
             HelptoolTip.SetToolTip(ck_ragweb, "Allows the LLM to browse compatible websites for information.");
@@ -128,11 +128,14 @@ namespace WaifuAI
                 bt_connect.Enabled = true;
                 bt_send.Enabled = true;
                 bt_send.Text = "Send";
-                bt_send.BackColor = System.Drawing.Color.PaleGreen;
+                bt_send.BackColor = Color.PaleGreen;
                 bt_reroll.Enabled = true;
                 bt_chattosessions.Enabled = true;
                 bt_newsession.Enabled = true;
                 bt_impersonate.Enabled = true;
+                cb_bot.Enabled = true;
+                cb_user.Enabled = true;
+                ShowCurrentSessionInfo();
             }
             else
             {
@@ -140,14 +143,14 @@ namespace WaifuAI
                 bt_connect.Enabled = false;
                 bt_send.Enabled = true;
                 bt_send.Text = "Cancel";
-                bt_send.BackColor = System.Drawing.Color.OrangeRed;
+                bt_send.BackColor = Color.OrangeRed;
                 bt_reroll.Enabled = false;
                 bt_chattosessions.Enabled = false;
                 bt_newsession.Enabled = false;
                 bt_impersonate.Enabled = false;
+                cb_bot.Enabled = false;
+                cb_user.Enabled = false;
             }
-            ShowCurrentSessionInfo();
-
         }
 
         private void OnFullPromptReady(object? sender, string e)
@@ -220,7 +223,7 @@ namespace WaifuAI
         private void ShowCurrentSessionInfo()
         {
             var (tokens, duration) = LLMSystem.History.GetCurrentChatSessionInfo();
-            lbl_session.Text = "Tokens: " + tokens + Environment.NewLine + "Duration: " + duration.TotalDays.ToString("F2") + " days";
+            lbl_session.Text = $"Length: {duration.TotalDays.ToString("F2")} days ({tokens}tks)";
         }
 
         // Helper method to use Invoke with async methods

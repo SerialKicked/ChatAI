@@ -815,9 +815,9 @@
             // 
             // bt_wentrysave
             // 
-            bt_wentrysave.Location = new Point(563, 147);
+            bt_wentrysave.Location = new Point(542, 147);
             bt_wentrysave.Name = "bt_wentrysave";
-            bt_wentrysave.Size = new Size(183, 23);
+            bt_wentrysave.Size = new Size(204, 23);
             bt_wentrysave.TabIndex = 16;
             bt_wentrysave.Text = "Save Entry Settings";
             bt_wentrysave.UseVisualStyleBackColor = true;
@@ -834,7 +834,6 @@
             // 
             // num_wentrypriority
             // 
-            num_wentrypriority.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             num_wentrypriority.Location = new Point(426, 147);
             num_wentrypriority.Name = "num_wentrypriority";
             num_wentrypriority.Size = new Size(110, 23);
@@ -851,7 +850,6 @@
             // 
             // num_wentryduration
             // 
-            num_wentryduration.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             num_wentryduration.Location = new Point(310, 147);
             num_wentryduration.Name = "num_wentryduration";
             num_wentryduration.Size = new Size(110, 23);
@@ -878,7 +876,6 @@
             // 
             // num_wentryposition
             // 
-            num_wentryposition.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             num_wentryposition.Location = new Point(194, 147);
             num_wentryposition.Name = "num_wentryposition";
             num_wentryposition.Size = new Size(110, 23);

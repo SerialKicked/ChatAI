@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WaifuAI.Files;
@@ -37,8 +38,16 @@ namespace WaifuAI.Memory
         {
             if (!Enabled)
                 return false;
-            var main = KeyWordsMain.Any(kw => message.Contains(kw, CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase));
-            var secondary = KeyWordsSecondary.Count == 0 || KeyWordsSecondary.Any(kw => message.Contains(kw, CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase));
+
+            var comparison = CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
+            bool ContainsWholeWord(string input, string word)
+            {
+                return Regex.IsMatch(input, $@"\b{Regex.Escape(word)}\b", comparison);
+            }
+
+            var main = KeyWordsMain.Any(kw => ContainsWholeWord(message, kw));
+            var secondary = KeyWordsSecondary.Count == 0 || KeyWordsSecondary.Any(kw => ContainsWholeWord(message, kw));
+
             return WordLink switch
             {
                 KeyWordLink.And => main && secondary,
