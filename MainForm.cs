@@ -12,6 +12,9 @@ using System.Numerics;
 using AngleSharp;
 using YamlDotNet.Serialization;
 using Microsoft.AspNetCore.Components.Forms;
+using AngleSharp.Browser.Dom;
+using Microsoft.VisualBasic.ApplicationServices;
+using Parlot.Fluent;
 
 namespace WaifuAI
 {
@@ -1525,5 +1528,17 @@ namespace WaifuAI
             LLMSystem.MarkdownMemoryFormating = ck_markdown.Checked;
         }
 
+        private void bt_deleteAllHistory_Click(object sender, EventArgs e)
+        {
+            // Confirm before deleting
+            if (MessageBox.Show("This will delete all chat history with this character permanently. Are you sure?", "Delete All History?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                LLMSystem.History.DeleteAll(true);
+                var message = new SingleMessage(AuthorRole.Assistant, DateTime.Now, LLMSystem.Bot.GetWelcomeLine(LLMSystem.User.Name), LLMSystem.Bot.UniqueName, LLMSystem.Bot.UniqueName);
+                LLMSystem.History.LogMessage(message);
+                LoadChatHistoryTab();
+                WebChatLoad();
+            }
+        }
     }
 }

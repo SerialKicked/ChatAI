@@ -643,5 +643,14 @@ namespace WaifuAI.Files
             }
             return sb.ToString();
         }
+
+        public void DeleteAll(bool AreYouSure)
+        {
+            if (AreYouSure)
+            {
+                Messages.Clear();
+                Sessions.Clear();
+            }
+        }
     }
 }

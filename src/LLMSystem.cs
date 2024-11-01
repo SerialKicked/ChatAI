@@ -68,12 +68,12 @@ namespace WaifuAI
         private static void RaiseOnInferenceStreamed(string addedString) => OnInferenceStreamed?.Invoke(null, addedString);
         private static void RaiseOnInferenceEnded(string fullString) => OnInferenceEnded?.Invoke(null, fullString);
 
-
         public static BasicDelegateFunction? UI_RefreshChat = null;
         public static UpdateMessageFunction? UI_ChangeMessage = null;
 
         public static List<IContextPlugin> ContextPlugins { get; private set; } = [];
 
+        public static Random RNG = new();
 
         public static SystemStatus Status
         {
@@ -154,7 +154,7 @@ namespace WaifuAI
                 var response = StreamingTextProgress.Trim();
                 foreach (var ctxplug in ContextPlugins)
                 {
-                    if (ctxplug.Enabled && ctxplug.ReplaceOutput(ReplaceMacros(response, User, Bot), History, out var editedresponse))
+                    if (ctxplug.Enabled && ctxplug.ReplaceOutput(ReplaceMacros(response), History, out var editedresponse))
                         response = editedresponse;
                 }
                 RaiseOnInferenceEnded(response);
@@ -187,6 +187,7 @@ namespace WaifuAI
                .Replace("{{userbio}}", user.GetBio(character.Name))
                .Replace("{{char}}", character.Name)
                .Replace("{{charbio}}", character.GetBio(user.Name))
+               .Replace("{{examples}}", character.GetDialogExamples(user.Name))
                .Replace("{{date}}", DateToHumanString(DateTime.Now))
                .Replace("{{time}}", DateTime.Now.ToShortTimeString())
                .Replace("{{day}}", DateTime.Now.DayOfWeek.ToString())
@@ -207,6 +208,12 @@ namespace WaifuAI
             bot = newbot;
             bot.BeginSession();
             RAGSystem.VectorizeChatlog(History);
+            // if first time interaction, display welcome message from bot
+            if (History.Messages.Count == 0 && History.Sessions.Count == 0)
+            {
+                var message = new SingleMessage(AuthorRole.Assistant, DateTime.Now, bot.GetWelcomeLine(User.Name), bot.UniqueName, User.UniqueName);
+                History.LogMessage(message);
+            }
         }
 
         /// <summary>
@@ -285,7 +292,7 @@ namespace WaifuAI
             var pluginmsg = string.IsNullOrEmpty(pluginMessage) ? string.Empty : Instruct.FormatSinglePrompt(AuthorRole.System, User, Bot, pluginMessage);
             var tokencount = string.IsNullOrEmpty(msg) ? 0 :GetTokenCount(msg);
             tokencount += string.IsNullOrEmpty(pluginmsg) ? 0 : GetTokenCount(pluginmsg);
-            var rawprompt = new StringBuilder(RawSystemPrompt(User, Bot));
+            var rawprompt = new StringBuilder(SystemPrompt.GetSystemPromptRaw(Bot));
             var inserts = new Dictionary<int, string>();
             var searchmessage = string.IsNullOrWhiteSpace(newMessage) ? History.GetLastUserMessageContent() : newMessage;
             if (WorldInfo && Bot.MyWorlds.Count > 0)
@@ -315,7 +322,7 @@ namespace WaifuAI
                     rawprompt.AppendLinuxLine(ctxinfo);
             }
 
-            var sysprompt = Instruct.BoSToken + Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, User, Bot, rawprompt.ToString());
+            var sysprompt = Instruct.BoSToken + Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, User, Bot, rawprompt.ToString().CleanupAndTrim());
 
             systemPromptSize = GetTokenCount(sysprompt);
             tokencount += systemPromptSize;
@@ -376,23 +383,6 @@ namespace WaifuAI
                 stbuild.AppendLinuxLine(session.GetRawMemory(!MarkdownMemoryFormating));
             }
             return stbuild.ToString();
-        }
-
-        /// <summary>
-        /// Generates a raw system prompt with arbitrary initial prompt, user , and character bios and the (optional) scenario.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="character"></param>
-        /// <returns></returns>
-        public static string RawSystemPrompt(Character user, Character character)
-        {
-            var selprompt = !string.IsNullOrEmpty(character.SystemPrompt) ? character.SystemPrompt : SystemPrompt.Prompt;
-            var res = new StringBuilder(selprompt).AppendLinuxLine();
-            if (character != null && !string.IsNullOrEmpty(character.Scenario))
-            {
-                res.AppendLinuxLine().AppendLinuxLine(SystemPrompt.ScenarioTitle).AppendLinuxLine("{{scenario}}");
-            }
-            return res.ToString();
         }
 
         public static async Task AddBotMessage()
@@ -476,7 +466,7 @@ namespace WaifuAI
                 {
                     if (!ctxplug.Enabled)
                         continue;
-                    var plugres = await ctxplug.ReplaceUserInput(ReplaceMacros(lastuserinput, User, Bot));
+                    var plugres = await ctxplug.ReplaceUserInput(ReplaceMacros(lastuserinput));
                     if (plugres.IsHandled && !string.IsNullOrEmpty(plugres.Response))
                     {
                         if (plugres.Replace)
@@ -557,7 +547,7 @@ namespace WaifuAI
             else
                 msgtxt += $" The last chat was about {timespan.Hours} hours ago. " + "It is {{time}} now.";
             msgtxt = "*" + msgtxt.Trim() + "* ";
-            return ReplaceMacros(msgtxt, User, Bot);
+            return ReplaceMacros(msgtxt);
         }
 
         public static string DateToHumanString(DateTime date)

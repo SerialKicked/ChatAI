@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Text;
 using WaifuAI.Memory;
 using WaifuAI.Plugins;
 
@@ -21,6 +22,8 @@ namespace WaifuAI.Files
         public string Icon { get; set; } = string.Empty;
         /// <summary> First message the character will send when starting a new session </summary>
         public List<string> FirstMessage { get; set; } = [];
+        /// <summary> Examples of dialogs from the character to get a more consistent tone </summary>
+        public List<string> ExampleDialogs { get; set; } = [];
         /// <summary> Custom system prompt for this character </summary>
         public string SystemPrompt { get; set; } = string.Empty;
         /// <summary> WorldInfo applied to this character </summary>
@@ -48,6 +51,26 @@ namespace WaifuAI.Files
         public string GetScenario(string othername) => IsUser ?
             Scenario.Replace("{{user}}", Name).Replace("{{char}}", othername) :
             Scenario.Replace("{{char}}", Name).Replace("{{user}}", othername);
+
+        public string GetDialogExamples(string othername)
+        {
+            if (ExampleDialogs.Count == 0)
+                return string.Empty;
+            var str = new StringBuilder();
+            str.AppendLinuxLine($"Here are some examples of {Name}'s writing style:");
+            foreach (var item in ExampleDialogs)
+                str.AppendLinuxLine("- " + item.Replace("{{user}}", othername).Replace("{{char}}", Name));
+            return str.ToString();
+        }
+
+        public string GetWelcomeLine(string othername)
+        {
+            if (FirstMessage.Count == 0)
+                return string.Empty;
+            // select a random welcome line
+            var index = LLMSystem.RNG.Next(FirstMessage.Count);
+            return FirstMessage[index].Replace("{{user}}", othername).Replace("{{char}}", Name);
+        }
 
         public Character() { }
 

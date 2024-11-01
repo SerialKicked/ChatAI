@@ -219,6 +219,7 @@
             openFileDialog1 = new OpenFileDialog();
             fontDialog1 = new FontDialog();
             HelptoolTip = new ToolTip(components);
+            bt_deleteAllHistory = new Button();
             tabMain.SuspendLayout();
             tabChat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
@@ -779,6 +780,7 @@
             // panel2
             // 
             panel2.AutoScroll = true;
+            panel2.Controls.Add(bt_deleteAllHistory);
             panel2.Controls.Add(bt_sessionrefresh);
             panel2.Controls.Add(lbl_sessioninfo);
             panel2.Controls.Add(lbl_sessiontitle);
@@ -2380,6 +2382,20 @@
             HelptoolTip.ToolTipIcon = ToolTipIcon.Info;
             HelptoolTip.ToolTipTitle = "Help and Tips";
             // 
+            // bt_deleteAllHistory
+            // 
+            bt_deleteAllHistory.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            bt_deleteAllHistory.BackColor = SystemColors.ButtonFace;
+            bt_deleteAllHistory.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            bt_deleteAllHistory.ForeColor = Color.DarkRed;
+            bt_deleteAllHistory.Location = new Point(515, 71);
+            bt_deleteAllHistory.Name = "bt_deleteAllHistory";
+            bt_deleteAllHistory.Size = new Size(151, 23);
+            bt_deleteAllHistory.TabIndex = 3;
+            bt_deleteAllHistory.Text = "Delete All History";
+            bt_deleteAllHistory.UseVisualStyleBackColor = false;
+            bt_deleteAllHistory.Click += bt_deleteAllHistory_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -2671,5 +2687,6 @@
         private GroupBox groupBox20;
         private CheckBox ck_trimstop;
         private CheckBox ck_renderspecial;
+        private Button bt_deleteAllHistory;
     }
 }

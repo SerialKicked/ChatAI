@@ -35,8 +35,6 @@ namespace WaifuAI.Plugins
         public double MinTemperature { get; set; } = 0.3;
         public double MaxTemperature { get; set; } = 0.6;
 
-        private Random RNG = new();
-
         public Dictionary<string,string> WebsiteSpecificInfo { get; set; } = [];
 
         private List<WebsiteDefinition> websites = [];
@@ -154,7 +152,7 @@ namespace WaifuAI.Plugins
         private async Task<string> SendQuery(string prompt, bool customGrammar = false)
         {
             var llmparams = LLMSystem.Sampler.GetCopy();
-            llmparams.Temperature = RNG.NextDouble() * (MaxTemperature - MinTemperature) + MinTemperature;
+            llmparams.Temperature = LLMSystem.RNG.NextDouble() * (MaxTemperature - MinTemperature) + MinTemperature;
             llmparams.Prompt = prompt;
             llmparams.Rep_pen = 1;
             llmparams.Dry_base = 0;

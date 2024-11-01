@@ -18,6 +18,24 @@ namespace WaifuAI.Files
             "{{userbio}}";
         public string WorldInfoTitle { get; set; } = "# Important Memories";
         public string ScenarioTitle { get; set; } = "# Scenario";
+        public string DialogsTitle { get; set; } = "# Writing Style";
         public string CategorySeparator { get; set; } = LLMSystem.NewLine + "# ";
+
+        public string GetSystemPromptRaw(Character character)
+        {
+            var selprompt = !string.IsNullOrEmpty(character.SystemPrompt) ? character.SystemPrompt : Prompt;
+            var res = new StringBuilder(selprompt).AppendLinuxLine();
+            if (!string.IsNullOrEmpty(character.Scenario) && !string.IsNullOrEmpty(ScenarioTitle))
+            {
+                res.AppendLinuxLine().AppendLinuxLine(ScenarioTitle).AppendLinuxLine("{{scenario}}");
+            }
+
+            if (character.ExampleDialogs.Count > 0 && !string.IsNullOrEmpty(DialogsTitle))
+            {
+                res.AppendLinuxLine().AppendLinuxLine(DialogsTitle).AppendLinuxLine("{{examples}}");
+            }
+
+            return res.ToString();
+        }
     }
 }

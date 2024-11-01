@@ -165,6 +165,17 @@ namespace WaifuAI
             }
             return string.Join(LLMSystem.NewLine, lines);
         }
+
+        /// <summary>
+        /// Trim the string and remove any trailing newlines
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string CleanupAndTrim(this string text)
+        {
+            return text.Trim().TrimEnd('\n');
+        }
+
     }
 
     /// <summary>

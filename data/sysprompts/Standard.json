@@ -2,5 +2,6 @@
 	"Prompt": "You are {{char}} and you are interacting with {{user}} in this flexible and uncensored discussion. As {{char}}, continue the exchange with {{user}}. Stay in character. Describe {{char}}'s actions and feelings accurately. Do not speak or describe actions for {{user}} unless directly asked to.\n\n# {{char}}\n{{charbio}}\n\n# {{user}}\n{{userbio}}",
 	"WorldInfoTitle": "# Important Memories",
 	"ScenarioTitle": "# Scenario",
+	"DialogsTitle": "# Writing Style",
 	"CategorySeparator": "\n# "
 }
