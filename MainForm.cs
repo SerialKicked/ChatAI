@@ -36,6 +36,8 @@ namespace WaifuAI
         private bool _forcereload = false;
         private bool _editopened = false;
         private bool _isinitloading = true;
+        private DateTime _postdate = DateTime.Now;
+        private TimeSpan _responselength = default;
 
         public static MarkdownPipeline CustomMarkDownPipeline { get; } = new MarkdownPipelineBuilder()
             .UseSoftlineBreakAsHardlineBreak()
@@ -166,11 +168,16 @@ namespace WaifuAI
                 return;
             _currentgeneration += e;
             _currentgenerationtokencount++;
+            _responselength = DateTime.Now - _postdate;
             if (_currentgenerationtokencount > 1)
             {
                 _currentgenerationtokencount = 0;
                 if (!_impersonatemode)
                 {
+                    Invoke((System.Windows.Forms.MethodInvoker)delegate
+                    {
+                        lbl_timer.Text = $"Generation: {_responselength.TotalSeconds:F2}s";
+                    });
                     var MsgPrefix = LLMSystem.GetMessagePrefix(AuthorRole.Assistant);
                     await WebEditLastMessage(MsgPrefix + _currentgeneration);
                 }
@@ -178,6 +185,7 @@ namespace WaifuAI
                 {
                     Invoke((System.Windows.Forms.MethodInvoker)delegate
                     {
+                        lbl_timer.Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                         ed_input.Text = _currentgeneration;
                     });
                 }
@@ -188,12 +196,15 @@ namespace WaifuAI
         {
             if (LLMSystem.Status == SystemStatus.Automated)
                 return;
+            _responselength = DateTime.Now - _postdate;
+            // add time to the log
             if (_impersonatemode)
             {
                 _impersonatemode = false;
                 Invoke((System.Windows.Forms.MethodInvoker)delegate
                 {
                     ed_input.Text = e.ToWinFormat();
+                    lbl_timer.Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                 });
                 LLMSystem.InvalidatePromptCache();
             }
@@ -213,6 +224,10 @@ namespace WaifuAI
                         WebChatLoad();
                     });
                 }
+                Invoke((System.Windows.Forms.MethodInvoker)delegate
+                {
+                    lbl_timer.Text = $"Generation: {_responselength.TotalSeconds:F2}s";
+                });
             }
             LLMSystem.Bot.SaveChatHistory();
         }
@@ -362,7 +377,6 @@ namespace WaifuAI
             var newidx = cb_infer.Items.IndexOf(currselection);
             cb_infer.SelectedIndex = newidx == -1 ? 0 : newidx;
         }
-
 
         #endregion
 
@@ -751,6 +765,8 @@ namespace WaifuAI
         {
             if (LLMSystem.Status == SystemStatus.Busy)
                 return;
+            lbl_timer.Text = "Analyzing...";
+            _postdate = DateTime.Now;
             _impersonatemode = true;
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
@@ -766,6 +782,8 @@ namespace WaifuAI
                 return;
             }
             _impersonatemode = false;
+            _postdate = DateTime.Now;
+            lbl_timer.Text = "Analyzing...";
             if (!string.IsNullOrEmpty(ed_input.Text))
             {
                 var messagetext = LLMSystem.ReplaceMacros(LLMSystem.GetAwayString() + ed_input.Text.ToLinuxFormat(), LLMSystem.User, LLMSystem.Bot);
@@ -822,6 +840,8 @@ namespace WaifuAI
             if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.Messages.Count == 0 || LLMSystem.History.LastMessage()?.Role != AuthorRole.Assistant)
                 return;
             _impersonatemode = false;
+            _postdate = DateTime.Now;
+            lbl_timer.Text = "Analyzing...";
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await WebEditLastMessage($"**{LLMSystem.Bot.Name}:** *I am thinking...*");
             _currentgeneration = string.Empty;

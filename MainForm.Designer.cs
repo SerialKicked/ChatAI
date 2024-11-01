@@ -70,6 +70,7 @@
             tabHistory = new TabPage();
             web_sessioncontent = new Microsoft.Web.WebView2.WinForms.WebView2();
             panel2 = new Panel();
+            bt_deleteAllHistory = new Button();
             bt_sessionrefresh = new Button();
             lbl_sessioninfo = new Label();
             lbl_sessiontitle = new Label();
@@ -219,7 +220,7 @@
             openFileDialog1 = new OpenFileDialog();
             fontDialog1 = new FontDialog();
             HelptoolTip = new ToolTip(components);
-            bt_deleteAllHistory = new Button();
+            lbl_timer = new Label();
             tabMain.SuspendLayout();
             tabChat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
@@ -304,7 +305,7 @@
             tabMain.Location = new Point(0, 0);
             tabMain.Name = "tabMain";
             tabMain.SelectedIndex = 0;
-            tabMain.Size = new Size(1008, 694);
+            tabMain.Size = new Size(1008, 710);
             tabMain.TabIndex = 1;
             // 
             // tabChat
@@ -319,7 +320,7 @@
             tabChat.Location = new Point(4, 27);
             tabChat.Name = "tabChat";
             tabChat.Padding = new Padding(3);
-            tabChat.Size = new Size(1000, 663);
+            tabChat.Size = new Size(1000, 679);
             tabChat.TabIndex = 1;
             tabChat.Text = "Chat";
             tabChat.UseVisualStyleBackColor = true;
@@ -330,7 +331,7 @@
             bt_impersonate.BackColor = Color.Turquoise;
             bt_impersonate.FlatStyle = FlatStyle.Flat;
             bt_impersonate.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_impersonate.Location = new Point(937, 573);
+            bt_impersonate.Location = new Point(937, 589);
             bt_impersonate.Name = "bt_impersonate";
             bt_impersonate.Size = new Size(60, 25);
             bt_impersonate.TabIndex = 7;
@@ -346,7 +347,7 @@
             web_chat.DefaultBackgroundColor = Color.White;
             web_chat.Location = new Point(212, 3);
             web_chat.Name = "web_chat";
-            web_chat.Size = new Size(785, 564);
+            web_chat.Size = new Size(785, 580);
             web_chat.TabIndex = 6;
             web_chat.ZoomFactor = 1D;
             // 
@@ -356,7 +357,7 @@
             bt_delete.BackColor = Color.LightCoral;
             bt_delete.FlatStyle = FlatStyle.Flat;
             bt_delete.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_delete.Location = new Point(937, 635);
+            bt_delete.Location = new Point(937, 651);
             bt_delete.Name = "bt_delete";
             bt_delete.Size = new Size(60, 25);
             bt_delete.TabIndex = 5;
@@ -370,7 +371,7 @@
             bt_reroll.BackColor = Color.PaleGoldenrod;
             bt_reroll.FlatStyle = FlatStyle.Flat;
             bt_reroll.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_reroll.Location = new Point(937, 604);
+            bt_reroll.Location = new Point(937, 620);
             bt_reroll.Name = "bt_reroll";
             bt_reroll.Size = new Size(60, 25);
             bt_reroll.TabIndex = 4;
@@ -384,7 +385,7 @@
             bt_send.BackColor = Color.PaleGreen;
             bt_send.FlatStyle = FlatStyle.Flat;
             bt_send.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_send.Location = new Point(871, 574);
+            bt_send.Location = new Point(871, 590);
             bt_send.Name = "bt_send";
             bt_send.Size = new Size(60, 86);
             bt_send.TabIndex = 3;
@@ -398,7 +399,7 @@
             ed_input.BackColor = Color.WhiteSmoke;
             ed_input.BorderStyle = BorderStyle.FixedSingle;
             ed_input.Font = new Font("Segoe UI", 11F);
-            ed_input.Location = new Point(212, 573);
+            ed_input.Location = new Point(212, 589);
             ed_input.Multiline = true;
             ed_input.Name = "ed_input";
             ed_input.ScrollBars = ScrollBars.Vertical;
@@ -415,12 +416,13 @@
             panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
-            panel1.Size = new Size(203, 657);
+            panel1.Size = new Size(203, 673);
             panel1.TabIndex = 0;
             // 
             // groupBox5
             // 
             groupBox5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            groupBox5.Controls.Add(lbl_timer);
             groupBox5.Controls.Add(ck_worldinfo);
             groupBox5.Controls.Add(bt_scenario);
             groupBox5.Controls.Add(ck_sessionmemory);
@@ -437,7 +439,7 @@
             groupBox5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox5.Location = new Point(6, 298);
             groupBox5.Name = "groupBox5";
-            groupBox5.Size = new Size(187, 355);
+            groupBox5.Size = new Size(187, 371);
             groupBox5.TabIndex = 25;
             groupBox5.TabStop = false;
             groupBox5.Text = "Chat Settings";
@@ -447,7 +449,7 @@
             ck_worldinfo.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             ck_worldinfo.AutoSize = true;
             ck_worldinfo.Font = new Font("Segoe UI", 9F);
-            ck_worldinfo.Location = new Point(6, 226);
+            ck_worldinfo.Location = new Point(6, 242);
             ck_worldinfo.Name = "ck_worldinfo";
             ck_worldinfo.Size = new Size(127, 19);
             ck_worldinfo.TabIndex = 27;
@@ -471,7 +473,7 @@
             ck_sessionmemory.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             ck_sessionmemory.AutoSize = true;
             ck_sessionmemory.Font = new Font("Segoe UI", 9F);
-            ck_sessionmemory.Location = new Point(6, 251);
+            ck_sessionmemory.Location = new Point(6, 267);
             ck_sessionmemory.Name = "ck_sessionmemory";
             ck_sessionmemory.Size = new Size(113, 19);
             ck_sessionmemory.TabIndex = 24;
@@ -484,7 +486,7 @@
             ck_senseoftime.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             ck_senseoftime.AutoSize = true;
             ck_senseoftime.Font = new Font("Segoe UI", 9F);
-            ck_senseoftime.Location = new Point(6, 276);
+            ck_senseoftime.Location = new Point(6, 292);
             ck_senseoftime.Name = "ck_senseoftime";
             ck_senseoftime.Size = new Size(99, 19);
             ck_senseoftime.TabIndex = 23;
@@ -529,7 +531,7 @@
             ck_ragenabled.Checked = true;
             ck_ragenabled.CheckState = CheckState.Checked;
             ck_ragenabled.Font = new Font("Segoe UI", 9F);
-            ck_ragenabled.Location = new Point(6, 301);
+            ck_ragenabled.Location = new Point(6, 317);
             ck_ragenabled.Name = "ck_ragenabled";
             ck_ragenabled.Size = new Size(94, 19);
             ck_ragenabled.TabIndex = 20;
@@ -561,7 +563,7 @@
             // 
             bt_newsession.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             bt_newsession.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_newsession.Location = new Point(6, 326);
+            bt_newsession.Location = new Point(6, 342);
             bt_newsession.Name = "bt_newsession";
             bt_newsession.Size = new Size(175, 23);
             bt_newsession.TabIndex = 21;
@@ -789,6 +791,20 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(674, 100);
             panel2.TabIndex = 1;
+            // 
+            // bt_deleteAllHistory
+            // 
+            bt_deleteAllHistory.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            bt_deleteAllHistory.BackColor = SystemColors.ButtonFace;
+            bt_deleteAllHistory.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            bt_deleteAllHistory.ForeColor = Color.DarkRed;
+            bt_deleteAllHistory.Location = new Point(515, 71);
+            bt_deleteAllHistory.Name = "bt_deleteAllHistory";
+            bt_deleteAllHistory.Size = new Size(151, 23);
+            bt_deleteAllHistory.TabIndex = 3;
+            bt_deleteAllHistory.Text = "Delete All History";
+            bt_deleteAllHistory.UseVisualStyleBackColor = false;
+            bt_deleteAllHistory.Click += bt_deleteAllHistory_Click;
             // 
             // bt_sessionrefresh
             // 
@@ -2382,25 +2398,21 @@
             HelptoolTip.ToolTipIcon = ToolTipIcon.Info;
             HelptoolTip.ToolTipTitle = "Help and Tips";
             // 
-            // bt_deleteAllHistory
+            // lbl_timer
             // 
-            bt_deleteAllHistory.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_deleteAllHistory.BackColor = SystemColors.ButtonFace;
-            bt_deleteAllHistory.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_deleteAllHistory.ForeColor = Color.DarkRed;
-            bt_deleteAllHistory.Location = new Point(515, 71);
-            bt_deleteAllHistory.Name = "bt_deleteAllHistory";
-            bt_deleteAllHistory.Size = new Size(151, 23);
-            bt_deleteAllHistory.TabIndex = 3;
-            bt_deleteAllHistory.Text = "Delete All History";
-            bt_deleteAllHistory.UseVisualStyleBackColor = false;
-            bt_deleteAllHistory.Click += bt_deleteAllHistory_Click;
+            lbl_timer.AutoSize = true;
+            lbl_timer.Font = new Font("Segoe UI", 9F);
+            lbl_timer.Location = new Point(6, 195);
+            lbl_timer.Name = "lbl_timer";
+            lbl_timer.Size = new Size(94, 15);
+            lbl_timer.TabIndex = 28;
+            lbl_timer.Text = "Generation Time";
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1008, 694);
+            ClientSize = new Size(1008, 710);
             Controls.Add(tabMain);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
@@ -2688,5 +2700,6 @@
         private CheckBox ck_trimstop;
         private CheckBox ck_renderspecial;
         private Button bt_deleteAllHistory;
+        private Label lbl_timer;
     }
 }

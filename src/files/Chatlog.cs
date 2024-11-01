@@ -46,17 +46,21 @@ namespace WaifuAI.Files
                 "{{charbio}}" + LLMSystem.NewLine +
                 "## Name: {{user}}" + LLMSystem.NewLine +
                 "{{userbio}}" + LLMSystem.NewLine + LLMSystem.NewLine +
-                "# Chat Starting Date: " + LLMSystem.DateToHumanString(StartTime) + LLMSystem.NewLine +
-                "# Chat Duration: " + LLMSystem.TimeSpanToHumanString(Duration) + LLMSystem.NewLine +
                 "# Chat Session:" + LLMSystem.NewLine +
+                "## Starting Date: " + LLMSystem.DateToHumanString(StartTime) + LLMSystem.NewLine +
+                "## Duration: " + LLMSystem.TimeSpanToHumanString(Duration) + LLMSystem.NewLine + LLMSystem.NewLine +
                 "" + LLMSystem.NewLine +
                 LLMSystem.NewLine +
                 "# Instruction:" + LLMSystem.NewLine +
-                "Write a full summary of the exchange between {{user}} and {{char}} shown above. The summary must be written from {{char}}'s perspective. Do not introduce the characters. Do not add a title, just write the summary directly. Focus on the important details.";
+                "Write a summary of the exchange between {{user}} and {{char}} shown above. The summary must be written from {{char}}'s perspective. Do not introduce the characters. Do not add a title, just write the summary directly.";
             if (Messages.Count > 50)
             {
-                msgtxt += " The summary should be between 2 and 4 paragraphs.";
-            };
+                msgtxt += " The summary should be 2 to 4 paragraphs long.";
+            }
+            else
+            {
+                msgtxt += " The summary should be 1 to 2 paragraphs long.";
+            }
             var msg = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, msgtxt);
             var tokencount = LLMSystem.GetTokenCount(msg);
 
@@ -69,13 +73,21 @@ namespace WaifuAI.Files
                 "{{charbio}}" + LLMSystem.NewLine +
                 "## Name: {{user}}" + LLMSystem.NewLine +
                 "{{userbio}}" + LLMSystem.NewLine + LLMSystem.NewLine +
-                "# Chat Starting Date: " + LLMSystem.DateToHumanString(StartTime) + LLMSystem.NewLine +
-                "# Chat Duration: " + LLMSystem.TimeSpanToHumanString(Duration) + LLMSystem.NewLine +
                 "# Chat Session:" + LLMSystem.NewLine +
+                "## Starting Date: " + LLMSystem.DateToHumanString(StartTime) + LLMSystem.NewLine +
+                "## Duration: " + LLMSystem.TimeSpanToHumanString(Duration) + LLMSystem.NewLine + LLMSystem.NewLine +
                 docs + LLMSystem.NewLine +
                 LLMSystem.NewLine +
                 "# Instruction:" + LLMSystem.NewLine +
-                "Write a full summary of the exchange between {{user}} and {{char}} shown above. The summary must be written from {{char}}'s perspective. Do not introduce the characters. Do not add a title, just write the summary directly. Focus on the important details.";
+                "Write a summary of the exchange between {{user}} and {{char}} shown above. The summary must be written from {{char}}'s perspective. Do not introduce the characters. Do not add a title, just write the summary directly.";
+            if (Messages.Count > 50)
+            {
+                msgtxt += " The summary should be 2 to 4 paragraphs long.";
+            }
+            else
+            {
+                msgtxt += " The summary should be 1 to 2 paragraphs long.";
+            }
 
             var prompt = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, msgtxt);
 
