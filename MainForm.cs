@@ -351,13 +351,22 @@ namespace WaifuAI
             DataFiles.Inference[NewName] = SelectedSamplerEditor;
             (SelectedSamplerEditor as IFile).SaveToFile("data/params/" + NewName + ".json");
             SetupSamplerEditor(NewName);
+
+            // Update the sampler list in the chat menu
+            var currselection = cb_infer.SelectedText;
+            cb_infer.Items.Clear();
+            foreach (var item in DataFiles.Inference)
+            {
+                cb_infer.Items.Add(item.Value.UniqueName);
+            }
+            var newidx = cb_infer.Items.IndexOf(currselection);
+            cb_infer.SelectedIndex = newidx == -1 ? 0 : newidx;
         }
 
 
         #endregion
 
         #region *** Other Editor Related Functions ***
-
 
         /// <summary>
         /// Initialize the instruction format editor panel
@@ -691,6 +700,47 @@ namespace WaifuAI
             DataFiles.Instruct[NewName] = SelectedInstructEditor;
             (SelectedInstructEditor as IFile).SaveToFile("data/instruct/" + NewName + ".json");
             SetupInstructEditor(NewName);
+            // Update the prompt list in the chat menu
+            var currselection = cb_instruct.SelectedText;
+            cb_instruct.Items.Clear();
+            foreach (var item in DataFiles.Instruct)
+            {
+                cb_instruct.Items.Add(item.Value.UniqueName);
+            }
+            var newidx = cb_instruct.Items.IndexOf(currselection);
+            cb_instruct.SelectedIndex = newidx == -1 ? 0 : newidx;
+        }
+
+        private void bt_promptsave_Click(object sender, EventArgs e)
+        {
+            var NewName = cb_promptlist.Text;
+            if (string.IsNullOrWhiteSpace(NewName))
+            {
+                MessageBox.Show("Please select a valide name for the new system prompt format.");
+                return;
+            }
+            // If name already exists ask for confirmation
+            if (DataFiles.SysPrompts.ContainsKey(NewName) && (MessageBox.Show("This prompt format already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
+                return;
+            SelectedPromptEditor.UniqueName = NewName;
+            DataFiles.SysPrompts[NewName] = SelectedPromptEditor;
+            (SelectedPromptEditor as IFile).SaveToFile("data/sysprompts/" + NewName + ".json");
+            SetupPromptEditor(NewName);
+            // Update the prompt list in the chat menu
+            var currselection = cb_sysprompt.SelectedText;
+            cb_sysprompt.Items.Clear();
+            foreach (var item in DataFiles.SysPrompts)
+            {
+                cb_sysprompt.Items.Add(item.Value.UniqueName);
+            }
+            var newidx = cb_sysprompt.Items.IndexOf(currselection);
+            cb_sysprompt.SelectedIndex = newidx == -1 ? 0 : newidx;
+        }
+
+        private void cb_sysprompt_SelectionIndexChanged(object sender, EventArgs e)
+        {
+            if (cb_sysprompt.SelectedItem is string key && !string.IsNullOrEmpty(key))
+                LLMSystem.SystemPrompt = DataFiles.SysPrompts[key];
         }
 
         #endregion
@@ -1404,29 +1454,6 @@ namespace WaifuAI
         private void num_temperature_ValueChanged(object sender, EventArgs e)
         {
             LLMSystem.ForceTemperature = ((double)num_temperature.Value);
-        }
-
-        private void bt_promptsave_Click(object sender, EventArgs e)
-        {
-            var NewName = cb_promptlist.Text;
-            if (string.IsNullOrWhiteSpace(NewName))
-            {
-                MessageBox.Show("Please select a valide name for the new system prompt format.");
-                return;
-            }
-            // If name already exists ask for confirmation
-            if (DataFiles.SysPrompts.ContainsKey(NewName) && (MessageBox.Show("This prompt format already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
-                return;
-            SelectedPromptEditor.UniqueName = NewName;
-            DataFiles.SysPrompts[NewName] = SelectedPromptEditor;
-            (SelectedPromptEditor as IFile).SaveToFile("data/sysprompts/" + NewName + ".json");
-            SetupPromptEditor(NewName);
-        }
-
-        private void cb_sysprompt_SelectionIndexChanged(object sender, EventArgs e)
-        {
-            if (cb_sysprompt.SelectedItem is string key && !string.IsNullOrEmpty(key))
-                LLMSystem.SystemPrompt = DataFiles.SysPrompts[key];
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
