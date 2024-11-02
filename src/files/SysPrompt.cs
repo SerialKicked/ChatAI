@@ -19,7 +19,7 @@ namespace WaifuAI.Files
         public string WorldInfoTitle { get; set; } = "# Important Memories";
         public string ScenarioTitle { get; set; } = "# Scenario";
         public string DialogsTitle { get; set; } = "# Writing Style";
-        public string CategorySeparator { get; set; } = LLMSystem.NewLine + "# ";
+        public string CategorySeparator { get; set; } = "# ";
 
         public string GetSystemPromptRaw(Character character)
         {

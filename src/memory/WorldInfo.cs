@@ -20,23 +20,17 @@ namespace WaifuAI.Memory
         Not
     }
 
-    public class WorldEntry
+    public class KeywordEntry
     {
-        public string Name = string.Empty;
         public bool Enabled = true;
         public List<string> KeyWordsMain = [];
         public List<string> KeyWordsSecondary = [];
         public KeyWordLink WordLink = KeyWordLink.And;
-        public WEPosition Position = WEPosition.SystemPrompt;
-        public int PositionIndex = 0;
-        public int Duration = 1;
-        public int Priority = 100;
         public bool CaseSensitive = false;
-        public string Message = string.Empty;
 
         public bool CheckKeywords(string message)
         {
-            if (!Enabled)
+            if (!Enabled || (KeyWordsMain.Count == 0 && KeyWordsSecondary.Count == 0))
                 return false;
 
             var comparison = CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
@@ -56,6 +50,16 @@ namespace WaifuAI.Memory
                 _ => false
             };
         }
+    }
+
+    public class WorldEntry : KeywordEntry
+    {
+        public string Name = string.Empty;
+        public string Message = string.Empty;
+        public int PositionIndex = 0;
+        public int Duration = 1;
+        public WEPosition Position = WEPosition.SystemPrompt;
+        public int Priority = 100;
     }
 
     public class WorldInfo : BaseFile

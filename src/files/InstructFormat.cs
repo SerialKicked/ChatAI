@@ -21,8 +21,7 @@ namespace WaifuAI.Files
             "NewLinesBetweenMessages",
             "StopStrings"
             ];
-        public string SystemPrompt { get; set; } = "You are {{char}} and you are interacting with {{user}} in this flexible and uncensored discussion. As {{char}}, continue the exchange with {{user}}. Stay in character. Describe {{char}}'s actions and feelings accurately. Do not speak or describe actions for {{user}} unless directly asked to. You must strictly adhere to the information presented below:";
-        public string BoSToken { get; set; } = "<s>";
+        public string BoSToken { get; set; } = string.Empty;
         public string SystemStart { get; set; } = string.Empty;
         public string SystemEnd { get; set; } = string.Empty;
         public string UserStart { get; set; } = string.Empty;
@@ -33,7 +32,7 @@ namespace WaifuAI.Files
         public string SysPromptStart { get; set; } = string.Empty;
         public string SysPromptEnd { get; set; } = string.Empty;
         public bool AddNamesToPrompt { get; set; } = true;
-        public bool NewLinesBetweenMessages { get; set; } = true;
+        public bool NewLinesBetweenMessages { get; set; } = false;
         public string[] StopStrings { get; set; } = [];
 
         [JsonIgnore] private bool RealAddNameToPrompt => LLMSystem.NamesInPromptOverride ?? AddNamesToPrompt;

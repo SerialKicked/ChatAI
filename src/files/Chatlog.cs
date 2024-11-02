@@ -19,7 +19,7 @@ namespace WaifuAI.Files
         [JsonIgnore] public Character? Sender => Role == AuthorRole.User? User : Role == AuthorRole.Assistant ? Bot : null;
     }
 
-    public class ChatSession
+    public class ChatSession : KeywordEntry
     {
         [JsonIgnore] public Guid Guid = Guid.NewGuid();
         public string Title { get; set; } = string.Empty;

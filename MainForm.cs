@@ -263,7 +263,7 @@ namespace WaifuAI
         /// Initialize the inference settings editor panel
         /// </summary>
         /// <param name="Forceid"></param>
-        private void SetupSamplerEditor(string Forceid = "")
+        private void SetupSamplerEditor(string Forceid = "", bool addEvents = true)
         {
             cb_samplerlist.Items.Clear();
             foreach (var item in DataFiles.Inference)
@@ -278,11 +278,14 @@ namespace WaifuAI
                 cb_samplerlist.SelectedIndex = idwant;
                 SelectedSamplerEditor = DataFiles.Inference[cb_samplerlist.SelectedItem!.ToString()!].GetCopy();
             }
-            cb_samplerlist.SelectedIndexChanged += (sender, e) =>
+            if (addEvents)
             {
-                SelectedSamplerEditor = DataFiles.Inference[cb_samplerlist.SelectedItem!.ToString()!].GetCopy();
-                LoadSamplerSettings(SelectedSamplerEditor);
-            };
+                cb_samplerlist.SelectedIndexChanged += (sender, e) =>
+                {
+                    SelectedSamplerEditor = DataFiles.Inference[cb_samplerlist.SelectedItem!.ToString()!].GetCopy();
+                    LoadSamplerSettings(SelectedSamplerEditor);
+                };
+            }
             LoadSamplerSettings(SelectedSamplerEditor);
         }
 
@@ -365,10 +368,10 @@ namespace WaifuAI
             SelectedSamplerEditor.UniqueName = NewName;
             DataFiles.Inference[NewName] = SelectedSamplerEditor;
             (SelectedSamplerEditor as IFile).SaveToFile("data/params/" + NewName + ".json");
-            SetupSamplerEditor(NewName);
+            SetupSamplerEditor(NewName, false);
 
             // Update the sampler list in the chat menu
-            var currselection = cb_infer.SelectedText;
+            var currselection = cb_infer.SelectedItem?.ToString() ?? "";
             cb_infer.Items.Clear();
             foreach (var item in DataFiles.Inference)
             {
@@ -376,6 +379,88 @@ namespace WaifuAI
             }
             var newidx = cb_infer.Items.IndexOf(currselection);
             cb_infer.SelectedIndex = newidx == -1 ? 0 : newidx;
+        }
+
+        #endregion
+
+        #region *** System Prompt Editor ***
+
+        /// <summary>
+        /// Initialize the instruction format editor panel
+        /// </summary>
+        /// <param name="Forceid"></param>
+        private void SetupPromptEditor(string Forceid = "", bool addEvents = true)
+        {
+            cb_promptlist.Items.Clear();
+            foreach (var item in DataFiles.SysPrompts)
+            {
+                cb_promptlist.Items.Add(item.Value.UniqueName);
+            }
+            var idwant = 0;
+            if (Forceid != "")
+                idwant = cb_promptlist.Items.IndexOf(Forceid);
+            if (cb_promptlist.Items.Count > 0)
+            {
+                cb_promptlist.SelectedIndex = idwant;
+                SelectedPromptEditor = DataFiles.SysPrompts[cb_promptlist.SelectedItem!.ToString()!].Copy<SystemPrompt>()!;
+            }
+            if (addEvents)
+            {
+                cb_promptlist.SelectedIndexChanged += (sender, e) =>
+                {
+                    SelectedPromptEditor = DataFiles.SysPrompts[cb_promptlist.SelectedItem!.ToString()!].Copy<SystemPrompt>()!;
+                    LoadSysPromptSettings(SelectedPromptEditor);
+                };
+            }
+            LoadSysPromptSettings(SelectedPromptEditor);
+        }
+
+        private void LoadSysPromptSettings(SystemPrompt selected)
+        {
+            ed_editsys_prompt.Text = selected.Prompt.ToWinFormat();
+            ed_editsys_worldinfo.Text = selected.WorldInfoTitle.Replace("\n", "\\n");
+            ed_editsys_scenario.Text = selected.ScenarioTitle.Replace("\n", "\\n");
+            ed_editsys_dialogs.Text = selected.DialogsTitle.Replace("\n", "\\n");
+            ed_editsys_prefix.Text = selected.CategorySeparator.Replace("\n", "\\n");
+        }
+
+        private SystemPrompt SaveSysPromptUIToSettings()
+        {
+            return new SystemPrompt()
+            {
+                Prompt = ed_editsys_prompt.Text.ToLinuxFormat(),
+                WorldInfoTitle = ed_editsys_worldinfo.Text.Replace("\\n", "\n"),
+                ScenarioTitle = ed_editsys_scenario.Text.Replace("\\n", "\n"),
+                DialogsTitle = ed_editsys_dialogs.Text.Replace("\\n", "\n"),
+                CategorySeparator = ed_editsys_prefix.Text.Replace("\\n", "\n")
+            };
+        }
+
+        private void bt_promptsave_Click(object sender, EventArgs e)
+        {
+            var NewName = cb_promptlist.Text;
+            if (string.IsNullOrWhiteSpace(NewName))
+            {
+                MessageBox.Show("Please select a valide name for the new system prompt format.");
+                return;
+            }
+            // If name already exists ask for confirmation
+            if (DataFiles.SysPrompts.ContainsKey(NewName) && (MessageBox.Show("This prompt format already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
+                return;
+            SelectedPromptEditor = SaveSysPromptUIToSettings();
+            SelectedPromptEditor.UniqueName = NewName;
+            DataFiles.SysPrompts[NewName] = SelectedPromptEditor;
+            (SelectedPromptEditor as IFile).SaveToFile("data/sysprompts/" + NewName + ".json");
+            SetupPromptEditor(NewName, false);
+            // Update the prompt list in the chat menu
+            var currselection = cb_sysprompt.SelectedItem?.ToString() ?? "";
+            cb_sysprompt.Items.Clear();
+            foreach (var item in DataFiles.SysPrompts)
+            {
+                cb_sysprompt.Items.Add(item.Value.UniqueName);
+            }
+            var newidx = cb_sysprompt.Items.IndexOf(currselection);
+            cb_sysprompt.SelectedIndex = newidx == -1 ? 0 : newidx;
         }
 
         #endregion
@@ -539,33 +624,6 @@ namespace WaifuAI
         }
 
         /// <summary>
-        /// Initialize the instruction format editor panel
-        /// </summary>
-        /// <param name="Forceid"></param>
-        private void SetupPromptEditor(string Forceid = "")
-        {
-            cb_promptlist.Items.Clear();
-            foreach (var item in DataFiles.SysPrompts)
-            {
-                cb_promptlist.Items.Add(item.Value.UniqueName);
-            }
-            var idwant = 0;
-            if (Forceid != "")
-                idwant = cb_promptlist.Items.IndexOf(Forceid);
-            if (cb_promptlist.Items.Count > 0)
-            {
-                cb_promptlist.SelectedIndex = idwant;
-                SelectedPromptEditor = DataFiles.SysPrompts[cb_promptlist.SelectedItem!.ToString()!].Copy<SystemPrompt>()!;
-            }
-            cb_promptlist.SelectedIndexChanged += (sender, e) =>
-            {
-                SelectedPromptEditor = DataFiles.SysPrompts[cb_promptlist.SelectedItem!.ToString()!].Copy<SystemPrompt>()!;
-                CreatePromptControls(pan_prompt, SelectedPromptEditor);
-            };
-            CreatePromptControls(pan_prompt, SelectedPromptEditor);
-        }
-
-        /// <summary>
         /// Create the editor for the instruction format settings
         /// </summary>
         /// <param name="target"></param>
@@ -636,69 +694,6 @@ namespace WaifuAI
 #pragma warning restore CS8605 // Converting null literal or possible null value to non-nullable type.
         }
 
-        private static void CreatePromptControls(Control target, SystemPrompt promptsetting)
-        {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8605 // Converting null literal or possible null value to non-nullable type.
-            target.Controls.Clear();
-            int yPos = 10;
-            Type type = typeof(SystemPrompt);
-            PropertyInfo[] properties = type.GetProperties();
-            string[] ignore = ["UniqueName"];
-
-            var lst = new List<PropertyInfo>(properties);
-            // sort lst to match the order in InstructFormat.Properties
-
-            foreach (var property in lst)
-            {
-                if (ignore.Contains(property.Name))
-                    continue;
-                Label label = new() { Text = property.Name + ":", Location = new Point(10, yPos), Width = 240 };
-                Control? control = null;
-                if (property.PropertyType == typeof(int))
-                {
-                    control = new NumericUpDown { Minimum = -1, Maximum = int.MaxValue, Value = (int)property.GetValue(promptsetting), Location = new System.Drawing.Point(150, yPos), Width = 100 };
-                    ((NumericUpDown)control).ValueChanged += (sender, e) => property.SetValue(promptsetting, (int)((NumericUpDown)control).Value);
-                }
-                else if (property.PropertyType == typeof(double))
-                {
-                    control = new NumericUpDown { Value = (decimal)(double)property.GetValue(promptsetting), Location = new Point(150, yPos), Width = 100, DecimalPlaces = 2, Increment = 0.01M };
-                    ((NumericUpDown)control).ValueChanged += (sender, e) => property.SetValue(promptsetting, (double)((NumericUpDown)control).Value);
-                }
-                else if (property.PropertyType == typeof(string))
-                {
-                    control = new TextBox { Text = ((string)property.GetValue(promptsetting)!).Replace("\n", "\\n"), Location = new Point(150, yPos), Width = 400 };
-                    ((TextBox)control).TextChanged += (sender, e) => property.SetValue(promptsetting, ((TextBox)control).Text.Replace("\\n", "\n"));
-                }
-                else if (property.PropertyType == typeof(bool))
-                {
-                    control = new CheckBox { Checked = (bool)property.GetValue(promptsetting), Location = new Point(150, yPos) };
-                    ((CheckBox)control).CheckedChanged += (sender, e) => property.SetValue(promptsetting, ((CheckBox)control).Checked);
-                }
-                else if (property.PropertyType == typeof(ICollection<int>))
-                {
-                    control = new TextBox { Text = string.Join(",", (ICollection<int>)property.GetValue(promptsetting)!), Location = new Point(150, yPos), Width = 400 };
-                    ((TextBox)control).TextChanged += (sender, e) => property.SetValue(promptsetting, ((TextBox)control).Text.Split(',').Select(int.Parse).ToList());
-                }
-                else if (property.PropertyType == typeof(ICollection<string>))
-                {
-                    control = new TextBox { Text = string.Join(",", (ICollection<string>)property.GetValue(promptsetting) ?? []), Location = new Point(150, yPos), Width = 400 };
-                    ((TextBox)control).TextChanged += (sender, e) => property.SetValue(promptsetting, ((TextBox)control).Text.Split(',').ToList());
-                }
-
-                if (control != null)
-                {
-                    label.Location = new Point(10, yPos);
-                    control.Location = new Point(250, yPos);
-                    target.Controls.Add(label);
-                    target.Controls.Add(control);
-                    yPos += 30;
-                }
-            }
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning restore CS8605 // Converting null literal or possible null value to non-nullable type.
-        }
-
         private void bt_instructsave_Click(object sender, EventArgs e)
         {
             var NewName = cb_instructlist.Text;
@@ -723,38 +718,6 @@ namespace WaifuAI
             }
             var newidx = cb_instruct.Items.IndexOf(currselection);
             cb_instruct.SelectedIndex = newidx == -1 ? 0 : newidx;
-        }
-
-        private void bt_promptsave_Click(object sender, EventArgs e)
-        {
-            var NewName = cb_promptlist.Text;
-            if (string.IsNullOrWhiteSpace(NewName))
-            {
-                MessageBox.Show("Please select a valide name for the new system prompt format.");
-                return;
-            }
-            // If name already exists ask for confirmation
-            if (DataFiles.SysPrompts.ContainsKey(NewName) && (MessageBox.Show("This prompt format already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
-                return;
-            SelectedPromptEditor.UniqueName = NewName;
-            DataFiles.SysPrompts[NewName] = SelectedPromptEditor;
-            (SelectedPromptEditor as IFile).SaveToFile("data/sysprompts/" + NewName + ".json");
-            SetupPromptEditor(NewName);
-            // Update the prompt list in the chat menu
-            var currselection = cb_sysprompt.SelectedText;
-            cb_sysprompt.Items.Clear();
-            foreach (var item in DataFiles.SysPrompts)
-            {
-                cb_sysprompt.Items.Add(item.Value.UniqueName);
-            }
-            var newidx = cb_sysprompt.Items.IndexOf(currselection);
-            cb_sysprompt.SelectedIndex = newidx == -1 ? 0 : newidx;
-        }
-
-        private void cb_sysprompt_SelectionIndexChanged(object sender, EventArgs e)
-        {
-            if (cb_sysprompt.SelectedItem is string key && !string.IsNullOrEmpty(key))
-                LLMSystem.SystemPrompt = DataFiles.SysPrompts[key];
         }
 
         #endregion
@@ -1586,6 +1549,12 @@ namespace WaifuAI
                 LoadChatHistoryTab();
                 WebChatLoad();
             }
+        }
+
+        private void cb_sysprompt_SelectionIndexChanged(object sender, EventArgs e)
+        {
+            if (cb_sysprompt.SelectedItem is string key && !string.IsNullOrEmpty(key))
+                LLMSystem.SystemPrompt = DataFiles.SysPrompts[key];
         }
     }
 }

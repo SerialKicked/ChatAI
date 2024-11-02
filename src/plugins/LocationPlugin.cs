@@ -45,7 +45,7 @@ namespace WaifuAI.Plugins
                 return false;
             }
             var str = new StringBuilder();
-            str.AppendLinuxLine(LLMSystem.SystemPrompt.CategorySeparator+ " Current Location: " + currentLocation.Name);
+            str.AppendLinuxLine(LLMSystem.NewLine + LLMSystem.SystemPrompt.CategorySeparator+ " Current Location: " + currentLocation.Name);
             str.Append("{{user}} and {{char}} are currently at this location: ").AppendLinuxLine(currentLocation.Message);
             response = str.ToString();
             return true;
