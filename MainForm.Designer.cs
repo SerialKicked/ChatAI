@@ -125,6 +125,17 @@
             label10 = new Label();
             cb_promptlist = new ComboBox();
             pan_prompt = new Panel();
+            groupBox22 = new GroupBox();
+            ed_editsys_prefix = new TextBox();
+            label55 = new Label();
+            ed_editsys_worldinfo = new TextBox();
+            label54 = new Label();
+            ed_editsys_dialogs = new TextBox();
+            label53 = new Label();
+            ed_editsys_scenario = new TextBox();
+            label52 = new Label();
+            groupBox21 = new GroupBox();
+            ed_editsys_prompt = new TextBox();
             tabSamplers = new TabPage();
             bt_savesampler = new Button();
             label1 = new Label();
@@ -221,17 +232,6 @@
             openFileDialog1 = new OpenFileDialog();
             fontDialog1 = new FontDialog();
             HelptoolTip = new ToolTip(components);
-            groupBox21 = new GroupBox();
-            ed_editsys_prompt = new TextBox();
-            groupBox22 = new GroupBox();
-            label52 = new Label();
-            ed_editsys_scenario = new TextBox();
-            ed_editsys_dialogs = new TextBox();
-            label53 = new Label();
-            ed_editsys_worldinfo = new TextBox();
-            label54 = new Label();
-            ed_editsys_prefix = new TextBox();
-            label55 = new Label();
             tabMain.SuspendLayout();
             tabChat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
@@ -258,6 +258,8 @@
             tabInstruct.SuspendLayout();
             tabSysPrompt.SuspendLayout();
             pan_prompt.SuspendLayout();
+            groupBox22.SuspendLayout();
+            groupBox21.SuspendLayout();
             tabSamplers.SuspendLayout();
             pan_samplers.SuspendLayout();
             groupBox20.SuspendLayout();
@@ -300,8 +302,6 @@
             ((System.ComponentModel.ISupportInitialize)num_ragindex).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_ragmaxretrieve).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_ragcutoff).BeginInit();
-            groupBox21.SuspendLayout();
-            groupBox22.SuspendLayout();
             SuspendLayout();
             // 
             // tabMain
@@ -786,7 +786,7 @@
             tabHistory.Controls.Add(listSession);
             tabHistory.Location = new Point(4, 27);
             tabHistory.Name = "tabHistory";
-            tabHistory.Size = new Size(1000, 679);
+            tabHistory.Size = new Size(1000, 660);
             tabHistory.TabIndex = 6;
             tabHistory.Text = "Chat History";
             tabHistory.UseVisualStyleBackColor = true;
@@ -799,7 +799,7 @@
             web_sessioncontent.Dock = DockStyle.Fill;
             web_sessioncontent.Location = new Point(326, 100);
             web_sessioncontent.Name = "web_sessioncontent";
-            web_sessioncontent.Size = new Size(674, 579);
+            web_sessioncontent.Size = new Size(674, 560);
             web_sessioncontent.TabIndex = 2;
             web_sessioncontent.ZoomFactor = 1D;
             // 
@@ -865,7 +865,7 @@
             listSession.FullRowSelect = true;
             listSession.Location = new Point(0, 0);
             listSession.Name = "listSession";
-            listSession.Size = new Size(326, 679);
+            listSession.Size = new Size(326, 660);
             listSession.TabIndex = 0;
             listSession.UseCompatibleStateImageBehavior = false;
             listSession.View = View.Details;
@@ -885,7 +885,7 @@
             // 
             tabDocs.Location = new Point(4, 27);
             tabDocs.Name = "tabDocs";
-            tabDocs.Size = new Size(1000, 679);
+            tabDocs.Size = new Size(1000, 660);
             tabDocs.TabIndex = 7;
             tabDocs.Text = "Documents";
             tabDocs.UseVisualStyleBackColor = true;
@@ -897,7 +897,7 @@
             tabWorldInfo.Controls.Add(groupBox3);
             tabWorldInfo.Location = new Point(4, 27);
             tabWorldInfo.Name = "tabWorldInfo";
-            tabWorldInfo.Size = new Size(1000, 679);
+            tabWorldInfo.Size = new Size(1000, 660);
             tabWorldInfo.TabIndex = 8;
             tabWorldInfo.Text = "World Info";
             tabWorldInfo.UseVisualStyleBackColor = true;
@@ -909,7 +909,7 @@
             panel3.Dock = DockStyle.Fill;
             panel3.Location = new Point(241, 57);
             panel3.Name = "panel3";
-            panel3.Size = new Size(759, 622);
+            panel3.Size = new Size(759, 603);
             panel3.TabIndex = 4;
             // 
             // groupBox8
@@ -933,7 +933,7 @@
             groupBox8.Dock = DockStyle.Fill;
             groupBox8.Location = new Point(0, 246);
             groupBox8.Name = "groupBox8";
-            groupBox8.Size = new Size(759, 376);
+            groupBox8.Size = new Size(759, 357);
             groupBox8.TabIndex = 1;
             groupBox8.TabStop = false;
             groupBox8.Text = "Entry Settings";
@@ -1149,7 +1149,7 @@
             groupBox6.Dock = DockStyle.Left;
             groupBox6.Location = new Point(0, 57);
             groupBox6.Name = "groupBox6";
-            groupBox6.Size = new Size(241, 622);
+            groupBox6.Size = new Size(241, 603);
             groupBox6.TabIndex = 3;
             groupBox6.TabStop = false;
             groupBox6.Text = "World Settings";
@@ -1157,7 +1157,7 @@
             // bt_delwentry
             // 
             bt_delwentry.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            bt_delwentry.Location = new Point(145, 594);
+            bt_delwentry.Location = new Point(145, 575);
             bt_delwentry.Name = "bt_delwentry";
             bt_delwentry.Size = new Size(90, 23);
             bt_delwentry.TabIndex = 7;
@@ -1168,7 +1168,7 @@
             // bt_addwentry
             // 
             bt_addwentry.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            bt_addwentry.Location = new Point(3, 594);
+            bt_addwentry.Location = new Point(3, 575);
             bt_addwentry.Name = "bt_addwentry";
             bt_addwentry.Size = new Size(90, 23);
             bt_addwentry.TabIndex = 6;
@@ -1193,7 +1193,7 @@
             lb_worldentries.ItemHeight = 15;
             lb_worldentries.Location = new Point(3, 178);
             lb_worldentries.Name = "lb_worldentries";
-            lb_worldentries.Size = new Size(232, 409);
+            lb_worldentries.Size = new Size(232, 379);
             lb_worldentries.TabIndex = 4;
             lb_worldentries.SelectedIndexChanged += lb_worldentries_SelectedIndexChanged;
             // 
@@ -1276,7 +1276,7 @@
             tabInstruct.Location = new Point(4, 27);
             tabInstruct.Name = "tabInstruct";
             tabInstruct.Padding = new Padding(3);
-            tabInstruct.Size = new Size(1000, 679);
+            tabInstruct.Size = new Size(1000, 660);
             tabInstruct.TabIndex = 2;
             tabInstruct.Text = "Instruction Format Editor";
             tabInstruct.UseVisualStyleBackColor = true;
@@ -1374,6 +1374,109 @@
             pan_prompt.Name = "pan_prompt";
             pan_prompt.Size = new Size(984, 614);
             pan_prompt.TabIndex = 10;
+            // 
+            // groupBox22
+            // 
+            groupBox22.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            groupBox22.Controls.Add(ed_editsys_prefix);
+            groupBox22.Controls.Add(label55);
+            groupBox22.Controls.Add(ed_editsys_worldinfo);
+            groupBox22.Controls.Add(label54);
+            groupBox22.Controls.Add(ed_editsys_dialogs);
+            groupBox22.Controls.Add(label53);
+            groupBox22.Controls.Add(ed_editsys_scenario);
+            groupBox22.Controls.Add(label52);
+            groupBox22.Location = new Point(612, 3);
+            groupBox22.Name = "groupBox22";
+            groupBox22.Size = new Size(369, 206);
+            groupBox22.TabIndex = 1;
+            groupBox22.TabStop = false;
+            groupBox22.Text = "Section Titles";
+            // 
+            // ed_editsys_prefix
+            // 
+            ed_editsys_prefix.Location = new Point(6, 171);
+            ed_editsys_prefix.Name = "ed_editsys_prefix";
+            ed_editsys_prefix.Size = new Size(357, 23);
+            ed_editsys_prefix.TabIndex = 7;
+            // 
+            // label55
+            // 
+            label55.AutoSize = true;
+            label55.Location = new Point(6, 153);
+            label55.Name = "label55";
+            label55.Size = new Size(130, 15);
+            label55.TabIndex = 6;
+            label55.Text = "Category Section Prefix";
+            // 
+            // ed_editsys_worldinfo
+            // 
+            ed_editsys_worldinfo.Location = new Point(6, 127);
+            ed_editsys_worldinfo.Name = "ed_editsys_worldinfo";
+            ed_editsys_worldinfo.Size = new Size(357, 23);
+            ed_editsys_worldinfo.TabIndex = 5;
+            // 
+            // label54
+            // 
+            label54.AutoSize = true;
+            label54.Location = new Point(6, 109);
+            label54.Name = "label54";
+            label54.Size = new Size(130, 15);
+            label54.TabIndex = 4;
+            label54.Text = "World Info Section Title";
+            // 
+            // ed_editsys_dialogs
+            // 
+            ed_editsys_dialogs.Location = new Point(6, 83);
+            ed_editsys_dialogs.Name = "ed_editsys_dialogs";
+            ed_editsys_dialogs.Size = new Size(357, 23);
+            ed_editsys_dialogs.TabIndex = 3;
+            // 
+            // label53
+            // 
+            label53.AutoSize = true;
+            label53.Location = new Point(6, 65);
+            label53.Name = "label53";
+            label53.Size = new Size(174, 15);
+            label53.TabIndex = 2;
+            label53.Text = "Example Dialogs Title (optional)";
+            // 
+            // ed_editsys_scenario
+            // 
+            ed_editsys_scenario.Location = new Point(6, 39);
+            ed_editsys_scenario.Name = "ed_editsys_scenario";
+            ed_editsys_scenario.Size = new Size(357, 23);
+            ed_editsys_scenario.TabIndex = 1;
+            // 
+            // label52
+            // 
+            label52.AutoSize = true;
+            label52.Location = new Point(6, 21);
+            label52.Name = "label52";
+            label52.Size = new Size(119, 15);
+            label52.TabIndex = 0;
+            label52.Text = "Scenario Section Title";
+            // 
+            // groupBox21
+            // 
+            groupBox21.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox21.Controls.Add(ed_editsys_prompt);
+            groupBox21.Location = new Point(3, 3);
+            groupBox21.Name = "groupBox21";
+            groupBox21.Size = new Size(603, 608);
+            groupBox21.TabIndex = 0;
+            groupBox21.TabStop = false;
+            groupBox21.Text = "Main Prompt (intro, char and user bio)";
+            // 
+            // ed_editsys_prompt
+            // 
+            ed_editsys_prompt.BorderStyle = BorderStyle.FixedSingle;
+            ed_editsys_prompt.Dock = DockStyle.Fill;
+            ed_editsys_prompt.Location = new Point(3, 19);
+            ed_editsys_prompt.Multiline = true;
+            ed_editsys_prompt.Name = "ed_editsys_prompt";
+            ed_editsys_prompt.Size = new Size(597, 586);
+            ed_editsys_prompt.TabIndex = 0;
             // 
             // tabSamplers
             // 
@@ -2037,7 +2140,7 @@
             num_memtokens.Font = new Font("Segoe UI", 9F);
             num_memtokens.Increment = new decimal(new int[] { 512, 0, 0, 0 });
             num_memtokens.Location = new Point(6, 62);
-            num_memtokens.Maximum = new decimal(new int[] { 4096, 0, 0, 0 });
+            num_memtokens.Maximum = new decimal(new int[] { 16384, 0, 0, 0 });
             num_memtokens.Minimum = new decimal(new int[] { 512, 0, 0, 0 });
             num_memtokens.Name = "num_memtokens";
             num_memtokens.Size = new Size(125, 23);
@@ -2424,109 +2527,6 @@
             HelptoolTip.ToolTipIcon = ToolTipIcon.Info;
             HelptoolTip.ToolTipTitle = "Help and Tips";
             // 
-            // groupBox21
-            // 
-            groupBox21.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            groupBox21.Controls.Add(ed_editsys_prompt);
-            groupBox21.Location = new Point(3, 3);
-            groupBox21.Name = "groupBox21";
-            groupBox21.Size = new Size(603, 608);
-            groupBox21.TabIndex = 0;
-            groupBox21.TabStop = false;
-            groupBox21.Text = "Main Prompt (intro, char and user bio)";
-            // 
-            // ed_editsys_prompt
-            // 
-            ed_editsys_prompt.BorderStyle = BorderStyle.FixedSingle;
-            ed_editsys_prompt.Dock = DockStyle.Fill;
-            ed_editsys_prompt.Location = new Point(3, 19);
-            ed_editsys_prompt.Multiline = true;
-            ed_editsys_prompt.Name = "ed_editsys_prompt";
-            ed_editsys_prompt.Size = new Size(597, 586);
-            ed_editsys_prompt.TabIndex = 0;
-            // 
-            // groupBox22
-            // 
-            groupBox22.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            groupBox22.Controls.Add(ed_editsys_prefix);
-            groupBox22.Controls.Add(label55);
-            groupBox22.Controls.Add(ed_editsys_worldinfo);
-            groupBox22.Controls.Add(label54);
-            groupBox22.Controls.Add(ed_editsys_dialogs);
-            groupBox22.Controls.Add(label53);
-            groupBox22.Controls.Add(ed_editsys_scenario);
-            groupBox22.Controls.Add(label52);
-            groupBox22.Location = new Point(612, 3);
-            groupBox22.Name = "groupBox22";
-            groupBox22.Size = new Size(369, 206);
-            groupBox22.TabIndex = 1;
-            groupBox22.TabStop = false;
-            groupBox22.Text = "Section Titles";
-            // 
-            // label52
-            // 
-            label52.AutoSize = true;
-            label52.Location = new Point(6, 21);
-            label52.Name = "label52";
-            label52.Size = new Size(119, 15);
-            label52.TabIndex = 0;
-            label52.Text = "Scenario Section Title";
-            // 
-            // ed_editsys_scenario
-            // 
-            ed_editsys_scenario.Location = new Point(6, 39);
-            ed_editsys_scenario.Name = "ed_editsys_scenario";
-            ed_editsys_scenario.Size = new Size(357, 23);
-            ed_editsys_scenario.TabIndex = 1;
-            // 
-            // ed_editsys_dialogs
-            // 
-            ed_editsys_dialogs.Location = new Point(6, 83);
-            ed_editsys_dialogs.Name = "ed_editsys_dialogs";
-            ed_editsys_dialogs.Size = new Size(357, 23);
-            ed_editsys_dialogs.TabIndex = 3;
-            // 
-            // label53
-            // 
-            label53.AutoSize = true;
-            label53.Location = new Point(6, 65);
-            label53.Name = "label53";
-            label53.Size = new Size(174, 15);
-            label53.TabIndex = 2;
-            label53.Text = "Example Dialogs Title (optional)";
-            // 
-            // ed_editsys_worldinfo
-            // 
-            ed_editsys_worldinfo.Location = new Point(6, 127);
-            ed_editsys_worldinfo.Name = "ed_editsys_worldinfo";
-            ed_editsys_worldinfo.Size = new Size(357, 23);
-            ed_editsys_worldinfo.TabIndex = 5;
-            // 
-            // label54
-            // 
-            label54.AutoSize = true;
-            label54.Location = new Point(6, 109);
-            label54.Name = "label54";
-            label54.Size = new Size(130, 15);
-            label54.TabIndex = 4;
-            label54.Text = "World Info Section Title";
-            // 
-            // ed_editsys_prefix
-            // 
-            ed_editsys_prefix.Location = new Point(6, 171);
-            ed_editsys_prefix.Name = "ed_editsys_prefix";
-            ed_editsys_prefix.Size = new Size(357, 23);
-            ed_editsys_prefix.TabIndex = 7;
-            // 
-            // label55
-            // 
-            label55.AutoSize = true;
-            label55.Location = new Point(6, 153);
-            label55.Name = "label55";
-            label55.Size = new Size(130, 15);
-            label55.TabIndex = 6;
-            label55.Text = "Category Section Prefix";
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -2571,6 +2571,10 @@
             tabInstruct.ResumeLayout(false);
             tabSysPrompt.ResumeLayout(false);
             pan_prompt.ResumeLayout(false);
+            groupBox22.ResumeLayout(false);
+            groupBox22.PerformLayout();
+            groupBox21.ResumeLayout(false);
+            groupBox21.PerformLayout();
             tabSamplers.ResumeLayout(false);
             pan_samplers.ResumeLayout(false);
             groupBox20.ResumeLayout(false);
@@ -2626,10 +2630,6 @@
             ((System.ComponentModel.ISupportInitialize)num_ragindex).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_ragmaxretrieve).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_ragcutoff).EndInit();
-            groupBox21.ResumeLayout(false);
-            groupBox21.PerformLayout();
-            groupBox22.ResumeLayout(false);
-            groupBox22.PerformLayout();
             ResumeLayout(false);
         }
 
