@@ -176,7 +176,7 @@ namespace WaifuAI
                 {
                     Invoke((System.Windows.Forms.MethodInvoker)delegate
                     {
-                        lbl_timer.Text = $"Generation: {_responselength.TotalSeconds:F2}s";
+                        statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                     });
                     var MsgPrefix = LLMSystem.GetMessagePrefix(AuthorRole.Assistant);
                     await WebEditLastMessage(MsgPrefix + _currentgeneration);
@@ -185,7 +185,7 @@ namespace WaifuAI
                 {
                     Invoke((System.Windows.Forms.MethodInvoker)delegate
                     {
-                        lbl_timer.Text = $"Generation: {_responselength.TotalSeconds:F2}s";
+                        statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                         ed_input.Text = _currentgeneration;
                     });
                 }
@@ -204,7 +204,7 @@ namespace WaifuAI
                 Invoke((System.Windows.Forms.MethodInvoker)delegate
                 {
                     ed_input.Text = e.ToWinFormat();
-                    lbl_timer.Text = $"Generation: {_responselength.TotalSeconds:F2}s";
+                    statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                 });
                 LLMSystem.InvalidatePromptCache();
             }
@@ -226,7 +226,7 @@ namespace WaifuAI
                 }
                 Invoke((System.Windows.Forms.MethodInvoker)delegate
                 {
-                    lbl_timer.Text = $"Generation: {_responselength.TotalSeconds:F2}s";
+                    statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                 });
             }
             LLMSystem.Bot.SaveChatHistory();
@@ -235,7 +235,7 @@ namespace WaifuAI
         private void ShowCurrentSessionInfo()
         {
             var (tokens, duration) = LLMSystem.History.GetCurrentChatSessionInfo();
-            lbl_session.Text = $"Length: {duration.TotalDays.ToString("F2")} days ({tokens}tks)";
+            statusbar.Items[0].Text = $"Current Session: {duration.TotalDays.ToString("F2")} days ({tokens} tokens)";
         }
 
         // Helper method to use Invoke with async methods
@@ -728,7 +728,7 @@ namespace WaifuAI
         {
             if (LLMSystem.Status == SystemStatus.Busy)
                 return;
-            lbl_timer.Text = "Analyzing...";
+            statusbar.Items[1].Text = "Analyzing...";
             _postdate = DateTime.Now;
             _impersonatemode = true;
             _currentgeneration = string.Empty;
@@ -746,7 +746,7 @@ namespace WaifuAI
             }
             _impersonatemode = false;
             _postdate = DateTime.Now;
-            lbl_timer.Text = "Analyzing...";
+            statusbar.Items[1].Text = "Analyzing...";
             if (!string.IsNullOrEmpty(ed_input.Text))
             {
                 var messagetext = LLMSystem.ReplaceMacros(LLMSystem.GetAwayString() + ed_input.Text.ToLinuxFormat(), LLMSystem.User, LLMSystem.Bot);
@@ -804,7 +804,7 @@ namespace WaifuAI
                 return;
             _impersonatemode = false;
             _postdate = DateTime.Now;
-            lbl_timer.Text = "Analyzing...";
+            statusbar.Items[1].Text = "Analyzing...";
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await WebEditLastMessage($"**{LLMSystem.Bot.Name}:** *I am thinking...*");
             _currentgeneration = string.Empty;
