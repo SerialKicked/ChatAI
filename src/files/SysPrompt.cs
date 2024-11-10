@@ -25,7 +25,7 @@ namespace WaifuAI.Files
         {
             var selprompt = !string.IsNullOrEmpty(character.SystemPrompt) ? character.SystemPrompt : Prompt;
             var res = new StringBuilder(selprompt).AppendLinuxLine();
-            if (!string.IsNullOrEmpty(character.Scenario) && !string.IsNullOrEmpty(ScenarioTitle))
+            if ((!string.IsNullOrEmpty(character.Scenario) || !string.IsNullOrEmpty(LLMSystem.ScenarioOverride)) && !string.IsNullOrEmpty(ScenarioTitle))
             {
                 res.AppendLinuxLine().AppendLinuxLine(ScenarioTitle).AppendLinuxLine("{{scenario}}");
             }

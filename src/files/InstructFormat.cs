@@ -53,6 +53,41 @@ namespace WaifuAI.Files
             return res;
         }
 
+        public string FormatSinglePromptNoUserInfo(AuthorRole role, string userName, Character bot, string prompt)
+        {
+            var realprompt = prompt;
+            if (RealAddNameToPrompt)
+            {
+                if (role == AuthorRole.Assistant)
+                    realprompt = string.Format("{0}: {1}", bot.Name, prompt);
+                else if (role == AuthorRole.User)
+                    realprompt = string.Format("{0}: {1}", userName, prompt);
+            }
+            switch (role)
+            {
+                case AuthorRole.Unknown:
+                    realprompt = "[" + LLMSystem.ReplaceMacros(realprompt, userName, bot) + "]";
+                    break;
+                case AuthorRole.System:
+                    realprompt = SystemStart + LLMSystem.ReplaceMacros(realprompt, userName, bot) + SystemEnd;
+                    break;
+                case AuthorRole.User:
+                    realprompt = UserStart + LLMSystem.ReplaceMacros(realprompt, userName, bot) + UserEnd;
+                    break;
+                case AuthorRole.Assistant:
+                    realprompt = BotStart + LLMSystem.ReplaceMacros(realprompt, userName, bot) + BotEnd;
+                    break;
+                case AuthorRole.SysPrompt:
+                    realprompt = SysPromptStart + LLMSystem.ReplaceMacros(realprompt, userName, bot) + SysPromptEnd;
+                    break;
+                default:
+                    break;
+            }
+            if (NewLinesBetweenMessages)
+                realprompt += LLMSystem.NewLine;
+            return realprompt;
+        }
+
         public string FormatSinglePrompt(AuthorRole role, Character user, Character bot, string prompt)
         {
             var realprompt = prompt;

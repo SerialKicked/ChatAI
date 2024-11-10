@@ -39,6 +39,8 @@ namespace WaifuAI
         private DateTime _postdate = DateTime.Now;
         private TimeSpan _responselength = default;
 
+        private DiscordBot discordBot = new DiscordBot();
+
         public static MarkdownPipeline CustomMarkDownPipeline { get; } = new MarkdownPipelineBuilder()
             .UseSoftlineBreakAsHardlineBreak()
             .UseEmojiAndSmiley()
@@ -1555,6 +1557,16 @@ namespace WaifuAI
         {
             if (cb_sysprompt.SelectedItem is string key && !string.IsNullOrEmpty(key))
                 LLMSystem.SystemPrompt = DataFiles.SysPrompts[key];
+        }
+
+        private async void button2_Click(object sender, EventArgs e)
+        {
+            await discordBot.RunBotAsync();
+        }
+
+        private async void button3_Click(object sender, EventArgs e)
+        {
+            await discordBot.KillBot();
         }
     }
 }

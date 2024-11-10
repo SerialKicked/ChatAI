@@ -195,6 +195,21 @@ namespace WaifuAI
             return res.ToString();
         }
 
+        public static string ReplaceMacros(string inputText, string userName, Character character)
+        {
+            StringBuilder res = new(inputText);
+            res.Replace("{{user}}", userName)
+               .Replace("{{userbio}}", "This is the user interacting with you.")
+               .Replace("{{char}}", character.Name)
+               .Replace("{{charbio}}", character.GetBio(userName))
+               .Replace("{{examples}}", character.GetDialogExamples(userName))
+               .Replace("{{date}}", DateToHumanString(DateTime.Now))
+               .Replace("{{time}}", DateTime.Now.ToShortTimeString())
+               .Replace("{{day}}", DateTime.Now.DayOfWeek.ToString())
+               .Replace("{{scenario}}", string.IsNullOrWhiteSpace(ScenarioOverride) ? character.GetScenario(userName) : ScenarioOverride);
+            return res.ToString();
+        }
+
         /// <summary>
         /// Change the current bot persona.
         /// </summary>
@@ -611,7 +626,7 @@ namespace WaifuAI
             {
                 finalstr += item.Text;
             }
-            status = oldst;
+            Status = oldst;
             return string.IsNullOrEmpty(finalstr) ? string.Empty : finalstr;
         }
 

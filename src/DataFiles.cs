@@ -54,6 +54,10 @@ namespace WaifuAI
         {
             Instruct = Load<InstructFormat>("data/instruct/", "*.json");
             Inference = Load<SamplerSettings>("data/params/", "*.json");
+            foreach (var item in Inference)
+            {
+                item.Value.Sampler_order = [6, 0, 1, 3, 4, 2, 5];
+            }
             // We should always have a default setting for inference settings
             if (Inference.Count == 0)
             {
