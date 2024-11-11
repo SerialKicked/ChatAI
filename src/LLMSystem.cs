@@ -621,12 +621,12 @@ namespace WaifuAI
             var oldst = status;
             Status = SystemStatus.Busy;
             var result = await Client.GenerateAsync(llmparams);
+            Status = oldst;
             string finalstr = string.Empty;
             foreach (var item in result.Results)
             {
                 finalstr += item.Text;
             }
-            Status = oldst;
             return string.IsNullOrEmpty(finalstr) ? string.Empty : finalstr;
         }
 
