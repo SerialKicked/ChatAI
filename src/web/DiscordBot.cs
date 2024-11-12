@@ -19,9 +19,15 @@ namespace WaifuAI.Web
 {
     internal class DiscordBot
     {
+        public EventHandler<string>? OnFullPromptReady;
+        private void RaiseOnFullPromptReady(string fullprompt) => OnFullPromptReady?.Invoke(null, fullprompt);
+
+
         private readonly DiscordSocketClient _client;
         private string PersonaID = "EsKaBoT";
         private string SysPromptID = "Discord";
+        private double ResponseChance = 0;
+        private int ChatSize = 40;
         private HashSet<ulong> AdminID = [];
 
         // Import the SetThreadExecutionState function from kernel32.dll
@@ -45,10 +51,10 @@ namespace WaifuAI.Web
         public async Task RunBotAsync()
         {
             _client.Log += Log;
+            AdminID = [331764911988539402]; // need UI editor for admin IDs
+
             // open D:\token.txt and read token from there
-            var token = File.ReadAllText("d:\\discordtoken.txt");
-            AdminID = new();
-            AdminID.Add(331764911988539402);
+            var token = File.ReadAllText("d:\\discordtoken.txt"); // need to move that to subdir
             await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();
 
@@ -56,8 +62,6 @@ namespace WaifuAI.Web
 
             _client.MessageReceived -= MessageReceived;
             _client.MessageReceived += MessageReceived;
-            //_client.SlashCommandExecuted -= _client_SlashCommandExecuted;
-            //_client.SlashCommandExecuted += _client_SlashCommandExecuted;
             await Task.Delay(-1);
         }
 
@@ -69,6 +73,7 @@ namespace WaifuAI.Web
         public async Task KillBot()
         {
             //_client.SlashCommandExecuted -= _client_SlashCommandExecuted;
+            _client.Log -= Log;
             _client.MessageReceived -= MessageReceived;
             await _client.StopAsync();
             SetThreadExecutionState(ES_CONTINUOUS);
@@ -80,15 +85,39 @@ namespace WaifuAI.Web
             return Task.CompletedTask;
         }
 
-        private Task<string> QueryLLM_Scan(IEnumerable<IMessage> contextMessages, string goal = "")
+        private async Task<string> ReplaceMentionsWithUsernames(string text, IReadOnlyCollection<ulong> mentionedUserIds)
+        {
+            foreach (var userId in mentionedUserIds)
+            {
+                var user = await _client.GetUserAsync(userId);
+                var guildUser = user as SocketGuildUser;
+                var localname = guildUser?.Nickname ?? user.Username;
+                if (user != null)
+                {
+                    text = text.Replace($"<@{userId}>", $"@{user.Username}");
+                }
+            }
+            return text;
+        }
+
+        private string ReplaceMentionsWithUsernames(string text, IReadOnlyCollection<SocketUser> mentionedUsers)
+        {
+            foreach (var user in mentionedUsers)
+            {
+                text = text.Replace($"<@{user.Id}>", $"@{user.Username}");
+            }
+            return text;
+        }
+        private async Task<string> QueryLLM_Scan(IEnumerable<IMessage> contextMessages, string goal = "")
         {
             LLMSystem.NamesInPromptOverride = false;
             var SysPrompt = DataFiles.SysPrompts[SysPromptID];
-            var Bot = DataFiles.Characters[PersonaID];
+            var Bot = DataFiles.Characters[PersonaID].Copy<Character>()!;
+            Bot.Name = _client.CurrentUser.Username;
             var msgtxt = new StringBuilder();
-            msgtxt.AppendLinuxLine("You are an automated system designed to identify bug reports and feature requests in discord chatlogs.");
+            msgtxt.AppendLinuxLine("You are an automated system designed to analyze discord chatlogs and follow instructions.");
             msgtxt.AppendLinuxLine();
-            msgtxt.AppendLinuxLine("# Discord Chat:");
+            msgtxt.AppendLinuxLine("# Discord Chatlogs:");
             msgtxt.AppendLinuxLine();
             for (int i = contextMessages.Count() - 1; i >= 2; i--)
             {
@@ -96,9 +125,10 @@ namespace WaifuAI.Web
                 if (!string.IsNullOrWhiteSpace(contextMessage.Content))
                 {
                     var contentmsg = contextMessage.Content.Trim('"');
+                    contentmsg = await ReplaceMentionsWithUsernames(contentmsg, contextMessage.MentionedUserIds);
                     var guildUser = contextMessage.Author as SocketGuildUser;
                     var localname = guildUser?.Nickname ?? contextMessage.Author.Username;
-                    msgtxt.AppendLinuxLine($"{localname}: {contentmsg}");
+                    msgtxt.AppendLinuxLine($"{localname}: {contentmsg.RemoveNewLines().CleanupAndTrim()}").AppendLinuxLine();
                 }
             }
             msgtxt.AppendLinuxLine();
@@ -113,19 +143,22 @@ namespace WaifuAI.Web
             }
             var msg = LLMSystem.Instruct.FormatSinglePromptNoUserInfo(AuthorRole.System, "EsKa", Bot, msgtxt.ToString());
             msg += LLMSystem.Instruct.GetResponseStart(Bot);
+            RaiseOnFullPromptReady(msg);
             var llmparams = LLMSystem.Sampler.GetCopy();
             llmparams.Prompt = msg;
             llmparams.Max_length = LLMSystem.MaxReplyLength;
             llmparams.Max_context_length = LLMSystem.MaxContextLength;
             llmparams.Temperature = 0.5;
-            return LLMSystem.SimpleQuery(llmparams);
+            llmparams.Grammar = string.Empty;
+            return await LLMSystem.SimpleQuery(llmparams);
         }
 
-        private Task<string> QueryLLM_Chat(string username, string message, IEnumerable<IMessage> contextMessages)
+        private async Task<string> QueryLLM_Chat(string username, string message, IEnumerable<IMessage> contextMessages)
         {
-            LLMSystem.NamesInPromptOverride = true;
+            LLMSystem.NamesInPromptOverride = false;
             var SysPrompt = DataFiles.SysPrompts[SysPromptID];
-            var Bot = DataFiles.Characters[PersonaID];
+            var Bot = DataFiles.Characters[PersonaID].Copy<Character>()!;
+            Bot.Name = _client.CurrentUser.Username;
 
             var rawprompt = new StringBuilder(SysPrompt.GetSystemPromptRaw(Bot) + LLMSystem.NewLine + "Don't use quotations marks in your responses.");
             List<WorldEntry> _currentWorldEntries = [];
@@ -152,18 +185,18 @@ namespace WaifuAI.Web
                 if (!string.IsNullOrWhiteSpace(contextMessage.Content))
                 {
                     var contentmsg = contextMessage.Content.Trim('"');
-                    // trim leading and ending quote if present from contentmsg
-
+                    contentmsg = await ReplaceMentionsWithUsernames(contentmsg, contextMessage.MentionedUserIds);
                     var guildUser = contextMessage.Author as SocketGuildUser;
                     var localname = guildUser?.Nickname ?? contextMessage.Author.Username;
-                    rawprompt.AppendLinuxLine($"{localname}: {contentmsg}");
+                    rawprompt.AppendLinuxLine($"{localname}: {contentmsg.RemoveNewLines().CleanupAndTrim()}").AppendLinuxLine();
 
                 }
             }
 
             var msg = LLMSystem.Instruct.FormatSinglePromptNoUserInfo(AuthorRole.SysPrompt, username, Bot, rawprompt.ToString());
             msg += LLMSystem.Instruct.FormatSinglePromptNoUserInfo(AuthorRole.User, username, Bot, message);
-            msg += LLMSystem.Instruct.GetResponseStart(Bot);
+            msg += LLMSystem.Instruct.GetResponseStart(Bot) + Bot.Name+":";
+            RaiseOnFullPromptReady(msg);
 
             var llmparams = LLMSystem.Sampler.GetCopy();
             llmparams.Prompt = msg;
@@ -171,31 +204,40 @@ namespace WaifuAI.Web
             llmparams.Temperature = LLMSystem.ForceTemperature;
             llmparams.Max_context_length = LLMSystem.MaxContextLength;
 
-            return LLMSystem.SimpleQuery(llmparams);
+            return await LLMSystem.SimpleQuery(llmparams);
         }
 
         private async Task HandleBotResponse(SocketMessage message)
         {
             var text = message.Content;
+            var Bot = DataFiles.Characters[PersonaID].Copy<Character>()!;
+            Bot.Name = _client.CurrentUser.Username;
             var question = text;
+            var guildUser = message.Author as SocketGuildUser;
+            var username = guildUser?.Nickname ?? message.Author.Username;
             if (message.Reference == null)
             {
-                var parts = text.Split(' ');
-                if (parts.Length < 2)
+                if (text.StartsWith("!") || text.StartsWith("<@"))
                 {
-                    await message.Channel.SendMessageAsync("Usage: !ask <question>");
-                    return;
+                    var parts = text.Split(' ');
+                    if (parts.Length < 2)
+                    {
+                        await message.Channel.SendMessageAsync("Usage: !ask <question>");
+                        return;
+                    }
+                    question = string.Join(' ', parts.Skip(1));
                 }
-                question = string.Join(' ', parts.Skip(1));
             }
             else
             {
                 var referencedMessage = await message.Channel.GetMessageAsync(message.Reference.MessageId.Value);
+
+                var refgUser = referencedMessage.Author as SocketGuildUser;
+                var localname = refgUser?.Nickname ?? referencedMessage.Author.Username;
                 if (referencedMessage != null)
                 {
-                    question = "> In Reponse to your post: " + referencedMessage.Content.RemoveNewLines().CleanupAndTrim() + LLMSystem.NewLine + question;
+                    question = $"<QUOTE>{localname}: {referencedMessage.Content.RemoveNewLines().CleanupAndTrim()}</QUOTE>" + LLMSystem.NewLine + $"{username}: {question}";
                 }
-
             }
 
             List<string> WaitMsg = [
@@ -204,13 +246,12 @@ namespace WaifuAI.Web
                     "*Beep Boop. I'm thinking!* 🧠⚙️"
                 ];
             // retrieve random wait message
+            question = ReplaceMentionsWithUsernames(question, message.MentionedUsers);
             var waitMessage = await message.Channel.SendMessageAsync(WaitMsg[LLMSystem.RNG.Next(WaitMsg.Count)]);
 
             var channel = message.Channel as ITextChannel;
-            var messages = await channel!.GetMessagesAsync(40).FlattenAsync();
+            var messages = await channel!.GetMessagesAsync(ChatSize).FlattenAsync();
 
-            var guildUser = message.Author as SocketGuildUser;
-            var username = guildUser?.Nickname ?? message.Author.Username;
 
             var response = await QueryLLM_Chat(username, question, messages);
 
@@ -281,7 +322,7 @@ namespace WaifuAI.Web
                 PersonaID = newName;
                 if (character.Name != _client.CurrentUser.Username)
                 {
-                    await _client.CurrentUser.ModifyAsync(user => user.Username = character.Name);
+//                    await _client.CurrentUser.ModifyAsync(user => user.Username = character.Name);
                 }
                 await message.Channel.SendMessageAsync($"Bot persona switched to {character.Name}");
 
@@ -294,7 +335,7 @@ namespace WaifuAI.Web
 
         private async Task MessageReceived(SocketMessage message)
         {
-            if (message.Author.IsBot) 
+            if (message.Author.IsBot || string.IsNullOrWhiteSpace(message.Content))
                 return;
 
             var text = message.Content;
@@ -306,6 +347,28 @@ namespace WaifuAI.Web
             else if (text.StartsWith("!switch") && AdminID.Contains(message.Author.Id))
             {
                 await SwitchBot(message);
+            }
+            else if (text.StartsWith("!chatlog") && AdminID.Contains(message.Author.Id))
+            {
+                var parts = text.Split(' ');
+                if (parts.Length != 2 || !int.TryParse(parts[1], out var count))
+                {
+                    await message.Channel.SendMessageAsync("Usage: !scan <count>");
+                    return;
+                }
+                await message.Channel.SendMessageAsync($"Sure thing, boss! I'll consider the last {count} messages now.");
+                ChatSize = count;
+
+            }
+            else if (text == "!dynamic" && AdminID.Contains(message.Author.Id))
+            {
+                ResponseChance = 0.1;
+                await message.Channel.SendMessageAsync("Sure thing, boss! I'll try not to be too spammy.");
+            }
+            else if (text == "!passive" && AdminID.Contains(message.Author.Id))
+            {
+                ResponseChance = 0;
+                await message.Channel.SendMessageAsync("Okay, boss! No talking unless talked to. 🫡");
             }
             else if (text.StartsWith("!rename") && AdminID.Contains(message.Author.Id))
             {
@@ -335,12 +398,17 @@ namespace WaifuAI.Web
             {
                 await ScanCommand(message, "Look for offensive, or possibly TOS breaking, language in the log above. Find the biggest offender, and state the reason why.");
             }
+            else if (text.StartsWith("!summarize") && AdminID.Contains(message.Author.Id))
+            {
+                await ScanCommand(message, "Make a detailed summary of the chat in the log above.");
+            }
             else if (text == "!atc")
             {
                 await message.Channel.SendMessageAsync("After The Collapse is the best game ever." + Environment.NewLine + "https://store.steampowered.com/app/727570/After_the_Collapse/");
             }
-            else if (text.StartsWith("!ask") || 
-                    (text.StartsWith("<@") && message.MentionedUsers.Any(user => user.Id == _client.CurrentUser.Id)) || 
+            else if (text.StartsWith("!ask") ||
+                     (message.Channel.Name == "off-topic" && LLMSystem.RNG.NextDouble() < ResponseChance) ||
+                     (text.StartsWith("<@") && message.MentionedUsers.Any(user => user.Id == _client.CurrentUser.Id)) || 
                      message.Reference != null)
             {
                 if (message.Reference != null)

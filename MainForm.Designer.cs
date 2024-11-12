@@ -192,7 +192,7 @@
             num_topk = new NumericUpDown();
             label31 = new Label();
             tabDiscord = new TabPage();
-            list_discord = new ListBox();
+            ed_discordlog = new TextBox();
             button3 = new Button();
             button2 = new Button();
             tabSettings = new TabPage();
@@ -238,6 +238,7 @@
             statusbar = new StatusStrip();
             toolStripStatusLabel1 = new ToolStripStatusLabel();
             toolStripStatusLabel2 = new ToolStripStatusLabel();
+            button4 = new Button();
             tabMain.SuspendLayout();
             tabChat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
@@ -788,7 +789,7 @@
             tabHistory.Controls.Add(listSession);
             tabHistory.Location = new Point(4, 27);
             tabHistory.Name = "tabHistory";
-            tabHistory.Size = new Size(1000, 648);
+            tabHistory.Size = new Size(1000, 654);
             tabHistory.TabIndex = 6;
             tabHistory.Text = "Chat History";
             tabHistory.UseVisualStyleBackColor = true;
@@ -801,7 +802,7 @@
             web_sessioncontent.Dock = DockStyle.Fill;
             web_sessioncontent.Location = new Point(326, 100);
             web_sessioncontent.Name = "web_sessioncontent";
-            web_sessioncontent.Size = new Size(674, 548);
+            web_sessioncontent.Size = new Size(674, 554);
             web_sessioncontent.TabIndex = 2;
             web_sessioncontent.ZoomFactor = 1D;
             // 
@@ -867,7 +868,7 @@
             listSession.FullRowSelect = true;
             listSession.Location = new Point(0, 0);
             listSession.Name = "listSession";
-            listSession.Size = new Size(326, 648);
+            listSession.Size = new Size(326, 654);
             listSession.TabIndex = 0;
             listSession.UseCompatibleStateImageBehavior = false;
             listSession.View = View.Details;
@@ -887,7 +888,7 @@
             // 
             tabDocs.Location = new Point(4, 27);
             tabDocs.Name = "tabDocs";
-            tabDocs.Size = new Size(1000, 648);
+            tabDocs.Size = new Size(1000, 654);
             tabDocs.TabIndex = 7;
             tabDocs.Text = "Documents";
             tabDocs.UseVisualStyleBackColor = true;
@@ -899,7 +900,7 @@
             tabWorldInfo.Controls.Add(groupBox3);
             tabWorldInfo.Location = new Point(4, 27);
             tabWorldInfo.Name = "tabWorldInfo";
-            tabWorldInfo.Size = new Size(1000, 648);
+            tabWorldInfo.Size = new Size(1000, 654);
             tabWorldInfo.TabIndex = 8;
             tabWorldInfo.Text = "World Info";
             tabWorldInfo.UseVisualStyleBackColor = true;
@@ -911,7 +912,7 @@
             panel3.Dock = DockStyle.Fill;
             panel3.Location = new Point(241, 57);
             panel3.Name = "panel3";
-            panel3.Size = new Size(759, 591);
+            panel3.Size = new Size(759, 597);
             panel3.TabIndex = 4;
             // 
             // groupBox8
@@ -935,7 +936,7 @@
             groupBox8.Dock = DockStyle.Fill;
             groupBox8.Location = new Point(0, 246);
             groupBox8.Name = "groupBox8";
-            groupBox8.Size = new Size(759, 345);
+            groupBox8.Size = new Size(759, 351);
             groupBox8.TabIndex = 1;
             groupBox8.TabStop = false;
             groupBox8.Text = "Entry Settings";
@@ -1151,7 +1152,7 @@
             groupBox6.Dock = DockStyle.Left;
             groupBox6.Location = new Point(0, 57);
             groupBox6.Name = "groupBox6";
-            groupBox6.Size = new Size(241, 591);
+            groupBox6.Size = new Size(241, 597);
             groupBox6.TabIndex = 3;
             groupBox6.TabStop = false;
             groupBox6.Text = "World Settings";
@@ -1159,7 +1160,7 @@
             // bt_delwentry
             // 
             bt_delwentry.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            bt_delwentry.Location = new Point(145, 563);
+            bt_delwentry.Location = new Point(145, 569);
             bt_delwentry.Name = "bt_delwentry";
             bt_delwentry.Size = new Size(90, 23);
             bt_delwentry.TabIndex = 7;
@@ -1170,7 +1171,7 @@
             // bt_addwentry
             // 
             bt_addwentry.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            bt_addwentry.Location = new Point(3, 563);
+            bt_addwentry.Location = new Point(3, 569);
             bt_addwentry.Name = "bt_addwentry";
             bt_addwentry.Size = new Size(90, 23);
             bt_addwentry.TabIndex = 6;
@@ -1278,7 +1279,7 @@
             tabInstruct.Location = new Point(4, 27);
             tabInstruct.Name = "tabInstruct";
             tabInstruct.Padding = new Padding(3);
-            tabInstruct.Size = new Size(1000, 648);
+            tabInstruct.Size = new Size(1000, 654);
             tabInstruct.TabIndex = 2;
             tabInstruct.Text = "Instruction Format";
             tabInstruct.UseVisualStyleBackColor = true;
@@ -1331,7 +1332,7 @@
             tabSysPrompt.Location = new Point(4, 27);
             tabSysPrompt.Name = "tabSysPrompt";
             tabSysPrompt.Padding = new Padding(3);
-            tabSysPrompt.Size = new Size(1000, 648);
+            tabSysPrompt.Size = new Size(1000, 654);
             tabSysPrompt.TabIndex = 5;
             tabSysPrompt.Text = "System Prompt";
             tabSysPrompt.UseVisualStyleBackColor = true;
@@ -1489,7 +1490,7 @@
             tabSamplers.Location = new Point(4, 27);
             tabSamplers.Name = "tabSamplers";
             tabSamplers.Padding = new Padding(3);
-            tabSamplers.Size = new Size(1000, 648);
+            tabSamplers.Size = new Size(1000, 654);
             tabSamplers.TabIndex = 3;
             tabSamplers.Text = "Samplers";
             tabSamplers.UseVisualStyleBackColor = true;
@@ -2073,26 +2074,30 @@
             // 
             // tabDiscord
             // 
-            tabDiscord.Controls.Add(list_discord);
+            tabDiscord.Controls.Add(button4);
+            tabDiscord.Controls.Add(ed_discordlog);
             tabDiscord.Controls.Add(button3);
             tabDiscord.Controls.Add(button2);
             tabDiscord.Location = new Point(4, 27);
             tabDiscord.Name = "tabDiscord";
             tabDiscord.Padding = new Padding(3);
-            tabDiscord.Size = new Size(1000, 648);
+            tabDiscord.Size = new Size(1000, 654);
             tabDiscord.TabIndex = 9;
             tabDiscord.Text = "Discord Bot";
             tabDiscord.UseVisualStyleBackColor = true;
             // 
-            // list_discord
+            // ed_discordlog
             // 
-            list_discord.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            list_discord.FormattingEnabled = true;
-            list_discord.ItemHeight = 15;
-            list_discord.Location = new Point(8, 64);
-            list_discord.Name = "list_discord";
-            list_discord.Size = new Size(984, 574);
-            list_discord.TabIndex = 2;
+            ed_discordlog.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            ed_discordlog.BackColor = SystemColors.Control;
+            ed_discordlog.BorderStyle = BorderStyle.None;
+            ed_discordlog.Font = new Font("Segoe UI", 9F);
+            ed_discordlog.Location = new Point(89, 6);
+            ed_discordlog.Multiline = true;
+            ed_discordlog.Name = "ed_discordlog";
+            ed_discordlog.ScrollBars = ScrollBars.Vertical;
+            ed_discordlog.Size = new Size(903, 642);
+            ed_discordlog.TabIndex = 3;
             // 
             // button3
             // 
@@ -2125,7 +2130,7 @@
             tabSettings.Location = new Point(4, 27);
             tabSettings.Name = "tabSettings";
             tabSettings.Padding = new Padding(3);
-            tabSettings.Size = new Size(1000, 648);
+            tabSettings.Size = new Size(1000, 654);
             tabSettings.TabIndex = 4;
             tabSettings.Text = "Settings";
             tabSettings.UseVisualStyleBackColor = true;
@@ -2595,6 +2600,16 @@
             toolStripStatusLabel2.Size = new Size(94, 17);
             toolStripStatusLabel2.Text = "Generation Time";
             // 
+            // button4
+            // 
+            button4.Location = new Point(8, 64);
+            button4.Name = "button4";
+            button4.Size = new Size(75, 23);
+            button4.TabIndex = 4;
+            button4.Text = "LoadBots";
+            button4.UseVisualStyleBackColor = true;
+            button4.Click += button4_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -2684,6 +2699,7 @@
             ((System.ComponentModel.ISupportInitialize)num_topa).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_topk).EndInit();
             tabDiscord.ResumeLayout(false);
+            tabDiscord.PerformLayout();
             tabSettings.ResumeLayout(false);
             groupBox12.ResumeLayout(false);
             groupBox12.PerformLayout();
@@ -2914,8 +2930,9 @@
         private CheckBox ck_sessionmemory;
         private CheckBox ck_senseoftime;
         private TabPage tabDiscord;
-        private ListBox list_discord;
         private Button button3;
         private Button button2;
+        private TextBox ed_discordlog;
+        private Button button4;
     }
 }

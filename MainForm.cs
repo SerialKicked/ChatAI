@@ -164,6 +164,17 @@ namespace WaifuAI
             });
         }
 
+        private void OnDiscordFullPromptReady(object? sender, string e)
+        {
+            Invoke((System.Windows.Forms.MethodInvoker)delegate
+            {
+                ed_discordlog.Clear();
+                var text = "====== New Generation ======\n\n" + e + "\n\n";
+                ed_discordlog.Text = text.ToWinFormat();
+            });
+        }
+
+
         private async void OnStreamMessageReceived(object? sender, string e)
         {
             if (LLMSystem.Status == SystemStatus.Automated)
@@ -1561,12 +1572,19 @@ namespace WaifuAI
 
         private async void button2_Click(object sender, EventArgs e)
         {
+            discordBot.OnFullPromptReady += OnDiscordFullPromptReady;
             await discordBot.RunBotAsync();
         }
 
         private async void button3_Click(object sender, EventArgs e)
         {
+            discordBot.OnFullPromptReady -= OnDiscordFullPromptReady;
             await discordBot.KillBot();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            DataFiles.ReloadChars();
         }
     }
 }

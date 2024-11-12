@@ -70,5 +70,10 @@ namespace WaifuAI
             SysPrompts = Load<SystemPrompt>("data/sysprompts/", "*.json");
             Websites = Load<WebsiteDefinition>("data/websites/", "*.json");
         }
+
+        public static void ReloadChars()
+        {
+            Characters = Load<Character>("data/chars/", "*.json");
+        }
     }
 }
