@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -9,19 +10,31 @@ using AngleSharp.Browser.Dom;
 using Discord;
 using Discord.WebSocket;
 using Markdig.Helpers;
-using Parlot.Fluent;
+using Newtonsoft.Json;
 using WaifuAI.Files;
 using WaifuAI.Memory;
+using YamlDotNet.Serialization;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace WaifuAI.Web
 {
+    internal class DiscordSettings : BaseFile
+    {
+        public string PersonaID { get; set; } = "EsKaBoT";
+        public string SysPromptID { get; set; } = "Discord";
+        public double ResponseChance { get; set; } = 0;
+        public int ChatSize { get; set; } = 40;
+        public HashSet<ulong> AdminID { get; set; } = [];
+
+        public string BotToken { get; set; } = string.Empty;
+    }
+
     internal class DiscordBot
     {
         public EventHandler<string>? OnFullPromptReady;
         private void RaiseOnFullPromptReady(string fullprompt) => OnFullPromptReady?.Invoke(null, fullprompt);
-
 
         private readonly DiscordSocketClient _client;
         private string PersonaID = "EsKaBoT";
@@ -29,6 +42,7 @@ namespace WaifuAI.Web
         private double ResponseChance = 0;
         private int ChatSize = 40;
         private HashSet<ulong> AdminID = [];
+        private string BotSecretToken = string.Empty;
 
         // Import the SetThreadExecutionState function from kernel32.dll
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -48,20 +62,51 @@ namespace WaifuAI.Web
             _client = new DiscordSocketClient(config);
         }
 
+        public void SaveSettings()
+        {
+            var settings = new DiscordSettings()
+            {
+                AdminID = AdminID,
+                ChatSize = ChatSize,
+                PersonaID = PersonaID,
+                ResponseChance = ResponseChance,
+                SysPromptID = SysPromptID,
+                BotToken = BotSecretToken,
+            };
+            (settings as IFile).SaveToFile("discordsettings.json");
+        }
+
+        public void LoadSettings()
+        {
+            if (File.Exists("discordsettings.json"))
+            {
+                var str = File.ReadAllText("discordsettings.json");
+                var settings = JsonConvert.DeserializeObject<DiscordSettings>(str);
+                if (settings != null)
+                {
+                    AdminID = settings.AdminID;
+                    ChatSize = settings.ChatSize;
+                    PersonaID = settings.PersonaID;
+                    ResponseChance = settings.ResponseChance;
+                    SysPromptID = settings.SysPromptID;
+                    BotSecretToken = settings.BotToken;
+                }
+            }
+        }
+
         public async Task RunBotAsync()
         {
+            LoadSettings();
             _client.Log += Log;
-            AdminID = [331764911988539402]; // need UI editor for admin IDs
-
-            // open D:\token.txt and read token from there
-            var token = File.ReadAllText("d:\\discordtoken.txt"); // need to move that to subdir
-            await _client.LoginAsync(TokenType.Bot, token);
+            await _client.LoginAsync(TokenType.Bot, BotSecretToken);
             await _client.StartAsync();
 
             SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED);
 
             _client.MessageReceived -= MessageReceived;
             _client.MessageReceived += MessageReceived;
+            var Bot = DataFiles.Characters[PersonaID];
+            await _client.SetGameAsync($"as {Bot.Name}");
             await Task.Delay(-1);
         }
 
@@ -77,6 +122,7 @@ namespace WaifuAI.Web
             _client.MessageReceived -= MessageReceived;
             await _client.StopAsync();
             SetThreadExecutionState(ES_CONTINUOUS);
+            SaveSettings();
         }
 
         private Task Log(LogMessage msg)
@@ -209,12 +255,12 @@ namespace WaifuAI.Web
 
         private async Task HandleBotResponse(SocketMessage message)
         {
-            var text = message.Content;
+            var text =message.Content;
             var Bot = DataFiles.Characters[PersonaID].Copy<Character>()!;
             Bot.Name = _client.CurrentUser.Username;
-            var question = text;
             var guildUser = message.Author as SocketGuildUser;
             var username = guildUser?.Nickname ?? message.Author.Username;
+            var question = $"{username}: {text}";
             if (message.Reference == null)
             {
                 if (text.StartsWith("!") || text.StartsWith("<@"))
@@ -225,7 +271,7 @@ namespace WaifuAI.Web
                         await message.Channel.SendMessageAsync("Usage: !ask <question>");
                         return;
                     }
-                    question = string.Join(' ', parts.Skip(1));
+                    question = $"{username}: {string.Join(' ', parts.Skip(1))}";
                 }
             }
             else
@@ -236,7 +282,7 @@ namespace WaifuAI.Web
                 var localname = refgUser?.Nickname ?? referencedMessage.Author.Username;
                 if (referencedMessage != null)
                 {
-                    question = $"<QUOTE>{localname}: {referencedMessage.Content.RemoveNewLines().CleanupAndTrim()}</QUOTE>" + LLMSystem.NewLine + $"{username}: {question}";
+                    question = $"<QUOTE>{localname}: {referencedMessage.Content.RemoveNewLines().CleanupAndTrim()}</QUOTE>" + LLMSystem.NewLine + $"{username}: {text}";
                 }
             }
 
@@ -320,12 +366,9 @@ namespace WaifuAI.Web
             {
                 LLMSystem.Bot = character;
                 PersonaID = newName;
-                if (character.Name != _client.CurrentUser.Username)
-                {
-//                    await _client.CurrentUser.ModifyAsync(user => user.Username = character.Name);
-                }
+                await _client.SetGameAsync($"as {character.Name}");
                 await message.Channel.SendMessageAsync($"Bot persona switched to {character.Name}");
-
+                SaveSettings();
             }
             else
             {
@@ -358,11 +401,12 @@ namespace WaifuAI.Web
                 }
                 await message.Channel.SendMessageAsync($"Sure thing, boss! I'll consider the last {count} messages now.");
                 ChatSize = count;
-
+                SaveSettings();
             }
             else if (text == "!dynamic" && AdminID.Contains(message.Author.Id))
             {
                 ResponseChance = 0.1;
+                SaveSettings();
                 await message.Channel.SendMessageAsync("Sure thing, boss! I'll try not to be too spammy.");
             }
             else if (text == "!passive" && AdminID.Contains(message.Author.Id))
