@@ -269,7 +269,7 @@ namespace WaifuAI.Files
         public int CurrentSessionID { get; set; } = -1;
         public readonly List<ChatSession> Sessions = [];
 
-        public ChatSession CurrentSession => CurrentSessionID >= 0 && CurrentSessionID < Sessions.Count ? Sessions[CurrentSessionID] : Sessions.Last();
+        [JsonIgnore] public ChatSession CurrentSession => CurrentSessionID >= 0 && CurrentSessionID < Sessions.Count ? Sessions[CurrentSessionID] : Sessions.Last();
 
         [JsonIgnore] public EventHandler<SingleMessage>? OnMessageAdded;
 
