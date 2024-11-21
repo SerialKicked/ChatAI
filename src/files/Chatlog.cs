@@ -388,14 +388,18 @@ namespace WaifuAI.Files
 
         public SingleMessage LogMessage(AuthorRole role, string msg, Character user, Character bot)
         {
+            if (Sessions.Count == 0)
+                Sessions.Add(new ChatSession());
             var single = new SingleMessage(role, DateTime.Now, msg, bot.UniqueName, user.UniqueName);
-            CurrentSession. Messages.Add(single);
+            CurrentSession.Messages.Add(single);
             RaiseOnMessageAdded(single);
             return single;
         }
 
         public SingleMessage LogMessage(SingleMessage single)
         {
+            if (Sessions.Count == 0)
+                Sessions.Add(new ChatSession());
             CurrentSession.Messages.Add(single);
             RaiseOnMessageAdded(single);
             return single;
@@ -504,16 +508,20 @@ namespace WaifuAI.Files
 
         public async Task StartNewChatSession(bool archivePreviousSession = true)
         {
-            // Save current session
+            // Save current session if it has enough messages otherwise just reset it
             if (archivePreviousSession && CurrentSession.Messages.Count > 2)
             {
                 var session = await CurrentChatToSession();
+                // reset session ID
+                CurrentSessionID = -1;
+                // Create new session
+                var newsession = new ChatSession();
+                Sessions.Add(newsession);
             }
-            // reset session ID
-            CurrentSessionID = -1;
-            // Create new session
-            var newsession = new ChatSession();
-            Sessions.Add(newsession);
+            else
+            {
+                CurrentSession.Messages.Clear();
+            }
             // Generate new system message about the new session
             var msgtxt = "*We're {{day}} the {{date}} at {{time}}.";
             if (Sessions.Count > 1)
