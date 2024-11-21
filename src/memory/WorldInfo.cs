@@ -105,16 +105,16 @@ namespace WaifuAI.Memory
         /// <returns></returns>
         public List<WorldEntry> FindEntries(Chatlog log, string? userinput = null)
         {
-            if (log.Messages.Count == 0)
+            if (log.CurrentSession.Messages.Count == 0)
                 return [];
             // retrieve the last User and Bot messages from the chatlog
             var messages = new List<SingleMessage>();
-            var min = log.Messages.Count - ScanDepth;
+            var min = log.CurrentSession.Messages.Count - ScanDepth;
             if (min < 0)
                 min = 0;
-            for (int i = log.Messages.Count - 1; i >= min; i--)
+            for (int i = log.CurrentSession.Messages.Count - 1; i >= min; i--)
             {
-                var mess =log.Messages[i];
+                var mess =log.CurrentSession.Messages[i];
                 if (mess.Role == AuthorRole.User || mess.Role == AuthorRole.Assistant)
                 {
                     messages.Add(mess);

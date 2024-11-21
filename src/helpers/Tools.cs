@@ -137,6 +137,11 @@ namespace WaifuAI
 
         public static string RemoveNewLines(this string text) => text.ToLinuxFormat().Replace("\n\n", " ").Replace('\n', ' ').Replace("  ", " ").Trim();
 
+        /// <summary>
+        /// Tries to fix missing asterisks in the text
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public static string FixAsterisks(this string text)
         {
             // Automatically close asterisks if they are not closed before the end of each paragraph delimited by a newline
@@ -174,6 +179,17 @@ namespace WaifuAI
         public static string CleanupAndTrim(this string text)
         {
             return text.Trim().TrimEnd('\n');
+        }
+
+        /// <summary>
+        /// Replaces Discord emojis with their text representation
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string ReplaceDiscordEmojis(this string input)
+        {
+            string pattern = @"<:(.*?):\d+>";
+            return Regex.Replace(input, pattern, ":$1:");
         }
 
     }
@@ -260,12 +276,13 @@ namespace WaifuAI
                     Inventory = messages
                 };
                 var chat = new Chatlog();
+                chat.Sessions.Add(new ChatSession());
                 foreach (var msg in importST.Inventory)
                 {
                     var role = msg.is_user ? AuthorRole.User : AuthorRole.Assistant;
                     if (!msg.is_user && msg.is_system)
                         role = AuthorRole.System;
-                    chat.Messages.Add(new SingleMessage(role, DateTime.TryParse(msg.send_date, out var d) ? d : default, msg.mes ?? string.Empty, bot, user));
+                    chat.CurrentSession.Messages.Add(new SingleMessage(role, DateTime.TryParse(msg.send_date, out var d) ? d : default, msg.mes ?? string.Empty, bot, user));
                 }
                 (chat as IFile).SaveToFile(outputpath);
                 return true;

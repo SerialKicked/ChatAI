@@ -175,7 +175,7 @@ namespace WaifuAI.Files
             var mems = memories ?? [];
             var entrydepth = currentDepth;
 
-            void CheckAndAddMemories()
+            void InsertMemories()
             {
                 if (!mems.TryGetValue(entrydepth, out string? value) || string.IsNullOrEmpty(value))
                     return;
@@ -197,7 +197,7 @@ namespace WaifuAI.Files
                 if (totaltks <= 0)
                     return sb.ToString();
                 sb.Insert(0, res);
-                CheckAndAddMemories();
+                InsertMemories();
                 entrydepth++;
                 currentDepth = entrydepth;
             }
@@ -266,24 +266,25 @@ namespace WaifuAI.Files
     public class Chatlog : BaseFile, IFile
     {
         public string Name { get; set; } = string.Empty;
+        public int CurrentSessionID { get; set; } = -1;
         public readonly List<ChatSession> Sessions = [];
-        public readonly List<SingleMessage> Messages = [];
 
-        public EventHandler<SingleMessage>? OnMessageAdded;
+        public ChatSession CurrentSession => CurrentSessionID >= 0 && CurrentSessionID < Sessions.Count ? Sessions[CurrentSessionID] : Sessions.Last();
+
+        [JsonIgnore] public EventHandler<SingleMessage>? OnMessageAdded;
 
         private void RaiseOnMessageAdded(SingleMessage message) => OnMessageAdded?.Invoke(this, message);
 
-        public string GetFormatedDialogs(int maxTokens, bool useSessionSystem, Dictionary<int, string>? memories)
+        public string GetFormatedHistory(int maxTokens, bool useSessionSystem, Dictionary<int, string>? memories)
         {
             var sb = new StringBuilder();
             var tokensleft = useSessionSystem ? maxTokens - LLMSystem.ReservedSessionTokens : maxTokens;
             var availSessionMemTokens = useSessionSystem ? LLMSystem.ReservedSessionTokens : 0;
-            var messagelist = new List<SingleMessage>(Messages);
             var mems = memories ?? [];
             var entrydepth = 0;
 
             /// <summary> Insert WorldInfo memories into the chatlog </summary>
-            void CheckAndAddMemories()
+            void InsertMemories()
             {
                 if (!mems.TryGetValue(entrydepth, out string? value) || string.IsNullOrEmpty(value))
                     return;
@@ -296,75 +297,77 @@ namespace WaifuAI.Files
                 }
             }
 
+            // If we don't use the session system, we flatten the messages
             if (!useSessionSystem)
             {
                 // add all messages together in the same list
-                var newlist = new List<SingleMessage>();
+                var messagelist = new List<SingleMessage>();
                 foreach (var item in Sessions)
-                    newlist.AddRange(item.Messages);
-                newlist.AddRange(Messages);
-                messagelist = newlist;
-            }
-
-            for (int i = messagelist.Count - 1; i >= 0; i--)
-            {
-                var msg = messagelist[i];
-                var res = LLMSystem.Instruct.FormatSingleMessage(msg);
-                var tks = LLMSystem.GetTokenCount(res);
-                tokensleft -= tks;
-                if (tokensleft <= 0)
-                    break;
-                sb.Insert(0, res);
-                // check if we need to add a memory
-                CheckAndAddMemories();
-                entrydepth++;
-            }
-
-            if (useSessionSystem)
-            {
-                for (int i = Sessions.Count - 1; i >= 0; i--)
+                    messagelist.AddRange(item.Messages);
+                // iterate through the messages in reverse order until we reach the token limit or end of messages
+                for (int i = messagelist.Count - 1; i >= 0; i--)
                 {
-                    var session = Sessions[i];
-                    if (LLMSystem.usedGuidInSession.Contains(session.Guid))
-                        continue;
-                    var summarytokencount = session.GetFormatedSummaryTokenCount(!LLMSystem.MarkdownMemoryFormating);
-                    var sessiontokencount = GetTotalTokens(session.Messages);
-                    // If all session can fit, or if that session's end is less than 7 days ago, or we have too few messages
-                    if (sessiontokencount <= tokensleft || ((DateTime.Now - session.EndTime) < new TimeSpan(7, 0, 0, 0)))
+                    var msg = messagelist[i];
+                    var res = LLMSystem.Instruct.FormatSingleMessage(msg);
+                    var tks = LLMSystem.GetTokenCount(res);
+                    tokensleft -= tks;
+                    if (tokensleft <= 0)
+                        break;
+                    sb.Insert(0, res);
+                    // check if we need to add a memory
+                    InsertMemories();
+                    entrydepth++;
+                }
+                // return the result
+                return sb.ToString();
+            }
+
+            // If we use the session system, we iterate through the sessions
+            var actualSessionID = CurrentSessionID >= 0 && CurrentSessionID < Sessions.Count ? CurrentSessionID : Sessions.Count - 1;
+            var isfirst = true;
+            for (int i = actualSessionID; i >= 0; i--)
+            {
+                var session = Sessions[i];
+                if (LLMSystem.usedGuidInSession.Contains(session.Guid) && !isfirst)
+                    continue;
+                // If first session, or we have enough tokens left, we add the dialogs
+                if (isfirst || tokensleft > 0)
+                {
+                    var text = session.GetFormatedDialogs(tokensleft, ref entrydepth, mems);
+                    if (string.IsNullOrEmpty(text))
                     {
-                        var text = session.GetFormatedDialogs(tokensleft, ref entrydepth, mems);
-                        if (string.IsNullOrEmpty(text))
-                        {
-                            availSessionMemTokens += tokensleft;
-                            tokensleft = 0;
-                        }
-                        else
-                            sb.Insert(0, text);
+                        availSessionMemTokens += tokensleft;
+                        tokensleft = 0;
+                    }
+                    else
+                        sb.Insert(0, text);
+                }
+                else
+                {
+                    // We inserted all the dialogs, now we check if we can add the summary
+                    var summarytokencount = session.GetFormatedSummaryTokenCount(!LLMSystem.MarkdownMemoryFormating);
+                    // If summary can fit, add it.
+                    if (summarytokencount <= availSessionMemTokens)
+                    {
+                        availSessionMemTokens -= summarytokencount;
+                        sb.Insert(0, session.GetFormatedSummary(NaturalLanguage: !LLMSystem.MarkdownMemoryFormating));
+                        InsertMemories();
+                        entrydepth++;
                     }
                     else
                     {
-                        // If summary can fit, add it.
-                        if (summarytokencount <= availSessionMemTokens)
-                        {
-                            availSessionMemTokens -= summarytokencount;
-                            sb.Insert(0, session.GetFormatedSummary(NaturalLanguage: !LLMSystem.MarkdownMemoryFormating));
-                            CheckAndAddMemories();
-                            entrydepth++;
-                        }
-                        else
-                        {
-                            availSessionMemTokens = 0;
-                        }
+                        availSessionMemTokens = 0;
                     }
-                    // check status
-                    if (tokensleft > 0)
-                    {
-                        var currenttokens = LLMSystem.GetTokenCount(sb.ToString());
-                        tokensleft = maxTokens - LLMSystem.ReservedSessionTokens - currenttokens;
-                    }
-                    if (tokensleft <= 0 && availSessionMemTokens <= 0)
-                        return sb.ToString();
                 }
+                // check status
+                if (tokensleft > 0)
+                {
+                    var currenttokens = LLMSystem.GetTokenCount(sb.ToString());
+                    tokensleft = maxTokens - LLMSystem.ReservedSessionTokens - currenttokens;
+                }
+                isfirst = false;
+                if (tokensleft <= 0 && availSessionMemTokens <= 0)
+                    break;
             }
             return sb.ToString();
         }
@@ -381,39 +384,39 @@ namespace WaifuAI.Files
 
         public ChatSession? GetSessionByID(Guid id) => Sessions.FirstOrDefault(s => s.Guid == id);
 
-        public SingleMessage? GetMessageByID(Guid id) => Messages.FirstOrDefault(m => m.Guid == id);
+        public SingleMessage? GetMessageByID(Guid id) => CurrentSession.Messages.FirstOrDefault(m => m.Guid == id);
 
         public SingleMessage LogMessage(AuthorRole role, string msg, Character user, Character bot)
         {
             var single = new SingleMessage(role, DateTime.Now, msg, bot.UniqueName, user.UniqueName);
-            Messages.Add(single);
+            CurrentSession. Messages.Add(single);
             RaiseOnMessageAdded(single);
             return single;
         }
 
         public SingleMessage LogMessage(SingleMessage single)
         {
-            Messages.Add(single);
+            CurrentSession.Messages.Add(single);
             RaiseOnMessageAdded(single);
             return single;
         }
 
-        public void RemoveAt(int id) => Messages.RemoveAt(id);
+        public void RemoveAt(int id) => CurrentSession.Messages.RemoveAt(id);
 
         public bool RemoveLast()
         {
-            if (Messages.Count > 0)
+            if (CurrentSession.Messages.Count > 0)
             {
-                Messages.RemoveAt(Messages.Count - 1);
+                CurrentSession.Messages.RemoveAt(CurrentSession.Messages.Count - 1);
                 return true;
             }
             return false;
 
         }
 
-        public void ClearHistory() => Messages.Clear();
+        public void ClearHistory() => CurrentSession.Messages.Clear();
 
-        public SingleMessage? LastMessage() => Messages.Count >= 1 ? Messages.Last() : null;
+        public SingleMessage? LastMessage() => CurrentSession.Messages.Count >= 1 ? CurrentSession.Messages.Last() : null;
 
         public void RemoveEmbeds()
         {
@@ -430,26 +433,24 @@ namespace WaifuAI.Files
         /// <returns></returns>
         public async Task<ChatSession> CurrentChatToSession()
         {
-            var session = new ChatSession();
-            session.Messages.AddRange(Messages);
-            session.StartTime = Messages.First().Date;
+            CurrentSession.StartTime = CurrentSession.Messages.First().Date;
             // if the first message has a default date, try to find a message with a valid date
-            if (session.StartTime == default)
+            if (CurrentSession.StartTime == default)
             {
-                foreach (var item in session.Messages)
+                foreach (var item in CurrentSession.Messages)
                 {
                     if (item.Date != default)
                     {
-                        session.StartTime = item.Date;
+                        CurrentSession.StartTime = item.Date;
                         break;
                     }
                 }
             }
-            session.EndTime = Messages.Last().Date;
-            session.Summary = await session.GenerateNewSummary();
-            session.Title = await session.GenerateNewTitle(session.Summary);
-            await session.GenerateEmbeds();
-            return session;
+            CurrentSession.EndTime = CurrentSession.Messages.Last().Date;
+            CurrentSession.Summary = await CurrentSession.GenerateNewSummary();
+            CurrentSession.Title = await CurrentSession.GenerateNewTitle(CurrentSession.Summary);
+            await CurrentSession.GenerateEmbeds();
+            return CurrentSession;
         }
 
         /// <summary>
@@ -503,17 +504,21 @@ namespace WaifuAI.Files
 
         public async Task StartNewChatSession(bool archivePreviousSession = true)
         {
-            if (archivePreviousSession && Messages.Count > 2)
+            // Save current session
+            if (archivePreviousSession && CurrentSession.Messages.Count > 2)
             {
                 var session = await CurrentChatToSession();
-                Sessions.Add(session);
             }
-            Messages.Clear();
+            // reset session ID
+            CurrentSessionID = -1;
+            // Create new session
+            var newsession = new ChatSession();
+            Sessions.Add(newsession);
             // Generate new system message about the new session
             var msgtxt = "*We're {{day}} the {{date}} at {{time}}.";
-            if (Sessions.Count > 0)
+            if (Sessions.Count > 1)
             {
-                var lastsession = Sessions.Last();
+                var lastsession = Sessions[^2];
                 var timespan = DateTime.Now - lastsession.EndTime;
                 if (timespan.Days > 1)
                     msgtxt += " Your last chat was " + timespan.Days.ToString() + " days ago.";
@@ -533,8 +538,9 @@ namespace WaifuAI.Files
         /// </summary>
         public void DivideChatIntoSessions()
         {
-            if (Messages.Count == 0)
+            if (CurrentSession.Messages.Count == 0)
                 return;
+            List<SingleMessage> Messages = new List<SingleMessage>(CurrentSession.Messages);
             Sessions.Clear();
 
             // Fix potential date problems
@@ -598,23 +604,23 @@ namespace WaifuAI.Files
 
         public (int tokens, TimeSpan duration) GetCurrentChatSessionInfo()
         {
-            if (Messages.Count <= 1)
+            if (CurrentSession.Messages.Count <= 1)
             {
                 return (0, TimeSpan.Zero);
             }
             var sb = new StringBuilder();
-            foreach (var message in Messages)
+            foreach (var message in CurrentSession.Messages)
             {
                 sb.Append(LLMSystem.Instruct.FormatSingleMessage(message));
             }
             var tokencount = LLMSystem.GetTokenCount(sb.ToString());
-            var duration = Messages.Last().Date - Messages.First().Date;
+            var duration = CurrentSession.Messages.Last().Date - CurrentSession.Messages.First().Date;
             return (tokencount, duration);
         }
 
         public string GetLastUserMessageContent()
         {
-            return Messages.LastOrDefault(m => m.Role == AuthorRole.User)?.Message ?? string.Empty;
+            return CurrentSession.Messages.LastOrDefault(m => m.Role == AuthorRole.User)?.Message ?? string.Empty;
         }
 
         public void SaveToFile(string pPath) 
@@ -623,46 +629,10 @@ namespace WaifuAI.Files
             File.WriteAllText(pPath, content);
         }
 
-        public string GetRawDialogs(int maxTokens, bool ignoresystem)
-        {
-            var sb = new StringBuilder();
-            var totaltks = maxTokens;
-
-            for (int i = Messages.Count - 1; i >= 0; i--)
-            {
-                var msg = Messages[i];
-                var text = string.Empty;
-                switch (msg.Role)
-                {
-                    case AuthorRole.System:
-                    case AuthorRole.SysPrompt:
-                        if (ignoresystem)
-                            continue;
-                        text = msg.Message.StartsWith('*') ? LLMSystem.NewLine + msg.Message.Trim() + LLMSystem.NewLine : LLMSystem.NewLine + "*" + msg.Message.Trim() + "*" + LLMSystem.NewLine;
-                        break;
-                    case AuthorRole.User:
-                    case AuthorRole.Assistant:
-                        text = "**" + msg.Sender?.Name + ":** " + msg.Message.RemoveNewLines() + LLMSystem.NewLine;
-                        break;
-                }
-                if (text == string.Empty)
-                    continue;
-                var tks = LLMSystem.GetTokenCount(text);
-                totaltks -= tks;
-                if (totaltks <= 0)
-                    return sb.ToString();
-                sb.Insert(0, text);
-            }
-            return sb.ToString();
-        }
-
         public void DeleteAll(bool AreYouSure)
         {
             if (AreYouSure)
-            {
-                Messages.Clear();
                 Sessions.Clear();
-            }
         }
     }
 }

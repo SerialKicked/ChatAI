@@ -170,7 +170,7 @@ namespace WaifuAI.Web
                     contentmsg = await ReplaceMentionsWithUsernames(contentmsg, contextMessage.MentionedUserIds);
                     var guildUser = contextMessage.Author as SocketGuildUser;
                     var localname = guildUser?.Nickname ?? contextMessage.Author.Username;
-                    contentmsg = ReplaceEmojis(contentmsg);
+                    contentmsg = contentmsg.ReplaceDiscordEmojis();
                     msgtxt.AppendLinuxLine($"{localname}: {contentmsg.RemoveNewLines().CleanupAndTrim()}").AppendLinuxLine();
                 }
             }
@@ -238,14 +238,14 @@ namespace WaifuAI.Web
                     contentmsg = await ReplaceMentionsWithUsernames(contentmsg, contextMessage.MentionedUserIds);
                     var guildUser = contextMessage.Author as SocketGuildUser;
                     var localname = guildUser?.Nickname ?? contextMessage.Author.Username;
-                    contentmsg = ReplaceEmojis(contentmsg);
+                    contentmsg = contentmsg.ReplaceDiscordEmojis();
                     rawprompt.AppendLinuxLine($"{localname}: {contentmsg.RemoveNewLines().CleanupAndTrim()}").AppendLinuxLine();
 
                 }
             }
 
             var msg = LLMSystem.Instruct.FormatSinglePromptNoUserInfo(AuthorRole.SysPrompt, username, Bot, rawprompt.ToString());
-            msg += LLMSystem.Instruct.FormatSinglePromptNoUserInfo(AuthorRole.User, username, Bot, ReplaceEmojis(message));
+            msg += LLMSystem.Instruct.FormatSinglePromptNoUserInfo(AuthorRole.User, username, Bot, message.ReplaceDiscordEmojis());
             msg += LLMSystem.Instruct.GetResponseStart(Bot) + Bot.Name+":";
             RaiseOnFullPromptReady(msg);
 
@@ -256,17 +256,6 @@ namespace WaifuAI.Web
             llmparams.Max_context_length = LLMSystem.MaxContextLength;
 
             return await LLMSystem.SimpleQuery(llmparams);
-        }
-
-        public static string ReplaceEmojis(string input)
-        {
-            // Define the regex pattern to match "<:some-arbitrary-content:bunch of numbers>"
-            string pattern = @"<:(.*?):\d+>";
-
-            // Replace the matched pattern with ":some-arbitrary-content:"
-            string result = Regex.Replace(input, pattern, ":$1:");
-
-            return result;
         }
 
         public static string FilterLLMResponse(string response)

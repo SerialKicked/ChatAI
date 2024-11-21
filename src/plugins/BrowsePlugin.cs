@@ -145,7 +145,7 @@ namespace WaifuAI.Plugins
             promptbuilder.AppendLinuxLine($"- **{LLMSystem.Bot.Name}:** {LLMSystem.Bot.GetBio(LLMSystem.User.Name).RemoveNewLines()}");
             promptbuilder.AppendLinuxLine();
             promptbuilder.AppendLinuxLine("# Recent Chatlog:");
-            promptbuilder.AppendLinuxLine(LLMSystem.History.GetRawDialogs(600, false));
+            promptbuilder.AppendLinuxLine(LLMSystem.History.CurrentSession.GetRawDialogs(600, false));
             return promptbuilder.ToString();
         }
 

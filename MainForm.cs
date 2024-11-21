@@ -813,7 +813,7 @@ namespace WaifuAI
 
         private async void RerollMessage(object sender, EventArgs e)
         {
-            if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.Messages.Count == 0 || LLMSystem.History.LastMessage()?.Role != AuthorRole.Assistant)
+            if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.CurrentSession.Messages.Count == 0 || LLMSystem.History.LastMessage()?.Role != AuthorRole.Assistant)
                 return;
             _impersonatemode = false;
             _postdate = DateTime.Now;
@@ -847,7 +847,7 @@ namespace WaifuAI
         private async void DeleteLastMessage(object sender, EventArgs e)
         {
             _impersonatemode = false;
-            if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.Messages.Count == 0)
+            if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.CurrentSession.Messages.Count == 0)
                 return;
             LLMSystem.RemoveLastMessage();
             await WebChatLoad();
@@ -1219,13 +1219,13 @@ namespace WaifuAI
             {
                 Task.Run(() =>
                 {
-                    var realid = LLMSystem.History.Messages.Count - Settings.MaxMessagesOnScreen;
+                    var realid = LLMSystem.History.CurrentSession.Messages.Count - Settings.MaxMessagesOnScreen;
                     if (realid < 0)
                         realid = 0;
                     realid += messageIndex - 1;
-                    if (realid >= LLMSystem.History.Messages.Count)
+                    if (realid >= LLMSystem.History.CurrentSession.Messages.Count)
                         return;
-                    var editForm = new EditMessageForm(LLMSystem.History.Messages[realid].Guid);
+                    var editForm = new EditMessageForm(LLMSystem.History.CurrentSession.Messages[realid].Guid);
                     if (editForm.ShowDialog() == DialogResult.OK && editForm.Message != null)
                     {
                         Invoke((System.Windows.Forms.MethodInvoker)delegate
@@ -1326,12 +1326,12 @@ namespace WaifuAI
                 web_chat.CoreWebView2.NavigationStarting += OnNavigationStarting;
             }
             var html = string.Empty;
-            var start = LLMSystem.History.Messages.Count - Settings.MaxMessagesOnScreen;
+            var start = LLMSystem.History.CurrentSession.Messages.Count - Settings.MaxMessagesOnScreen;
             if (start < 0)
                 start = 0;
-            for (int i = start; i < LLMSystem.History.Messages.Count; i++)
+            for (int i = start; i < LLMSystem.History.CurrentSession.Messages.Count; i++)
             {
-                html += AddHtmlMessage(LLMSystem.History.Messages[i]);
+                html += AddHtmlMessage(LLMSystem.History.CurrentSession.Messages[i]);
             }
             html = InjectDialogCSS(html);
             web_chat.NavigateToString(html);

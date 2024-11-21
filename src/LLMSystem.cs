@@ -223,7 +223,11 @@ namespace WaifuAI
             bot.BeginSession();
             RAGSystem.VectorizeChatlog(History);
             // if first time interaction, display welcome message from bot
-            if (History.Messages.Count == 0 && History.Sessions.Count == 0)
+            if (History.Sessions.Count == 0)
+            {
+                History.Sessions.Add(new ChatSession());
+            }
+            if (History.CurrentSession.Messages.Count == 0 && History.Sessions.Count == 1)
             {
                 var message = new SingleMessage(AuthorRole.Assistant, DateTime.Now, bot.GetWelcomeLine(User.Name), bot.UniqueName, User.UniqueName);
                 History.LogMessage(message);
@@ -367,7 +371,7 @@ namespace WaifuAI
             else
                 tokencount += GetTokenCount(Instruct.GetResponseStart(Bot));
             var availtokens = (int)(MaxContextLength) - tokencount - MaxReplyLength;
-            var history = History.GetFormatedDialogs(availtokens, Bot.SessionMemorySystem, inserts);
+            var history = History.GetFormatedHistory(availtokens, Bot.SessionMemorySystem, inserts);
 
 
             if (string.IsNullOrEmpty(newMessage) && MsgSender == AuthorRole.User)
@@ -433,7 +437,7 @@ namespace WaifuAI
         /// <returns></returns>
         public static async Task RerollLastMessage()
         {
-            if (Status != SystemStatus.Ready || History.Messages.Count == 0 || History.LastMessage()?.Role != AuthorRole.Assistant)
+            if (Status != SystemStatus.Ready || History.CurrentSession.Messages.Count == 0 || History.LastMessage()?.Role != AuthorRole.Assistant)
                 return;
             History.RemoveLast();
             if (string.IsNullOrEmpty(_LastGeneratedPrompt))
@@ -545,14 +549,14 @@ namespace WaifuAI
         /// <returns></returns>
         public static string GetAwayString()
         {
-            if (History.Messages.Count == 0 || !Bot.SenseOfTime)
+            if (History.CurrentSession.Messages.Count == 0 || !Bot.SenseOfTime)
                 return string.Empty;
 
-            var timespan = DateTime.Now - History.Messages.Last().Date;
+            var timespan = DateTime.Now - History.CurrentSession.Messages.Last().Date;
             if (timespan <= new TimeSpan(2, 0, 0))
                 return string.Empty;
 
-            var msgtxt = (DateTime.Now.Date != History.Messages.Last().Date.Date) || (timespan > new TimeSpan(12, 0, 0)) ? 
+            var msgtxt = (DateTime.Now.Date != History.CurrentSession.Messages.Last().Date.Date) || (timespan > new TimeSpan(12, 0, 0)) ? 
                 $"We're {DateTime.Now.DayOfWeek} {DateToHumanString(DateTime.Now)}." : string.Empty;
             if (timespan.Days > 1)
                 msgtxt += $" Your last chat was {timespan.Days} days ago. " + "It is {{time}} now.";
