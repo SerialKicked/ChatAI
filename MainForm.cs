@@ -174,7 +174,6 @@ namespace WaifuAI
             });
         }
 
-
         private async void OnStreamMessageReceived(object? sender, string e)
         {
             if (LLMSystem.Status == SystemStatus.Automated)
@@ -1065,6 +1064,20 @@ namespace WaifuAI
             LLMSystem.RAGIndex = (int)num_ragindex.Value;
         }
 
+        private async void num_fontsize_ValueChanged(object sender, EventArgs e)
+        {
+            Settings.FontSize = (int)num_fontsize.Value;
+            if (!_isinitloading)
+                await WebChatLoad();
+        }
+
+        private async void cb_background_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Settings.BackgroundFile = cb_background.SelectedItem?.ToString() ?? "bedroom_cozy.jpg";
+            if (!_isinitloading)
+                await WebChatLoad();
+        }
+
         #endregion
 
         #region *** Chat History Tab Functions ***
@@ -1097,6 +1110,16 @@ namespace WaifuAI
         {
             lbl_sessiontitle.Text = session.Title;
             lbl_sessioninfo.Text = session.StartTime.ToString("g") + " - " + session.EndTime.ToString("g") + " - " + session.Messages.Count + " messages";
+
+            var sv = _isinitloading;
+            _isinitloading = true;
+            ed_hist_kw1.Text = string.Join(",", session.KeyWordsMain);
+            ed_hist_kw2.Text = string.Join(",", session.KeyWordsSecondary);
+            cb_hist_kwlink.SelectedIndex = (int)session.WordLink;
+            ck_hist_casesensitive.Checked = session.CaseSensitive;
+            ck_hist_kw.Checked = session.Enabled;
+            _isinitloading = sv;
+
             if (web_sessioncontent.CoreWebView2 == null)
             {
                 await web_sessioncontent.EnsureCoreWebView2Async();
@@ -1104,6 +1127,32 @@ namespace WaifuAI
             var dialogs = session.GetRawDialogs(int.MaxValue, false).Replace("\n", "\n\n");
             var inf = "# " + session.Title + LLMSystem.NewLine + LLMSystem.NewLine + "## Summary:" + LLMSystem.NewLine + LLMSystem.NewLine + session.Summary + LLMSystem.NewLine + LLMSystem.NewLine + "## Dialogs:" + LLMSystem.NewLine + LLMSystem.NewLine + dialogs;
             web_sessioncontent.NavigateToString(Markdown.ToHtml(inf, CustomMarkDownPipeline));
+        }
+
+        private void UpdateHistoryEntryEvent(object sender, EventArgs e)
+        {
+            if (_isinitloading || _selectedSession == null)
+                return;
+            if (!string.IsNullOrWhiteSpace(ed_hist_kw1.Text))
+            {
+                _selectedSession.KeyWordsMain = ed_hist_kw1.Text.Split(',')?.ToList() ?? [];
+            }
+            else
+            {
+                _selectedSession.KeyWordsMain = [];
+            }
+            if (!string.IsNullOrWhiteSpace(ed_hist_kw2.Text))
+            {
+                _selectedSession.KeyWordsSecondary = ed_hist_kw2.Text.Split(',')?.ToList() ?? [];
+            }
+            else
+            {
+                _selectedSession.KeyWordsSecondary = [];
+            }
+            _selectedSession.WordLink = (KeyWordLink)cb_hist_kwlink.SelectedIndex;
+            _selectedSession.CaseSensitive = ck_hist_casesensitive.Checked;
+            _selectedSession.Enabled = ck_hist_kw.Checked;
+            LLMSystem.Bot.SaveChatHistory(false);
         }
 
         private async void bt_sessionrefresh_Click(object sender, EventArgs e)
@@ -1115,6 +1164,10 @@ namespace WaifuAI
             DisplaySessionDetails(_selectedSession);
             LLMSystem.Bot.SaveChatHistory();
         }
+
+        #endregion
+
+        #region *** WebView2 Handling ***
 
         private string InjectDialogCSS(string htmlContent)
         {
@@ -1388,6 +1441,7 @@ namespace WaifuAI
         {
             if (cb_bot.SelectedItem is string key && !string.IsNullOrEmpty(key))
             {
+                _selectedSession = null;
                 LLMSystem.Bot = DataFiles.Characters[key];
                 await LoadHistoryToUI();
                 LoadChatHistoryTab();
@@ -1516,19 +1570,6 @@ namespace WaifuAI
             Settings.MaxMessagesOnScreen = (int)num_msgcount.Value;
         }
 
-        private async void num_fontsize_ValueChanged(object sender, EventArgs e)
-        {
-            Settings.FontSize = (int)num_fontsize.Value;
-            if (!_isinitloading)
-                await WebChatLoad();
-        }
-
-        private async void cb_background_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Settings.BackgroundFile = cb_background.SelectedItem?.ToString() ?? "bedroom_cozy.jpg";
-            if (!_isinitloading)
-                await WebChatLoad();
-        }
 
         private void ck_forceNames_CheckedChanged(object sender, EventArgs e)
         {
