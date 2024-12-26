@@ -59,6 +59,12 @@ namespace WaifuAI
             HelptoolTip.SetToolTip(ck_ragweb, "Allows the LLM to browse compatible websites for information.");
             HelptoolTip.SetToolTip(ck_webgrammar, "If checked, the LLM will be better at navigating the website, but its results will be less accurate." + Environment.NewLine + "Only enable if the LLM is consistently failing at browsing the web.");
             HelptoolTip.SetToolTip(ck_webkeyword, "If checked, the web logic will only be run if some internet related keywords are found in the user's request (faster, less accurate)." + Environment.NewLine + "If unckecked, all user inputs will be processed twice, once to check if the web should be visited, and another time for the normal response from the bot (slower, more accurate).");
+
+            HelptoolTip.SetToolTip(ck_ragenabled, "Use RAG and keywords to insert summaries of relevant previous sessions based on the user's input." + Environment.NewLine + "Configurable in the Settings tab.");
+            HelptoolTip.SetToolTip(ck_senseoftime, "Insert day and time information to prompt when relevant to give the bot a better understanding of time.");
+            HelptoolTip.SetToolTip(ck_sessionmemory, "Use a set amount of tokens (set in settings) to insert summaries of previous chat sessions with this bot." + Environment.NewLine + "This drastically increases the bot's long-term memory.");
+            HelptoolTip.SetToolTip(ck_worldinfo, "Use the WorldInfo file(s) associated with this bot. WorldInfo is a list of keyword-triggered textual information that is inserted into the prompt when the conditions are met." + Environment.NewLine + "See the World Info tab for additional information.");
+
             // Chat related events
             bt_chattosessions.Click += ConvertChatToSessionList!;
             bt_sessionrefresh.Click += bt_sessionrefresh_Click!;
@@ -1118,6 +1124,7 @@ namespace WaifuAI
             cb_hist_kwlink.SelectedIndex = (int)session.WordLink;
             ck_hist_casesensitive.Checked = session.CaseSensitive;
             ck_hist_kw.Checked = session.Enabled;
+            ck_hist_sticky.Checked = session.Sticky;
             _isinitloading = sv;
 
             if (web_sessioncontent.CoreWebView2 == null)
@@ -1152,6 +1159,7 @@ namespace WaifuAI
             _selectedSession.WordLink = (KeyWordLink)cb_hist_kwlink.SelectedIndex;
             _selectedSession.CaseSensitive = ck_hist_casesensitive.Checked;
             _selectedSession.Enabled = ck_hist_kw.Checked;
+            _selectedSession.Sticky = ck_hist_sticky.Checked;
         }
 
         private async void bt_sessionrefresh_Click(object sender, EventArgs e)

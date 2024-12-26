@@ -70,6 +70,7 @@
             tabHistory = new TabPage();
             web_sessioncontent = new Microsoft.Web.WebView2.WinForms.WebView2();
             panel2 = new Panel();
+            ck_hist_sticky = new CheckBox();
             button5 = new Button();
             ck_hist_casesensitive = new CheckBox();
             label56 = new Label();
@@ -341,7 +342,7 @@
             tabMain.Location = new Point(0, 0);
             tabMain.Name = "tabMain";
             tabMain.SelectedIndex = 0;
-            tabMain.Size = new Size(975, 663);
+            tabMain.Size = new Size(975, 681);
             tabMain.TabIndex = 1;
             // 
             // tabChat
@@ -356,7 +357,7 @@
             tabChat.Location = new Point(4, 27);
             tabChat.Name = "tabChat";
             tabChat.Padding = new Padding(3);
-            tabChat.Size = new Size(967, 632);
+            tabChat.Size = new Size(967, 650);
             tabChat.TabIndex = 1;
             tabChat.Text = "Chat";
             tabChat.UseVisualStyleBackColor = true;
@@ -367,7 +368,7 @@
             bt_impersonate.BackColor = Color.Turquoise;
             bt_impersonate.FlatStyle = FlatStyle.Flat;
             bt_impersonate.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_impersonate.Location = new Point(899, 543);
+            bt_impersonate.Location = new Point(899, 561);
             bt_impersonate.Name = "bt_impersonate";
             bt_impersonate.Size = new Size(60, 25);
             bt_impersonate.TabIndex = 7;
@@ -383,7 +384,7 @@
             web_chat.DefaultBackgroundColor = Color.White;
             web_chat.Location = new Point(212, 3);
             web_chat.Name = "web_chat";
-            web_chat.Size = new Size(749, 533);
+            web_chat.Size = new Size(749, 551);
             web_chat.TabIndex = 6;
             web_chat.ZoomFactor = 1D;
             // 
@@ -393,7 +394,7 @@
             bt_delete.BackColor = Color.LightCoral;
             bt_delete.FlatStyle = FlatStyle.Flat;
             bt_delete.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_delete.Location = new Point(899, 604);
+            bt_delete.Location = new Point(899, 622);
             bt_delete.Name = "bt_delete";
             bt_delete.Size = new Size(60, 25);
             bt_delete.TabIndex = 5;
@@ -407,7 +408,7 @@
             bt_reroll.BackColor = Color.PaleGoldenrod;
             bt_reroll.FlatStyle = FlatStyle.Flat;
             bt_reroll.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_reroll.Location = new Point(899, 574);
+            bt_reroll.Location = new Point(899, 592);
             bt_reroll.Name = "bt_reroll";
             bt_reroll.Size = new Size(60, 25);
             bt_reroll.TabIndex = 4;
@@ -421,7 +422,7 @@
             bt_send.BackColor = Color.PaleGreen;
             bt_send.FlatStyle = FlatStyle.Flat;
             bt_send.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_send.Location = new Point(835, 543);
+            bt_send.Location = new Point(835, 561);
             bt_send.Name = "bt_send";
             bt_send.Size = new Size(60, 86);
             bt_send.TabIndex = 3;
@@ -435,7 +436,7 @@
             ed_input.BackColor = Color.WhiteSmoke;
             ed_input.BorderStyle = BorderStyle.FixedSingle;
             ed_input.Font = new Font("Segoe UI", 11F);
-            ed_input.Location = new Point(212, 541);
+            ed_input.Location = new Point(212, 559);
             ed_input.Multiline = true;
             ed_input.Name = "ed_input";
             ed_input.ScrollBars = ScrollBars.Vertical;
@@ -453,7 +454,7 @@
             panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
-            panel1.Size = new Size(203, 626);
+            panel1.Size = new Size(203, 644);
             panel1.TabIndex = 0;
             // 
             // groupBox23
@@ -466,7 +467,7 @@
             groupBox23.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox23.Location = new Point(6, 518);
             groupBox23.Name = "groupBox23";
-            groupBox23.Size = new Size(187, 105);
+            groupBox23.Size = new Size(187, 123);
             groupBox23.TabIndex = 26;
             groupBox23.TabStop = false;
             groupBox23.Text = "Quick Settings";
@@ -820,6 +821,7 @@
             // panel2
             // 
             panel2.AutoScroll = true;
+            panel2.Controls.Add(ck_hist_sticky);
             panel2.Controls.Add(button5);
             panel2.Controls.Add(ck_hist_casesensitive);
             panel2.Controls.Add(label56);
@@ -839,6 +841,17 @@
             panel2.Size = new Size(641, 165);
             panel2.TabIndex = 1;
             // 
+            // ck_hist_sticky
+            // 
+            ck_hist_sticky.AutoSize = true;
+            ck_hist_sticky.Location = new Point(6, 71);
+            ck_hist_sticky.Name = "ck_hist_sticky";
+            ck_hist_sticky.Size = new Size(116, 19);
+            ck_hist_sticky.TabIndex = 21;
+            ck_hist_sticky.Text = "Always Activated";
+            ck_hist_sticky.UseVisualStyleBackColor = true;
+            ck_hist_sticky.CheckedChanged += UpdateHistoryEntryEvent;
+            // 
             // button5
             // 
             button5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -846,7 +859,7 @@
             button5.Name = "button5";
             button5.Size = new Size(151, 23);
             button5.TabIndex = 20;
-            button5.Text = "Set Session To Current";
+            button5.Text = "Set as Active";
             button5.UseVisualStyleBackColor = true;
             // 
             // ck_hist_casesensitive
@@ -952,7 +965,7 @@
             // lbl_sessioninfo
             // 
             lbl_sessioninfo.AutoSize = true;
-            lbl_sessioninfo.Location = new Point(6, 40);
+            lbl_sessioninfo.Location = new Point(6, 38);
             lbl_sessioninfo.Name = "lbl_sessioninfo";
             lbl_sessioninfo.Size = new Size(347, 15);
             lbl_sessioninfo.TabIndex = 1;
@@ -2698,7 +2711,7 @@
             // statusbar
             // 
             statusbar.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, toolStripStatusLabel2 });
-            statusbar.Location = new Point(0, 666);
+            statusbar.Location = new Point(0, 684);
             statusbar.Name = "statusbar";
             statusbar.Size = new Size(975, 22);
             statusbar.TabIndex = 2;
@@ -2722,7 +2735,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(975, 688);
+            ClientSize = new Size(975, 706);
             Controls.Add(statusbar);
             Controls.Add(tabMain);
             Icon = (Icon)resources.GetObject("$this.Icon");
@@ -3053,5 +3066,6 @@
         private CheckBox ck_hist_kw;
         private Button button5;
         private BindingSource bindingSource1;
+        private CheckBox ck_hist_sticky;
     }
 }
