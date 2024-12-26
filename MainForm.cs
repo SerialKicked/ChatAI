@@ -1152,7 +1152,6 @@ namespace WaifuAI
             _selectedSession.WordLink = (KeyWordLink)cb_hist_kwlink.SelectedIndex;
             _selectedSession.CaseSensitive = ck_hist_casesensitive.Checked;
             _selectedSession.Enabled = ck_hist_kw.Checked;
-            LLMSystem.Bot.SaveChatHistory(false);
         }
 
         private async void bt_sessionrefresh_Click(object sender, EventArgs e)
