@@ -39,7 +39,7 @@ namespace WaifuAI.Files
 
         public string GetResponseStart(Character bot)
         {
-            var res = BotStart;
+            var res = LLMSystem.ReplaceMacros(BotStart);
             if (RealAddNameToPrompt)
                 res += bot.Name + ":";
             return res;
@@ -47,7 +47,7 @@ namespace WaifuAI.Files
 
         public string GetUserStart(Character user)
         {
-            var res = UserStart;
+            var res = LLMSystem.ReplaceMacros(UserStart);
             if (RealAddNameToPrompt)
                 res += user.Name + ":";
             return res;
@@ -69,16 +69,16 @@ namespace WaifuAI.Files
                     realprompt = "[" + LLMSystem.ReplaceMacros(realprompt, userName, bot) + "]";
                     break;
                 case AuthorRole.System:
-                    realprompt = SystemStart + LLMSystem.ReplaceMacros(realprompt, userName, bot) + SystemEnd;
+                    realprompt =  LLMSystem.ReplaceMacros(SystemStart + realprompt + SystemEnd, userName, bot) ;
                     break;
                 case AuthorRole.User:
-                    realprompt = UserStart + LLMSystem.ReplaceMacros(realprompt, userName, bot) + UserEnd;
+                    realprompt = LLMSystem.ReplaceMacros(UserStart + realprompt + UserEnd, userName, bot);
                     break;
                 case AuthorRole.Assistant:
-                    realprompt = BotStart + LLMSystem.ReplaceMacros(realprompt, userName, bot) + BotEnd;
+                    realprompt = LLMSystem.ReplaceMacros(BotStart + realprompt + BotEnd, userName, bot);
                     break;
                 case AuthorRole.SysPrompt:
-                    realprompt = SysPromptStart + LLMSystem.ReplaceMacros(realprompt, userName, bot) + SysPromptEnd;
+                    realprompt = LLMSystem.ReplaceMacros(SysPromptStart + realprompt + SysPromptEnd, userName, bot);
                     break;
                 default:
                     break;
@@ -104,16 +104,16 @@ namespace WaifuAI.Files
                     realprompt = "[" + LLMSystem.ReplaceMacros(realprompt, user, bot) + "]";
                     break;
                 case AuthorRole.System:
-                    realprompt = SystemStart + LLMSystem.ReplaceMacros(realprompt, user, bot) + SystemEnd;
+                    realprompt = LLMSystem.ReplaceMacros(SystemStart + realprompt + SystemEnd, user, bot);
                     break;
                 case AuthorRole.User:
-                    realprompt = UserStart + LLMSystem.ReplaceMacros(realprompt, user, bot) + UserEnd;
+                    realprompt = LLMSystem.ReplaceMacros(UserStart + realprompt + UserEnd, user, bot);
                     break;
                 case AuthorRole.Assistant:
-                    realprompt = BotStart + LLMSystem.ReplaceMacros(realprompt, user, bot) + BotEnd;
+                    realprompt = LLMSystem.ReplaceMacros(BotStart + realprompt + BotEnd, user, bot);
                     break;
                 case AuthorRole.SysPrompt:
-                    realprompt = SysPromptStart + LLMSystem.ReplaceMacros(realprompt, user, bot) + SysPromptEnd;
+                    realprompt = LLMSystem.ReplaceMacros(SysPromptStart + realprompt + SysPromptEnd, user, bot);
                     break;
                 default:
                     break;

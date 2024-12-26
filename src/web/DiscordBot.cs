@@ -422,7 +422,7 @@ namespace WaifuAI.Web
                 var parts = text.Split(' ');
                 if (parts.Length != 2 || !int.TryParse(parts[1], out var count))
                 {
-                    await message.Channel.SendMessageAsync("Usage: !scan <count>");
+                    await message.Channel.SendMessageAsync("Usage: !chatlog <count>");
                     return;
                 }
                 await message.Channel.SendMessageAsync($"Sure thing, boss! I'll consider the last {count} messages now.");
