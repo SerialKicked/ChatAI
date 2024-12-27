@@ -4,6 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaifuAI", "WaifuAI.csproj", "{DF61DF11-34FA-490F-985E-2AB39D43C838}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A55AEDED-F358-4E07-90C6-F8865BDEDE61} = {A55AEDED-F358-4E07-90C6-F8865BDEDE61}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnarkisTools", "..\AnarkisTools\AnarkisTools.csproj", "{A55AEDED-F358-4E07-90C6-F8865BDEDE61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +20,10 @@ Global
 		{DF61DF11-34FA-490F-985E-2AB39D43C838}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF61DF11-34FA-490F-985E-2AB39D43C838}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF61DF11-34FA-490F-985E-2AB39D43C838}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A55AEDED-F358-4E07-90C6-F8865BDEDE61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A55AEDED-F358-4E07-90C6-F8865BDEDE61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A55AEDED-F358-4E07-90C6-F8865BDEDE61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A55AEDED-F358-4E07-90C6-F8865BDEDE61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
