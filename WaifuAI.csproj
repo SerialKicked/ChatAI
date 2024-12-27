@@ -17,8 +17,6 @@
     <PackageReference Include="AngleSharp" Version="1.1.2" />
     <PackageReference Include="Discord.Net" Version="3.16.0" />
     <PackageReference Include="HNSW" Version="24.9.52330" />
-    <PackageReference Include="LLamaSharp" Version="0.18.0" />
-    <PackageReference Include="LLamaSharp.Backend.Cuda12" Version="0.18.0" />
     <PackageReference Include="Markdig" Version="0.37.0" />
     <PackageReference Include="MessagePack" Version="2.5.187" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2792.45" />
@@ -144,5 +142,9 @@
 
   <ItemGroup>
     <Folder Include="data\ui\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AnarkisTools\AnarkisTools.csproj" />
   </ItemGroup>
 </Project>

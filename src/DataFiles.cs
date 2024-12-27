@@ -5,9 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WaifuAI.Memory;
+using AnarkisTools.Files;
 using WaifuAI.Files;
 using WaifuAI.Web;
+using AnarkisTools.LLM;
 
 namespace WaifuAI
 {
@@ -65,7 +66,7 @@ namespace WaifuAI
                 Inference[def.UniqueName] = def;
                 (def as IFile).SaveToFile("data/params/"+ def.UniqueName + ".json");
             }
-            Characters = Load<Character>("data/chars/", "*.json");
+            ReloadChars();
             WorldInfos = Load<WorldInfo>("data/worlds/", "*.json");
             SysPrompts = Load<SystemPrompt>("data/sysprompts/", "*.json");
             Websites = Load<WebsiteDefinition>("data/websites/", "*.json");
@@ -74,6 +75,7 @@ namespace WaifuAI
         public static void ReloadChars()
         {
             Characters = Load<Character>("data/chars/", "*.json");
+            LLMSystem.LoadPersona([.. Characters.Values]);
         }
     }
 }

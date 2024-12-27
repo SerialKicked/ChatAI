@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Newtonsoft.Json;
-using WaifuAI.Files;
-using WaifuAI.Memory;
+using AnarkisTools;
+using AnarkisTools.Files;
+using AnarkisTools.LLM;
 
 namespace WaifuAI.Web
 {
@@ -154,7 +155,7 @@ namespace WaifuAI.Web
         {
             LLMSystem.NamesInPromptOverride = false;
             var SysPrompt = DataFiles.SysPrompts[SysPromptID];
-            var Bot = DataFiles.Characters[PersonaID].Copy<Character>()!;
+            var Bot = DataFiles.Characters[PersonaID].Copy<BasePersona>()!;
             Bot.Name = _client.CurrentUser.Username;
             var msgtxt = new StringBuilder();
             msgtxt.AppendLinuxLine("You are an automated system designed to analyze discord chatlogs and follow instructions.");
@@ -200,7 +201,7 @@ namespace WaifuAI.Web
         {
             LLMSystem.NamesInPromptOverride = false;
             var SysPrompt = DataFiles.SysPrompts[SysPromptID];
-            var Bot = DataFiles.Characters[PersonaID].Copy<Character>()!;
+            var Bot = DataFiles.Characters[PersonaID].Copy<BasePersona>()!;
             Bot.Name = _client.CurrentUser.Username;
 
             var rawprompt = new StringBuilder(SysPrompt.GetSystemPromptRaw(Bot) + LLMSystem.NewLine + " - Don't use quotations marks in your responses." + LLMSystem.NewLine + " - Only speak for yourself, don't speak for other people.");
@@ -270,7 +271,7 @@ namespace WaifuAI.Web
         private async Task HandleBotResponse(SocketMessage message)
         {
             var text =message.Content;
-            var Bot = DataFiles.Characters[PersonaID].Copy<Character>()!;
+            var Bot = DataFiles.Characters[PersonaID].Copy<BasePersona>()!;
             Bot.Name = _client.CurrentUser.Username;
             var guildUser = message.Author as SocketGuildUser;
             var username = guildUser?.Nickname ?? message.Author.Username;

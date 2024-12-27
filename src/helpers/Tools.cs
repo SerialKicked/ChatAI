@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using WaifuAI.Memory;
-using WaifuAI.Files;
+using AnarkisTools.Files;
+using AnarkisTools.LLM;
 using Newtonsoft.Json;
 using Microsoft.VisualBasic.ApplicationServices;
 using Parlot.Fluent;
@@ -12,6 +12,34 @@ using System.Text.RegularExpressions;
 
 namespace WaifuAI
 {
+    public static class JsonlToJsonConverter
+    {
+        public static void ConvertJsonlToJson(string inputPath, string outputPath)
+        {
+            if (!File.Exists(inputPath))
+                throw new FileNotFoundException($"The file {inputPath} does not exist.");
+
+            var lines = File.ReadAllLines(inputPath);
+            var messages = new List<STMessage>();
+
+            foreach (var line in lines)
+            {
+                var message = JsonConvert.DeserializeObject<STMessage>(line);
+                if (message != null)
+                {
+                    messages.Add(message);
+                }
+            }
+
+            var importST = new ImportSTChat
+            {
+                Inventory = messages
+            };
+
+            var json = JsonConvert.SerializeObject(importST, Formatting.Indented);
+            File.WriteAllText(outputPath, json);
+        }
+    }
 
     internal record STWorldEntry
     {
@@ -87,112 +115,6 @@ namespace WaifuAI
         public string GPT { get; set; } = string.Empty;
     }
 
-    public static class JsonlToJsonConverter
-    {
-        public static void ConvertJsonlToJson(string inputPath, string outputPath)
-        {
-            if (!File.Exists(inputPath))
-                throw new FileNotFoundException($"The file {inputPath} does not exist.");
-
-            var lines = File.ReadAllLines(inputPath);
-            var messages = new List<STMessage>();
-
-            foreach (var line in lines)
-            {
-                var message = JsonConvert.DeserializeObject<STMessage>(line);
-                if (message != null)
-                {
-                    messages.Add(message);
-                }
-            }
-
-            var importST = new ImportSTChat
-            {
-                Inventory = messages
-            };
-
-            var json = JsonConvert.SerializeObject(importST, Formatting.Indented);
-            File.WriteAllText(outputPath, json);
-        }
-    }
-
-    public static class StringExtensions
-    {
-        public static StringBuilder AppendLinuxLine(this StringBuilder sb, string? text = null)
-        {
-            return text == null ? sb.Append(LLMSystem.NewLine) : sb.Append(text).Append(LLMSystem.NewLine);
-        }
-
-        public static string ToWinFormat(this string text) => text.Replace("\n", "\r\n");
-
-        public static string ToLinuxFormat(this string text) => text.Replace("\r\n", "\n");
-
-        public static string SanitizeForJS(this string text)
-        {
-            return text.Replace("\\", "\\\\")
-                .Replace("\"", "\\\"")
-                .Replace("\n", "\\n")
-                .Replace("\r", "\\r");
-        }
-
-        public static string RemoveNewLines(this string text) => text.ToLinuxFormat().Replace("\n\n", " ").Replace('\n', ' ').Replace("  ", " ").Trim();
-
-        /// <summary>
-        /// Tries to fix missing asterisks in the text
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        public static string FixAsterisks(this string text)
-        {
-            // Automatically close asterisks if they are not closed before the end of each paragraph delimited by a newline
-            var lines = text.Split(LLMSystem.NewLine);
-            for (int i = 0; i < lines.Length; i++)
-            {
-                // skip small lines
-                if (lines[i].Length <= 2)
-                    continue;
-                if (lines[i].StartsWith('*'))
-                {
-                    // remove the first character from lines[i]
-                    lines[i] = lines[i][1..];
-                    lines[i] = "*" + lines[i].Trim();
-                }
-                if (lines[i].Count(c => c == '*') % 2 == 1)
-                {
-                    // If a line ends with but doesn't start with an asterisk, add one at the beginning
-                    if (lines[i].EndsWith('*') && !lines[i].StartsWith('*'))
-                    {
-                        lines[i] = "*" + lines[i].Trim();
-                    }
-                    else
-                        lines[i] = lines[i].Trim() + "*";
-                }
-            }
-            return string.Join(LLMSystem.NewLine, lines);
-        }
-
-        /// <summary>
-        /// Trim the string and remove any trailing newlines
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        public static string CleanupAndTrim(this string text)
-        {
-            return text.Trim().TrimEnd('\n');
-        }
-
-        /// <summary>
-        /// Replaces Discord emojis with their text representation
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public static string ReplaceDiscordEmojis(this string input)
-        {
-            string pattern = @"<:(.*?):\d+>";
-            return Regex.Replace(input, pattern, ":$1:");
-        }
-
-    }
 
     /// <summary>
     /// A bunch of functions to make WPF's life easier

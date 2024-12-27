@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AnarkisTools;
+using AnarkisTools.Files;
+using AnarkisTools.LLM;
 using WaifuAI.Files;
 
 namespace WaifuAI.Plugins

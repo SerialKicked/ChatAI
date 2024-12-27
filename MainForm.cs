@@ -1,13 +1,12 @@
 using System;
 using System.Net;
 using WaifuAI.Files;
+using AnarkisTools;
+using AnarkisTools.API;
 using System.Reflection;
 using Newtonsoft.Json;
 using Markdig;
-using WaifuAI.Web;
 using Microsoft.Web.WebView2.Core;
-using WaifuAI.src.forms;
-using WaifuAI.Memory;
 using System.Numerics;
 using AngleSharp;
 using YamlDotNet.Serialization;
@@ -15,6 +14,11 @@ using Microsoft.AspNetCore.Components.Forms;
 using AngleSharp.Browser.Dom;
 using Microsoft.VisualBasic.ApplicationServices;
 using Parlot.Fluent;
+using AnarkisTools.Files;
+using AnarkisTools.LLM;
+using WaifuAI.src.forms;
+using WaifuAI.Web;
+using WaifuAI.Plugins;
 
 namespace WaifuAI
 {
@@ -39,7 +43,7 @@ namespace WaifuAI
         private DateTime _postdate = DateTime.Now;
         private TimeSpan _responselength = default;
 
-        private DiscordBot discordBot = new DiscordBot();
+        private readonly DiscordBot discordBot = new();
 
         public static MarkdownPipeline CustomMarkDownPipeline { get; } = new MarkdownPipelineBuilder()
             .UseSoftlineBreakAsHardlineBreak()
@@ -81,6 +85,9 @@ namespace WaifuAI
         private void SetupChatMenu()
         {
             LLMSystem.Init();
+            LLMSystem.ContextPlugins = [];
+            LLMSystem.ContextPlugins.Add(new BrowsePlugin());
+            LLMSystem.ContextPlugins.Add(new LocationPlugin("Locations"));
             cb_bot.Items.Clear();
             cb_user.Items.Clear();
             bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.ScenarioOverride) ? Color.Black : Color.DarkGreen;
@@ -247,7 +254,7 @@ namespace WaifuAI
                     statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                 });
             }
-            LLMSystem.Bot.SaveChatHistory();
+            (LLMSystem.Bot as Character)?.SaveChatHistory();
         }
 
         private void ShowCurrentSessionInfo()
@@ -844,7 +851,7 @@ namespace WaifuAI
             if (MessageBox.Show("This will archive the current chat and start a new one.", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No)
                 return;
             await LLMSystem.History.StartNewChatSession(true);
-            LLMSystem.Bot.SaveChatHistory();
+            (LLMSystem.Bot as Character)?.SaveChatHistory();
             await WebChatLoad();
             LoadChatHistoryTab();
         }
@@ -1022,7 +1029,7 @@ namespace WaifuAI
             }
             await RAGSystem.EmbedChatSessions(LLMSystem.History);
             MessageBox.Show("All sessions have been embedded successfully.");
-            LLMSystem.Bot.SaveChatHistory(true);
+            (LLMSystem.Bot as Character)?.SaveChatHistory(true);
             RAGSystem.VectorizeChatlog(LLMSystem.History);
         }
 
@@ -1167,9 +1174,9 @@ namespace WaifuAI
             if (_selectedSession == null)
                 return;
             _selectedSession.Summary = await _selectedSession.GenerateNewSummary();
-            _selectedSession.Title = await _selectedSession.GenerateNewTitle(_selectedSession.Summary);
+            _selectedSession.Title = await ChatSession.GenerateNewTitle(_selectedSession.Summary);
             DisplaySessionDetails(_selectedSession);
-            LLMSystem.Bot.SaveChatHistory();
+            (LLMSystem.Bot as Character)?.SaveChatHistory();
         }
 
         #endregion

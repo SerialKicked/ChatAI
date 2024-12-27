@@ -10,7 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using WaifuAI.Files;
-using WaifuAI.Memory;
+using AnarkisTools.Files;
+using AnarkisTools.LLM;
+using AnarkisTools;
 using WaifuAI.Web;
 
 namespace WaifuAI.Plugins
