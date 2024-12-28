@@ -1,17 +1,11 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
-using Fluid.Filters;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
-using Parlot.Fluent;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using AnarkisTools.Files;
 using AnarkisTools;
 

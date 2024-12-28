@@ -5,10 +5,6 @@ using System.Text;
 using AnarkisTools.Files;
 using AnarkisTools.LLM;
 using Newtonsoft.Json;
-using Microsoft.VisualBasic.ApplicationServices;
-using Parlot.Fluent;
-using WaifuAI.Web;
-using System.Text.RegularExpressions;
 
 namespace WaifuAI
 {
@@ -119,7 +115,7 @@ namespace WaifuAI
     /// <summary>
     /// A bunch of functions to make WPF's life easier
     /// </summary>
-    public static class Tools
+    public static class ImportTools
     {
         public static int CPUCoreCount() => Environment.ProcessorCount;
 

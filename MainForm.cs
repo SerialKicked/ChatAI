@@ -2,18 +2,10 @@ using System;
 using System.Net;
 using WaifuAI.Files;
 using AnarkisTools;
-using AnarkisTools.API;
 using System.Reflection;
 using Newtonsoft.Json;
 using Markdig;
 using Microsoft.Web.WebView2.Core;
-using System.Numerics;
-using AngleSharp;
-using YamlDotNet.Serialization;
-using Microsoft.AspNetCore.Components.Forms;
-using AngleSharp.Browser.Dom;
-using Microsoft.VisualBasic.ApplicationServices;
-using Parlot.Fluent;
 using AnarkisTools.Files;
 using AnarkisTools.LLM;
 using WaifuAI.src.forms;
@@ -43,7 +35,6 @@ namespace WaifuAI
         private DateTime _postdate = DateTime.Now;
         private TimeSpan _responselength = default;
 
-        private readonly DiscordBot discordBot = new();
 
         public static MarkdownPipeline CustomMarkDownPipeline { get; } = new MarkdownPipelineBuilder()
             .UseSoftlineBreakAsHardlineBreak()
@@ -174,16 +165,6 @@ namespace WaifuAI
                 ed_log.Clear();
                 var text = "====== New Generation ======\n\n" + e + "\n\n";
                 ed_log.Text = text.ToWinFormat();
-            });
-        }
-
-        private void OnDiscordFullPromptReady(object? sender, string e)
-        {
-            Invoke((System.Windows.Forms.MethodInvoker)delegate
-            {
-                ed_discordlog.Clear();
-                var text = "====== New Generation ======\n\n" + e + "\n\n";
-                ed_discordlog.Text = text.ToWinFormat();
             });
         }
 
@@ -1004,7 +985,7 @@ namespace WaifuAI
             // Open a file selection dialog and use Tools.Import to import a chatlog from a jsonl file
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 MessageBox.Show(
-                    Tools.ImportChatlog(openFileDialog1.FileName, "exported_chat.json", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName) ?
+                    ImportTools.ImportChatlog(openFileDialog1.FileName, "exported_chat.json", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName) ?
                         "Chatlog imported successfully to exported_chat.json in this application's main folder." :
                         "Something went wrong while opening or parsing the file."
                 );
@@ -1014,7 +995,7 @@ namespace WaifuAI
         {
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 MessageBox.Show(
-                    Tools.ImportWorld(openFileDialog1.FileName, "exported_world.json") ?
+                    ImportTools.ImportWorld(openFileDialog1.FileName, "exported_world.json") ?
                         "WorldInfo imported successfully to exported_world.json in this application's main folder." :
                         "Something went wrong while opening or parsing the file."
                 );
@@ -1625,21 +1606,5 @@ namespace WaifuAI
                 LLMSystem.SystemPrompt = DataFiles.SysPrompts[key];
         }
 
-        private async void button2_Click(object sender, EventArgs e)
-        {
-            discordBot.OnFullPromptReady += OnDiscordFullPromptReady;
-            await discordBot.RunBotAsync();
-        }
-
-        private async void button3_Click(object sender, EventArgs e)
-        {
-            discordBot.OnFullPromptReady -= OnDiscordFullPromptReady;
-            await discordBot.KillBot();
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            DataFiles.ReloadChars();
-        }
     }
 }

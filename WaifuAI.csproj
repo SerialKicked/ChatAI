@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -15,29 +15,13 @@
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="1.1.2" />
-    <PackageReference Include="Discord.Net" Version="3.16.0" />
-    <PackageReference Include="HNSW" Version="24.9.52330" />
-    <PackageReference Include="Markdig" Version="0.37.0" />
-    <PackageReference Include="MessagePack" Version="2.5.187" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2792.45" />
+    <PackageReference Include="Discord.Net" Version="3.17.0" />
+    <PackageReference Include="Markdig" Version="0.39.1" />
+    <PackageReference Include="MessagePack" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NSwag.Annotations" Version="14.1.0" />
-    <PackageReference Include="NSwag.ApiDescription.Client" Version="14.1.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="NSwag.AspNetCore" Version="14.1.0" />
-    <PackageReference Include="NSwag.CodeGeneration.CSharp" Version="14.1.0" />
-    <PackageReference Include="NSwag.Core" Version="14.1.0" />
-    <PackageReference Include="NSwag.Core.Yaml" Version="14.1.0" />
-    <PackageReference Include="NSwag.Generation" Version="14.1.0" />
-    <PackageReference Include="NSwag.Generation.WebApi" Version="14.1.0" />
-    <PackageReference Include="NSwag.MSBuild" Version="14.1.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
-
+  
   <ItemGroup>
     <Compile Update="src\forms\ScenarioEditForm.cs">
       <SubType>Form</SubType>
