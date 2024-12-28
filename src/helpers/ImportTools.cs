@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AnarkisTools.Files;
-using AnarkisTools.LLM;
+using AIToolkit.Files;
+using AIToolkit.LLM;
 using Newtonsoft.Json;
 
 namespace WaifuAI

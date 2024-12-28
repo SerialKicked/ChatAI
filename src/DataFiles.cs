@@ -5,10 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AnarkisTools.Files;
+using AIToolkit.Files;
 using WaifuAI.Files;
 using WaifuAI.Web;
-using AnarkisTools.LLM;
+using AIToolkit.LLM;
 
 namespace WaifuAI
 {

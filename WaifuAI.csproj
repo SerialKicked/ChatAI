@@ -129,6 +129,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AnarkisTools\AnarkisTools.csproj" />
+    <ProjectReference Include="..\AnarkisTools\AIToolkit.csproj" />
   </ItemGroup>
 </Project>

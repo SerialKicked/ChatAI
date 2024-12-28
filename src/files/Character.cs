@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System.Text;
 using WaifuAI.Plugins;
-using AnarkisTools.Files;
-using AnarkisTools.LLM;
+using AIToolkit.Files;
+using AIToolkit.LLM;
 
 namespace WaifuAI.Files
 {

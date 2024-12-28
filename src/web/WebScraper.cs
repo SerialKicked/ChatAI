@@ -6,8 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using AnarkisTools.Files;
-using AnarkisTools;
+using AIToolkit.Files;
+using AIToolkit;
 
 namespace WaifuAI.Web
 {

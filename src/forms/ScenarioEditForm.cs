@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using AnarkisTools.LLM;
-using AnarkisTools;
+using AIToolkit.LLM;
+using AIToolkit;
 
 namespace WaifuAI.src.forms
 {

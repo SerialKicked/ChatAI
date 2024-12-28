@@ -1,13 +1,13 @@
 using System;
 using System.Net;
 using WaifuAI.Files;
-using AnarkisTools;
+using AIToolkit;
 using System.Reflection;
 using Newtonsoft.Json;
 using Markdig;
 using Microsoft.Web.WebView2.Core;
-using AnarkisTools.Files;
-using AnarkisTools.LLM;
+using AIToolkit.Files;
+using AIToolkit.LLM;
 using WaifuAI.src.forms;
 using WaifuAI.Web;
 using WaifuAI.Plugins;
