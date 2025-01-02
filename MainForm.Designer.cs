@@ -854,6 +854,7 @@
             button5.TabIndex = 20;
             button5.Text = "Set as Active";
             button5.UseVisualStyleBackColor = true;
+            button5.Click += button5_Click;
             // 
             // ck_hist_casesensitive
             // 

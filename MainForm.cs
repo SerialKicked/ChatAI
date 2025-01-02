@@ -829,10 +829,24 @@ namespace WaifuAI
 
         private async void StartNewSession(object sender, EventArgs e)
         {
-            if (MessageBox.Show("This will archive the current chat and start a new one.", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No)
-                return;
-            await LLMSystem.History.StartNewChatSession(true);
-            (LLMSystem.Bot as Character)?.SaveChatHistory();
+            // Check if we're in a past sessions, if so, ask if the user wants to update the archive before going back to the current session
+            if (LLMSystem.History.CurrentSessionID != -1 && LLMSystem.History.CurrentSessionID != LLMSystem.History.Sessions.Count - 1)
+            {
+                
+                if (MessageBox.Show("Do you want to update this session's summary before going back to the latest session?", "Refresh?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    await LLMSystem.History.CurrentChatToSession();
+                }
+                LLMSystem.History.CurrentSessionID = -1;
+                (LLMSystem.Bot as Character)?.SaveChatHistory();
+            }
+            else
+            {
+                if (MessageBox.Show("This will archive the current chat and start a new one.", "Confirm?", MessageBoxButtons.YesNo) == DialogResult.No)
+                    return;
+                await LLMSystem.History.StartNewChatSession(true);
+                (LLMSystem.Bot as Character)?.SaveChatHistory();
+            }
             await WebChatLoad();
             LoadChatHistoryTab();
         }
@@ -1158,6 +1172,14 @@ namespace WaifuAI
             _selectedSession.Title = await ChatSession.GenerateNewTitle(_selectedSession.Summary);
             DisplaySessionDetails(_selectedSession);
             (LLMSystem.Bot as Character)?.SaveChatHistory();
+        }
+
+        private async void button5_Click(object sender, EventArgs e)
+        {
+            if (_selectedSession == null)
+                return;
+            LLMSystem.Bot.History.CurrentSessionID = LLMSystem.Bot.History.Sessions.IndexOf(_selectedSession);
+            await WebChatLoad();
         }
 
         #endregion
