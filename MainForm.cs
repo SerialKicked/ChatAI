@@ -62,7 +62,6 @@ namespace WaifuAI
 
             // Chat related events
             bt_chattosessions.Click += ConvertChatToSessionList!;
-            bt_sessionrefresh.Click += bt_sessionrefresh_Click!;
             // Load editors and chat menu
             bt_embedall.Click += EmbedAllSessions!;
             SetupSamplerEditor();
@@ -832,7 +831,7 @@ namespace WaifuAI
             // Check if we're in a past sessions, if so, ask if the user wants to update the archive before going back to the current session
             if (LLMSystem.History.CurrentSessionID != -1 && LLMSystem.History.CurrentSessionID != LLMSystem.History.Sessions.Count - 1)
             {
-                
+
                 if (MessageBox.Show("Do you want to update this session's summary before going back to the latest session?", "Refresh?", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     await LLMSystem.History.CurrentChatToSession();
@@ -1101,6 +1100,10 @@ namespace WaifuAI
                 {
                     Tag = session
                 };
+                if (LLMSystem.History.Sessions.IndexOf(session) == LLMSystem.History.CurrentSessionID)
+                {
+                    item.Font = new Font(item.Font, FontStyle.Bold);
+                }
                 listSession.Items.Add(item);
             }
         }
@@ -1168,9 +1171,24 @@ namespace WaifuAI
         {
             if (_selectedSession == null)
                 return;
+            _selectedSession.StartTime = _selectedSession.Messages.First().Date;
+            // if the first message has a default date, try to find a message with a valid date
+            if (_selectedSession.StartTime == default)
+            {
+                foreach (var item in _selectedSession.Messages)
+                {
+                    if (item.Date != default)
+                    {
+                        _selectedSession.StartTime = item.Date;
+                        break;
+                    }
+                }
+            }
+            _selectedSession.EndTime = _selectedSession.Messages.Last().Date;
             _selectedSession.Summary = await _selectedSession.GenerateNewSummary();
             _selectedSession.Title = await ChatSession.GenerateNewTitle(_selectedSession.Summary);
             DisplaySessionDetails(_selectedSession);
+            LoadChatHistoryTab();
             (LLMSystem.Bot as Character)?.SaveChatHistory();
         }
 
@@ -1179,7 +1197,32 @@ namespace WaifuAI
             if (_selectedSession == null)
                 return;
             LLMSystem.Bot.History.CurrentSessionID = LLMSystem.Bot.History.Sessions.IndexOf(_selectedSession);
+            LoadChatHistoryTab();
             await WebChatLoad();
+        }
+
+        private async void bt_insertsession_Click(object sender, EventArgs e)
+        {
+            if (_selectedSession == null)
+                return;
+            LLMSystem.Bot.History.CurrentSessionID = LLMSystem.Bot.History.Sessions.IndexOf(_selectedSession);
+            var id = LLMSystem.Bot.History.CurrentSessionID;
+            if (id == LLMSystem.Bot.History.Sessions.Count - 1)
+            {
+                LLMSystem.Bot.History.Sessions.Add(new ChatSession());
+            }
+            else
+            {
+                LLMSystem.Bot.History.Sessions.Insert(id + 1, new ChatSession());
+            }
+            LLMSystem.Bot.History.CurrentSessionID++;
+            await LLMSystem.History.StartNewChatSession(true);
+            await WebChatLoad();
+
+        }
+
+        private void ck_stickylog_CheckedChanged(object sender, EventArgs e)
+        {
         }
 
         #endregion
@@ -1628,5 +1671,9 @@ namespace WaifuAI
                 LLMSystem.SystemPrompt = DataFiles.SysPrompts[key];
         }
 
+        private void bt_sessionrefresh_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }

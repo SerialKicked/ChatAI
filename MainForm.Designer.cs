@@ -70,6 +70,7 @@
             tabHistory = new TabPage();
             web_sessioncontent = new Microsoft.Web.WebView2.WinForms.WebView2();
             panel2 = new Panel();
+            bt_insertsession = new Button();
             ck_hist_sticky = new CheckBox();
             button5 = new Button();
             ck_hist_casesensitive = new CheckBox();
@@ -814,6 +815,7 @@
             // panel2
             // 
             panel2.AutoScroll = true;
+            panel2.Controls.Add(bt_insertsession);
             panel2.Controls.Add(ck_hist_sticky);
             panel2.Controls.Add(button5);
             panel2.Controls.Add(ck_hist_casesensitive);
@@ -833,6 +835,17 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(641, 165);
             panel2.TabIndex = 1;
+            // 
+            // bt_insertsession
+            // 
+            bt_insertsession.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            bt_insertsession.Location = new Point(482, 93);
+            bt_insertsession.Name = "bt_insertsession";
+            bt_insertsession.Size = new Size(151, 23);
+            bt_insertsession.TabIndex = 22;
+            bt_insertsession.Text = "Insert Session Below";
+            bt_insertsession.UseVisualStyleBackColor = true;
+            bt_insertsession.Click += bt_insertsession_Click;
             // 
             // ck_hist_sticky
             // 
@@ -955,6 +968,7 @@
             bt_sessionrefresh.TabIndex = 2;
             bt_sessionrefresh.Text = "Generate Summary";
             bt_sessionrefresh.UseVisualStyleBackColor = true;
+            bt_sessionrefresh.Click += bt_sessionrefresh_Click;
             // 
             // lbl_sessioninfo
             // 
@@ -2997,5 +3011,6 @@
         private Button button5;
         private BindingSource bindingSource1;
         private CheckBox ck_hist_sticky;
+        private Button bt_insertsession;
     }
 }
