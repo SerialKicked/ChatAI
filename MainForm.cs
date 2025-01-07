@@ -169,8 +169,6 @@ namespace WaifuAI
 
         private async void OnStreamMessageReceived(object? sender, string e)
         {
-            if (LLMSystem.Status == SystemStatus.Automated)
-                return;
             _currentgeneration += e;
             _currentgenerationtokencount++;
             _responselength = DateTime.Now - _postdate;
@@ -199,8 +197,6 @@ namespace WaifuAI
 
         private async void OnStreamInferenceEnded(object? sender, string e)
         {
-            if (LLMSystem.Status == SystemStatus.Automated)
-                return;
             _responselength = DateTime.Now - _postdate;
             // add time to the log
             if (_impersonatemode)

@@ -6,12 +6,12 @@ using AIToolkit.LLM;
 
 namespace WaifuAI.Files
 {
-    public enum AdvCharType { Normal, Domina };
-
     public class Character : BasePersona
     {
         [JsonIgnore] public Image  Portrait => GetPortrait();
         private Image? _image = null;
+
+        public bool CanInitiateChat { get; set; } = false;
 
         public Character() { }
 
