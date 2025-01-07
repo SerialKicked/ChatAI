@@ -13,8 +13,6 @@ namespace WaifuAI.Files
 
         public bool CanInitiateChat { get; set; } = false;
 
-        public Character() { }
-
         public override void BeginSession()
         {
             if (IsUser)

@@ -40,6 +40,7 @@
             ed_input = new TextBox();
             panel1 = new Panel();
             groupBox23 = new GroupBox();
+            ck_caninitchat = new CheckBox();
             ck_worldinfo = new CheckBox();
             ck_ragenabled = new CheckBox();
             ck_sessionmemory = new CheckBox();
@@ -246,6 +247,7 @@
             toolStripStatusLabel1 = new ToolStripStatusLabel();
             toolStripStatusLabel2 = new ToolStripStatusLabel();
             bindingSource1 = new BindingSource(components);
+            AutoTalkTimer = new System.Windows.Forms.Timer(components);
             tabMain.SuspendLayout();
             tabChat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
@@ -454,6 +456,7 @@
             // groupBox23
             // 
             groupBox23.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox23.Controls.Add(ck_caninitchat);
             groupBox23.Controls.Add(ck_worldinfo);
             groupBox23.Controls.Add(ck_ragenabled);
             groupBox23.Controls.Add(ck_sessionmemory);
@@ -466,11 +469,23 @@
             groupBox23.TabStop = false;
             groupBox23.Text = "Quick Settings";
             // 
+            // ck_caninitchat
+            // 
+            ck_caninitchat.AutoSize = true;
+            ck_caninitchat.Font = new Font("Segoe UI", 9F);
+            ck_caninitchat.Location = new Point(6, 122);
+            ck_caninitchat.Name = "ck_caninitchat";
+            ck_caninitchat.Size = new Size(131, 19);
+            ck_caninitchat.TabIndex = 28;
+            ck_caninitchat.Text = "Bot can initiate chat";
+            ck_caninitchat.UseVisualStyleBackColor = true;
+            ck_caninitchat.CheckedChanged += ck_caninit_CheckedChanged;
+            // 
             // ck_worldinfo
             // 
             ck_worldinfo.AutoSize = true;
             ck_worldinfo.Font = new Font("Segoe UI", 9F);
-            ck_worldinfo.Location = new Point(6, 22);
+            ck_worldinfo.Location = new Point(6, 47);
             ck_worldinfo.Name = "ck_worldinfo";
             ck_worldinfo.Size = new Size(127, 19);
             ck_worldinfo.TabIndex = 27;
@@ -484,7 +499,7 @@
             ck_ragenabled.Checked = true;
             ck_ragenabled.CheckState = CheckState.Checked;
             ck_ragenabled.Font = new Font("Segoe UI", 9F);
-            ck_ragenabled.Location = new Point(6, 97);
+            ck_ragenabled.Location = new Point(6, 22);
             ck_ragenabled.Name = "ck_ragenabled";
             ck_ragenabled.Size = new Size(94, 19);
             ck_ragenabled.TabIndex = 20;
@@ -496,7 +511,7 @@
             // 
             ck_sessionmemory.AutoSize = true;
             ck_sessionmemory.Font = new Font("Segoe UI", 9F);
-            ck_sessionmemory.Location = new Point(6, 47);
+            ck_sessionmemory.Location = new Point(6, 71);
             ck_sessionmemory.Name = "ck_sessionmemory";
             ck_sessionmemory.Size = new Size(113, 19);
             ck_sessionmemory.TabIndex = 24;
@@ -508,7 +523,7 @@
             // 
             ck_senseoftime.AutoSize = true;
             ck_senseoftime.Font = new Font("Segoe UI", 9F);
-            ck_senseoftime.Location = new Point(6, 72);
+            ck_senseoftime.Location = new Point(6, 95);
             ck_senseoftime.Name = "ck_senseoftime";
             ck_senseoftime.Size = new Size(99, 19);
             ck_senseoftime.TabIndex = 23;
@@ -2682,6 +2697,12 @@
             toolStripStatusLabel2.Size = new Size(94, 17);
             toolStripStatusLabel2.Text = "Generation Time";
             // 
+            // AutoTalkTimer
+            // 
+            AutoTalkTimer.Enabled = true;
+            AutoTalkTimer.Interval = 1000;
+            AutoTalkTimer.Tick += AutoTalkTimer_Tick;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -3012,5 +3033,7 @@
         private BindingSource bindingSource1;
         private CheckBox ck_hist_sticky;
         private Button bt_insertsession;
+        private CheckBox ck_caninitchat;
+        internal System.Windows.Forms.Timer AutoTalkTimer;
     }
 }

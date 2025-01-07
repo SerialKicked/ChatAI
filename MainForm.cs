@@ -11,6 +11,7 @@ using AIToolkit.LLM;
 using WaifuAI.src.forms;
 using WaifuAI.Web;
 using WaifuAI.Plugins;
+using Discord.Rest;
 
 namespace WaifuAI
 {
@@ -34,6 +35,11 @@ namespace WaifuAI
         private bool _isinitloading = true;
         private DateTime _postdate = DateTime.Now;
         private TimeSpan _responselength = default;
+        private ActivityTimer _activityTimer = new();
+        private int _afkmessagecount = 0;
+
+        public static Character? Bot => LLMSystem.Bot as Character;
+        public static Character? User => LLMSystem.User as Character;
 
 
         public static MarkdownPipeline CustomMarkDownPipeline { get; } = new MarkdownPipelineBuilder()
@@ -70,6 +76,38 @@ namespace WaifuAI
             SetupPromptEditor();
             SetupChatMenu();
             _isinitloading = false;
+            _activityTimer.OnTrigger += OnBotInitiateConversation;
+        }
+
+        private async void OnBotInitiateConversation(object? sender, EventArgs e)
+        {
+            if (LLMSystem.Status != SystemStatus.Ready || Bot?.CanInitiateChat != true || _afkmessagecount > 3)
+                return;
+            _activityTimer?.Reset();
+            _impersonatemode = false;
+            _postdate = DateTime.Now;
+            var lastusermessage = LLMSystem.History.CurrentSession.Messages.LastOrDefault(m => m.Role == AuthorRole.User);
+            if (lastusermessage == null)
+                return;
+            var message = "The last message from {{user}} was posted " + LLMSystem.TimeSpanToHumanString(DateTime.Now - lastusermessage.Date) + " ago. Would you like to send a message to {{user}} now? Use your best judgement based on the conversation above. In case you don't want to send a message, just respond with an empty message. If you want to send a message, enter the message from {{char}} to {{user}} directly. \n\nThis query will repeat every few minutes.";
+            if (_afkmessagecount > 1)
+                message += " You've already sent " + _afkmessagecount + " unanswered messages in a row.";
+            else if (_afkmessagecount == 1)
+                message += " You've already sent a message.";
+            message = LLMSystem.ReplaceMacros(message);
+            statusbar.Items[1].Text = "Analyzing...";
+            var response = await LLMSystem.QuickInferenceForSystemPrompt(message, false);
+
+
+            if (!string.IsNullOrEmpty(response) && !response.ToUpperInvariant().StartsWith("NO"))
+            {
+                var msg = new SingleMessage(AuthorRole.Assistant, DateTime.Now, response, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
+                Bot.History.LogMessage(msg);
+                _afkmessagecount++;
+                await SendMessageToUI(msg);
+                // play a notification sound
+                System.Media.SystemSounds.Question.Play();
+            }
         }
 
         private void SetupChatMenu()
@@ -125,6 +163,7 @@ namespace WaifuAI
 
         private void UpdateUIState()
         {
+            _activityTimer?.Reset();
             bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.ScenarioOverride) ? Color.Black : Color.DarkGreen;
             if (LLMSystem.Status == SystemStatus.Ready)
             {
@@ -172,6 +211,7 @@ namespace WaifuAI
             _currentgeneration += e;
             _currentgenerationtokencount++;
             _responselength = DateTime.Now - _postdate;
+            _activityTimer?.Reset();
             if (_currentgenerationtokencount > 1)
             {
                 _currentgenerationtokencount = 0;
@@ -198,6 +238,7 @@ namespace WaifuAI
         private async void OnStreamInferenceEnded(object? sender, string e)
         {
             _responselength = DateTime.Now - _postdate;
+            _activityTimer?.Reset();
             // add time to the log
             if (_impersonatemode)
             {
@@ -727,6 +768,7 @@ namespace WaifuAI
 
         private async void Impersonate(object sender, EventArgs e)
         {
+            _activityTimer?.Reset();
             if (LLMSystem.Status == SystemStatus.Busy)
                 return;
             statusbar.Items[1].Text = "Analyzing...";
@@ -740,6 +782,8 @@ namespace WaifuAI
 
         private async void SendMessage(object sender, EventArgs e)
         {
+            _activityTimer?.Reset();
+            _afkmessagecount = 0;
             if (LLMSystem.Status == SystemStatus.Busy)
             {
                 LLMSystem.CancelGeneration();
@@ -801,8 +845,10 @@ namespace WaifuAI
 
         private async void RerollMessage(object sender, EventArgs e)
         {
+            _afkmessagecount = 0;
             if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.CurrentSession.Messages.Count == 0 || LLMSystem.History.LastMessage()?.Role != AuthorRole.Assistant)
                 return;
+            _activityTimer?.Reset();
             _impersonatemode = false;
             _postdate = DateTime.Now;
             statusbar.Items[1].Text = "Analyzing...";
@@ -844,6 +890,8 @@ namespace WaifuAI
             }
             await WebChatLoad();
             LoadChatHistoryTab();
+            _afkmessagecount = 0;
+            _activityTimer?.Reset();
         }
 
         private async void DeleteLastMessage(object sender, EventArgs e)
@@ -1197,6 +1245,7 @@ namespace WaifuAI
             if (_selectedSession == null)
                 return;
             LLMSystem.Bot.History.CurrentSessionID = LLMSystem.Bot.History.Sessions.IndexOf(_selectedSession);
+            _activityTimer?.Reset();
             LoadChatHistoryTab();
             await WebChatLoad();
         }
@@ -1216,13 +1265,10 @@ namespace WaifuAI
                 LLMSystem.Bot.History.Sessions.Insert(id + 1, new ChatSession());
             }
             LLMSystem.Bot.History.CurrentSessionID++;
+            _activityTimer?.Reset();
             await LLMSystem.History.StartNewChatSession(true);
             await WebChatLoad();
 
-        }
-
-        private void ck_stickylog_CheckedChanged(object sender, EventArgs e)
-        {
         }
 
         #endregion
@@ -1507,6 +1553,8 @@ namespace WaifuAI
                 LoadChatHistoryTab();
                 ck_senseoftime.Checked = LLMSystem.Bot.SenseOfTime;
                 ck_sessionmemory.Checked = LLMSystem.Bot.SessionMemorySystem;
+                ck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
+                _activityTimer?.Reset();
                 UpdateUIState();
             }
         }
@@ -1671,9 +1719,17 @@ namespace WaifuAI
                 LLMSystem.SystemPrompt = DataFiles.SysPrompts[key];
         }
 
-        private void bt_sessionrefresh_Click_1(object sender, EventArgs e)
+        private void ck_caninit_CheckedChanged(object sender, EventArgs e)
         {
+            if (Bot != null)
+                Bot.CanInitiateChat = ck_senseoftime.Checked;
+        }
 
+        private void AutoTalkTimer_Tick(object sender, EventArgs e)
+        {
+            if (LLMSystem.Status != SystemStatus.Ready || !string.IsNullOrEmpty(ed_input.Text) || (LLMSystem.Bot as Character)?.CanInitiateChat != true)
+                return;
+            _activityTimer?.IsTimeout();
         }
     }
 }
