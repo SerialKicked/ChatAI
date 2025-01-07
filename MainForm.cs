@@ -1104,6 +1104,10 @@ namespace WaifuAI
                 {
                     item.Font = new Font(item.Font, FontStyle.Bold);
                 }
+                if (session.Sticky)
+                {
+                    item.ForeColor = Color.Red;
+                }
                 listSession.Items.Add(item);
             }
         }
