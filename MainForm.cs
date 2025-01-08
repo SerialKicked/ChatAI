@@ -81,7 +81,7 @@ namespace WaifuAI
 
         private async void OnBotInitiateConversation(object? sender, EventArgs e)
         {
-            if (LLMSystem.Status != SystemStatus.Ready || Bot?.CanInitiateChat != true || _afkmessagecount > 3)
+            if (LLMSystem.Status != SystemStatus.Ready || Bot?.CanInitiateChat != true || _afkmessagecount > 2)
                 return;
             _activityTimer?.Reset();
             _impersonatemode = false;
@@ -89,7 +89,7 @@ namespace WaifuAI
             var lastusermessage = LLMSystem.History.CurrentSession.Messages.LastOrDefault(m => m.Role == AuthorRole.User);
             if (lastusermessage == null)
                 return;
-            var message = "The last message from {{user}} was posted " + LLMSystem.TimeSpanToHumanString(DateTime.Now - lastusermessage.Date) + " ago. Would you like to send a message to {{user}} now? Use your best judgement based on the conversation above. In case you don't want to send a message, just respond with an empty message. If you want to send a message, enter the message from {{char}} to {{user}} directly. \n\nThis query will repeat every few minutes.";
+            var message = "The last message from {{user}} was posted " + LLMSystem.TimeSpanToHumanString(DateTime.Now - lastusermessage.Date) + " ago. We're {{date}} at {{time}} now. Would you like to send a message to {{user}} now? Use your best judgement based on the conversation above. In case you don't want to send a message, just respond with No. If you want to send a message, enter the message from {{char}} to {{user}} directly. \n\nThis query will repeat every few minutes.";
             if (_afkmessagecount > 1)
                 message += " You've already sent " + _afkmessagecount + " unanswered messages in a row.";
             else if (_afkmessagecount == 1)
@@ -99,7 +99,7 @@ namespace WaifuAI
             var response = await LLMSystem.QuickInferenceForSystemPrompt(message, false);
 
 
-            if (!string.IsNullOrEmpty(response) && !response.ToUpperInvariant().StartsWith("NO"))
+            if (!string.IsNullOrEmpty(response) && !response.StartsWith("no", StringComparison.InvariantCultureIgnoreCase))
             {
                 var msg = new SingleMessage(AuthorRole.Assistant, DateTime.Now, response, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
                 Bot.History.LogMessage(msg);
