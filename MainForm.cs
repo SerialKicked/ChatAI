@@ -37,6 +37,8 @@ namespace WaifuAI
         private TimeSpan _responselength = default;
         private ActivityTimer _activityTimer = new();
         private int _afkmessagecount = 0;
+        private EditMessageForm? _editMessageForm;
+
 
         public static Character? Bot => LLMSystem.Bot as Character;
         public static Character? User => LLMSystem.User as Character;
@@ -89,7 +91,7 @@ namespace WaifuAI
             var lastusermessage = LLMSystem.History.CurrentSession.Messages.LastOrDefault(m => m.Role == AuthorRole.User);
             if (lastusermessage == null)
                 return;
-            var message = "The last message from {{user}} was posted " + LLMSystem.TimeSpanToHumanString(DateTime.Now - lastusermessage.Date) + " ago. We're {{date}} at {{time}} now. Would you like to send a message to {{user}} now? Use your best judgement based on the conversation above. In case you don't want to send a message, just respond with No. If you want to send a message, enter the message from {{char}} to {{user}} directly. \n\nThis query will repeat every few minutes.";
+            var message = "The last message from {{user}} was posted " + LLMSystem.TimeSpanToHumanString(DateTime.Now - lastusermessage.Date) + " ago. We're {{day}}, the {{date}} at {{time}} now. Would you like to send a message to {{user}} now? Use your best judgement based on the conversation above. In case you don't want to send a message, just respond with No. If you want to send a message, enter the message from {{char}} to {{user}} directly while making sure it's contextually relevant. \n\nThis query will repeat every few minutes.";
             if (_afkmessagecount > 1)
                 message += " You've already sent " + _afkmessagecount + " unanswered messages in a row.";
             else if (_afkmessagecount == 1)
@@ -768,6 +770,7 @@ namespace WaifuAI
 
         private async void Impersonate(object sender, EventArgs e)
         {
+            ForceCloseEditMenu();
             _activityTimer?.Reset();
             if (LLMSystem.Status == SystemStatus.Busy)
                 return;
@@ -782,6 +785,7 @@ namespace WaifuAI
 
         private async void SendMessage(object sender, EventArgs e)
         {
+            ForceCloseEditMenu();
             _activityTimer?.Reset();
             _afkmessagecount = 0;
             if (LLMSystem.Status == SystemStatus.Busy)
@@ -843,8 +847,31 @@ namespace WaifuAI
 
         }
 
+        private void ForceCloseEditMenu()
+        {
+            if (_editMessageForm != null && !_editMessageForm.IsDisposed)
+            {
+                if (_editMessageForm.InvokeRequired)
+                {
+                    _editMessageForm.Invoke(new Action(() =>
+                    {
+                        _editMessageForm.Close();
+                        _editMessageForm.Dispose();
+                    }));
+                }
+                else
+                {
+                    _editMessageForm.Close();
+                    _editMessageForm.Dispose();
+                }
+                _editMessageForm = null;
+                _editopened = false;
+            }
+        }
+
         private async void RerollMessage(object sender, EventArgs e)
         {
+            ForceCloseEditMenu();
             _afkmessagecount = 0;
             if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.CurrentSession.Messages.Count == 0 || LLMSystem.History.LastMessage()?.Role != AuthorRole.Assistant)
                 return;
@@ -1384,8 +1411,8 @@ namespace WaifuAI
                     realid += messageIndex - 1;
                     if (realid >= LLMSystem.History.CurrentSession.Messages.Count)
                         return;
-                    var editForm = new EditMessageForm(LLMSystem.History.CurrentSession.Messages[realid].Guid);
-                    if (editForm.ShowDialog() == DialogResult.OK && editForm.Message != null)
+                    _editMessageForm = new EditMessageForm(LLMSystem.History.CurrentSession.Messages[realid].Guid);
+                    if (_editMessageForm.ShowDialog() == DialogResult.OK && _editMessageForm.Message != null)
                     {
                         Invoke((System.Windows.Forms.MethodInvoker)delegate
                         {
@@ -1393,7 +1420,8 @@ namespace WaifuAI
                             LLMSystem.InvalidatePromptCache();
                         });
                     }
-                    editForm.Dispose();
+                    _editMessageForm?.Dispose();
+                    _editMessageForm = null;
                     _editopened = false;
                 });
             }
