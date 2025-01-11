@@ -1750,12 +1750,12 @@ namespace WaifuAI
         private void ck_caninit_CheckedChanged(object sender, EventArgs e)
         {
             if (Bot != null)
-                Bot.CanInitiateChat = ck_senseoftime.Checked;
+                Bot.CanInitiateChat = ck_caninitchat.Checked;
         }
 
         private void AutoTalkTimer_Tick(object sender, EventArgs e)
         {
-            if (LLMSystem.Status != SystemStatus.Ready || !string.IsNullOrEmpty(ed_input.Text) || (LLMSystem.Bot as Character)?.CanInitiateChat != true)
+            if (LLMSystem.Status != SystemStatus.Ready || !string.IsNullOrEmpty(ed_input.Text) || Bot?.CanInitiateChat != true)
                 return;
             _activityTimer?.IsTimeout();
         }
