@@ -2,6 +2,7 @@ namespace WaifuAI
 {
     internal static class Program
     {
+        public static MainForm BigForm { get; private set; }
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -12,7 +13,8 @@ namespace WaifuAI
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             DataFiles.LoadDB();
-            Application.Run(new MainForm());
+            BigForm = new MainForm();
+            Application.Run(BigForm);
         }
     }
 }

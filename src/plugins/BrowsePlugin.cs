@@ -101,7 +101,7 @@ namespace WaifuAI.Plugins
                     if (DataFiles.Websites.TryGetValue(x, out var site))
                     {
                         Website = site;
-                        LLMSystem.UI_ChangeMessage!($"**{LLMSystem.Bot.Name}:** *I am browsing {Website.WebsiteName}...*");
+                        Program.BigForm.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am browsing {Website.WebsiteName}...*");
                     }
                     else
                     {
@@ -113,11 +113,11 @@ namespace WaifuAI.Plugins
                     var webresult = await StartWebNavigation(userinput);
                     if (webresult.IsSuccess)
                     {
-                        LLMSystem.UI_ChangeMessage!($"**{LLMSystem.Bot.Name}:** *I am writing a message...*");
+                        Program.BigForm.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am writing a message...*");
                     }
                     else
                     {
-                        LLMSystem.UI_ChangeMessage!($"**{LLMSystem.Bot.Name}:** *I am writing a message (web navigation failed)...*");
+                        Program.BigForm.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am writing a message (web navigation failed)...*");
                     }
 
                     var output = new PluginResponse 
@@ -209,7 +209,7 @@ namespace WaifuAI.Plugins
         public async Task<WebNavigationResult> DoPage(WLink page)
         {
             _location = page.Category;
-            LLMSystem.UI_ChangeMessage!($"**{LLMSystem.Bot.Name}:** *I am browsing {page.Title}...*");
+            Program.BigForm.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am browsing {page.Title}...*");
             var websiterender = await Website!.RenderPage(page.ID, string.Empty, crawler);
             var promptbuilder = new StringBuilder();
             if (!NavigationHistory)

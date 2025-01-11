@@ -11,7 +11,6 @@ using AIToolkit.LLM;
 using WaifuAI.src.forms;
 using WaifuAI.Web;
 using WaifuAI.Plugins;
-using Discord.Rest;
 
 namespace WaifuAI
 {
@@ -31,7 +30,6 @@ namespace WaifuAI
         private ChatSession? _selectedSession = null;
         private bool _impersonatemode = false;
         private bool _forcereload = false;
-        private bool _editopened = false;
         private bool _isinitloading = true;
         private DateTime _postdate = DateTime.Now;
         private TimeSpan _responselength = default;
@@ -147,8 +145,6 @@ namespace WaifuAI
             RAGSystem.Enabled = true;
             ck_ragenabled.Checked = RAGSystem.Enabled;
             ck_worldinfo.Checked = LLMSystem.WorldInfo;
-            LLMSystem.UI_RefreshChat = ForceWebChatReload;
-            LLMSystem.UI_ChangeMessage = ForceUpdateLastMessage;
             LLMSystem.OnInferenceStreamed += OnStreamMessageReceived;
             LLMSystem.OnInferenceEnded += OnStreamInferenceEnded;
             LLMSystem.OnFullPromptReady += OnFullPromptReady;
@@ -260,9 +256,8 @@ namespace WaifuAI
                 await WebEditLastMessage(MsgPrefix + stringfix);
                 _currentgeneration = string.Empty;
                 _currentgenerationtokencount = 0;
-                if (_forcereload)
+                if (_forcereload || Settings.MaxMessagesOnScreen <= LLMSystem.History.CurrentSession.Messages.Count)
                 {
-                    _forcereload = false;
                     Invoke((System.Windows.Forms.MethodInvoker)delegate
                     {
                         WebChatLoad();
@@ -864,9 +859,8 @@ namespace WaifuAI
                     _editMessageForm.Close();
                     _editMessageForm.Dispose();
                 }
-                _editMessageForm = null;
-                _editopened = false;
             }
+            _editMessageForm = null;
         }
 
         private async void RerollMessage(object sender, EventArgs e)
@@ -1398,9 +1392,8 @@ namespace WaifuAI
 
         private void EditMessage(int messageIndex)
         {
-            if (_editopened || LLMSystem.Status == SystemStatus.Busy)
+            if (_editMessageForm != null || LLMSystem.Status == SystemStatus.Busy)
                 return;
-            _editopened = true;
             try
             {
                 Task.Run(() =>
@@ -1422,7 +1415,6 @@ namespace WaifuAI
                     }
                     _editMessageForm?.Dispose();
                     _editMessageForm = null;
-                    _editopened = false;
                 });
             }
             catch (Exception ex)
@@ -1705,7 +1697,6 @@ namespace WaifuAI
         {
             Settings.MaxMessagesOnScreen = (int)num_msgcount.Value;
         }
-
 
         private void ck_forceNames_CheckedChanged(object sender, EventArgs e)
         {
