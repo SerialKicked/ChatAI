@@ -1505,6 +1505,7 @@ namespace WaifuAI
                 web_chat.CoreWebView2.NavigationStarting += OnNavigationStarting;
             }
             var html = string.Empty;
+            _forcereload = false;
             var start = LLMSystem.History.CurrentSession.Messages.Count - Settings.MaxMessagesOnScreen;
             if (start < 0)
                 start = 0;
@@ -1750,5 +1751,6 @@ namespace WaifuAI
                 return;
             _activityTimer?.IsTimeout();
         }
+
     }
 }

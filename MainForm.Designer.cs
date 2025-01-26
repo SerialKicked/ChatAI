@@ -525,7 +525,7 @@
             ck_senseoftime.Font = new Font("Segoe UI", 9F);
             ck_senseoftime.Location = new Point(6, 95);
             ck_senseoftime.Name = "ck_senseoftime";
-            ck_senseoftime.Size = new Size(99, 19);
+            ck_senseoftime.Size = new Size(100, 19);
             ck_senseoftime.TabIndex = 23;
             ck_senseoftime.Text = "Sense of Time";
             ck_senseoftime.UseVisualStyleBackColor = true;
@@ -713,7 +713,7 @@
             label9.Font = new Font("Segoe UI", 9F);
             label9.Location = new Point(6, 140);
             label9.Name = "label9";
-            label9.Size = new Size(121, 15);
+            label9.Size = new Size(122, 15);
             label9.TabIndex = 16;
             label9.Text = "Temperature Override";
             // 
@@ -766,7 +766,7 @@
             label7.Font = new Font("Segoe UI", 9F);
             label7.Location = new Point(6, 19);
             label7.Name = "label7";
-            label7.Size = new Size(75, 15);
+            label7.Size = new Size(73, 15);
             label7.TabIndex = 8;
             label7.Text = "Max Context";
             // 
@@ -954,7 +954,7 @@
             ck_hist_kw.AutoSize = true;
             ck_hist_kw.Location = new Point(6, 96);
             ck_hist_kw.Name = "ck_hist_kw";
-            ck_hist_kw.Size = new Size(149, 19);
+            ck_hist_kw.Size = new Size(150, 19);
             ck_hist_kw.TabIndex = 12;
             ck_hist_kw.Text = "Enable Keyword Trigger";
             ck_hist_kw.UseVisualStyleBackColor = true;
@@ -1134,7 +1134,7 @@
             label25.AutoSize = true;
             label25.Location = new Point(194, 129);
             label25.Name = "label25";
-            label25.Size = new Size(36, 15);
+            label25.Size = new Size(35, 15);
             label25.TabIndex = 10;
             label25.Text = "Index";
             // 
@@ -1552,7 +1552,7 @@
             label55.AutoSize = true;
             label55.Location = new Point(6, 153);
             label55.Name = "label55";
-            label55.Size = new Size(130, 15);
+            label55.Size = new Size(129, 15);
             label55.TabIndex = 6;
             label55.Text = "Category Section Prefix";
             // 
@@ -1568,7 +1568,7 @@
             label54.AutoSize = true;
             label54.Location = new Point(6, 109);
             label54.Name = "label54";
-            label54.Size = new Size(130, 15);
+            label54.Size = new Size(131, 15);
             label54.TabIndex = 4;
             label54.Text = "World Info Section Title";
             // 
@@ -1600,7 +1600,7 @@
             label52.AutoSize = true;
             label52.Location = new Point(6, 21);
             label52.Name = "label52";
-            label52.Size = new Size(119, 15);
+            label52.Size = new Size(120, 15);
             label52.TabIndex = 0;
             label52.Text = "Scenario Section Title";
             // 
@@ -1704,7 +1704,7 @@
             ck_trimstop.AutoSize = true;
             ck_trimstop.Location = new Point(6, 76);
             ck_trimstop.Name = "ck_trimstop";
-            ck_trimstop.Size = new Size(135, 19);
+            ck_trimstop.Size = new Size(136, 19);
             ck_trimstop.TabIndex = 18;
             ck_trimstop.Text = "Trim Stop Sequences";
             ck_trimstop.UseVisualStyleBackColor = true;
@@ -1714,7 +1714,7 @@
             ck_renderspecial.AutoSize = true;
             ck_renderspecial.Location = new Point(6, 51);
             ck_renderspecial.Name = "ck_renderspecial";
-            ck_renderspecial.Size = new Size(142, 19);
+            ck_renderspecial.Size = new Size(143, 19);
             ck_renderspecial.TabIndex = 17;
             ck_renderspecial.Text = "Render Special Tokens";
             ck_renderspecial.UseVisualStyleBackColor = true;
@@ -1724,7 +1724,7 @@
             ck_ignoreeos.AutoSize = true;
             ck_ignoreeos.Location = new Point(6, 26);
             ck_ignoreeos.Name = "ck_ignoreeos";
-            ck_ignoreeos.Size = new Size(118, 19);
+            ck_ignoreeos.Size = new Size(119, 19);
             ck_ignoreeos.TabIndex = 16;
             ck_ignoreeos.Text = "Ignore EOS Token";
             ck_ignoreeos.UseVisualStyleBackColor = true;
@@ -1758,7 +1758,7 @@
             label50.AutoSize = true;
             label50.Location = new Point(9, 53);
             label50.Name = "label50";
-            label50.Size = new Size(59, 15);
+            label50.Size = new Size(60, 15);
             label50.TabIndex = 14;
             label50.Text = "Threshold";
             // 
@@ -1881,7 +1881,7 @@
             label45.AutoSize = true;
             label45.Location = new Point(9, 53);
             label45.Name = "label45";
-            label45.Size = new Size(57, 15);
+            label45.Size = new Size(56, 15);
             label45.TabIndex = 10;
             label45.Text = "Exponent";
             // 
@@ -1954,7 +1954,7 @@
             label44.AutoSize = true;
             label44.Location = new Point(6, 53);
             label44.Name = "label44";
-            label44.Size = new Size(25, 15);
+            label44.Size = new Size(26, 15);
             label44.TabIndex = 9;
             label44.Text = "Tau";
             // 
@@ -2076,7 +2076,7 @@
             label38.AutoSize = true;
             label38.Location = new Point(6, 24);
             label38.Name = "label38";
-            label38.Size = new Size(73, 15);
+            label38.Size = new Size(74, 15);
             label38.TabIndex = 12;
             label38.Text = "Temperature";
             // 
@@ -2116,7 +2116,7 @@
             label37.AutoSize = true;
             label37.Location = new Point(6, 140);
             label37.Name = "label37";
-            label37.Size = new Size(102, 15);
+            label37.Size = new Size(103, 15);
             label37.TabIndex = 10;
             label37.Text = "Tail Free Sampling";
             // 
@@ -2137,7 +2137,7 @@
             label36.AutoSize = true;
             label36.Location = new Point(6, 169);
             label36.Name = "label36";
-            label36.Size = new Size(43, 15);
+            label36.Size = new Size(44, 15);
             label36.TabIndex = 8;
             label36.Text = "Typical";
             // 
@@ -2176,7 +2176,7 @@
             label34.AutoSize = true;
             label34.Location = new Point(6, 82);
             label34.Name = "label34";
-            label34.Size = new Size(36, 15);
+            label34.Size = new Size(37, 15);
             label34.TabIndex = 4;
             label34.Text = "Top P";
             // 
@@ -2195,7 +2195,7 @@
             label33.AutoSize = true;
             label33.Location = new Point(6, 53);
             label33.Name = "label33";
-            label33.Size = new Size(37, 15);
+            label33.Size = new Size(38, 15);
             label33.TabIndex = 2;
             label33.Text = "Top A";
             // 
@@ -2212,7 +2212,7 @@
             label31.AutoSize = true;
             label31.Location = new Point(6, 24);
             label31.Name = "label31";
-            label31.Size = new Size(36, 15);
+            label31.Size = new Size(37, 15);
             label31.TabIndex = 0;
             label31.Text = "Top K";
             // 
@@ -2301,7 +2301,7 @@
             label32.Font = new Font("Segoe UI", 9F);
             label32.Location = new Point(6, 44);
             label32.Name = "label32";
-            label32.Size = new Size(93, 15);
+            label32.Size = new Size(94, 15);
             label32.TabIndex = 28;
             label32.Text = "Reserved Tokens";
             // 
@@ -2554,7 +2554,7 @@
             label14.Font = new Font("Segoe UI", 9F);
             label14.Location = new Point(6, 107);
             label14.Name = "label14";
-            label14.Size = new Size(64, 15);
+            label14.Size = new Size(63, 15);
             label14.TabIndex = 26;
             label14.Text = "Max count";
             // 
@@ -2656,7 +2656,7 @@
             ck_ragtitles.Font = new Font("Segoe UI", 9F);
             ck_ragtitles.Location = new Point(195, 22);
             ck_ragtitles.Name = "ck_ragtitles";
-            ck_ragtitles.Size = new Size(91, 19);
+            ck_ragtitles.Size = new Size(92, 19);
             ck_ragtitles.TabIndex = 0;
             ck_ragtitles.Text = "Search Titles";
             ck_ragtitles.UseVisualStyleBackColor = true;
@@ -2694,7 +2694,7 @@
             // toolStripStatusLabel2
             // 
             toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            toolStripStatusLabel2.Size = new Size(94, 17);
+            toolStripStatusLabel2.Size = new Size(95, 17);
             toolStripStatusLabel2.Text = "Generation Time";
             // 
             // AutoTalkTimer
