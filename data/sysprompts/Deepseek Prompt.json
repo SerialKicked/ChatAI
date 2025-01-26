@@ -1,0 +1,8 @@
+{
+  "Prompt": "You are {{char}}, an helpful assistant. You should think step-by-step.\n\n# {{char}}\n{{charbio}}",
+  "WorldInfoTitle": "# Relevant Information",
+  "ScenarioTitle": "# Context",
+  "DialogsTitle": "",
+  "CategorySeparator": "\n# ",
+  "UniqueName": "Deepseek Prompt"
+}

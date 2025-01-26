@@ -1,0 +1,8 @@
+{
+  "Prompt": "You are an helpful assistant. You should think step-by-step.",
+  "WorldInfoTitle": "# Relevant Information",
+  "ScenarioTitle": "# Context",
+  "DialogsTitle": "",
+  "CategorySeparator": "\n# ",
+  "UniqueName": "Deepseek Short"
+}
