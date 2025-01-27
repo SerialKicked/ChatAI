@@ -116,6 +116,7 @@ namespace WaifuAI
             LLMSystem.ContextPlugins = [];
             LLMSystem.ContextPlugins.Add(new BrowsePlugin());
             LLMSystem.ContextPlugins.Add(new LocationPlugin("Locations"));
+            LLMSystem.ContextPlugins.Add(new WebSearchPlugin());
             cb_bot.Items.Clear();
             cb_user.Items.Clear();
             bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.ScenarioOverride) ? Color.Black : Color.DarkGreen;
@@ -1575,6 +1576,17 @@ namespace WaifuAI
                 ck_senseoftime.Checked = LLMSystem.Bot.SenseOfTime;
                 ck_sessionmemory.Checked = LLMSystem.Bot.SessionMemorySystem;
                 ck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
+                var searchplug = LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch");
+                if (searchplug != null)
+                {
+                    ck_onlinerag.Checked = searchplug.Enabled;
+                    ck_onlinerag.Enabled = true;
+                }
+                else
+                {
+                    ck_onlinerag.Enabled = false;
+                    ck_onlinerag.Checked = false;
+                }
                 _activityTimer?.Reset();
                 UpdateUIState();
             }
@@ -1752,5 +1764,19 @@ namespace WaifuAI
             _activityTimer?.IsTimeout();
         }
 
+        private void ck_onlinerag_CheckedChanged(object sender, EventArgs e)
+        {
+            var searchplug = LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch");
+            if (searchplug != null)
+            {
+                searchplug.Enabled = ck_onlinerag.Checked;
+                ck_onlinerag.Enabled = true;
+            }
+            else
+            {
+                ck_onlinerag.Enabled = false;
+                ck_onlinerag.Checked = false;
+            }
+        }
     }
 }

@@ -40,6 +40,7 @@
             ed_input = new TextBox();
             panel1 = new Panel();
             groupBox23 = new GroupBox();
+            ck_onlinerag = new CheckBox();
             ck_caninitchat = new CheckBox();
             ck_worldinfo = new CheckBox();
             ck_ragenabled = new CheckBox();
@@ -456,6 +457,7 @@
             // groupBox23
             // 
             groupBox23.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox23.Controls.Add(ck_onlinerag);
             groupBox23.Controls.Add(ck_caninitchat);
             groupBox23.Controls.Add(ck_worldinfo);
             groupBox23.Controls.Add(ck_ragenabled);
@@ -469,11 +471,23 @@
             groupBox23.TabStop = false;
             groupBox23.Text = "Quick Settings";
             // 
+            // ck_onlinerag
+            // 
+            ck_onlinerag.AutoSize = true;
+            ck_onlinerag.Font = new Font("Segoe UI", 9F);
+            ck_onlinerag.Location = new Point(6, 47);
+            ck_onlinerag.Name = "ck_onlinerag";
+            ck_onlinerag.Size = new Size(87, 19);
+            ck_onlinerag.TabIndex = 29;
+            ck_onlinerag.Text = "Online RAG";
+            ck_onlinerag.UseVisualStyleBackColor = true;
+            ck_onlinerag.CheckedChanged += ck_onlinerag_CheckedChanged;
+            // 
             // ck_caninitchat
             // 
             ck_caninitchat.AutoSize = true;
             ck_caninitchat.Font = new Font("Segoe UI", 9F);
-            ck_caninitchat.Location = new Point(6, 122);
+            ck_caninitchat.Location = new Point(6, 145);
             ck_caninitchat.Name = "ck_caninitchat";
             ck_caninitchat.Size = new Size(131, 19);
             ck_caninitchat.TabIndex = 28;
@@ -485,7 +499,7 @@
             // 
             ck_worldinfo.AutoSize = true;
             ck_worldinfo.Font = new Font("Segoe UI", 9F);
-            ck_worldinfo.Location = new Point(6, 47);
+            ck_worldinfo.Location = new Point(6, 72);
             ck_worldinfo.Name = "ck_worldinfo";
             ck_worldinfo.Size = new Size(127, 19);
             ck_worldinfo.TabIndex = 27;
@@ -501,9 +515,9 @@
             ck_ragenabled.Font = new Font("Segoe UI", 9F);
             ck_ragenabled.Location = new Point(6, 22);
             ck_ragenabled.Name = "ck_ragenabled";
-            ck_ragenabled.Size = new Size(94, 19);
+            ck_ragenabled.Size = new Size(83, 19);
             ck_ragenabled.TabIndex = 20;
-            ck_ragenabled.Text = "RAG Enabled";
+            ck_ragenabled.Text = "Local RAG ";
             ck_ragenabled.UseVisualStyleBackColor = true;
             ck_ragenabled.CheckedChanged += ck_ragenabled_CheckedChanged;
             // 
@@ -511,7 +525,7 @@
             // 
             ck_sessionmemory.AutoSize = true;
             ck_sessionmemory.Font = new Font("Segoe UI", 9F);
-            ck_sessionmemory.Location = new Point(6, 71);
+            ck_sessionmemory.Location = new Point(6, 95);
             ck_sessionmemory.Name = "ck_sessionmemory";
             ck_sessionmemory.Size = new Size(113, 19);
             ck_sessionmemory.TabIndex = 24;
@@ -523,7 +537,7 @@
             // 
             ck_senseoftime.AutoSize = true;
             ck_senseoftime.Font = new Font("Segoe UI", 9F);
-            ck_senseoftime.Location = new Point(6, 95);
+            ck_senseoftime.Location = new Point(6, 120);
             ck_senseoftime.Name = "ck_senseoftime";
             ck_senseoftime.Size = new Size(100, 19);
             ck_senseoftime.TabIndex = 23;
@@ -3035,5 +3049,6 @@
         private Button bt_insertsession;
         private CheckBox ck_caninitchat;
         internal System.Windows.Forms.Timer AutoTalkTimer;
+        private CheckBox ck_onlinerag;
     }
 }
