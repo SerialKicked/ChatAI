@@ -14,6 +14,7 @@ using AIToolkit.Files;
 using AIToolkit.LLM;
 using AIToolkit;
 using WaifuAI.Web;
+using AIToolkit.API;
 
 namespace WaifuAI.Plugins
 {
@@ -46,6 +47,10 @@ namespace WaifuAI.Plugins
         private readonly WebScraper crawler = new();
         private string _currenthistory = string.Empty;
 
+        private bool responseAppendNeeded = false;
+        private WEntry? lastresponse = null;
+
+
         #region *** Interface Implementation ***
 
         /// <summary>
@@ -70,8 +75,17 @@ namespace WaifuAI.Plugins
         /// <returns></returns>
         public bool ReplaceOutput(string botoutput, Chatlog log, out string response)
         {
+            if (responseAppendNeeded && lastresponse != null)
+            {
+                responseAppendNeeded = false;
+                var formatedresponsed = new StringBuilder();
+                formatedresponsed.AppendLinuxLine(botoutput).AppendLinuxLine();
+                formatedresponsed.Append($"**Link:** [{lastresponse.Title}]({lastresponse.Link})");
+                response = formatedresponsed.ToString();
+                return true;
+            }
             response = string.Empty;
-            return false; // ReplaceUserInput(botoutput, log, out response); 
+            return false;
         }
 
         /// <summary>
@@ -84,6 +98,7 @@ namespace WaifuAI.Plugins
         public async Task<PluginResponse> ReplaceUserInput(string userinput)
         {
             List<string> test = [];
+            responseAppendNeeded = false;
             string foundCommand = string.Empty;
             foreach (var item in DataFiles.Websites)
             {
@@ -265,7 +280,9 @@ namespace WaifuAI.Plugins
             var text = new StringBuilder();
             text.AppendLinuxLine("After searching the net, {{char}} found the following link:");
             text.AppendLinuxLine(wEntry.ToString()).AppendLinuxLine();
-            text.Append("Inform {{user}} about the link you've just found. Integrate this information seamlessly into the conversation. Make sure to include the link to the page.");
+            text.Append("Inform {{user}} about the page you've just found. Integrate this information seamlessly into the current conversation. You don't need to post the link, it'll be added automatically.");
+            responseAppendNeeded = true;
+            lastresponse = wEntry;
             return text.ToString();
         }
 

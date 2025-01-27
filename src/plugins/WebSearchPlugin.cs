@@ -11,6 +11,7 @@ using AIToolkit.Files;
 using AIToolkit.LLM;
 using AIToolkit;
 using AngleSharp.Dom;
+using AIToolkit.API;
 
 namespace WaifuAI.Plugins
 
@@ -23,6 +24,9 @@ namespace WaifuAI.Plugins
         private readonly string[] kwEnter = [ "search ", "look for ", "what is ", "where is ", "who is ", "who are ", "the web", "internet", "web search", "do you know", "where are", "when is" ];
 
         public bool KeywordDetection { get; set; } = true;
+
+        private bool responseAppendNeeded = false;
+        private WebQueryFullResponse? lastresponse = null;
 
         #region *** Interface Implementation ***
 
@@ -41,6 +45,19 @@ namespace WaifuAI.Plugins
         /// <returns></returns>
         public bool ReplaceOutput(string botoutput, Chatlog log, out string response)
         {
+            if (responseAppendNeeded && lastresponse != null)
+            {
+                responseAppendNeeded = false;
+                var formatedresponsed = new StringBuilder();
+                formatedresponsed.AppendLinuxLine(botoutput).AppendLinuxLine();
+                formatedresponsed.AppendLinuxLine("**Sources:**");
+                foreach (var item in lastresponse)
+                {
+                    formatedresponsed.AppendLinuxLine($"- [{item.title}]({item.url})");
+                }
+                response = formatedresponsed.ToString();
+                return true;
+            }
             response = string.Empty;
             return false;
         }
@@ -55,6 +72,7 @@ namespace WaifuAI.Plugins
         public async Task<PluginResponse> ReplaceUserInput(string userinput)
         {
             var response = string.Empty;
+            responseAppendNeeded = false;
             if (KeywordDetection)
             {
                 if (kwEnter.Any(kw => userinput.Contains(kw, StringComparison.OrdinalIgnoreCase)))
@@ -69,19 +87,21 @@ namespace WaifuAI.Plugins
             if (string.IsNullOrEmpty(response))
                 return new PluginResponse { IsHandled = false, Response = null };
             // run web search
-            var searchresult = await LLMSystem.WebSearch(response);
-            if (searchresult == null || searchresult.Count == 0)
+            Program.BigForm.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am searching the web for '{response}'...*");
+            lastresponse = await LLMSystem.WebSearch(response);
+            if (lastresponse == null || lastresponse.Count == 0)
                 return new PluginResponse { IsHandled = false, Response = null };
+            responseAppendNeeded = true;
 
             var formatedresponsed = new StringBuilder();
             formatedresponsed.AppendLinuxLine("Possibly relevant information found on the internet that you can use to improve your response:");
-            foreach (var item in searchresult)
+            foreach (var item in lastresponse)
             {
                 formatedresponsed.AppendLinuxLine("- " + item.title + " ["+ item.url + "]");
                 if (!string.IsNullOrEmpty(item.desc))
-                    formatedresponsed.AppendLinuxLine(item.desc);
+                    formatedresponsed.AppendLinuxLine(item.desc.RemoveNewLines().CleanupAndTrim());
                 if (!string.IsNullOrEmpty(item.content))
-                    formatedresponsed.AppendLinuxLine(item.content);
+                    formatedresponsed.AppendLinuxLine(item.content.RemoveNewLines().CleanupAndTrim());
                 formatedresponsed.AppendLinuxLine();
             }
 
