@@ -11,6 +11,7 @@ using AIToolkit.LLM;
 using WaifuAI.src.forms;
 using WaifuAI.Web;
 using WaifuAI.Plugins;
+using System.Text;
 
 namespace WaifuAI
 {
@@ -898,7 +899,7 @@ namespace WaifuAI
 
                 if (MessageBox.Show("Do you want to update this session's summary before going back to the latest session?", "Refresh?", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    await LLMSystem.History.CurrentChatToSession();
+                    await Chatlog.UpdateSession(LLMSystem.History.CurrentSession);
                 }
                 LLMSystem.History.CurrentSessionID = -1;
                 (LLMSystem.Bot as Character)?.SaveChatHistory();
@@ -1207,8 +1208,26 @@ namespace WaifuAI
                 await web_sessioncontent.EnsureCoreWebView2Async();
             }
             var dialogs = session.GetRawDialogs(int.MaxValue, false).Replace("\n", "\n\n");
-            var inf = "# " + session.Title + LLMSystem.NewLine + LLMSystem.NewLine + "## Summary:" + LLMSystem.NewLine + LLMSystem.NewLine + session.Summary + LLMSystem.NewLine + LLMSystem.NewLine + "## Dialogs:" + LLMSystem.NewLine + LLMSystem.NewLine + dialogs;
-            web_sessioncontent.NavigateToString(Markdown.ToHtml(inf, CustomMarkDownPipeline));
+
+            var res = new StringBuilder();
+            res.AppendLinuxLine($"# {session.Title}").AppendLinuxLine();
+            res.AppendLinuxLine("## Summary:").AppendLinuxLine().AppendLinuxLine(session.Summary).AppendLinuxLine();
+            res.AppendLinuxLine("## Keywords: ");
+            foreach (var item in session.Associations)
+            {
+                res.Append(item + ", ");
+            }
+            res.AppendLinuxLine();
+            res.AppendLinuxLine("## Sentiments: ");
+            foreach (var item in session.Sentiments)
+            {
+                res.Append(item + ", ");
+            }
+            res.AppendLinuxLine().AppendLinuxLine();
+            res.AppendLinuxLine("## Dialogs:").AppendLinuxLine().AppendLinuxLine(dialogs);
+
+            //var inf = "# " + session.Title + LLMSystem.NewLine + LLMSystem.NewLine + "## Summary:" + LLMSystem.NewLine + LLMSystem.NewLine + session.Summary + LLMSystem.NewLine + LLMSystem.NewLine + "## Dialogs:" + LLMSystem.NewLine + LLMSystem.NewLine + dialogs;
+            web_sessioncontent.NavigateToString(Markdown.ToHtml(res.ToString(), CustomMarkDownPipeline));
         }
 
         private void UpdateHistoryEntryEvent(object sender, EventArgs e)
@@ -1254,9 +1273,12 @@ namespace WaifuAI
                     }
                 }
             }
-            _selectedSession.EndTime = _selectedSession.Messages.Last().Date;
-            _selectedSession.Summary = await _selectedSession.GenerateNewSummary();
-            _selectedSession.Title = await ChatSession.GenerateNewTitle(_selectedSession.Summary);
+            _selectedSession = await Chatlog.UpdateSession(_selectedSession);
+            //_selectedSession.EndTime = _selectedSession.Messages.Last().Date;
+            //_selectedSession.Summary = await _selectedSession.GenerateNewSummary();
+            //_selectedSession.Sentiments = await _selectedSession.GenerateSentiment();
+            //_selectedSession.Sentiments = await _selectedSession.GenerateKeywords();
+            //_selectedSession.Title = await ChatSession.GenerateNewTitle(_selectedSession.Summary);
             DisplaySessionDetails(_selectedSession);
             LoadChatHistoryTab();
             (LLMSystem.Bot as Character)?.SaveChatHistory();
