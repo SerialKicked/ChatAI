@@ -308,7 +308,7 @@ namespace WaifuAI
             var currentWaveTask = LLMSystem.GenerateTTS(paragraphs[index], Bot.TTSVoice);
             index++;
 
-            while (true)
+            while (Settings.UseTTS && LLMSystem.Status != SystemStatus.Busy)
             {
                 // Wait for the current TTS generation to complete
                 var currentWave = await currentWaveTask;
