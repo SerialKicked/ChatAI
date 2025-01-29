@@ -12,7 +12,8 @@ namespace WaifuAI.Files
         private Image? _image = null;
 
         public bool CanInitiateChat { get; set; } = false;
-        public List<string> AllowedSamplers = [];
+        public List<string> AllowedSamplers { get; set; } = [];
+        public string TTSVoice { get; set; } = string.Empty;
 
         public override void BeginChat()
         {

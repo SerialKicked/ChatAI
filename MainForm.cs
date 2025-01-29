@@ -39,6 +39,9 @@ namespace WaifuAI
         private EditMessageForm? _editMessageForm;
         private Random RNG = new();
 
+        private System.Media.SoundPlayer? _player;
+        private MemoryStream? _audioStream;
+
 
         public static Character? Bot => LLMSystem.Bot as Character;
         public static Character? User => LLMSystem.User as Character;
@@ -283,6 +286,11 @@ namespace WaifuAI
                 {
                     statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                 });
+                if (Settings.UseTTS && !string.IsNullOrEmpty(Bot?.TTSVoice))
+                {
+                    var wave = await LLMSystem.GenerateTTS(stringfix, Bot.TTSVoice);
+                    PlayAudio(wave);
+                }
             }
             (LLMSystem.Bot as Character)?.SaveChatHistory();
         }
@@ -1033,6 +1041,7 @@ namespace WaifuAI
                 num_fontsize.Value = Settings.FontSize;
                 num_msgcount.Value = Settings.MaxMessagesOnScreen;
                 ck_alwayswebsearch.Checked = Settings.AlwaysWebSearchQuery;
+                ck_ttstoggle.Checked = Settings.UseTTS;
             }
 
             if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
@@ -1067,6 +1076,7 @@ namespace WaifuAI
                 Settings.MaxMessagesOnScreen = (int)num_msgcount.Value;
                 Settings.BackgroundFile = cb_background.SelectedItem?.ToString() ?? "bedroom_cozy.jpg";
                 Settings.AlwaysWebSearchQuery = ck_alwayswebsearch.Checked;
+                Settings.UseTTS = ck_ttstoggle.Checked;
                 var str = JsonConvert.SerializeObject(Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
                 if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
@@ -1874,6 +1884,45 @@ namespace WaifuAI
         private void cb_worlds_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void PlayAudio(byte[] audioData)
+        {
+            // Stop and dispose previous instances if any
+            if (_player != null)
+            {
+                _player.Stop();
+                _player.Dispose();
+                _player = null;
+            }
+            if (_audioStream != null)
+            {
+                _audioStream.Dispose();
+                _audioStream = null;
+            }
+
+            _audioStream = new MemoryStream(audioData);
+            _player = new System.Media.SoundPlayer(_audioStream);
+            _player.Play(); // Asynchronous playback
+        }
+
+        private async void button2_Click(object sender, EventArgs e)
+        {
+            // female: "Tina", "super chariot of death", "super chariot in death"
+            // matel: "Lor_ Merciless", "kobo", "chatty"
+            var ttsinput = new AIToolkit.API.TextToSpeechInput()
+            {
+                Input = ed_input.Text,
+                Voice = "super chariot in death",
+            };
+
+            var audioData = await LLMSystem.Client.TextToSpeechAsync(ttsinput);
+            PlayAudio(audioData);
+        }
+
+        private void ck_ttstoggle_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.UseTTS = ck_ttstoggle.Checked;
         }
     }
 }

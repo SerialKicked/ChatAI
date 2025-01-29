@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             tabMain = new TabControl();
             tabChat = new TabPage();
+            ck_ttstoggle = new CheckBox();
             bt_impersonate = new Button();
             web_chat = new Microsoft.Web.WebView2.WinForms.WebView2();
             bt_delete = new Button();
@@ -40,6 +41,7 @@
             ed_input = new TextBox();
             panel1 = new Panel();
             groupBox23 = new GroupBox();
+            bt_test = new Button();
             ck_onlinerag = new CheckBox();
             ck_caninitchat = new CheckBox();
             ck_worldinfo = new CheckBox();
@@ -117,6 +119,7 @@
             ed_wentryname = new TextBox();
             label19 = new Label();
             groupBox6 = new GroupBox();
+            ck_wiembed = new CheckBox();
             bt_delwentry = new Button();
             bt_addwentry = new Button();
             label18 = new Label();
@@ -251,7 +254,6 @@
             toolStripStatusLabel2 = new ToolStripStatusLabel();
             bindingSource1 = new BindingSource(components);
             AutoTalkTimer = new System.Windows.Forms.Timer(components);
-            ck_wiembed = new CheckBox();
             tabMain.SuspendLayout();
             tabChat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
@@ -347,6 +349,7 @@
             // 
             // tabChat
             // 
+            tabChat.Controls.Add(ck_ttstoggle);
             tabChat.Controls.Add(bt_impersonate);
             tabChat.Controls.Add(web_chat);
             tabChat.Controls.Add(bt_delete);
@@ -361,6 +364,18 @@
             tabChat.TabIndex = 1;
             tabChat.Text = "Chat";
             tabChat.UseVisualStyleBackColor = true;
+            // 
+            // ck_ttstoggle
+            // 
+            ck_ttstoggle.AutoSize = true;
+            ck_ttstoggle.Font = new Font("Segoe UI", 9F);
+            ck_ttstoggle.Location = new Point(15, 714);
+            ck_ttstoggle.Name = "ck_ttstoggle";
+            ck_ttstoggle.Size = new Size(84, 19);
+            ck_ttstoggle.TabIndex = 31;
+            ck_ttstoggle.Text = "Enable TTS";
+            ck_ttstoggle.UseVisualStyleBackColor = true;
+            ck_ttstoggle.CheckedChanged += ck_ttstoggle_CheckedChanged;
             // 
             // bt_impersonate
             // 
@@ -460,6 +475,7 @@
             // groupBox23
             // 
             groupBox23.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox23.Controls.Add(bt_test);
             groupBox23.Controls.Add(ck_onlinerag);
             groupBox23.Controls.Add(ck_caninitchat);
             groupBox23.Controls.Add(ck_worldinfo);
@@ -473,6 +489,18 @@
             groupBox23.TabIndex = 26;
             groupBox23.TabStop = false;
             groupBox23.Text = "Quick Settings";
+            // 
+            // bt_test
+            // 
+            bt_test.Font = new Font("Segoe UI", 9F);
+            bt_test.ForeColor = SystemColors.MenuHighlight;
+            bt_test.Location = new Point(106, 18);
+            bt_test.Name = "bt_test";
+            bt_test.Size = new Size(75, 23);
+            bt_test.TabIndex = 30;
+            bt_test.Text = "Test Stuff";
+            bt_test.UseVisualStyleBackColor = true;
+            bt_test.Click += button2_Click;
             // 
             // ck_onlinerag
             // 
@@ -1331,6 +1359,17 @@
             groupBox6.TabIndex = 3;
             groupBox6.TabStop = false;
             groupBox6.Text = "World Settings";
+            // 
+            // ck_wiembed
+            // 
+            ck_wiembed.AutoSize = true;
+            ck_wiembed.Location = new Point(8, 163);
+            ck_wiembed.Name = "ck_wiembed";
+            ck_wiembed.Size = new Size(150, 19);
+            ck_wiembed.TabIndex = 8;
+            ck_wiembed.Text = "Use Vector Embeddings";
+            ck_wiembed.UseVisualStyleBackColor = true;
+            ck_wiembed.CheckedChanged += ck_wiembed_CheckedChanged;
             // 
             // bt_delwentry
             // 
@@ -2746,17 +2785,6 @@
             AutoTalkTimer.Interval = 1000;
             AutoTalkTimer.Tick += AutoTalkTimer_Tick;
             // 
-            // ck_wiembed
-            // 
-            ck_wiembed.AutoSize = true;
-            ck_wiembed.Location = new Point(8, 163);
-            ck_wiembed.Name = "ck_wiembed";
-            ck_wiembed.Size = new Size(150, 19);
-            ck_wiembed.TabIndex = 8;
-            ck_wiembed.Text = "Use Vector Embeddings";
-            ck_wiembed.UseVisualStyleBackColor = true;
-            ck_wiembed.CheckedChanged += ck_wiembed_CheckedChanged;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -3093,5 +3121,7 @@
         private CheckBox ck_charsampler;
         private CheckBox ck_alwayswebsearch;
         private CheckBox ck_wiembed;
+        private Button bt_test;
+        private CheckBox ck_ttstoggle;
     }
 }
