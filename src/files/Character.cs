@@ -12,6 +12,7 @@ namespace WaifuAI.Files
         private Image? _image = null;
 
         public bool CanInitiateChat { get; set; } = false;
+        public List<string> AllowedSamplers = [];
 
         public override void BeginSession()
         {

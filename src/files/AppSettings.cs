@@ -28,6 +28,7 @@ namespace WaifuAI.Files
         public int RAGPosition { get; set; } = 3;
         public int MaxMessagesOnScreen { get; set; } = 100;
         public int FontSize { get; set; } = 18;
+        public bool AlwaysWebSearchQuery { get; set; } = false;
         public string BackgroundFile { get; set; } = "bedroom_cozy.jpg";
         public bool MarkdownMemoryFormating { get; set; } = false;
     }

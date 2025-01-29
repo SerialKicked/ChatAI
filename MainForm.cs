@@ -37,6 +37,7 @@ namespace WaifuAI
         private ActivityTimer _activityTimer = new();
         private int _afkmessagecount = 0;
         private EditMessageForm? _editMessageForm;
+        private Random RNG = new();
 
 
         public static Character? Bot => LLMSystem.Bot as Character;
@@ -66,6 +67,10 @@ namespace WaifuAI
             HelptoolTip.SetToolTip(ck_senseoftime, "Insert day and time information to prompt when relevant to give the bot a better understanding of time.");
             HelptoolTip.SetToolTip(ck_sessionmemory, "Use a set amount of tokens (set in settings) to insert summaries of previous chat sessions with this bot." + Environment.NewLine + "This drastically increases the bot's long-term memory.");
             HelptoolTip.SetToolTip(ck_worldinfo, "Use the WorldInfo file(s) associated with this bot. WorldInfo is a list of keyword-triggered textual information that is inserted into the prompt when the conditions are met." + Environment.NewLine + "See the World Info tab for additional information.");
+
+            HelptoolTip.SetToolTip(ck_alwayswebsearch, "Normally, Online RAG (using DuckDuckGo API search) will only be attempt if you explicitely ask the bot to search the web. If you check this box, the LLM will always try to determine if a search would be useful." + Environment.NewLine + Environment.NewLine + "May lead to many false positive, and overall slower generation with some models.");
+            HelptoolTip.SetToolTip(ck_charsampler, "If checked, and when using a bot persona containing a list of compatible inference settings, the inference settings will be picked at random from that list each time the bot write a new message."  + Environment.NewLine + Environment.NewLine + "Will lead to a more creative and less repetitive interaction, but also less consistent.");
+            HelptoolTip.SetToolTip(ck_onlinerag, "If checked, the bot may perform web search (using DuckDuckGo) to improve its responses when asked to.");
 
             // Chat related events
             bt_chattosessions.Click += ConvertChatToSessionList!;
@@ -193,6 +198,15 @@ namespace WaifuAI
                 bt_impersonate.Enabled = false;
                 cb_bot.Enabled = false;
                 cb_user.Enabled = false;
+            }
+            if (Bot?.AllowedSamplers.Count > 0)
+            {
+                ck_charsampler.Enabled = true;
+            }
+            else
+            {
+                ck_charsampler.Enabled = false;
+                ck_charsampler.Checked = false;
             }
         }
 
@@ -793,6 +807,7 @@ namespace WaifuAI
             _impersonatemode = false;
             _postdate = DateTime.Now;
             statusbar.Items[1].Text = "Analyzing...";
+            UseCharacterDefinedSampler();
             if (!string.IsNullOrEmpty(ed_input.Text))
             {
                 var messagetext = LLMSystem.ReplaceMacros(LLMSystem.GetAwayString() + ed_input.Text.ToLinuxFormat(), LLMSystem.User, LLMSystem.Bot);
@@ -875,6 +890,7 @@ namespace WaifuAI
             _impersonatemode = false;
             _postdate = DateTime.Now;
             statusbar.Items[1].Text = "Analyzing...";
+            UseCharacterDefinedSampler();
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await WebEditLastMessage($"**{LLMSystem.Bot.Name}:** *I am thinking...*");
             _currentgeneration = string.Empty;
@@ -1012,6 +1028,12 @@ namespace WaifuAI
                 cb_background.SelectedIndex = cb_background.Items.IndexOf(Settings.BackgroundFile);
                 num_fontsize.Value = Settings.FontSize;
                 num_msgcount.Value = Settings.MaxMessagesOnScreen;
+                ck_alwayswebsearch.Checked = Settings.AlwaysWebSearchQuery;
+            }
+
+            if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
+            {
+                searchplug.KeywordDetection = !ck_alwayswebsearch.Checked;
             }
         }
 
@@ -1040,12 +1062,36 @@ namespace WaifuAI
                 Settings.FontSize = (int)num_fontsize.Value;
                 Settings.MaxMessagesOnScreen = (int)num_msgcount.Value;
                 Settings.BackgroundFile = cb_background.SelectedItem?.ToString() ?? "bedroom_cozy.jpg";
+                Settings.AlwaysWebSearchQuery = ck_alwayswebsearch.Checked;
                 var str = JsonConvert.SerializeObject(Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
+                if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
+                {
+                    searchplug.KeywordDetection = !ck_alwayswebsearch.Checked;
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred while saving settings: {ex.Message}");
+            }
+        }
+
+        private void UseCharacterDefinedSampler()
+        {
+            if (!ck_charsampler.Checked || !ck_charsampler.Enabled || Bot == null)
+                return;
+            // make a list of samplers, looking at DataFiles.Inference and what samplers are allowed in the Character's settings
+            var samplers = new List<string>();
+            foreach (var item in DataFiles.Inference)
+            {
+                if (Bot.AllowedSamplers.Contains(item.Key))
+                    samplers.Add(item.Key);
+            }
+            // pick random on from list and change the cb_infer selection to it
+            if (samplers.Count > 0)
+            {
+                var idx = RNG.Next(0, samplers.Count);
+                cb_infer.SelectedIndex = cb_infer.Items.IndexOf(samplers[idx]);
             }
         }
 
@@ -1798,6 +1844,14 @@ namespace WaifuAI
             {
                 ck_onlinerag.Enabled = false;
                 ck_onlinerag.Checked = false;
+            }
+        }
+
+        private void ck_alwayswebsearch_CheckedChanged(object sender, EventArgs e)
+        {
+            if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
+            {
+                searchplug.KeywordDetection = !ck_alwayswebsearch.Checked;
             }
         }
     }
