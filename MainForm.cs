@@ -69,7 +69,7 @@ namespace WaifuAI
             HelptoolTip.SetToolTip(ck_worldinfo, "Use the WorldInfo file(s) associated with this bot. WorldInfo is a list of keyword-triggered textual information that is inserted into the prompt when the conditions are met." + Environment.NewLine + "See the World Info tab for additional information.");
 
             HelptoolTip.SetToolTip(ck_alwayswebsearch, "Normally, Online RAG (using DuckDuckGo API search) will only be attempt if you explicitely ask the bot to search the web. If you check this box, the LLM will always try to determine if a search would be useful." + Environment.NewLine + Environment.NewLine + "May lead to many false positive, and overall slower generation with some models.");
-            HelptoolTip.SetToolTip(ck_charsampler, "If checked, and when using a bot persona containing a list of compatible inference settings, the inference settings will be picked at random from that list each time the bot write a new message."  + Environment.NewLine + Environment.NewLine + "Will lead to a more creative and less repetitive interaction, but also less consistent.");
+            HelptoolTip.SetToolTip(ck_charsampler, "If checked, and when using a bot persona containing a list of compatible inference settings, the inference settings will be picked at random from that list each time the bot write a new message." + Environment.NewLine + Environment.NewLine + "Will lead to a more creative and less repetitive interaction, but also less consistent.");
             HelptoolTip.SetToolTip(ck_onlinerag, "If checked, the bot may perform web search (using DuckDuckGo) to improve its responses when asked to.");
 
             // Chat related events
@@ -578,6 +578,7 @@ namespace WaifuAI
         {
             ed_worlddesc.Text = selectedWorldEditor.Description;
             num_scandepth.Value = selectedWorldEditor.ScanDepth;
+            ck_wiembed.Checked = selectedWorldEditor.DoEmbeds;
             lb_worldentries.Items.Clear();
             foreach (var item in selectedWorldEditor.Entries)
             {
@@ -652,23 +653,26 @@ namespace WaifuAI
                 lb_worldentries.Items[idx] = SelectedWorldEntryEditor.Name;
         }
 
-        private void SaveWorldInfo()
+        private async Task<bool> SaveWorldInfo()
         {
             SelectedWorldEditor.Description = ed_worlddesc.Text;
             SelectedWorldEditor.ScanDepth = (int)num_scandepth.Value;
-            var NewName = cb_samplerlist.Text;
+            SelectedWorldEditor.DoEmbeds = ck_wiembed.Checked;
+            var NewName = cb_worlds.Text;
             if (string.IsNullOrWhiteSpace(NewName))
             {
                 MessageBox.Show("Please select a valide name for the new sampler");
-                return;
+                return false;
             }
             // If name already exists ask for confirmation
             if (DataFiles.Inference.ContainsKey(NewName) && (MessageBox.Show("This sampler already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
-                return;
+                return false;
+            await SelectedWorldEditor.EmbedText();
             SelectedWorldEditor.UniqueName = NewName;
             DataFiles.WorldInfos[NewName] = SelectedWorldEditor;
 
             (SelectedWorldEditor as IFile).SaveToFile("data/worlds/" + NewName + ".json");
+            return true;
         }
 
         private void UpdateWorldEntryEvent(object sender, EventArgs e)
@@ -1137,7 +1141,7 @@ namespace WaifuAI
             await RAGSystem.EmbedChatSessions(LLMSystem.History);
             MessageBox.Show("All sessions have been embedded successfully.");
             (LLMSystem.Bot as Character)?.SaveChatHistory(true);
-            RAGSystem.VectorizeChatlog(LLMSystem.History);
+            RAGSystem.VectorizeChatBot(LLMSystem.Bot);
         }
 
         private void ApplyRAGSettings(object sender, EventArgs e)
@@ -1718,7 +1722,7 @@ namespace WaifuAI
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
-            LLMSystem.Bot.EndSession(backup: true);
+            LLMSystem.Bot.EndChat(backup: true);
         }
 
         private void ck_senseoftime_CheckedChanged(object sender, EventArgs e)
@@ -1750,9 +1754,11 @@ namespace WaifuAI
             SelectedWorldEditor.Description = ed_worlddesc.Text;
         }
 
-        private void bt_worldsave_Click(object sender, EventArgs e)
+        private async void bt_worldsave_Click(object sender, EventArgs e)
         {
-            SaveWorldInfo();
+            var saved = await SaveWorldInfo();
+            if (saved)
+                MessageBox.Show("World Info Saved!");
         }
 
         private void bt_delwentry_Click(object sender, EventArgs e)
@@ -1853,6 +1859,21 @@ namespace WaifuAI
             {
                 searchplug.KeywordDetection = !ck_alwayswebsearch.Checked;
             }
+        }
+
+        private void label9_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ck_wiembed_CheckedChanged(object sender, EventArgs e)
+        {
+            SelectedWorldEditor.DoEmbeds = ck_wiembed.Checked;
+        }
+
+        private void cb_worlds_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

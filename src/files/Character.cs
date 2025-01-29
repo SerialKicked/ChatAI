@@ -14,7 +14,7 @@ namespace WaifuAI.Files
         public bool CanInitiateChat { get; set; } = false;
         public List<string> AllowedSamplers = [];
 
-        public override void BeginSession()
+        public override void BeginChat()
         {
             if (IsUser)
                 return;
@@ -29,7 +29,7 @@ namespace WaifuAI.Files
                 item.Reset();
         }
 
-        public override void EndSession(bool backup = false)
+        public override void EndChat(bool backup = false)
         {
             SaveChatHistory(backup);
         }

@@ -228,6 +228,7 @@
             bt_importworld = new Button();
             bt_ImportSTChat = new Button();
             groupBox1 = new GroupBox();
+            ck_alwayswebsearch = new CheckBox();
             checkBox1 = new CheckBox();
             ck_ragdocs = new CheckBox();
             label15 = new Label();
@@ -250,7 +251,7 @@
             toolStripStatusLabel2 = new ToolStripStatusLabel();
             bindingSource1 = new BindingSource(components);
             AutoTalkTimer = new System.Windows.Forms.Timer(components);
-            ck_alwayswebsearch = new CheckBox();
+            ck_wiembed = new CheckBox();
             tabMain.SuspendLayout();
             tabChat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
@@ -676,7 +677,7 @@
             // 
             ck_charsampler.AutoSize = true;
             ck_charsampler.Font = new Font("Segoe UI", 9F);
-            ck_charsampler.Location = new Point(6, 143);
+            ck_charsampler.Location = new Point(4, 135);
             ck_charsampler.Name = "ck_charsampler";
             ck_charsampler.Size = new Size(155, 19);
             ck_charsampler.TabIndex = 26;
@@ -719,7 +720,7 @@
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 9F);
-            label6.Location = new Point(6, 96);
+            label6.Location = new Point(4, 88);
             label6.Name = "label6";
             label6.Size = new Size(102, 15);
             label6.TabIndex = 6;
@@ -729,7 +730,7 @@
             // 
             cb_infer.DropDownStyle = ComboBoxStyle.DropDownList;
             cb_infer.Font = new Font("Segoe UI", 9F);
-            cb_infer.Location = new Point(6, 114);
+            cb_infer.Location = new Point(4, 106);
             cb_infer.Name = "cb_infer";
             cb_infer.Size = new Size(175, 23);
             cb_infer.TabIndex = 7;
@@ -739,18 +740,19 @@
             // 
             label9.AutoSize = true;
             label9.Font = new Font("Segoe UI", 9F);
-            label9.Location = new Point(6, 164);
+            label9.Location = new Point(4, 157);
             label9.Name = "label9";
             label9.Size = new Size(122, 15);
             label9.TabIndex = 16;
             label9.Text = "Temperature Override";
+            label9.Click += label9_Click;
             // 
             // num_temperature
             // 
             num_temperature.DecimalPlaces = 2;
             num_temperature.Font = new Font("Segoe UI", 9F);
             num_temperature.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_temperature.Location = new Point(6, 182);
+            num_temperature.Location = new Point(4, 175);
             num_temperature.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
             num_temperature.Name = "num_temperature";
             num_temperature.Size = new Size(175, 23);
@@ -1313,6 +1315,7 @@
             // 
             // groupBox6
             // 
+            groupBox6.Controls.Add(ck_wiembed);
             groupBox6.Controls.Add(bt_delwentry);
             groupBox6.Controls.Add(bt_addwentry);
             groupBox6.Controls.Add(label18);
@@ -1355,7 +1358,7 @@
             // 
             label18.AutoSize = true;
             label18.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label18.Location = new Point(3, 160);
+            label18.Location = new Point(3, 197);
             label18.Name = "label18";
             label18.Size = new Size(71, 15);
             label18.TabIndex = 5;
@@ -1366,9 +1369,9 @@
             lb_worldentries.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lb_worldentries.FormattingEnabled = true;
             lb_worldentries.ItemHeight = 15;
-            lb_worldentries.Location = new Point(3, 178);
+            lb_worldentries.Location = new Point(3, 215);
             lb_worldentries.Name = "lb_worldentries";
-            lb_worldentries.Size = new Size(232, 439);
+            lb_worldentries.Size = new Size(232, 424);
             lb_worldentries.TabIndex = 4;
             lb_worldentries.SelectedIndexChanged += lb_worldentries_SelectedIndexChanged;
             // 
@@ -2531,6 +2534,17 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "RAG System";
             // 
+            // ck_alwayswebsearch
+            // 
+            ck_alwayswebsearch.AutoSize = true;
+            ck_alwayswebsearch.Font = new Font("Segoe UI", 9F);
+            ck_alwayswebsearch.Location = new Point(195, 122);
+            ck_alwayswebsearch.Name = "ck_alwayswebsearch";
+            ck_alwayswebsearch.Size = new Size(170, 19);
+            ck_alwayswebsearch.TabIndex = 35;
+            ck_alwayswebsearch.Text = "No keyword for online RAG";
+            ck_alwayswebsearch.UseVisualStyleBackColor = true;
+            // 
             // checkBox1
             // 
             checkBox1.AutoSize = true;
@@ -2732,16 +2746,16 @@
             AutoTalkTimer.Interval = 1000;
             AutoTalkTimer.Tick += AutoTalkTimer_Tick;
             // 
-            // ck_alwayswebsearch
+            // ck_wiembed
             // 
-            ck_alwayswebsearch.AutoSize = true;
-            ck_alwayswebsearch.Font = new Font("Segoe UI", 9F);
-            ck_alwayswebsearch.Location = new Point(195, 122);
-            ck_alwayswebsearch.Name = "ck_alwayswebsearch";
-            ck_alwayswebsearch.Size = new Size(170, 19);
-            ck_alwayswebsearch.TabIndex = 35;
-            ck_alwayswebsearch.Text = "No keyword for online RAG";
-            ck_alwayswebsearch.UseVisualStyleBackColor = true;
+            ck_wiembed.AutoSize = true;
+            ck_wiembed.Location = new Point(8, 163);
+            ck_wiembed.Name = "ck_wiembed";
+            ck_wiembed.Size = new Size(150, 19);
+            ck_wiembed.TabIndex = 8;
+            ck_wiembed.Text = "Use Vector Embeddings";
+            ck_wiembed.UseVisualStyleBackColor = true;
+            ck_wiembed.CheckedChanged += ck_wiembed_CheckedChanged;
             // 
             // MainForm
             // 
@@ -3078,5 +3092,6 @@
         private CheckBox ck_onlinerag;
         private CheckBox ck_charsampler;
         private CheckBox ck_alwayswebsearch;
+        private CheckBox ck_wiembed;
     }
 }
