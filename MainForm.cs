@@ -12,6 +12,7 @@ using WaifuAI.src.forms;
 using WaifuAI.Web;
 using WaifuAI.Plugins;
 using System.Text;
+using System.Media;
 
 namespace WaifuAI
 {
@@ -34,10 +35,10 @@ namespace WaifuAI
         private bool _isinitloading = true;
         private DateTime _postdate = DateTime.Now;
         private TimeSpan _responselength = default;
-        private ActivityTimer _activityTimer = new();
+        private readonly ActivityTimer _activityTimer = new();
         private int _afkmessagecount = 0;
         private EditMessageForm? _editMessageForm;
-        private Random RNG = new();
+        private readonly Random RNG = new();
 
         private System.Media.SoundPlayer? _player;
         private MemoryStream? _audioStream;
@@ -288,17 +289,59 @@ namespace WaifuAI
                 });
                 if (Settings.UseTTS && !string.IsNullOrEmpty(Bot?.TTSVoice))
                 {
-                    var wave = await LLMSystem.GenerateTTS(stringfix, Bot.TTSVoice);
-                    PlayAudio(wave);
+                    await OutputTTS(stringfix);
                 }
             }
             (LLMSystem.Bot as Character)?.SaveChatHistory();
         }
 
+        private async Task OutputTTS(string text)
+        {
+            var paragraphs = text.Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries);
+
+            if (paragraphs.Length == 0)
+                return;
+
+            int index = 0;
+
+            // Start generating TTS for the first paragraph
+            var currentWaveTask = LLMSystem.GenerateTTS(paragraphs[index], Bot.TTSVoice);
+            index++;
+
+            while (true)
+            {
+                // Wait for the current TTS generation to complete
+                var currentWave = await currentWaveTask;
+
+                // Start playing the current audio chunk in a background task
+                var playTask = PlayAudioAsync(currentWave);
+
+                // Generate TTS for the next paragraph while the current one is playing
+                Task<byte[]>? nextWaveTask = null;
+                if (index < paragraphs.Length)
+                {
+                    nextWaveTask = LLMSystem.GenerateTTS(paragraphs[index], Bot.TTSVoice);
+                    index++;
+                }
+
+                // Wait for the current audio playback to finish
+                await playTask;
+
+                if (nextWaveTask == null)
+                {
+                    // No more paragraphs to process
+                    break;
+                }
+
+                // Move to the next audio chunk
+                currentWaveTask = nextWaveTask;
+            }
+        }
+
         private void ShowCurrentSessionInfo()
         {
             var (tokens, duration) = LLMSystem.History.GetCurrentChatSessionInfo();
-            statusbar.Items[0].Text = $"Current Session: {duration.TotalDays.ToString("F2")} days ({tokens} tokens)";
+            statusbar.Items[0].Text = $"Current Session: {duration.TotalDays:F2} days ({tokens} tokens)";
         }
 
         // Helper method to use Invoke with async methods
@@ -1904,6 +1947,18 @@ namespace WaifuAI
             _audioStream = new MemoryStream(audioData);
             _player = new System.Media.SoundPlayer(_audioStream);
             _player.Play(); // Asynchronous playback
+        }
+
+        private Task PlayAudioAsync(byte[] audioData)
+        {
+            return Task.Run(() =>
+            {
+                using (var audioStream = new MemoryStream(audioData))
+                using (var player = new SoundPlayer(audioStream))
+                {
+                    player.PlaySync(); // Plays the sound and waits until it completes
+                }
+            });
         }
 
         private async void button2_Click(object sender, EventArgs e)

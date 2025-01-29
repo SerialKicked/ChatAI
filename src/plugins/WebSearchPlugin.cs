@@ -148,7 +148,6 @@ namespace WaifuAI.Plugins
         {
             LLMSystem.NamesInPromptOverride = false;
             var fullprompt = BuildCheckPrompt(inputText);
-            var fullresponse = new StringBuilder();
             var llmparams = LLMSystem.Sampler.GetCopy();
             llmparams.Temperature = 0.5;
             llmparams.Prompt = fullprompt;
