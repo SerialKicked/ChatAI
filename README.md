@@ -1,6 +1,6 @@
 # w(AI)fu.NET
 
-Winodws-based high performance front-end for KoboldCPP written in C#.NET
+Windows-based high performance front-end for KoboldCPP written in C#.NET.
 
 ![WaifuAI_RjiqpbMiTq](https://github.com/user-attachments/assets/a4d1595d-a5f4-41f6-885e-5c50cd8fa619)
 
@@ -15,7 +15,12 @@ Winodws-based high performance front-end for KoboldCPP written in C#.NET
 - Automatic insertion of dates into the prompt to give the model a better sense of time (toggle)
 - TTS (text-to-speech) support through KoboldCPP API
 - Ability for the bot to augment its responses by doing a search on DuckDuckGo through KoboldCPP API (toggle)
-- Customizable system allowign the bot to browse specific websites on command in search for specific information
+- Customizable system allowing the bot to browse user-defined websites in search of requested information
 - Ability for the bot to initiate chat (toggle)
 - Import chatlogs and worldinfo files from silly tavern
 - Simple and intuitive UI
+
+ ## Current Limitations:
+ - 1v1 chat only, no group mode
+ - No UI to edit characters (they are stored in a very legible json file, though)
+ - No support for character cards, manual conversion only
