@@ -32,7 +32,7 @@ namespace WaifuAI.src.forms
             }
             else
             {
-                Message.Message = ed_message.Text.ToLinuxFormat();
+                Message.Message = LLMSystem.ReplaceMacros(ed_message.Text.ToLinuxFormat());
                 DialogResult = DialogResult.OK;
                 Close();
             }
