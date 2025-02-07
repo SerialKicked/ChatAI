@@ -144,7 +144,7 @@ namespace WaifuAI.Plugins
             var str = new StringBuilder("Notify {{user}} of the following events in their calendar:").AppendLinuxLine();
             foreach (var item in nextevents)
             {
-                str.AppendLinuxLine($"- On the {LLMSystem.DateToHumanString(item.StartTime)}: {item.Title}");
+                str.AppendLinuxLine($"- On the {StringExtensions.DateToHumanString(item.StartTime)}: {item.Title}");
             }
             return str.ToString();
         }
