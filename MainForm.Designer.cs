@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             tabMain = new TabControl();
             tabChat = new TabPage();
-            ck_ttstoggle = new CheckBox();
             bt_impersonate = new Button();
             web_chat = new Microsoft.Web.WebView2.WinForms.WebView2();
             bt_delete = new Button();
@@ -174,6 +173,8 @@
             num_dryrange = new NumericUpDown();
             label49 = new Label();
             groupBox17 = new GroupBox();
+            num_smoothfac = new NumericUpDown();
+            label59 = new Label();
             num_dynexpo = new NumericUpDown();
             label45 = new Label();
             num_dynrange = new NumericUpDown();
@@ -254,6 +255,7 @@
             toolStripStatusLabel2 = new ToolStripStatusLabel();
             bindingSource1 = new BindingSource(components);
             AutoTalkTimer = new System.Windows.Forms.Timer(components);
+            ck_ttstoggle = new CheckBox();
             tabMain.SuspendLayout();
             tabChat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
@@ -294,6 +296,7 @@
             ((System.ComponentModel.ISupportInitialize)num_drybase).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_dryrange).BeginInit();
             groupBox17.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)num_smoothfac).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_dynexpo).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_dynrange).BeginInit();
             groupBox16.SuspendLayout();
@@ -349,7 +352,6 @@
             // 
             // tabChat
             // 
-            tabChat.Controls.Add(ck_ttstoggle);
             tabChat.Controls.Add(bt_impersonate);
             tabChat.Controls.Add(web_chat);
             tabChat.Controls.Add(bt_delete);
@@ -364,18 +366,6 @@
             tabChat.TabIndex = 1;
             tabChat.Text = "Chat";
             tabChat.UseVisualStyleBackColor = true;
-            // 
-            // ck_ttstoggle
-            // 
-            ck_ttstoggle.AutoSize = true;
-            ck_ttstoggle.Font = new Font("Segoe UI", 9F);
-            ck_ttstoggle.Location = new Point(15, 714);
-            ck_ttstoggle.Name = "ck_ttstoggle";
-            ck_ttstoggle.Size = new Size(84, 19);
-            ck_ttstoggle.TabIndex = 31;
-            ck_ttstoggle.Text = "Enable TTS";
-            ck_ttstoggle.UseVisualStyleBackColor = true;
-            ck_ttstoggle.CheckedChanged += ck_ttstoggle_CheckedChanged;
             // 
             // bt_impersonate
             // 
@@ -475,6 +465,7 @@
             // groupBox23
             // 
             groupBox23.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox23.Controls.Add(ck_ttstoggle);
             groupBox23.Controls.Add(bt_test);
             groupBox23.Controls.Add(ck_onlinerag);
             groupBox23.Controls.Add(ck_caninitchat);
@@ -1762,9 +1753,9 @@
             groupBox20.Controls.Add(ck_trimstop);
             groupBox20.Controls.Add(ck_renderspecial);
             groupBox20.Controls.Add(ck_ignoreeos);
-            groupBox20.Location = new Point(487, 189);
+            groupBox20.Location = new Point(736, 71);
             groupBox20.Name = "groupBox20";
-            groupBox20.Size = new Size(419, 182);
+            groupBox20.Size = new Size(203, 300);
             groupBox20.TabIndex = 7;
             groupBox20.TabStop = false;
             groupBox20.Text = "Misc Settings";
@@ -1805,9 +1796,9 @@
             groupBox19.Controls.Add(label50);
             groupBox19.Controls.Add(num_xtcprob);
             groupBox19.Controls.Add(label51);
-            groupBox19.Location = new Point(245, 283);
+            groupBox19.Location = new Point(487, 189);
             groupBox19.Name = "groupBox19";
-            groupBox19.Size = new Size(236, 88);
+            groupBox19.Size = new Size(243, 182);
             groupBox19.TabIndex = 6;
             groupBox19.TabStop = false;
             groupBox19.Text = "Exclude Top Tokens (XTC)";
@@ -1861,7 +1852,7 @@
             groupBox18.Controls.Add(label49);
             groupBox18.Location = new Point(487, 71);
             groupBox18.Name = "groupBox18";
-            groupBox18.Size = new Size(419, 112);
+            groupBox18.Size = new Size(243, 112);
             groupBox18.TabIndex = 5;
             groupBox18.TabStop = false;
             groupBox18.Text = "DRY Anti Repetition";
@@ -1924,16 +1915,38 @@
             // 
             // groupBox17
             // 
+            groupBox17.Controls.Add(num_smoothfac);
+            groupBox17.Controls.Add(label59);
             groupBox17.Controls.Add(num_dynexpo);
             groupBox17.Controls.Add(label45);
             groupBox17.Controls.Add(num_dynrange);
             groupBox17.Controls.Add(label47);
             groupBox17.Location = new Point(245, 189);
             groupBox17.Name = "groupBox17";
-            groupBox17.Size = new Size(236, 88);
+            groupBox17.Size = new Size(236, 182);
             groupBox17.TabIndex = 4;
             groupBox17.TabStop = false;
             groupBox17.Text = "Dynamic Temperature";
+            // 
+            // num_smoothfac
+            // 
+            num_smoothfac.DecimalPlaces = 2;
+            num_smoothfac.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
+            num_smoothfac.Location = new Point(120, 80);
+            num_smoothfac.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            num_smoothfac.Name = "num_smoothfac";
+            num_smoothfac.Size = new Size(110, 23);
+            num_smoothfac.TabIndex = 13;
+            // 
+            // label59
+            // 
+            label59.AutoSize = true;
+            label59.Location = new Point(9, 82);
+            label59.Name = "label59";
+            label59.Size = new Size(85, 15);
+            label59.TabIndex = 12;
+            label59.Text = "Smooth Factor";
+            label59.Click += label59_Click;
             // 
             // num_dynexpo
             // 
@@ -2107,7 +2120,7 @@
             groupBox14.Controls.Add(label38);
             groupBox14.Location = new Point(3, 3);
             groupBox14.Name = "groupBox14";
-            groupBox14.Size = new Size(903, 62);
+            groupBox14.Size = new Size(936, 62);
             groupBox14.TabIndex = 1;
             groupBox14.TabStop = false;
             groupBox14.Text = "Core Settings";
@@ -2785,6 +2798,18 @@
             AutoTalkTimer.Interval = 1000;
             AutoTalkTimer.Tick += AutoTalkTimer_Tick;
             // 
+            // ck_ttstoggle
+            // 
+            ck_ttstoggle.AutoSize = true;
+            ck_ttstoggle.Font = new Font("Segoe UI", 9F);
+            ck_ttstoggle.Location = new Point(4, 170);
+            ck_ttstoggle.Name = "ck_ttstoggle";
+            ck_ttstoggle.Size = new Size(84, 19);
+            ck_ttstoggle.TabIndex = 32;
+            ck_ttstoggle.Text = "Enable TTS";
+            ck_ttstoggle.UseVisualStyleBackColor = true;
+            ck_ttstoggle.CheckedChanged += ck_ttstoggle_CheckedChanged;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -2851,6 +2876,7 @@
             ((System.ComponentModel.ISupportInitialize)num_dryrange).EndInit();
             groupBox17.ResumeLayout(false);
             groupBox17.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)num_smoothfac).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_dynexpo).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_dynrange).EndInit();
             groupBox16.ResumeLayout(false);
@@ -3122,6 +3148,8 @@
         private CheckBox ck_alwayswebsearch;
         private CheckBox ck_wiembed;
         private Button bt_test;
+        private NumericUpDown num_smoothfac;
+        private Label label59;
         private CheckBox ck_ttstoggle;
     }
 }

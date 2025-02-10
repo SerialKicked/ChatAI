@@ -418,6 +418,7 @@ namespace WaifuAI
             num_dryrange.Value = selected.Dry_allowed_length;
             num_dynexpo.Value = (decimal)selected.Dynatemp_exponent;
             num_dynrange.Value = (decimal)selected.Dynatemp_range;
+            num_smoothfac.Value = (decimal)selected.Smoothing_factor;
             ck_ignoreeos.Checked = selected.Bypass_eos;
             ck_renderspecial.Checked = selected.Render_special;
             ck_trimstop.Checked = selected.Trim_stop;
@@ -446,7 +447,8 @@ namespace WaifuAI
                 Dry_multiplier = (double)num_drymul.Value,
                 Dry_allowed_length = (int)num_dryrange.Value,
                 Dynatemp_exponent = (double)num_dynexpo.Value,
-                Dynatemp_range = (int)num_dynrange.Value,
+                Dynatemp_range = (double)num_dynrange.Value,
+                Smoothing_factor = (double)num_smoothfac.Value,
                 Bypass_eos = ck_ignoreeos.Checked,
                 Render_special = ck_renderspecial.Checked,
                 Trim_stop = ck_trimstop.Checked,
@@ -1979,6 +1981,11 @@ namespace WaifuAI
         private void ck_ttstoggle_CheckedChanged(object sender, EventArgs e)
         {
             Settings.UseTTS = ck_ttstoggle.Checked;
+        }
+
+        private void label59_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
