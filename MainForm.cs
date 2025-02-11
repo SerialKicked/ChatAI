@@ -13,18 +13,31 @@ using WaifuAI.Web;
 using WaifuAI.Plugins;
 using System.Text;
 using System.Media;
+using System.ComponentModel;
 
 namespace WaifuAI
 {
     public partial class MainForm : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WaifuSettings Settings { get; set; } = new WaifuSettings();
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WebScraper WebScraper { get; set; } = new WebScraper();
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SamplerSettings SelectedSamplerEditor { get; set; } = new SamplerSettings();
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public InstructFormat SelectedInstructEditor { get; set; } = new InstructFormat();
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SystemPrompt SelectedPromptEditor { get; set; } = new SystemPrompt();
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WorldInfo SelectedWorldEditor { get; set; } = new WorldInfo();
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WorldEntry SelectedWorldEntryEditor { get; set; } = new WorldEntry();
 
         private string? _currentgeneration = null;
@@ -240,7 +253,7 @@ namespace WaifuAI
                     {
                         statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                     });
-                    var MsgPrefix = LLMSystem.GetMessagePrefix(AuthorRole.Assistant);
+                    var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
                     await WebEditLastMessage(MsgPrefix + _currentgeneration);
                 }
                 else
@@ -272,16 +285,16 @@ namespace WaifuAI
             else
             {
                 var stringfix = e.FixAsterisks();
-                var MsgPrefix = LLMSystem.GetMessagePrefix(AuthorRole.Assistant);
+                var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
                 var msg = LLMSystem.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMSystem.User, LLMSystem.Bot);
                 await WebEditLastMessage(MsgPrefix + stringfix);
                 _currentgeneration = string.Empty;
                 _currentgenerationtokencount = 0;
                 if (_forcereload || Settings.MaxMessagesOnScreen <= LLMSystem.History.CurrentSession.Messages.Count)
                 {
-                    Invoke((System.Windows.Forms.MethodInvoker)delegate
+                    Invoke((System.Windows.Forms.MethodInvoker)async delegate
                     {
-                        WebChatLoad();
+                        await WebChatLoad();
                     });
                 }
                 Invoke((System.Windows.Forms.MethodInvoker)delegate
@@ -303,10 +316,11 @@ namespace WaifuAI
             if (paragraphs.Length == 0)
                 return;
 
+            var voiceID = Bot?.TTSVoice ?? "Waifu";
             int index = 0;
 
             // Start generating TTS for the first paragraph
-            var currentWaveTask = LLMSystem.GenerateTTS(paragraphs[index], Bot.TTSVoice);
+            var currentWaveTask = LLMSystem.GenerateTTS(paragraphs[index], voiceID);
             index++;
 
             while (Settings.UseTTS && LLMSystem.Status != SystemStatus.Busy)
@@ -321,7 +335,7 @@ namespace WaifuAI
                 Task<byte[]>? nextWaveTask = null;
                 if (index < paragraphs.Length)
                 {
-                    nextWaveTask = LLMSystem.GenerateTTS(paragraphs[index], Bot.TTSVoice);
+                    nextWaveTask = LLMSystem.GenerateTTS(paragraphs[index], voiceID);
                     index++;
                 }
 
@@ -996,7 +1010,8 @@ namespace WaifuAI
             _impersonatemode = false;
             if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.CurrentSession.Messages.Count == 0)
                 return;
-            LLMSystem.RemoveLastMessage();
+            LLMSystem.History.RemoveLast();
+            LLMSystem.InvalidatePromptCache();
             await WebChatLoad();
         }
 
@@ -1017,7 +1032,7 @@ namespace WaifuAI
                     img = LLMSystem.Bot.Icon;
                     break;
             }
-            var text = Markdown.ToHtml(LLMSystem.GetMessagePrefix(singleMessage) + singleMessage.Message, CustomMarkDownPipeline);
+            var text = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + singleMessage.Message, CustomMarkDownPipeline);
             var coremsg = $@"
                     <div class='portrait'>
                         <img src='https://appassets.test/img/{img}' alt='Portrait' width='60'>
@@ -1536,9 +1551,9 @@ namespace WaifuAI
                     _editMessageForm = new EditMessageForm(LLMSystem.History.CurrentSession.Messages[realid].Guid);
                     if (_editMessageForm.ShowDialog() == DialogResult.OK && _editMessageForm.Message != null)
                     {
-                        Invoke((System.Windows.Forms.MethodInvoker)delegate
+                        Invoke((System.Windows.Forms.MethodInvoker)async delegate
                         {
-                            LoadHistoryToUI();
+                            await LoadHistoryToUI();
                             LLMSystem.InvalidatePromptCache();
                         });
                     }
@@ -1579,7 +1594,7 @@ namespace WaifuAI
                     img = singleMessage.Bot.Icon;
                     break;
             }
-            var html = Markdown.ToHtml(LLMSystem.GetMessagePrefix(singleMessage) + singleMessage.Message, CustomMarkDownPipeline);
+            var html = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + singleMessage.Message, CustomMarkDownPipeline);
             return InjectDialogHtml(img, html);
         }
 
@@ -1862,7 +1877,7 @@ namespace WaifuAI
             LLMSystem.MarkdownMemoryFormating = ck_markdown.Checked;
         }
 
-        private void bt_deleteAllHistory_Click(object sender, EventArgs e)
+        private async void bt_deleteAllHistory_Click(object sender, EventArgs e)
         {
             // Confirm before deleting
             if (MessageBox.Show("This will delete all chat history with this character permanently. Are you sure?", "Delete All History?", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -1871,7 +1886,7 @@ namespace WaifuAI
                 var message = new SingleMessage(AuthorRole.Assistant, DateTime.Now, LLMSystem.Bot.GetWelcomeLine(LLMSystem.User.Name), LLMSystem.Bot.UniqueName, LLMSystem.Bot.UniqueName);
                 LLMSystem.History.LogMessage(message);
                 LoadChatHistoryTab();
-                WebChatLoad();
+                await WebChatLoad();
             }
         }
 
@@ -1956,11 +1971,9 @@ namespace WaifuAI
         {
             return Task.Run(() =>
             {
-                using (var audioStream = new MemoryStream(audioData))
-                using (var player = new SoundPlayer(audioStream))
-                {
-                    player.PlaySync(); // Plays the sound and waits until it completes
-                }
+                using var audioStream = new MemoryStream(audioData);
+                using var player = new SoundPlayer(audioStream);
+                player.PlaySync(); // Plays the sound and waits until it completes
             });
         }
 
@@ -1974,7 +1987,7 @@ namespace WaifuAI
                 Voice = "super chariot in death",
             };
 
-            var audioData = await LLMSystem.Client.TextToSpeechAsync(ttsinput);
+            var audioData = await LLMSystem.GenerateTTS(ttsinput.Input, ttsinput.Voice);
             PlayAudio(audioData);
         }
 

@@ -15,7 +15,9 @@ namespace WaifuAI.src.forms
 {
     public partial class EditMessageForm : Form
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Guid MessageID { get; private set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SingleMessage? Message { get; private set; }
 
         public EditMessageForm()

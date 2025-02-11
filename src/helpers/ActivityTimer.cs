@@ -8,16 +8,16 @@ namespace WaifuAI
 {
     internal class ActivityTimer
     {
-        public EventHandler? OnTrigger;
-        private void RaiseOnTrigger() => OnTrigger?.Invoke(null, null);
+        public event EventHandler? OnTrigger;
+        private void RaiseOnTrigger() => OnTrigger?.Invoke(null, new EventArgs());
 
-        public TimeSpan MinTime = new TimeSpan(0, 15, 0);
-        public TimeSpan MaxTime = new TimeSpan(0, 45, 0);
+        public TimeSpan MinTime = new(0, 15, 0);
+        public TimeSpan MaxTime = new(0, 45, 0);
         private DateTime _lastActivity;
         private TimeSpan _setActivityTime = default;
         public int TriggerCount { get; private set; } = 0;
 
-        private Random RNG = new();
+        private readonly Random RNG = new();
 
         public ActivityTimer()
         {

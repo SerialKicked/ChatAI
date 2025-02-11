@@ -87,7 +87,7 @@ namespace WaifuAI.Plugins
             if (string.IsNullOrEmpty(response))
                 return new PluginResponse { IsHandled = false, Response = null };
             // run web search
-            Program.BigForm.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am searching the web for '{response}'...*");
+            Program.BigForm!.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am searching the web for '{response}'...*");
             lastresponse = await LLMSystem.WebSearch(response);
             if (lastresponse == null || lastresponse.Count == 0)
                 return new PluginResponse { IsHandled = false, Response = null };

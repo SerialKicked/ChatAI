@@ -2,7 +2,7 @@ namespace WaifuAI
 {
     internal static class Program
     {
-        public static MainForm BigForm { get; private set; }
+        public static MainForm? BigForm { get; private set; }
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>

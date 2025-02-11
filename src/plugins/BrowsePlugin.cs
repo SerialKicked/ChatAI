@@ -116,7 +116,7 @@ namespace WaifuAI.Plugins
                     if (DataFiles.Websites.TryGetValue(x, out var site))
                     {
                         Website = site;
-                        Program.BigForm.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am browsing {Website.WebsiteName}...*");
+                        Program.BigForm!.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am browsing {Website.WebsiteName}...*");
                     }
                     else
                     {
@@ -128,7 +128,7 @@ namespace WaifuAI.Plugins
                     var webresult = await StartWebNavigation(userinput);
                     if (webresult.IsSuccess)
                     {
-                        Program.BigForm.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am writing a message...*");
+                        Program.BigForm!.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am writing a message...*");
                     }
                     else
                     {
@@ -224,7 +224,7 @@ namespace WaifuAI.Plugins
         public async Task<WebNavigationResult> DoPage(WLink page)
         {
             _location = page.Category;
-            Program.BigForm.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am browsing {page.Title}...*");
+            Program.BigForm!.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am browsing {page.Title}...*");
             var websiterender = await Website!.RenderPage(page.ID, string.Empty, crawler);
             var promptbuilder = new StringBuilder();
             if (!NavigationHistory)
