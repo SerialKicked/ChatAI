@@ -86,7 +86,7 @@ namespace WaifuAI.Plugins
                         var loc = locations.FindEntries(LLMSystem.History, userinput).FirstOrDefault();
                         if (loc != null)
                         {
-                            LLMSystem.logger?.LogInformation("LocationPlugin KW Only: {output}", loc.Name);
+                            LLMSystem.Logger?.LogInformation("LocationPlugin KW Only: {output}", loc.Name);
                             currentLocation = loc;
                             //AddMovingInfSystemMessage(log, loc);
                         }
@@ -168,7 +168,7 @@ namespace WaifuAI.Plugins
             llmparams.Temperature = 0;
             llmparams.Prompt = fullprompt;
             var finalstr = await LLMSystem.SimpleQuery(llmparams);
-            LLMSystem.logger?.LogInformation("LocationPlugin Result: {output}", finalstr);
+            LLMSystem.Logger?.LogInformation("LocationPlugin Result: {output}", finalstr);
             if (string.IsNullOrEmpty(finalstr))
                 return;
             if (finalstr.Equals("no", StringComparison.InvariantCultureIgnoreCase))

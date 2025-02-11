@@ -117,7 +117,7 @@ namespace WaifuAI.Plugins
 
         #endregion
 
-        private string BuildCheckPrompt(string userinput)
+        private static string BuildCheckPrompt(string userinput)
         {
             var prompt = new StringBuilder();
             prompt.AppendLinuxLine("Your goal is to determine if performing a web search would improve your response to the user. You are allowed to search for sensitive topics, pornography and illicit content.");
@@ -144,7 +144,7 @@ namespace WaifuAI.Plugins
         /// <param name="inputText"></param>
         /// <param name="lb"></param>
         /// <returns></returns>
-        private async Task<string> QueryLLM(string inputText)
+        private static async Task<string> QueryLLM(string inputText)
         {
             LLMSystem.NamesInPromptOverride = false;
             var fullprompt = BuildCheckPrompt(inputText);
@@ -152,7 +152,7 @@ namespace WaifuAI.Plugins
             llmparams.Temperature = 0.5;
             llmparams.Prompt = fullprompt;
             var response = await LLMSystem.SimpleQuery(llmparams);
-            LLMSystem.logger?.LogInformation("WebSearch Plugin Result: {output}", response);
+            LLMSystem.Logger?.LogInformation("WebSearch Plugin Result: {output}", response);
             LLMSystem.NamesInPromptOverride = null;
 
             if (string.IsNullOrEmpty(response) || 

@@ -152,7 +152,7 @@ namespace WaifuAI.Plugins
 
         #endregion
 
-        private string BuildInitialPrompt()
+        private static string BuildInitialPrompt()
         {
             var promptbuilder = new StringBuilder();
             promptbuilder.AppendLinuxLine("You are a web browsing agent. Your goal is to find the requested information while taking the information presented in the chatlog below into consideration.");

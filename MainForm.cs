@@ -1967,7 +1967,7 @@ namespace WaifuAI
             _player.Play(); // Asynchronous playback
         }
 
-        private Task PlayAudioAsync(byte[] audioData)
+        private static Task PlayAudioAsync(byte[] audioData)
         {
             return Task.Run(() =>
             {

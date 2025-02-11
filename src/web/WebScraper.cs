@@ -218,9 +218,9 @@ namespace WaifuAI.Web
                     {
                         var tags = new StringBuilder();
                         // make comma separated list of tags
-                        foreach (var tag in entry.Tags)
+                        foreach (var (Name, Link) in entry.Tags)
                         {
-                            tags.Append(tag.Name).Append(", ");
+                            tags.Append(Name).Append(", ");
                         }
                         // remove last comma
                         tags.Remove(tags.Length - 2, 2);
@@ -297,7 +297,7 @@ namespace WaifuAI.Web
         private readonly IConfiguration config = Configuration.Default.WithDefaultLoader();
         private readonly IBrowsingContext context;
 
-        private Dictionary<string, IDocument> Cache = [];
+        private readonly Dictionary<string, IDocument> Cache = [];
 
 
         public WebScraper() 
