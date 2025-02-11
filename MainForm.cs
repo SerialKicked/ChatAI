@@ -788,9 +788,9 @@ namespace WaifuAI
                     control = new TextBox { Text = string.Join(",", (ICollection<int>)property.GetValue(instructsetting)!), Location = new Point(150, yPos), Width = 400 };
                     ((TextBox)control).TextChanged += (sender, e) => property.SetValue(instructsetting, ((TextBox)control).Text.Split(',').Select(int.Parse).ToList());
                 }
-                else if (property.PropertyType == typeof(ICollection<string>))
+                else if (property.PropertyType == typeof(List<string>))
                 {
-                    control = new TextBox { Text = string.Join(",", (ICollection<string>)property.GetValue(instructsetting) ?? []), Location = new Point(150, yPos), Width = 400 };
+                    control = new TextBox { Text = string.Join(",", (List<string>)property.GetValue(instructsetting) ?? []), Location = new Point(150, yPos), Width = 400 };
                     ((TextBox)control).TextChanged += (sender, e) => property.SetValue(instructsetting, ((TextBox)control).Text.Split(',').ToList());
                 }
 
