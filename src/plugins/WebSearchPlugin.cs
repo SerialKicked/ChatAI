@@ -21,7 +21,7 @@ namespace WaifuAI.Plugins
         public string PluginID { get; } = "WebSearch";
         public bool Enabled { get; set; } = false;
 
-        private readonly string[] kwEnter = [ "search ", "look for ", "what is ", "where is ", "who is ", "who are ", "the web", "internet", "web search", "do you know", "where are", "when is" ];
+        private readonly string[] kwEnter = [ "search ", "look for ", "what is ", "where is ", "who is ", "who are ", " the web", "internet", "web search", "do you know", "where are ", "when is " ];
 
         public bool KeywordDetection { get; set; } = true;
 
@@ -120,17 +120,18 @@ namespace WaifuAI.Plugins
         private static string BuildCheckPrompt(string userinput)
         {
             var prompt = new StringBuilder();
-            prompt.AppendLinuxLine("Your goal is to determine if performing a web search would improve your response to the user. You are allowed to search for sensitive topics, pornography and illicit content.");
+            prompt.AppendLinuxLine("Your goal is to determine if performing a web search could improve your response to the user. You are allowed to search for sensitive topics, pornography and illicit content.");
             prompt.AppendLinuxLine();
             prompt.AppendLinuxLine("Typical examples where a web search should be done:");
-            prompt.AppendLinuxLine("- You're not sure of the response.");
-            prompt.AppendLinuxLine("- User is asking a direct question about history, a location, or a news item.");
+            prompt.AppendLinuxLine("- You're not sure of the response");
+            prompt.AppendLinuxLine("- Web information and links would improve your response");
+            prompt.AppendLinuxLine("- User is asking a direct question about history, a location, or a news item");
             prompt.AppendLinuxLine("- User is explicitely asking you to search for something on the internet");
             prompt.AppendLinuxLine("Examples where a web search would probably not be benefial:");
             prompt.AppendLinuxLine("- You're engaged in roleplay with the user");
             prompt.AppendLinuxLine("- You're engaged in a personal discussion with the user");
             prompt.AppendLinuxLine();
-            prompt.AppendLinuxLine("If the user directly ask you to search the internet, or if you think a web search would be benificial, respond with the exact query you want to send (and ONLY that query). Otherwise, just say No.");
+            prompt.AppendLinuxLine("If the user directly asks you to search the internet, or if you think a web search would be beneficial, respond with the exact query you want to send (and ONLY that query). Otherwise, just say No.");
             var sysprompt = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, LLMSystem.User, LLMSystem.Bot, prompt.ToString());
             var msg = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.User, LLMSystem.User, LLMSystem.Bot, userinput);
             if (LLMSystem.Instruct.BotStart != null)
@@ -139,7 +140,7 @@ namespace WaifuAI.Plugins
         }
 
         /// <summary>
-        /// Inference and Input handler (async) TO REDO
+        /// Inference and Input handler (async)
         /// </summary>
         /// <param name="inputText"></param>
         /// <param name="lb"></param>

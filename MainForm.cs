@@ -685,6 +685,7 @@ namespace WaifuAI
             cb_wentrylocation.SelectedIndex = (int)worldEntry.Position;
             ck_wentrycasesensitive.Checked = worldEntry.CaseSensitive;
             ck_wentryenabled.Checked = worldEntry.Enabled;
+            numWItriggerchance.Value = (decimal)worldEntry.TriggerChance;
             _isinitloading = sv;
         }
 
@@ -715,6 +716,7 @@ namespace WaifuAI
             SelectedWorldEntryEditor.Position = (WEPosition)cb_wentrylocation.SelectedIndex;
             SelectedWorldEntryEditor.CaseSensitive = ck_wentrycasesensitive.Checked;
             SelectedWorldEntryEditor.Enabled = ck_wentryenabled.Checked;
+            SelectedWorldEntryEditor.TriggerChance = (float)numWItriggerchance.Value;
 
             var idx = SelectedWorldEditor.Entries.IndexOf(SelectedWorldEntryEditor);
             if (idx >= 0 && idx < lb_worldentries.Items.Count)
@@ -1049,61 +1051,64 @@ namespace WaifuAI
 
         private void LoadSettings()
         {
-            if (File.Exists("settings.json"))
+            if (!File.Exists("settings.json"))
             {
-                var str = File.ReadAllText("settings.json");
-                Settings = JsonConvert.DeserializeObject<WaifuSettings>(str)!;
-                RAGSystem.Heuristic = Settings.RAGHeurisitc;
-                RAGSystem.UseSummaries = Settings.RAGUseSummaries;
-                RAGSystem.UseTitles = Settings.RAGUseTitles;
-                RAGSystem.DistanceCutOff = Settings.RAGDistanceCutOff;
-                LLMSystem.MaxContextLength = Settings.MaxTotalTokens;
-                LLMSystem.MaxReplyLength = Settings.MaxResponseTokens;
-                LLMSystem.ReservedSessionTokens = Settings.ReservedSessionTokens;
-                LLMSystem.MarkdownMemoryFormating = Settings.MarkdownMemoryFormating;
-                LLMSystem.MaxRAGEntries = Settings.MaxRAGEntries;
-                LLMSystem.RAGIndex = Settings.RAGPosition;
-                LLMSystem.ScenarioOverride = Settings.ScenarioOverride;
-                LLMSystem.WebBrowsingPlugin = Settings.InternetSearch;
-                // set cb_user to the settings.UserFile value if it's in the list, otherwise set index to 0.
-                cb_user.SelectedIndex = cb_user.Items.Contains(Settings.UserFile) ? cb_user.Items.IndexOf(Settings.UserFile) : 0;
-                // set cb_infer to the settings.InferenceFile value if it's in the list, otherwise set index to 0.
-                cb_infer.SelectedIndex = cb_infer.Items.Contains(Settings.SamplerFile) ? cb_infer.Items.IndexOf(Settings.SamplerFile) : 0;
-                // set cb_instruct to the settings.InstructFile value if it's in the list, otherwise set index to 0.
-                cb_instruct.SelectedIndex = cb_instruct.Items.Contains(Settings.Instruct) ? cb_instruct.Items.IndexOf(Settings.Instruct) : 0;
-                // set cb_bot to the settings.BotFile value if it's in the list, otherwise set index to 0.
-                cb_bot.SelectedIndex = cb_bot.Items.Contains(Settings.BotFile) ? cb_bot.Items.IndexOf(Settings.BotFile) : 0;
-                // set cb_sysprompt to the settings.PromptFile value if it's in the list, otherwise set index to 0.
-                cb_sysprompt.SelectedIndex = cb_sysprompt.Items.Contains(Settings.PromptFile) ? cb_sysprompt.Items.IndexOf(Settings.PromptFile) : 0;
-                num_maxcontext.Maximum = Settings.MaxTotalTokens;
-                num_maxcontext.Value = Settings.MaxTotalTokens;
-                num_maxresponse.Value = Settings.MaxResponseTokens;
-                num_temperature.Value = (decimal)Settings.Temperature;
-                num_memtokens.Value = Settings.ReservedSessionTokens;
-                ck_markdown.Checked = Settings.MarkdownMemoryFormating;
-                switch (RAGSystem.Heuristic)
-                {
-                    case HNSW.Net.NeighbourSelectionHeuristic.SelectSimple:
-                        cb_ragheuristic.SelectedIndex = 1;
-                        break;
-                    case HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic:
-                        cb_ragheuristic.SelectedIndex = 0;
-                        break;
-                    default:
-                        break;
-                }
-                ck_ragsummaries.Checked = Settings.RAGUseSummaries;
-                ck_ragtitles.Checked = Settings.RAGUseTitles;
-                num_ragcutoff.Value = (decimal)Settings.RAGDistanceCutOff;
-                num_ragmaxretrieve.Value = Settings.MaxRAGEntries;
-                num_ragindex.Value = Settings.RAGPosition;
-                ck_ragweb.Checked = Settings.InternetSearch;
-                cb_background.SelectedIndex = cb_background.Items.IndexOf(Settings.BackgroundFile);
-                num_fontsize.Value = Settings.FontSize;
-                num_msgcount.Value = Settings.MaxMessagesOnScreen;
-                ck_alwayswebsearch.Checked = Settings.AlwaysWebSearchQuery;
-                ck_ttstoggle.Checked = Settings.UseTTS;
+                Settings = new WaifuSettings();
+                File.WriteAllText("settings.json", JsonConvert.SerializeObject(Settings, Formatting.Indented));
             }
+
+            var str = File.ReadAllText("settings.json");
+            Settings = JsonConvert.DeserializeObject<WaifuSettings>(str)!;
+            RAGSystem.Heuristic = Settings.RAGHeurisitc;
+            RAGSystem.UseSummaries = Settings.RAGUseSummaries;
+            RAGSystem.UseTitles = Settings.RAGUseTitles;
+            RAGSystem.DistanceCutOff = Settings.RAGDistanceCutOff;
+            LLMSystem.MaxContextLength = Settings.MaxTotalTokens;
+            LLMSystem.MaxReplyLength = Settings.MaxResponseTokens;
+            LLMSystem.ReservedSessionTokens = Settings.ReservedSessionTokens;
+            LLMSystem.MarkdownMemoryFormating = Settings.MarkdownMemoryFormating;
+            LLMSystem.MaxRAGEntries = Settings.MaxRAGEntries;
+            LLMSystem.RAGIndex = Settings.RAGPosition;
+            LLMSystem.ScenarioOverride = Settings.ScenarioOverride;
+            LLMSystem.WebBrowsingPlugin = Settings.InternetSearch;
+            // set cb_user to the settings.UserFile value if it's in the list, otherwise set index to 0.
+            cb_user.SelectedIndex = cb_user.Items.Contains(Settings.UserFile) ? cb_user.Items.IndexOf(Settings.UserFile) : 0;
+            // set cb_infer to the settings.InferenceFile value if it's in the list, otherwise set index to 0.
+            cb_infer.SelectedIndex = cb_infer.Items.Contains(Settings.SamplerFile) ? cb_infer.Items.IndexOf(Settings.SamplerFile) : 0;
+            // set cb_instruct to the settings.InstructFile value if it's in the list, otherwise set index to 0.
+            cb_instruct.SelectedIndex = cb_instruct.Items.Contains(Settings.Instruct) ? cb_instruct.Items.IndexOf(Settings.Instruct) : 0;
+            // set cb_bot to the settings.BotFile value if it's in the list, otherwise set index to 0.
+            cb_bot.SelectedIndex = cb_bot.Items.Contains(Settings.BotFile) ? cb_bot.Items.IndexOf(Settings.BotFile) : 0;
+            // set cb_sysprompt to the settings.PromptFile value if it's in the list, otherwise set index to 0.
+            cb_sysprompt.SelectedIndex = cb_sysprompt.Items.Contains(Settings.PromptFile) ? cb_sysprompt.Items.IndexOf(Settings.PromptFile) : 0;
+            num_maxcontext.Maximum = Settings.MaxTotalTokens;
+            num_maxcontext.Value = Settings.MaxTotalTokens;
+            num_maxresponse.Value = Settings.MaxResponseTokens;
+            num_temperature.Value = (decimal)Settings.Temperature;
+            num_memtokens.Value = Settings.ReservedSessionTokens;
+            ck_markdown.Checked = Settings.MarkdownMemoryFormating;
+            switch (RAGSystem.Heuristic)
+            {
+                case HNSW.Net.NeighbourSelectionHeuristic.SelectSimple:
+                    cb_ragheuristic.SelectedIndex = 1;
+                    break;
+                case HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic:
+                    cb_ragheuristic.SelectedIndex = 0;
+                    break;
+                default:
+                    break;
+            }
+            ck_ragsummaries.Checked = Settings.RAGUseSummaries;
+            ck_ragtitles.Checked = Settings.RAGUseTitles;
+            num_ragcutoff.Value = (decimal)Settings.RAGDistanceCutOff;
+            num_ragmaxretrieve.Value = Settings.MaxRAGEntries;
+            num_ragindex.Value = Settings.RAGPosition;
+            ck_ragweb.Checked = Settings.InternetSearch;
+            cb_background.SelectedIndex = cb_background.Items.IndexOf(Settings.BackgroundFile);
+            num_fontsize.Value = Settings.FontSize;
+            num_msgcount.Value = Settings.MaxMessagesOnScreen;
+            ck_alwayswebsearch.Checked = Settings.AlwaysWebSearchQuery;
+            ck_ttstoggle.Checked = Settings.UseTTS;
 
             if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
             {
@@ -1540,6 +1545,7 @@ namespace WaifuAI
                 return;
             try
             {
+                // otherwise I get rare, but annoying, crashes that bypass the try/catch. Not sure how to fix
                 Task.Run(() =>
                 {
                     var realid = LLMSystem.History.CurrentSession.Messages.Count - Settings.MaxMessagesOnScreen;
@@ -1549,6 +1555,7 @@ namespace WaifuAI
                     if (realid >= LLMSystem.History.CurrentSession.Messages.Count)
                         return;
                     _editMessageForm = new EditMessageForm(LLMSystem.History.CurrentSession.Messages[realid].Guid);
+                    _editMessageForm.TopMost = true;
                     if (_editMessageForm.ShowDialog() == DialogResult.OK && _editMessageForm.Message != null)
                     {
                         Invoke((System.Windows.Forms.MethodInvoker)async delegate

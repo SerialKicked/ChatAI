@@ -8,11 +8,24 @@ namespace WaifuAI.Files
 {
     public class Character : BasePersona
     {
-        [JsonIgnore] public Image  Portrait => GetPortrait();
+        [JsonIgnore] public Image Portrait => GetPortrait();
         private Image? _image = null;
 
+        /// <summary>
+        /// If set to true, this character can initiate chat by sending a message when the user is idle. 
+        /// It is contextually aware and may not always send a message. 
+        /// A system to prevent spam is also in place, limiting the amount of messages that can be sent before the user responds.
+        /// </summary>
         public bool CanInitiateChat { get; set; } = false;
+
+        /// <summary>
+        /// A list of prefered inference settings for this character. When enabled in the UI, the bot will cycle between these settings at random with each new message. This ensure a more diverse set of responses.
+        /// </summary>
         public List<string> AllowedSamplers { get; set; } = [];
+
+        /// <summary>
+        /// Voice ID for for OuteTTS (if enabled)
+        /// </summary>
         public string TTSVoice { get; set; } = string.Empty;
 
         public override void BeginChat()

@@ -40,6 +40,7 @@
             ed_input = new TextBox();
             panel1 = new Panel();
             groupBox23 = new GroupBox();
+            ck_ttstoggle = new CheckBox();
             bt_test = new Button();
             ck_onlinerag = new CheckBox();
             ck_caninitchat = new CheckBox();
@@ -96,6 +97,8 @@
             tabWorldInfo = new TabPage();
             panel3 = new Panel();
             groupBox8 = new GroupBox();
+            label60 = new Label();
+            numWItriggerchance = new NumericUpDown();
             label27 = new Label();
             num_wentrypriority = new NumericUpDown();
             label26 = new Label();
@@ -255,7 +258,6 @@
             toolStripStatusLabel2 = new ToolStripStatusLabel();
             bindingSource1 = new BindingSource(components);
             AutoTalkTimer = new System.Windows.Forms.Timer(components);
-            ck_ttstoggle = new CheckBox();
             tabMain.SuspendLayout();
             tabChat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
@@ -273,6 +275,7 @@
             tabWorldInfo.SuspendLayout();
             panel3.SuspendLayout();
             groupBox8.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numWItriggerchance).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_wentrypriority).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_wentryduration).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_wentryposition).BeginInit();
@@ -480,6 +483,18 @@
             groupBox23.TabIndex = 26;
             groupBox23.TabStop = false;
             groupBox23.Text = "Quick Settings";
+            // 
+            // ck_ttstoggle
+            // 
+            ck_ttstoggle.AutoSize = true;
+            ck_ttstoggle.Font = new Font("Segoe UI", 9F);
+            ck_ttstoggle.Location = new Point(4, 170);
+            ck_ttstoggle.Name = "ck_ttstoggle";
+            ck_ttstoggle.Size = new Size(84, 19);
+            ck_ttstoggle.TabIndex = 32;
+            ck_ttstoggle.Text = "Enable TTS";
+            ck_ttstoggle.UseVisualStyleBackColor = true;
+            ck_ttstoggle.CheckedChanged += ck_ttstoggle_CheckedChanged;
             // 
             // bt_test
             // 
@@ -1109,6 +1124,8 @@
             // 
             // groupBox8
             // 
+            groupBox8.Controls.Add(label60);
+            groupBox8.Controls.Add(numWItriggerchance);
             groupBox8.Controls.Add(label27);
             groupBox8.Controls.Add(num_wentrypriority);
             groupBox8.Controls.Add(label26);
@@ -1132,6 +1149,27 @@
             groupBox8.TabIndex = 1;
             groupBox8.TabStop = false;
             groupBox8.Text = "Entry Settings";
+            // 
+            // label60
+            // 
+            label60.AutoSize = true;
+            label60.Location = new Point(542, 129);
+            label60.Name = "label60";
+            label60.Size = new Size(87, 15);
+            label60.TabIndex = 17;
+            label60.Text = "Trigger Chance";
+            // 
+            // numWItriggerchance
+            // 
+            numWItriggerchance.DecimalPlaces = 2;
+            numWItriggerchance.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
+            numWItriggerchance.Location = new Point(542, 147);
+            numWItriggerchance.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+            numWItriggerchance.Name = "numWItriggerchance";
+            numWItriggerchance.Size = new Size(110, 23);
+            numWItriggerchance.TabIndex = 16;
+            numWItriggerchance.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            numWItriggerchance.ValueChanged += UpdateWorldEntryEvent;
             // 
             // label27
             // 
@@ -2798,18 +2836,6 @@
             AutoTalkTimer.Interval = 1000;
             AutoTalkTimer.Tick += AutoTalkTimer_Tick;
             // 
-            // ck_ttstoggle
-            // 
-            ck_ttstoggle.AutoSize = true;
-            ck_ttstoggle.Font = new Font("Segoe UI", 9F);
-            ck_ttstoggle.Location = new Point(4, 170);
-            ck_ttstoggle.Name = "ck_ttstoggle";
-            ck_ttstoggle.Size = new Size(84, 19);
-            ck_ttstoggle.TabIndex = 32;
-            ck_ttstoggle.Text = "Enable TTS";
-            ck_ttstoggle.UseVisualStyleBackColor = true;
-            ck_ttstoggle.CheckedChanged += ck_ttstoggle_CheckedChanged;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -2845,6 +2871,7 @@
             panel3.ResumeLayout(false);
             groupBox8.ResumeLayout(false);
             groupBox8.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numWItriggerchance).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_wentrypriority).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_wentryduration).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_wentryposition).EndInit();
@@ -3151,5 +3178,7 @@
         private NumericUpDown num_smoothfac;
         private Label label59;
         private CheckBox ck_ttstoggle;
+        private Label label60;
+        private NumericUpDown numWItriggerchance;
     }
 }
