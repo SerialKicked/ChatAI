@@ -1436,9 +1436,10 @@ namespace WaifuAI
             }
             LLMSystem.Bot.History.CurrentSessionID++;
             _activityTimer?.Reset();
+            _selectedSession = LLMSystem.History.CurrentSession;
             await LLMSystem.History.StartNewChatSession(true);
             await WebChatLoad();
-
+            LoadChatHistoryTab();
         }
 
         #endregion
@@ -2006,6 +2007,31 @@ namespace WaifuAI
         private void label59_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private async void bt_delsession_Click(object sender, EventArgs e)
+        {
+            if (_selectedSession == null)
+                return;
+            if (LLMSystem.History.Sessions.Count < 1)
+            {
+                bt_deleteAllHistory_Click(sender, e);
+                return;
+            }
+            if (MessageBox.Show("This will delete the selected session permanently. Are you sure?", "Delete Session?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                var needchangesession = LLMSystem.History.CurrentSession == _selectedSession;
+                LLMSystem.History.Sessions.Remove(_selectedSession);
+                if (needchangesession)
+                {
+                    LLMSystem.History.CurrentSessionID = LLMSystem.History.Sessions.Count - 1;
+                }
+            }
+            _activityTimer?.Reset();
+            _selectedSession = LLMSystem.History.CurrentSession;
+            DisplaySessionDetails(_selectedSession);
+            LoadChatHistoryTab();
+            await WebChatLoad();
         }
     }
 }

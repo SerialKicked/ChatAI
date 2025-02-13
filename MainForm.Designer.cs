@@ -75,6 +75,7 @@
             tabHistory = new TabPage();
             web_sessioncontent = new Microsoft.Web.WebView2.WinForms.WebView2();
             panel2 = new Panel();
+            bt_delsession = new Button();
             bt_insertsession = new Button();
             ck_hist_sticky = new CheckBox();
             button5 = new Button();
@@ -885,15 +886,16 @@
             web_sessioncontent.CreationProperties = null;
             web_sessioncontent.DefaultBackgroundColor = Color.White;
             web_sessioncontent.Dock = DockStyle.Fill;
-            web_sessioncontent.Location = new Point(326, 176);
+            web_sessioncontent.Location = new Point(367, 240);
             web_sessioncontent.Name = "web_sessioncontent";
-            web_sessioncontent.Size = new Size(644, 554);
+            web_sessioncontent.Size = new Size(603, 490);
             web_sessioncontent.TabIndex = 2;
             web_sessioncontent.ZoomFactor = 1D;
             // 
             // panel2
             // 
             panel2.AutoScroll = true;
+            panel2.Controls.Add(bt_delsession);
             panel2.Controls.Add(bt_insertsession);
             panel2.Controls.Add(ck_hist_sticky);
             panel2.Controls.Add(button5);
@@ -910,15 +912,26 @@
             panel2.Controls.Add(lbl_sessioninfo);
             panel2.Controls.Add(lbl_sessiontitle);
             panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(326, 0);
+            panel2.Location = new Point(367, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(644, 176);
+            panel2.Size = new Size(603, 240);
             panel2.TabIndex = 1;
+            // 
+            // bt_delsession
+            // 
+            bt_delsession.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            bt_delsession.Location = new Point(444, 96);
+            bt_delsession.Name = "bt_delsession";
+            bt_delsession.Size = new Size(151, 23);
+            bt_delsession.TabIndex = 23;
+            bt_delsession.Text = "Delete This Sesion";
+            bt_delsession.UseVisualStyleBackColor = true;
+            bt_delsession.Click += bt_delsession_Click;
             // 
             // bt_insertsession
             // 
             bt_insertsession.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_insertsession.Location = new Point(485, 93);
+            bt_insertsession.Location = new Point(444, 67);
             bt_insertsession.Name = "bt_insertsession";
             bt_insertsession.Size = new Size(151, 23);
             bt_insertsession.TabIndex = 22;
@@ -940,7 +953,7 @@
             // button5
             // 
             button5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button5.Location = new Point(485, 38);
+            button5.Location = new Point(444, 38);
             button5.Name = "button5";
             button5.Size = new Size(151, 23);
             button5.TabIndex = 20;
@@ -981,7 +994,7 @@
             // 
             // ed_hist_kw2
             // 
-            ed_hist_kw2.Location = new Point(368, 136);
+            ed_hist_kw2.Location = new Point(6, 179);
             ed_hist_kw2.Name = "ed_hist_kw2";
             ed_hist_kw2.Size = new Size(220, 23);
             ed_hist_kw2.TabIndex = 16;
@@ -990,7 +1003,7 @@
             // label57
             // 
             label57.AutoSize = true;
-            label57.Location = new Point(368, 118);
+            label57.Location = new Point(6, 161);
             label57.Name = "label57";
             label57.Size = new Size(67, 15);
             label57.TabIndex = 15;
@@ -1030,7 +1043,7 @@
             bt_deleteAllHistory.BackColor = SystemColors.ButtonFace;
             bt_deleteAllHistory.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_deleteAllHistory.ForeColor = Color.DarkRed;
-            bt_deleteAllHistory.Location = new Point(485, 67);
+            bt_deleteAllHistory.Location = new Point(444, 125);
             bt_deleteAllHistory.Name = "bt_deleteAllHistory";
             bt_deleteAllHistory.Size = new Size(151, 23);
             bt_deleteAllHistory.TabIndex = 3;
@@ -1041,7 +1054,7 @@
             // bt_sessionrefresh
             // 
             bt_sessionrefresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_sessionrefresh.Location = new Point(485, 9);
+            bt_sessionrefresh.Location = new Point(444, 9);
             bt_sessionrefresh.Name = "bt_sessionrefresh";
             bt_sessionrefresh.Size = new Size(151, 23);
             bt_sessionrefresh.TabIndex = 2;
@@ -1075,7 +1088,7 @@
             listSession.FullRowSelect = true;
             listSession.Location = new Point(0, 0);
             listSession.Name = "listSession";
-            listSession.Size = new Size(326, 730);
+            listSession.Size = new Size(367, 730);
             listSession.TabIndex = 0;
             listSession.UseCompatibleStateImageBehavior = false;
             listSession.View = View.Details;
@@ -1084,7 +1097,7 @@
             // columnHeader1
             // 
             columnHeader1.Text = "Title";
-            columnHeader1.Width = 220;
+            columnHeader1.Width = 280;
             // 
             // columnHeader2
             // 
@@ -3180,5 +3193,6 @@
         private CheckBox ck_ttstoggle;
         private Label label60;
         private NumericUpDown numWItriggerchance;
+        private Button bt_delsession;
     }
 }
