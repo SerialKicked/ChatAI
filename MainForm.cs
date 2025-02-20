@@ -284,7 +284,10 @@ namespace WaifuAI
             }
             else
             {
-                var stringfix = e.FixAsterisks();
+                var stringfix = Settings.AsteriskCheck ? e.FixAsterisks() : e;
+                if (Settings.AntiSlop)
+                    stringfix = stringfix.RemoveSlop(Settings.AntiSlopList, Settings.AntiSlopRatio);
+
                 var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
                 var msg = LLMSystem.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMSystem.User, LLMSystem.Bot);
                 await WebEditLastMessage(MsgPrefix + stringfix);
@@ -1109,6 +1112,10 @@ namespace WaifuAI
             num_msgcount.Value = Settings.MaxMessagesOnScreen;
             ck_alwayswebsearch.Checked = Settings.AlwaysWebSearchQuery;
             ck_ttstoggle.Checked = Settings.UseTTS;
+            ck_fixasterix.Checked = Settings.AsteriskCheck;
+            ck_antislop.Checked = Settings.AntiSlop;
+            num_antislopchance.Value = (decimal)Settings.AntiSlopRatio;
+            ed_sloplist.Text = Settings.AntiSlopList.Length > 0 ? string.Join(",", Settings.AntiSlopList) : string.Empty;
 
             if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
             {
@@ -1143,6 +1150,12 @@ namespace WaifuAI
                 Settings.BackgroundFile = cb_background.SelectedItem?.ToString() ?? "bedroom_cozy.jpg";
                 Settings.AlwaysWebSearchQuery = ck_alwayswebsearch.Checked;
                 Settings.UseTTS = ck_ttstoggle.Checked;
+
+                Settings.AsteriskCheck = ck_fixasterix.Checked;
+                Settings.AntiSlop = ck_antislop.Checked;
+                Settings.AntiSlopRatio = (float)num_antislopchance.Value;
+                Settings.AntiSlopList = !string.IsNullOrEmpty(ed_sloplist.Text) ? ed_sloplist.Text.Split(',') : [];
+
                 var str = JsonConvert.SerializeObject(Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
                 if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
@@ -1400,11 +1413,6 @@ namespace WaifuAI
                 }
             }
             _selectedSession = await Chatlog.UpdateSession(_selectedSession);
-            //_selectedSession.EndTime = _selectedSession.Messages.Last().Date;
-            //_selectedSession.Summary = await _selectedSession.GenerateNewSummary();
-            //_selectedSession.Sentiments = await _selectedSession.GenerateSentiment();
-            //_selectedSession.Sentiments = await _selectedSession.GenerateKeywords();
-            //_selectedSession.Title = await ChatSession.GenerateNewTitle(_selectedSession.Summary);
             DisplaySessionDetails(_selectedSession);
             LoadChatHistoryTab();
             (LLMSystem.Bot as Character)?.SaveChatHistory();
@@ -2032,6 +2040,26 @@ namespace WaifuAI
             DisplaySessionDetails(_selectedSession);
             LoadChatHistoryTab();
             await WebChatLoad();
+        }
+
+        private void ck_fixasterix_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.AsteriskCheck = ck_fixasterix.Checked;
+        }
+
+        private void ck_antislop_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.AntiSlop = ck_antislop.Checked;
+        }
+
+        private void num_antislopchance_ValueChanged(object sender, EventArgs e)
+        {
+            Settings.AntiSlopRatio = (float)num_antislopchance.Value;
+        }
+
+        private void ed_sloplist_TextChanged(object sender, EventArgs e)
+        {
+            Settings.AntiSlopList = !string.IsNullOrEmpty(ed_sloplist.Text) ? ed_sloplist.Text.Split(',') : [];
         }
     }
 }

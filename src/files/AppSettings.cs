@@ -32,5 +32,9 @@ namespace WaifuAI.Files
         public string BackgroundFile { get; set; } = "bedroom_cozy.jpg";
         public bool MarkdownMemoryFormating { get; set; } = false;
         public bool UseTTS { get; set; } = false;
+        public bool AsteriskCheck { get; set; } = false;
+        public bool AntiSlop { get; set; } = false;
+        public float AntiSlopRatio { get; set; } = 1;
+        public string[] AntiSlopList { get; set; } = [];
     }
 }

@@ -24,7 +24,7 @@ namespace WaifuAI.src.forms
 
         private void bt_save_Click(object sender, EventArgs e)
         {
-            LLMSystem.ScenarioOverride = !string.IsNullOrWhiteSpace(ed_message.Text) ? ed_message.Text.ToLinuxFormat() : string.Empty;
+            LLMSystem.ScenarioOverride = !string.IsNullOrWhiteSpace(ed_message.Text) ? LLMSystem.ReplaceMacros(ed_message.Text.ToLinuxFormat()) : string.Empty;
             DialogResult = DialogResult.OK;
             Close();
         }

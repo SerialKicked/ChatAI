@@ -214,8 +214,12 @@
             num_topk = new NumericUpDown();
             label31 = new Label();
             tabSettings = new TabPage();
-            groupBox12 = new GroupBox();
-            ed_log = new TextBox();
+            groupBox24 = new GroupBox();
+            label61 = new Label();
+            num_antislopchance = new NumericUpDown();
+            ed_sloplist = new TextBox();
+            ck_antislop = new CheckBox();
+            ck_fixasterix = new CheckBox();
             groupBox11 = new GroupBox();
             ck_markdown = new CheckBox();
             num_memtokens = new NumericUpDown();
@@ -251,6 +255,8 @@
             button1 = new Button();
             ck_ragsummaries = new CheckBox();
             ck_ragtitles = new CheckBox();
+            tabConsole = new TabPage();
+            ed_log = new TextBox();
             openFileDialog1 = new OpenFileDialog();
             fontDialog1 = new FontDialog();
             HelptoolTip = new ToolTip(components);
@@ -320,7 +326,8 @@
             ((System.ComponentModel.ISupportInitialize)num_topa).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_topk).BeginInit();
             tabSettings.SuspendLayout();
-            groupBox12.SuspendLayout();
+            groupBox24.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)num_antislopchance).BeginInit();
             groupBox11.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_memtokens).BeginInit();
             groupBox10.SuspendLayout();
@@ -332,6 +339,7 @@
             ((System.ComponentModel.ISupportInitialize)num_ragindex).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_ragmaxretrieve).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_ragcutoff).BeginInit();
+            tabConsole.SuspendLayout();
             statusbar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
             SuspendLayout();
@@ -348,6 +356,7 @@
             tabMain.Controls.Add(tabSysPrompt);
             tabMain.Controls.Add(tabSamplers);
             tabMain.Controls.Add(tabSettings);
+            tabMain.Controls.Add(tabConsole);
             tabMain.Location = new Point(0, 0);
             tabMain.Name = "tabMain";
             tabMain.SelectedIndex = 0;
@@ -2352,7 +2361,7 @@
             // 
             // tabSettings
             // 
-            tabSettings.Controls.Add(groupBox12);
+            tabSettings.Controls.Add(groupBox24);
             tabSettings.Controls.Add(groupBox11);
             tabSettings.Controls.Add(groupBox10);
             tabSettings.Controls.Add(groupBox9);
@@ -2366,30 +2375,77 @@
             tabSettings.Text = "Settings";
             tabSettings.UseVisualStyleBackColor = true;
             // 
-            // groupBox12
+            // groupBox24
             // 
-            groupBox12.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            groupBox12.Controls.Add(ed_log);
-            groupBox12.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox12.Location = new Point(416, 6);
-            groupBox12.Name = "groupBox12";
-            groupBox12.Size = new Size(546, 718);
-            groupBox12.TabIndex = 28;
-            groupBox12.TabStop = false;
-            groupBox12.Text = "Last Prompt";
+            groupBox24.Controls.Add(label61);
+            groupBox24.Controls.Add(num_antislopchance);
+            groupBox24.Controls.Add(ed_sloplist);
+            groupBox24.Controls.Add(ck_antislop);
+            groupBox24.Controls.Add(ck_fixasterix);
+            groupBox24.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            groupBox24.Location = new Point(416, 110);
+            groupBox24.Name = "groupBox24";
+            groupBox24.Size = new Size(402, 146);
+            groupBox24.TabIndex = 29;
+            groupBox24.TabStop = false;
+            groupBox24.Text = "Output Formatting";
             // 
-            // ed_log
+            // label61
             // 
-            ed_log.BackColor = SystemColors.Control;
-            ed_log.BorderStyle = BorderStyle.None;
-            ed_log.Dock = DockStyle.Fill;
-            ed_log.Font = new Font("Segoe UI", 9F);
-            ed_log.Location = new Point(3, 19);
-            ed_log.Multiline = true;
-            ed_log.Name = "ed_log";
-            ed_log.ScrollBars = ScrollBars.Vertical;
-            ed_log.Size = new Size(540, 696);
-            ed_log.TabIndex = 2;
+            label61.AutoSize = true;
+            label61.Font = new Font("Segoe UI", 9F);
+            label61.Location = new Point(27, 104);
+            label61.Name = "label61";
+            label61.Size = new Size(96, 15);
+            label61.TabIndex = 29;
+            label61.Text = "Removal Chance";
+            // 
+            // num_antislopchance
+            // 
+            num_antislopchance.CausesValidation = false;
+            num_antislopchance.DecimalPlaces = 2;
+            num_antislopchance.Font = new Font("Segoe UI", 9F);
+            num_antislopchance.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
+            num_antislopchance.Location = new Point(129, 101);
+            num_antislopchance.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+            num_antislopchance.Name = "num_antislopchance";
+            num_antislopchance.Size = new Size(88, 23);
+            num_antislopchance.TabIndex = 28;
+            num_antislopchance.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            num_antislopchance.ValueChanged += num_antislopchance_ValueChanged;
+            // 
+            // ed_sloplist
+            // 
+            ed_sloplist.Location = new Point(6, 72);
+            ed_sloplist.Name = "ed_sloplist";
+            ed_sloplist.PlaceholderText = "comma separated list of words to filter out";
+            ed_sloplist.Size = new Size(390, 23);
+            ed_sloplist.TabIndex = 2;
+            ed_sloplist.TextChanged += ed_sloplist_TextChanged;
+            // 
+            // ck_antislop
+            // 
+            ck_antislop.AutoSize = true;
+            ck_antislop.Font = new Font("Segoe UI", 9F);
+            ck_antislop.Location = new Point(6, 47);
+            ck_antislop.Name = "ck_antislop";
+            ck_antislop.Size = new Size(248, 19);
+            ck_antislop.TabIndex = 1;
+            ck_antislop.Text = "Remove words from list (ad-hoc anti slop)";
+            ck_antislop.UseVisualStyleBackColor = true;
+            ck_antislop.CheckedChanged += ck_antislop_CheckedChanged;
+            // 
+            // ck_fixasterix
+            // 
+            ck_fixasterix.AutoSize = true;
+            ck_fixasterix.Font = new Font("Segoe UI", 9F);
+            ck_fixasterix.Location = new Point(6, 22);
+            ck_fixasterix.Name = "ck_fixasterix";
+            ck_fixasterix.Size = new Size(190, 19);
+            ck_fixasterix.TabIndex = 0;
+            ck_fixasterix.Text = "Attempt to fix missing asterisks";
+            ck_fixasterix.UseVisualStyleBackColor = true;
+            ck_fixasterix.CheckedChanged += ck_fixasterix_CheckedChanged;
             // 
             // groupBox11
             // 
@@ -2397,7 +2453,7 @@
             groupBox11.Controls.Add(num_memtokens);
             groupBox11.Controls.Add(label32);
             groupBox11.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox11.Location = new Point(8, 528);
+            groupBox11.Location = new Point(416, 6);
             groupBox11.Name = "groupBox11";
             groupBox11.Size = new Size(402, 98);
             groupBox11.TabIndex = 27;
@@ -2448,7 +2504,7 @@
             groupBox10.Controls.Add(cb_background);
             groupBox10.Controls.Add(label28);
             groupBox10.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox10.Location = new Point(8, 447);
+            groupBox10.Location = new Point(416, 262);
             groupBox10.Name = "groupBox10";
             groupBox10.Size = new Size(402, 75);
             groupBox10.TabIndex = 26;
@@ -2574,7 +2630,7 @@
             groupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox2.Location = new Point(8, 343);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(402, 98);
+            groupBox2.Size = new Size(402, 89);
             groupBox2.TabIndex = 24;
             groupBox2.TabStop = false;
             groupBox2.Text = "Import";
@@ -2807,6 +2863,30 @@
             ck_ragtitles.Text = "Search Titles";
             ck_ragtitles.UseVisualStyleBackColor = true;
             // 
+            // tabConsole
+            // 
+            tabConsole.Controls.Add(ed_log);
+            tabConsole.Location = new Point(4, 27);
+            tabConsole.Name = "tabConsole";
+            tabConsole.Padding = new Padding(3);
+            tabConsole.Size = new Size(970, 730);
+            tabConsole.TabIndex = 9;
+            tabConsole.Text = "Raw Prompt";
+            tabConsole.UseVisualStyleBackColor = true;
+            // 
+            // ed_log
+            // 
+            ed_log.BackColor = SystemColors.Control;
+            ed_log.BorderStyle = BorderStyle.None;
+            ed_log.Dock = DockStyle.Fill;
+            ed_log.Font = new Font("Segoe UI", 9F);
+            ed_log.Location = new Point(3, 3);
+            ed_log.Multiline = true;
+            ed_log.Name = "ed_log";
+            ed_log.ScrollBars = ScrollBars.Vertical;
+            ed_log.Size = new Size(964, 724);
+            ed_log.TabIndex = 3;
+            // 
             // openFileDialog1
             // 
             openFileDialog1.FileName = "openFileDialog1";
@@ -2940,8 +3020,9 @@
             ((System.ComponentModel.ISupportInitialize)num_topa).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_topk).EndInit();
             tabSettings.ResumeLayout(false);
-            groupBox12.ResumeLayout(false);
-            groupBox12.PerformLayout();
+            groupBox24.ResumeLayout(false);
+            groupBox24.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)num_antislopchance).EndInit();
             groupBox11.ResumeLayout(false);
             groupBox11.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)num_memtokens).EndInit();
@@ -2957,6 +3038,8 @@
             ((System.ComponentModel.ISupportInitialize)num_ragindex).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_ragmaxretrieve).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_ragcutoff).EndInit();
+            tabConsole.ResumeLayout(false);
+            tabConsole.PerformLayout();
             statusbar.ResumeLayout(false);
             statusbar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).EndInit();
@@ -3006,7 +3089,6 @@
         private ComboBox cb_sysprompt;
         private Label label11;
         private OpenFileDialog openFileDialog1;
-        private TextBox ed_log;
         private TabPage tabHistory;
         private ListView listSession;
         private Microsoft.Web.WebView2.WinForms.WebView2 web_sessioncontent;
@@ -3097,7 +3179,6 @@
         private CheckBox ck_markdown;
         private NumericUpDown num_memtokens;
         private Label label32;
-        private GroupBox groupBox12;
         private GroupBox groupBox13;
         private NumericUpDown num_topk;
         private Label label31;
@@ -3194,5 +3275,13 @@
         private Label label60;
         private NumericUpDown numWItriggerchance;
         private Button bt_delsession;
+        private GroupBox groupBox24;
+        private CheckBox ck_antislop;
+        private CheckBox ck_fixasterix;
+        private TabPage tabConsole;
+        private TextBox ed_log;
+        private TextBox ed_sloplist;
+        private Label label61;
+        private NumericUpDown num_antislopchance;
     }
 }
