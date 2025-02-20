@@ -142,5 +142,17 @@ namespace WaifuAI.src.forms
             var newidx = cb_charlist.Items.IndexOf(currselection);
             cb_charlist.SelectedIndex = newidx == -1 ? 0 : newidx;
         }
+
+        private void cb_icon_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // load the image from the data/img folder into the picture
+            if (!File.Exists("data/img/" + cb_icon.Text))
+                return;
+            var img = Image.FromFile("data/img/" + cb_icon.Text);
+            if (img != null)
+            {
+                pic.Image = img;
+            }
+        }
     }
 }

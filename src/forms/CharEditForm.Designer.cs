@@ -34,6 +34,8 @@
             cb_charlist = new ComboBox();
             tabControl1 = new TabControl();
             tabBio = new TabPage();
+            pic = new PictureBox();
+            cb_icon = new ComboBox();
             label4 = new Label();
             ed_firstmessage = new TextBox();
             ed_scenario = new TextBox();
@@ -71,10 +73,10 @@
             groupBox6 = new GroupBox();
             ckl_plugins = new CheckedListBox();
             label9 = new Label();
-            cb_icon = new ComboBox();
             groupBox3.SuspendLayout();
             tabControl1.SuspendLayout();
             tabBio.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pic).BeginInit();
             tabMood.SuspendLayout();
             groupBox5.SuspendLayout();
             groupBox4.SuspendLayout();
@@ -131,6 +133,7 @@
             // 
             // tabBio
             // 
+            tabBio.Controls.Add(pic);
             tabBio.Controls.Add(cb_icon);
             tabBio.Controls.Add(label4);
             tabBio.Controls.Add(ed_firstmessage);
@@ -148,6 +151,25 @@
             tabBio.TabIndex = 0;
             tabBio.Text = "Biography";
             tabBio.UseVisualStyleBackColor = true;
+            // 
+            // pic
+            // 
+            pic.Location = new Point(672, 6);
+            pic.Name = "pic";
+            pic.Size = new Size(54, 50);
+            pic.SizeMode = PictureBoxSizeMode.StretchImage;
+            pic.TabIndex = 16;
+            pic.TabStop = false;
+            // 
+            // cb_icon
+            // 
+            cb_icon.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_icon.FormattingEnabled = true;
+            cb_icon.Location = new Point(732, 19);
+            cb_icon.Name = "cb_icon";
+            cb_icon.Size = new Size(205, 23);
+            cb_icon.TabIndex = 15;
+            cb_icon.SelectedIndexChanged += cb_icon_SelectedIndexChanged;
             // 
             // label4
             // 
@@ -542,15 +564,6 @@
             label9.TabIndex = 0;
             label9.Text = "Plugins this character has access to. Some can be toggled on/off in main chat.";
             // 
-            // cb_icon
-            // 
-            cb_icon.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_icon.FormattingEnabled = true;
-            cb_icon.Location = new Point(732, 19);
-            cb_icon.Name = "cb_icon";
-            cb_icon.Size = new Size(205, 23);
-            cb_icon.TabIndex = 15;
-            // 
             // CharEditForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -567,6 +580,7 @@
             tabControl1.ResumeLayout(false);
             tabBio.ResumeLayout(false);
             tabBio.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pic).EndInit();
             tabMood.ResumeLayout(false);
             groupBox5.ResumeLayout(false);
             groupBox5.PerformLayout();
@@ -633,5 +647,6 @@
         private TextBox ed_outetts;
         private Label label11;
         private ComboBox cb_icon;
+        private PictureBox pic;
     }
 }
