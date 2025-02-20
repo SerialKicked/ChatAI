@@ -1,0 +1,146 @@
+﻿using AIToolkit;
+using AIToolkit.Files;
+using AIToolkit.LLM;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using WaifuAI.Files;
+
+namespace WaifuAI.src.forms
+{
+    public partial class CharEditForm : Form
+    {
+        private Character SelectedCharacter = new Character();
+
+        public CharEditForm()
+        {
+            InitializeComponent();
+        }
+
+        public void SetupCharacterEditor(string Forceid = "", bool addEvents = true)
+        {
+            cb_charlist.Items.Clear();
+            foreach (var item in DataFiles.Characters)
+            {
+                cb_charlist.Items.Add(item.Value.UniqueName);
+            }
+            var idwant = 0;
+            if (Forceid != "")
+                idwant = cb_charlist.Items.IndexOf(Forceid);
+            if (cb_charlist.Items.Count > 0)
+            {
+                cb_charlist.SelectedIndex = idwant;
+                SelectedCharacter = DataFiles.Characters[cb_charlist.SelectedItem!.ToString()!].Copy<Character>()!;
+            }
+            if (addEvents)
+            {
+                cb_charlist.SelectedIndexChanged += (sender, e) =>
+                {
+                    SelectedCharacter = DataFiles.Characters[cb_charlist.SelectedItem!.ToString()!].Copy<Character>()!;
+                    LoadCharacterSettings(SelectedCharacter);
+                };
+
+                cb_icon.Items.Clear();
+                // load all the png and jpg files in the data/img folder
+                var files = Directory.GetFiles("data/img", "*.png");
+                files = files.Concat(Directory.GetFiles("data/img", "*.jpg")).ToArray();
+                foreach (var item in files)
+                {
+                    cb_icon.Items.Add(Path.GetFileName(item));
+                }
+
+            }
+            LoadCharacterSettings(SelectedCharacter);
+        }
+
+        private Character SaveUIToCharacter()
+        {
+            return new Character()
+            {
+                Name = ed_name.Text,
+                Bio = ed_bio.Text.ToLinuxFormat(),
+                Scenario = ed_scenario.Text.ToLinuxFormat(),
+                FirstMessage = ed_firstmessage.Lines.ToList(),
+                IsUser = ck_isuser.Checked,
+                SystemPrompt = ed_sysprompt.Text.ToLinuxFormat(),
+                TTSVoice = ed_outetts.Text,
+                ExampleDialogs = ed_writingstyle.Lines.ToList(),
+                CanInitiateChat = ck_caninitchat.Checked,
+                SenseOfTime = ck_senseoftime.Checked,
+                SessionMemorySystem = ck_sessionmemory.Checked,
+                Icon = cb_icon.Text,
+                Plugins = [.. ckl_plugins.CheckedItems.Cast<string>()],
+                Worlds = [.. ckl_worldinfo.CheckedItems.Cast<string>()],
+                AllowedSamplers = [.. ckl_samplers.CheckedItems.Cast<string>()]
+            };
+        }
+
+        private void LoadCharacterSettings(Character selectedCharacter)
+        {
+            ed_name.Text = selectedCharacter.Name;
+            ed_bio.Text = selectedCharacter.Bio.ToWinFormat();
+            ed_scenario.Text = selectedCharacter.Scenario.ToWinFormat();
+            ed_firstmessage.Clear();
+            ed_firstmessage.Lines = selectedCharacter.FirstMessage.ToArray();
+            ck_isuser.Checked = selectedCharacter.IsUser;
+            ed_sysprompt.Text = selectedCharacter.SystemPrompt.ToWinFormat();
+            ed_outetts.Text = selectedCharacter.TTSVoice;
+            ed_writingstyle.Clear();
+            ed_writingstyle.Lines = selectedCharacter.ExampleDialogs.ToArray();
+            ck_caninitchat.Checked = selectedCharacter.CanInitiateChat;
+            ck_senseoftime.Checked = selectedCharacter.SenseOfTime;
+            ck_sessionmemory.Checked = selectedCharacter.SessionMemorySystem;
+            ckl_plugins.Items.Clear();
+            foreach (var item in LLMSystem.ContextPlugins)
+            {
+                ckl_plugins.Items.Add(item.PluginID, selectedCharacter.Plugins.Contains(item.PluginID));
+            }
+            ckl_worldinfo.Items.Clear();
+            foreach (var item in DataFiles.WorldInfos)
+            {
+                ckl_worldinfo.Items.Add(item.Value.UniqueName, selectedCharacter.Worlds.Contains(item.Value.UniqueName));
+            }
+            ckl_samplers.Items.Clear();
+            foreach (var item in DataFiles.Inference)
+            {
+                ckl_samplers.Items.Add(item.Value.UniqueName, selectedCharacter.AllowedSamplers.Contains(item.Value.UniqueName));
+            }
+            // set cb_icon item index to the one that matches the selected character icon
+            cb_icon.SelectedIndex = cb_icon.Items.IndexOf(selectedCharacter.Icon);
+        }
+
+        private void bt_worldsave_Click(object sender, EventArgs e)
+        {
+            var NewName = cb_charlist.Text;
+            if (string.IsNullOrWhiteSpace(NewName))
+            {
+                MessageBox.Show("Please select a valide name for the new sampler");
+                return;
+            }
+            // If name already exists ask for confirmation
+            if (DataFiles.Characters.ContainsKey(NewName) && (MessageBox.Show("This character already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
+                return;
+            SelectedCharacter = SaveUIToCharacter();
+            SelectedCharacter.UniqueName = NewName;
+            DataFiles.Characters[NewName] = SelectedCharacter;
+            (SelectedCharacter as IFile).SaveToFile("data/chars/" + NewName + ".json");
+            SetupCharacterEditor(NewName, false);
+
+            // Update the sampler list in the chat menu
+            var currselection = cb_charlist.SelectedItem?.ToString() ?? "";
+            cb_charlist.Items.Clear();
+            foreach (var item in DataFiles.Characters)
+            {
+                cb_charlist.Items.Add(item.Value.UniqueName);
+            }
+            var newidx = cb_charlist.Items.IndexOf(currselection);
+            cb_charlist.SelectedIndex = newidx == -1 ? 0 : newidx;
+        }
+    }
+}

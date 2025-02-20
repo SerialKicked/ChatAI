@@ -265,6 +265,7 @@
             toolStripStatusLabel2 = new ToolStripStatusLabel();
             bindingSource1 = new BindingSource(components);
             AutoTalkTimer = new System.Windows.Forms.Timer(components);
+            bt_editchar = new Button();
             tabMain.SuspendLayout();
             tabChat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
@@ -595,6 +596,7 @@
             // groupBox5
             // 
             groupBox5.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox5.Controls.Add(bt_editchar);
             groupBox5.Controls.Add(bt_scenario);
             groupBox5.Controls.Add(label3);
             groupBox5.Controls.Add(cb_bot);
@@ -2929,6 +2931,17 @@
             AutoTalkTimer.Interval = 1000;
             AutoTalkTimer.Tick += AutoTalkTimer_Tick;
             // 
+            // bt_editchar
+            // 
+            bt_editchar.Font = new Font("Segoe UI", 9F);
+            bt_editchar.Location = new Point(146, 11);
+            bt_editchar.Name = "bt_editchar";
+            bt_editchar.Size = new Size(35, 20);
+            bt_editchar.TabIndex = 27;
+            bt_editchar.Text = "...";
+            bt_editchar.UseVisualStyleBackColor = true;
+            bt_editchar.Click += bt_editchar_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -3283,5 +3296,6 @@
         private TextBox ed_sloplist;
         private Label label61;
         private NumericUpDown num_antislopchance;
+        private Button bt_editchar;
     }
 }

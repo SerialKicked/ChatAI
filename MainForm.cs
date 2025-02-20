@@ -98,6 +98,7 @@ namespace WaifuAI
             SetupInstructEditor();
             SetupWorldEditor();
             SetupPromptEditor();
+
             SetupChatMenu();
             _isinitloading = false;
             _activityTimer.OnTrigger += OnBotInitiateConversation;
@@ -842,7 +843,7 @@ namespace WaifuAI
             (SelectedInstructEditor as IFile).SaveToFile("data/instruct/" + NewName + ".json");
             SetupInstructEditor(NewName);
             // Update the prompt list in the chat menu
-            var currselection = cb_instruct.SelectedText;
+            var currselection = cb_instruct.Text;
             cb_instruct.Items.Clear();
             foreach (var item in DataFiles.Instruct)
             {
@@ -2060,6 +2061,30 @@ namespace WaifuAI
         private void ed_sloplist_TextChanged(object sender, EventArgs e)
         {
             Settings.AntiSlopList = !string.IsNullOrEmpty(ed_sloplist.Text) ? ed_sloplist.Text.Split(',') : [];
+        }
+
+        private void bt_editchar_Click(object sender, EventArgs e)
+        {
+            var editForm = new CharEditForm();
+            editForm.SetupCharacterEditor(Bot?.UniqueName ?? string.Empty);
+            editForm.ShowDialog();
+            editForm.Dispose();
+            LLMSystem.InvalidatePromptCache();
+            var currbselection = cb_bot.Text;
+            var curruselection = cb_user.Text;
+            cb_bot.Items.Clear();
+            cb_user.Items.Clear();
+            foreach (var item in DataFiles.Characters)
+            {
+                if (item.Value.IsUser)
+                    cb_user.Items.Add(item.Value.UniqueName);
+                else
+                    cb_bot.Items.Add(item.Value.UniqueName);
+            }
+            var newidx = cb_bot.Items.IndexOf(currbselection);
+            cb_bot.SelectedIndex = newidx == -1 ? 0 : newidx;
+            newidx = cb_user.Items.IndexOf(curruselection);
+            cb_user.SelectedIndex = newidx == -1 ? 0 : newidx;
         }
     }
 }
