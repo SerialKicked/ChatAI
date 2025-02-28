@@ -1,0 +1,16 @@
+{
+  "BoSToken": "",
+  "SystemStart": "<|im_start|>system\n",
+  "SystemEnd": "<|im_end|>",
+  "UserStart": "<|im_start|>{{user}}\n",
+  "UserEnd": "<|im_end|>",
+  "BotStart": "<|im_start|>{{char}}\n",
+  "BotEnd": "<|im_end|>",
+  "StopSequence": "",
+  "SysPromptStart": "<|im_start|>system\n",
+  "SysPromptEnd": "<|im_end|>",
+  "AddNamesToPrompt": false,
+  "NewLinesBetweenMessages": true,
+  "StopStrings": [],
+  "UniqueName": "ChatML Named"
+}

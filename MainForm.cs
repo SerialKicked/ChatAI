@@ -14,6 +14,8 @@ using WaifuAI.Plugins;
 using System.Text;
 using System.Media;
 using System.ComponentModel;
+using System.Drawing.Printing;
+using System.Windows.Forms;
 
 namespace WaifuAI
 {
@@ -286,6 +288,9 @@ namespace WaifuAI
             else
             {
                 var stringfix = Settings.AsteriskCheck ? e.FixAsterisks() : e;
+                if (LLMSystem.Instruct.PrefillThinking && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart))
+                    stringfix = LLMSystem.Instruct.ThinkingStart + stringfix;
+
                 if (Settings.AntiSlop)
                     stringfix = stringfix.RemoveSlop(Settings.AntiSlopList, Settings.AntiSlopRatio);
 
@@ -918,6 +923,8 @@ namespace WaifuAI
                 await SendMessageToUI(msg);
                 // ready a new message for the bot's response
                 _currentgeneration = string.Empty;
+                if (LLMSystem.Instruct.PrefillThinking && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart))
+                    _currentgeneration = LLMSystem.Instruct.ThinkingStart;
                 _currentgenerationtokencount = 0;
                 await SendMessageToUI(
                     new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your post...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
@@ -928,6 +935,8 @@ namespace WaifuAI
             {
                 // ready a new message for the bot's response
                 _currentgeneration = string.Empty;
+                if (LLMSystem.Instruct.PrefillThinking && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart))
+                    _currentgeneration = LLMSystem.Instruct.ThinkingStart;
                 _currentgenerationtokencount = 0;
                 await SendMessageToUI(
                     new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is thinking...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
@@ -972,6 +981,8 @@ namespace WaifuAI
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await WebEditLastMessage($"**{LLMSystem.Bot.Name}:** *I am thinking...*");
             _currentgeneration = string.Empty;
+            if (LLMSystem.Instruct.PrefillThinking && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart))
+                _currentgeneration = LLMSystem.Instruct.ThinkingStart;
             _currentgenerationtokencount = 0;
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await LLMSystem.RerollLastMessage();
@@ -1499,6 +1510,26 @@ namespace WaifuAI
                     margin-right: 0px;
                 }}
 
+                .thinking-box {{margin: 5px 0;
+                    border: 1px solid #444;
+                    border-radius: 4px;
+                    overflow: hidden;
+                }}
+
+                .thinking-header {{padding: 5px 10px;
+                    background-color: rgba(80, 80, 80, 0.5);
+                    cursor: pointer;
+                    user-select: none;
+                }}
+
+                .thinking-content {{display: none;
+                    padding: 10px;
+                    background-color: rgba(40, 40, 40, 0.5);
+                }}
+
+                .thinking-box.expanded .thinking-content {{display: block;
+                }}
+
                 .message-content {{
                     flex: 1;
                     word-wrap: break-word;
@@ -1587,14 +1618,36 @@ namespace WaifuAI
 
         private static string InjectDialogHtml(string imgPath, string dialog)
         {
-            // Convert relative path to absolute path and format as file URI
+            // Replace thinking tags with collapsible div structure, using the instruction format's tags
+            var processedDialog = dialog;
+            if (!string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart) && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingEnd))
+            {
+                var thinkStart = System.Text.RegularExpressions.Regex.Escape(LLMSystem.Instruct.ThinkingStart);
+                var thinkEnd = System.Text.RegularExpressions.Regex.Escape(LLMSystem.Instruct.ThinkingEnd);
+
+                processedDialog = System.Text.RegularExpressions.Regex.Replace(
+                    dialog,
+                    $"{thinkStart}(.*?){thinkEnd}",
+                    match => $@"
+                        <div class='thinking-box'>
+                            <div class='thinking-header' onclick='this.parentElement.classList.toggle(""expanded"")'>
+                                ?? Thinking... (click to expand)
+                            </div>
+                            <div class='thinking-content'>
+                                {match.Groups[1].Value}
+                            </div>
+                        </div>",
+                    System.Text.RegularExpressions.RegexOptions.Singleline
+                );
+            }
+
             return $@"
                 <div class='chat-message'>
                     <div class='portrait'>
                         <img src='https://appassets.test/img/{imgPath}' alt='Portrait' width='60'>
                     </div>
                     <div class='message-content'>
-                        {dialog}
+                        {processedDialog}
                     </div>
                 </div>";
         }
