@@ -295,8 +295,14 @@ namespace WaifuAI
                     stringfix = stringfix.RemoveSlop(Settings.AntiSlopList, Settings.AntiSlopRatio);
 
                 var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
-                var msg = LLMSystem.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMSystem.User, LLMSystem.Bot);
                 await WebEditLastMessage(MsgPrefix + stringfix);
+                if (!string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart) && stringfix.Contains(LLMSystem.Instruct.ThinkingStart) && stringfix.Contains(LLMSystem.Instruct.ThinkingEnd))
+                {
+                    // remove everything before the thinking end tag (included)
+                    var idx = stringfix.IndexOf(LLMSystem.Instruct.ThinkingEnd);
+                    stringfix = stringfix.Substring(idx + LLMSystem.Instruct.ThinkingEnd.Length);
+                }
+                var msg = LLMSystem.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMSystem.User, LLMSystem.Bot);
                 _currentgeneration = string.Empty;
                 _currentgenerationtokencount = 0;
                 if (_forcereload || Settings.MaxMessagesOnScreen <= LLMSystem.History.CurrentSession.Messages.Count)
@@ -1055,8 +1061,30 @@ namespace WaifuAI
                         <img src='https://appassets.test/img/{img}' alt='Portrait' width='60'>
                     </div>
                     <div class='message-content'>
-                        {text}
+                        <div class='message-raw'>
+                            {text}
+                        </div>
                     </div>";
+
+            if (singleMessage.Role == AuthorRole.Assistant && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart))
+            {
+                coremsg = $@"
+                    <div class='portrait'>
+                        <img src='https://appassets.test/img/{img}' alt='Portrait' width='60'>
+                    </div>
+                    <div class='message-content'>
+                        <div class='thinking-box'>
+                            <div class='thinking-header' onclick='this.parentElement.classList.toggle(""expanded"")'>
+                                {LLMSystem.Bot.Name} is thinking... (click to expand)
+                            </div>
+                            <div class='thinking-content'> 
+                            </div>
+                        </div>
+                        <div class='message-raw'>
+                            {text}
+                        </div>
+                    </div>";
+            }
 
             coremsg = coremsg.SanitizeForJS();
             var script = $"addHtmlAfterLastChatMessage(\"{coremsg}\");";
@@ -1538,11 +1566,19 @@ namespace WaifuAI
             </style>";
             string scripts = @"
             <script>
-                function updateMessageAtIndex(text, index) {
+                function updateMessageAtIndex(text, index, isthink) {
                     const messageContents = document.getElementsByClassName('message-content');
                     if (index >= 0 && index < messageContents.length) {
                         const messageContent = messageContents[index];
-                        messageContent.innerHTML = text;
+                        const target = isthink ? 
+                            messageContent.querySelector('.thinking-content') : 
+                            messageContent.querySelector('.message-raw');
+            
+                        if (target) {
+                            target.innerHTML = text;
+                        } else {
+                            console.error('Target element not found');
+                        }
                     } else {
                         console.error('Index out of bounds');
                     }
@@ -1620,34 +1656,15 @@ namespace WaifuAI
         {
             // Replace thinking tags with collapsible div structure, using the instruction format's tags
             var processedDialog = dialog;
-            if (!string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart) && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingEnd))
-            {
-                var thinkStart = System.Text.RegularExpressions.Regex.Escape(LLMSystem.Instruct.ThinkingStart);
-                var thinkEnd = System.Text.RegularExpressions.Regex.Escape(LLMSystem.Instruct.ThinkingEnd);
-
-                processedDialog = System.Text.RegularExpressions.Regex.Replace(
-                    dialog,
-                    $"{thinkStart}(.*?){thinkEnd}",
-                    match => $@"
-                        <div class='thinking-box'>
-                            <div class='thinking-header' onclick='this.parentElement.classList.toggle(""expanded"")'>
-                                ?? Thinking... (click to expand)
-                            </div>
-                            <div class='thinking-content'>
-                                {match.Groups[1].Value}
-                            </div>
-                        </div>",
-                    System.Text.RegularExpressions.RegexOptions.Singleline
-                );
-            }
-
             return $@"
                 <div class='chat-message'>
                     <div class='portrait'>
                         <img src='https://appassets.test/img/{imgPath}' alt='Portrait' width='60'>
                     </div>
                     <div class='message-content'>
-                        {processedDialog}
+                        <div class='message-raw'>
+                            {processedDialog}
+                        </div>
                     </div>
                 </div>";
         }
@@ -1675,10 +1692,42 @@ namespace WaifuAI
                 await InvokeAsync(new Func<Task>(async () => await WebEditLastMessage(newMessage)));
                 return;
             }
-            var text = Markdown.ToHtml(newMessage, CustomMarkDownPipeline);
-            text = text.SanitizeForJS();
-            var script = $"updateMessageAtIndex(\"{text}\", document.getElementsByClassName('message-content').length - 1);";
-            var result = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+
+            if (!string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart) &&
+                newMessage.StartsWith(ChatRender.GetMessagePrefix(AuthorRole.Assistant)) &&
+                newMessage.Contains(LLMSystem.Instruct.ThinkingStart))
+            {
+                // remove prefix from message
+                var worktext = newMessage.Substring(ChatRender.GetMessagePrefix(AuthorRole.Assistant).Length);
+                if (!worktext.Contains(LLMSystem.Instruct.ThinkingEnd))
+                {
+                    worktext = worktext.Replace(LLMSystem.Instruct.ThinkingStart, string.Empty);
+                    var text = Markdown.ToHtml(worktext, CustomMarkDownPipeline);
+                    text = text.SanitizeForJS();
+                    var script = $"updateMessageAtIndex(\"{text}\", document.getElementsByClassName('message-content').length - 1, true);";
+                    var result = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+                }
+                else
+                {
+                    // both tokens are found, so we want two strings now: the first one is the thinking part, the second one is the message part
+                    var parts = worktext.Split(new string[] { LLMSystem.Instruct.ThinkingEnd }, 2, StringSplitOptions.None);
+                    var thinkingText = parts[0].Replace(LLMSystem.Instruct.ThinkingStart, string.Empty);
+                    thinkingText = Markdown.ToHtml(thinkingText, CustomMarkDownPipeline).SanitizeForJS();
+                    var script = $"updateMessageAtIndex(\"{thinkingText}\", document.getElementsByClassName('message-content').length - 1, true);";
+                    var result = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+
+                    var messageText = Markdown.ToHtml(parts[1], CustomMarkDownPipeline).SanitizeForJS();
+                    script = $"updateMessageAtIndex(\"{messageText}\", document.getElementsByClassName('message-content').length - 1, false);";
+                    result = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+                }
+            }
+            else
+            {
+                var text = Markdown.ToHtml(newMessage, CustomMarkDownPipeline);
+                text = text.SanitizeForJS();
+                var script = $"updateMessageAtIndex(\"{text}\", document.getElementsByClassName('message-content').length - 1, false);";
+                var result = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+            }
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
 
@@ -1691,7 +1740,7 @@ namespace WaifuAI
             }
             var text = Markdown.ToHtml(newMessage, CustomMarkDownPipeline);
             text = text.SanitizeForJS();
-            var script = $"updateMessageAtIndex(\"{text}\", {index});";
+            var script = $"updateMessageAtIndex(\"{text}\", {index}, false);";
             await web_chat.CoreWebView2.ExecuteScriptAsync(script);
         }
 
