@@ -300,7 +300,7 @@ namespace WaifuAI
                 {
                     // remove everything before the thinking end tag (included)
                     var idx = stringfix.IndexOf(LLMSystem.Instruct.ThinkingEnd);
-                    stringfix = stringfix.Substring(idx + LLMSystem.Instruct.ThinkingEnd.Length);
+                    stringfix = stringfix.Substring(idx + LLMSystem.Instruct.ThinkingEnd.Length).CleanupAndTrim();
                 }
                 var msg = LLMSystem.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMSystem.User, LLMSystem.Bot);
                 _currentgeneration = string.Empty;
