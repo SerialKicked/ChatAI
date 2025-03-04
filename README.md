@@ -8,6 +8,7 @@ Windows-based high performance front-end for KoboldCPP written in C#.NET. Using 
 - All in one program to edit characters, system prompts, instruction formats, and inference settings
 - Chatlogs are divided into sessions, ability to switch back to previous session, insert or delete individual session
 - Chat sessions are automatically summarised and formatted for easy access
+- Compatible with R1 tyoe models and thinking tokens, implemented in non obstructive fashion
 - Extensive **long-term memory (LTM) system**
   - Vector Search done on previous sessions to retrieve contextual information based on user prompt
   - Space can be reserved to insert the summaries of the last X sessions in chronological order, improving model's contextual awareness notably
@@ -21,9 +22,8 @@ Windows-based high performance front-end for KoboldCPP written in C#.NET. Using 
 - Simple and intuitive UI
 
  ## Current Limitations:
- - 1v1 chat only, no group mode
- - No UI to edit characters (they are stored in a very legible json file, though)
- - No support for character cards, manual conversion only
+ - No support for character cards, you'll have to copy paste info manually (no plans to implement)
+ - 1v1 chat only, no group mode (yet)
  - No RAG support for external documents (yet)
 
 ## Notes and Requirements
