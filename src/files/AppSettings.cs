@@ -20,7 +20,6 @@ namespace WaifuAI.Files
         public int MaxTotalTokens { get; set; } = 16384;
         public bool RAGUseTitles { get; set; } = true;
         public bool RAGUseSummaries { get; set; } = true;
-        public bool InternetSearch { get; set; } = false;
         public float RAGDistanceCutOff { get; set; } = 0.165f;
         public HNSW.Net.NeighbourSelectionHeuristic RAGHeurisitc { get; set; } = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
         public int MaxRAGEntries { get; set; } = 3;
@@ -36,5 +35,7 @@ namespace WaifuAI.Files
         public bool AntiSlop { get; set; } = false;
         public float AntiSlopRatio { get; set; } = 1;
         public string[] AntiSlopList { get; set; } = [];
+        public bool WebsitePluginUseKeywords = false;
+        public bool WebsitePluginGrammar = false;
     }
 }

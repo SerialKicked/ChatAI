@@ -80,9 +80,7 @@ namespace WaifuAI
                 cb_background.Items.Add(Path.GetFileName(file));
             }
 
-            HelptoolTip.SetToolTip(ck_ragweb, "Allows the LLM to browse compatible websites for information.");
             HelptoolTip.SetToolTip(ck_webgrammar, "If checked, the LLM will be better at navigating the website, but its results will be less accurate." + Environment.NewLine + "Only enable if the LLM is consistently failing at browsing the web.");
-            HelptoolTip.SetToolTip(ck_webkeyword, "If checked, the web logic will only be run if some internet related keywords are found in the user's request (faster, less accurate)." + Environment.NewLine + "If unckecked, all user inputs will be processed twice, once to check if the web should be visited, and another time for the normal response from the bot (slower, more accurate).");
 
             HelptoolTip.SetToolTip(ck_ragenabled, "Use RAG and keywords to insert summaries of relevant previous sessions based on the user's input." + Environment.NewLine + "Configurable in the Settings tab.");
             HelptoolTip.SetToolTip(ck_senseoftime, "Insert day and time information to prompt when relevant to give the bot a better understanding of time.");
@@ -96,7 +94,6 @@ namespace WaifuAI
             // Chat related events
             bt_chattosessions.Click += ConvertChatToSessionList!;
             // Load editors and chat menu
-            bt_embedall.Click += EmbedAllSessions!;
             SetupSamplerEditor();
             SetupInstructEditor();
             SetupWorldEditor();
@@ -1117,7 +1114,6 @@ namespace WaifuAI
             LLMSystem.MaxRAGEntries = Settings.MaxRAGEntries;
             LLMSystem.RAGIndex = Settings.RAGPosition;
             LLMSystem.ScenarioOverride = Settings.ScenarioOverride;
-            LLMSystem.WebBrowsingPlugin = Settings.InternetSearch;
             // set cb_user to the settings.UserFile value if it's in the list, otherwise set index to 0.
             cb_user.SelectedIndex = cb_user.Items.Contains(Settings.UserFile) ? cb_user.Items.IndexOf(Settings.UserFile) : 0;
             // set cb_infer to the settings.InferenceFile value if it's in the list, otherwise set index to 0.
@@ -1150,7 +1146,6 @@ namespace WaifuAI
             num_ragcutoff.Value = (decimal)Settings.RAGDistanceCutOff;
             num_ragmaxretrieve.Value = Settings.MaxRAGEntries;
             num_ragindex.Value = Settings.RAGPosition;
-            ck_ragweb.Checked = Settings.InternetSearch;
             cb_background.SelectedIndex = cb_background.Items.IndexOf(Settings.BackgroundFile);
             num_fontsize.Value = Settings.FontSize;
             num_msgcount.Value = Settings.MaxMessagesOnScreen;
@@ -1179,7 +1174,6 @@ namespace WaifuAI
                 Settings.MaxTotalTokens = LLMSystem.MaxContextLength;
                 Settings.MaxResponseTokens = LLMSystem.MaxReplyLength;
                 Settings.Temperature = (double)num_temperature.Value;
-                Settings.InternetSearch = LLMSystem.WebBrowsingPlugin;
                 Settings.RAGHeurisitc = RAGSystem.Heuristic;
                 Settings.RAGUseSummaries = RAGSystem.UseSummaries;
                 Settings.RAGUseTitles = RAGSystem.UseTitles;
@@ -1200,11 +1194,21 @@ namespace WaifuAI
                 Settings.AntiSlopRatio = (float)num_antislopchance.Value;
                 Settings.AntiSlopList = !string.IsNullOrEmpty(ed_sloplist.Text) ? ed_sloplist.Text.Split(',') : [];
 
+                Settings.WebsitePluginUseKeywords = ck_webkeyword.Checked;
+                Settings.WebsitePluginGrammar = ck_webgrammar.Checked;
+
                 var str = JsonConvert.SerializeObject(Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
                 if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
                 {
                     searchplug.KeywordDetection = !ck_alwayswebsearch.Checked;
+                }
+
+                var webplug = LLMSystem.ContextPlugins.Find(e => e is BrowsePlugin) as BrowsePlugin;
+                if (webplug != null)
+                {
+                    webplug.EnforceCorrectGrammar = Settings.WebsitePluginGrammar;
+                    webplug.KeywordDetection = Settings.WebsitePluginUseKeywords;
                 }
             }
             catch (Exception ex)
@@ -1284,7 +1288,6 @@ namespace WaifuAI
             RAGSystem.DistanceCutOff = (float)num_ragcutoff.Value;
             LLMSystem.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
             LLMSystem.RAGIndex = (int)num_ragindex.Value;
-            LLMSystem.WebBrowsingPlugin = ck_ragweb.Checked;
             if (cb_ragheuristic.SelectedIndex == 0)
                 RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
             else if (cb_ragheuristic.SelectedIndex == 1)
@@ -1333,6 +1336,31 @@ namespace WaifuAI
             Settings.BackgroundFile = cb_background.SelectedItem?.ToString() ?? "bedroom_cozy.jpg";
             if (!_isinitloading)
                 await WebChatLoad();
+        }
+
+        private void ck_fixasterix_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.AsteriskCheck = ck_fixasterix.Checked;
+        }
+
+        private void ck_antislop_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.AntiSlop = ck_antislop.Checked;
+        }
+
+        private void num_antislopchance_ValueChanged(object sender, EventArgs e)
+        {
+            Settings.AntiSlopRatio = (float)num_antislopchance.Value;
+        }
+
+        private void ed_sloplist_TextChanged(object sender, EventArgs e)
+        {
+            Settings.AntiSlopList = !string.IsNullOrEmpty(ed_sloplist.Text) ? ed_sloplist.Text.Split(',') : [];
+        }
+
+        private void ck_webkeyword_CheckedChanged(object sender, EventArgs e)
+        {
+            SaveSettings();
         }
 
         #endregion
@@ -1994,11 +2022,13 @@ namespace WaifuAI
 
         private void num_memtokens_ValueChanged(object sender, EventArgs e)
         {
+            Settings.ReservedSessionTokens = (int)num_memtokens.Value;
             LLMSystem.ReservedSessionTokens = (int)num_memtokens.Value;
         }
 
         private void ck_markdown_CheckedChanged(object sender, EventArgs e)
         {
+            Settings.MarkdownMemoryFormating = ck_markdown.Checked;
             LLMSystem.MarkdownMemoryFormating = ck_markdown.Checked;
         }
 
@@ -2049,14 +2079,6 @@ namespace WaifuAI
             }
         }
 
-        private void ck_alwayswebsearch_CheckedChanged(object sender, EventArgs e)
-        {
-            if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
-            {
-                searchplug.KeywordDetection = !ck_alwayswebsearch.Checked;
-            }
-        }
-
         private void label9_Click(object sender, EventArgs e)
         {
 
@@ -2065,31 +2087,6 @@ namespace WaifuAI
         private void ck_wiembed_CheckedChanged(object sender, EventArgs e)
         {
             SelectedWorldEditor.DoEmbeds = ck_wiembed.Checked;
-        }
-
-        private void cb_worlds_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void PlayAudio(byte[] audioData)
-        {
-            // Stop and dispose previous instances if any
-            if (_player != null)
-            {
-                _player.Stop();
-                _player.Dispose();
-                _player = null;
-            }
-            if (_audioStream != null)
-            {
-                _audioStream.Dispose();
-                _audioStream = null;
-            }
-
-            _audioStream = new MemoryStream(audioData);
-            _player = new System.Media.SoundPlayer(_audioStream);
-            _player.Play(); // Asynchronous playback
         }
 
         private static Task PlayAudioAsync(byte[] audioData)
@@ -2153,26 +2150,6 @@ namespace WaifuAI
             await WebChatLoad();
         }
 
-        private void ck_fixasterix_CheckedChanged(object sender, EventArgs e)
-        {
-            Settings.AsteriskCheck = ck_fixasterix.Checked;
-        }
-
-        private void ck_antislop_CheckedChanged(object sender, EventArgs e)
-        {
-            Settings.AntiSlop = ck_antislop.Checked;
-        }
-
-        private void num_antislopchance_ValueChanged(object sender, EventArgs e)
-        {
-            Settings.AntiSlopRatio = (float)num_antislopchance.Value;
-        }
-
-        private void ed_sloplist_TextChanged(object sender, EventArgs e)
-        {
-            Settings.AntiSlopList = !string.IsNullOrEmpty(ed_sloplist.Text) ? ed_sloplist.Text.Split(',') : [];
-        }
-
         private void bt_editchar_Click(object sender, EventArgs e)
         {
             var editForm = new CharEditForm();
@@ -2196,5 +2173,8 @@ namespace WaifuAI
             newidx = cb_user.Items.IndexOf(curruselection);
             cb_user.SelectedIndex = newidx == -1 ? 0 : newidx;
         }
+
+
+
     }
 }

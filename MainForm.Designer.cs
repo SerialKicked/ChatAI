@@ -49,6 +49,7 @@
             ck_sessionmemory = new CheckBox();
             ck_senseoftime = new CheckBox();
             groupBox5 = new GroupBox();
+            bt_editchar = new Button();
             bt_scenario = new Button();
             label3 = new Label();
             cb_bot = new ComboBox();
@@ -234,7 +235,6 @@
             groupBox9 = new GroupBox();
             ck_webgrammar = new CheckBox();
             ck_webkeyword = new CheckBox();
-            ck_ragweb = new CheckBox();
             groupBox2 = new GroupBox();
             bt_chattosessions = new Button();
             bt_importworld = new Button();
@@ -265,7 +265,6 @@
             toolStripStatusLabel2 = new ToolStripStatusLabel();
             bindingSource1 = new BindingSource(components);
             AutoTalkTimer = new System.Windows.Forms.Timer(components);
-            bt_editchar = new Button();
             tabMain.SuspendLayout();
             tabChat.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
@@ -612,6 +611,17 @@
             groupBox5.TabIndex = 25;
             groupBox5.TabStop = false;
             groupBox5.Text = "Chat Settings";
+            // 
+            // bt_editchar
+            // 
+            bt_editchar.Font = new Font("Segoe UI", 9F);
+            bt_editchar.Location = new Point(146, 11);
+            bt_editchar.Name = "bt_editchar";
+            bt_editchar.Size = new Size(35, 20);
+            bt_editchar.TabIndex = 27;
+            bt_editchar.Text = "...";
+            bt_editchar.UseVisualStyleBackColor = true;
+            bt_editchar.Click += bt_editchar_Click;
             // 
             // bt_scenario
             // 
@@ -2508,7 +2518,7 @@
             groupBox10.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox10.Location = new Point(416, 262);
             groupBox10.Name = "groupBox10";
-            groupBox10.Size = new Size(402, 75);
+            groupBox10.Size = new Size(402, 141);
             groupBox10.TabIndex = 26;
             groupBox10.TabStop = false;
             groupBox10.Text = "User Interface";
@@ -2582,47 +2592,37 @@
             // 
             groupBox9.Controls.Add(ck_webgrammar);
             groupBox9.Controls.Add(ck_webkeyword);
-            groupBox9.Controls.Add(ck_ragweb);
             groupBox9.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox9.Location = new Point(8, 235);
             groupBox9.Name = "groupBox9";
-            groupBox9.Size = new Size(402, 102);
+            groupBox9.Size = new Size(402, 73);
             groupBox9.TabIndex = 25;
             groupBox9.TabStop = false;
-            groupBox9.Text = "AI Website Browsing";
+            groupBox9.Text = "Website Browsing Plugin";
             // 
             // ck_webgrammar
             // 
             ck_webgrammar.AutoSize = true;
             ck_webgrammar.Font = new Font("Segoe UI", 9F);
-            ck_webgrammar.Location = new Point(18, 72);
+            ck_webgrammar.Location = new Point(6, 47);
             ck_webgrammar.Name = "ck_webgrammar";
             ck_webgrammar.Size = new Size(119, 19);
             ck_webgrammar.TabIndex = 33;
             ck_webgrammar.Text = "Enforce Grammar";
             ck_webgrammar.UseVisualStyleBackColor = true;
+            ck_webgrammar.CheckedChanged += ck_webkeyword_CheckedChanged;
             // 
             // ck_webkeyword
             // 
             ck_webkeyword.AutoSize = true;
             ck_webkeyword.Font = new Font("Segoe UI", 9F);
-            ck_webkeyword.Location = new Point(18, 47);
+            ck_webkeyword.Location = new Point(6, 22);
             ck_webkeyword.Name = "ck_webkeyword";
             ck_webkeyword.Size = new Size(123, 19);
             ck_webkeyword.TabIndex = 32;
             ck_webkeyword.Text = "Keyword activated";
             ck_webkeyword.UseVisualStyleBackColor = true;
-            // 
-            // ck_ragweb
-            // 
-            ck_ragweb.AutoSize = true;
-            ck_ragweb.Font = new Font("Segoe UI", 9F);
-            ck_ragweb.Location = new Point(6, 22);
-            ck_ragweb.Name = "ck_ragweb";
-            ck_ragweb.Size = new Size(227, 19);
-            ck_ragweb.TabIndex = 31;
-            ck_ragweb.Text = "Allow LLM to navigate preset websites";
-            ck_ragweb.UseVisualStyleBackColor = true;
+            ck_webkeyword.CheckedChanged += ck_webkeyword_CheckedChanged;
             // 
             // groupBox2
             // 
@@ -2630,7 +2630,7 @@
             groupBox2.Controls.Add(bt_importworld);
             groupBox2.Controls.Add(bt_ImportSTChat);
             groupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox2.Location = new Point(8, 343);
+            groupBox2.Location = new Point(8, 314);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(402, 89);
             groupBox2.TabIndex = 24;
@@ -2828,6 +2828,7 @@
             bt_embedall.TabIndex = 22;
             bt_embedall.Text = "Embed all chat sessions ";
             bt_embedall.UseVisualStyleBackColor = true;
+            bt_embedall.Click += EmbedAllSessions;
             // 
             // button1
             // 
@@ -2930,17 +2931,6 @@
             AutoTalkTimer.Enabled = true;
             AutoTalkTimer.Interval = 1000;
             AutoTalkTimer.Tick += AutoTalkTimer_Tick;
-            // 
-            // bt_editchar
-            // 
-            bt_editchar.Font = new Font("Segoe UI", 9F);
-            bt_editchar.Location = new Point(146, 11);
-            bt_editchar.Name = "bt_editchar";
-            bt_editchar.Size = new Size(35, 20);
-            bt_editchar.TabIndex = 27;
-            bt_editchar.Text = "...";
-            bt_editchar.UseVisualStyleBackColor = true;
-            bt_editchar.Click += bt_editchar_Click;
             // 
             // MainForm
             // 
@@ -3175,7 +3165,6 @@
         private Label label27;
         private NumericUpDown num_wentrypriority;
         private Button bt_worldsave;
-        private CheckBox ck_ragweb;
         private GroupBox groupBox9;
         private CheckBox ck_webgrammar;
         private CheckBox ck_webkeyword;
