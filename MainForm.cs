@@ -1103,6 +1103,8 @@ namespace WaifuAI
 
             var str = File.ReadAllText("settings.json");
             Settings = JsonConvert.DeserializeObject<WaifuSettings>(str)!;
+            var saveinit = _isinitloading;
+            _isinitloading = true;
             RAGSystem.Heuristic = Settings.RAGHeurisitc;
             RAGSystem.UseSummaries = Settings.RAGUseSummaries;
             RAGSystem.UseTitles = Settings.RAGUseTitles;
@@ -1154,12 +1156,22 @@ namespace WaifuAI
             ck_fixasterix.Checked = Settings.AsteriskCheck;
             ck_antislop.Checked = Settings.AntiSlop;
             num_antislopchance.Value = (decimal)Settings.AntiSlopRatio;
+            ck_webkeyword.Checked = Settings.WebsitePluginUseKeywords;
+            ck_webgrammar.Checked = Settings.WebsitePluginGrammar;
             ed_sloplist.Text = Settings.AntiSlopList.Length > 0 ? string.Join(",", Settings.AntiSlopList) : string.Empty;
 
             if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
             {
                 searchplug.KeywordDetection = !ck_alwayswebsearch.Checked;
             }
+
+            if (LLMSystem.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
+            {
+                webplug.EnforceCorrectGrammar = Settings.WebsitePluginGrammar;
+                webplug.KeywordDetection = Settings.WebsitePluginUseKeywords;
+            }
+            _isinitloading = saveinit;
+
         }
 
         private void SaveSettings()
@@ -1360,7 +1372,8 @@ namespace WaifuAI
 
         private void ck_webkeyword_CheckedChanged(object sender, EventArgs e)
         {
-            SaveSettings();
+            if (!_isinitloading)
+                SaveSettings();
         }
 
         #endregion
@@ -2173,8 +2186,6 @@ namespace WaifuAI
             newidx = cb_user.Items.IndexOf(curruselection);
             cb_user.SelectedIndex = newidx == -1 ? 0 : newidx;
         }
-
-
 
     }
 }
