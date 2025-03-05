@@ -16,6 +16,7 @@ using System.Media;
 using System.ComponentModel;
 using System.Drawing.Printing;
 using System.Windows.Forms;
+using NAudio.Gui;
 
 namespace WaifuAI
 {
@@ -1021,6 +1022,9 @@ namespace WaifuAI
                     return;
                 await LLMSystem.History.StartNewChatSession(true);
                 (LLMSystem.Bot as Character)?.SaveChatHistory();
+                await LLMSystem.Bot.UpdateSelfEditSection();
+                if (!string.IsNullOrEmpty(LLMSystem.Bot.UniqueName))
+                    (LLMSystem.Bot as IFile).SaveToFile("data/chars/" + LLMSystem.Bot.UniqueName + ".json");
             }
             await WebChatLoad();
             LoadChatHistoryTab();
@@ -1913,6 +1917,8 @@ namespace WaifuAI
         {
             SaveSettings();
             LLMSystem.Bot.EndChat(backup: true);
+            if (!string.IsNullOrEmpty(LLMSystem.Bot.UniqueName))
+                (LLMSystem.Bot as IFile).SaveToFile("data/chars/" + LLMSystem.Bot.UniqueName + ".json");
         }
 
         private void ck_senseoftime_CheckedChanged(object sender, EventArgs e)
@@ -2098,16 +2104,18 @@ namespace WaifuAI
 
         private async void button2_Click(object sender, EventArgs e)
         {
-            // female: "Tina", "super chariot of death", "super chariot in death"
-            // matel: "Lor_ Merciless", "kobo", "chatty"
-            var ttsinput = new AIToolkit.API.TextToSpeechInput()
-            {
-                Input = ed_input.Text,
-                Voice = "super chariot in death",
-            };
+            await LLMSystem.Bot.UpdateSelfEditSection();
 
-            var audioData = await LLMSystem.GenerateTTS(ttsinput.Input, ttsinput.Voice);
-            PlayAudio(audioData);
+            //// female: "Tina", "super chariot of death", "super chariot in death"
+            //// matel: "Lor_ Merciless", "kobo", "chatty"
+            //var ttsinput = new AIToolkit.API.TextToSpeechInput()
+            //{
+            //    Input = ed_input.Text,
+            //    Voice = "super chariot in death",
+            //};
+
+            //var audioData = await LLMSystem.GenerateTTS(ttsinput.Input, ttsinput.Voice);
+            //PlayAudio(audioData);
         }
 
         private void ck_ttstoggle_CheckedChanged(object sender, EventArgs e)

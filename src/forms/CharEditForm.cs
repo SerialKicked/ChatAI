@@ -74,6 +74,8 @@ namespace WaifuAI.src.forms
                 CanInitiateChat = ck_caninitchat.Checked,
                 SenseOfTime = ck_senseoftime.Checked,
                 SessionMemorySystem = ck_sessionmemory.Checked,
+                SelfEditTokens = (int)num_selfedittokens.Value,
+                SelfEditField = ed_selfedit.Text.ToLinuxFormat(),
                 Icon = cb_icon.Text,
                 Plugins = [.. ckl_plugins.CheckedItems.Cast<string>()],
                 Worlds = [.. ckl_worldinfo.CheckedItems.Cast<string>()],
@@ -96,6 +98,8 @@ namespace WaifuAI.src.forms
             ck_caninitchat.Checked = selectedCharacter.CanInitiateChat;
             ck_senseoftime.Checked = selectedCharacter.SenseOfTime;
             ck_sessionmemory.Checked = selectedCharacter.SessionMemorySystem;
+            num_selfedittokens.Value = selectedCharacter.SelfEditTokens;
+            ed_selfedit.Text = selectedCharacter.SelfEditField.ToWinFormat();
             ckl_plugins.Items.Clear();
             foreach (var item in LLMSystem.ContextPlugins)
             {
@@ -154,5 +158,6 @@ namespace WaifuAI.src.forms
                 pic.Image = img;
             }
         }
+
     }
 }

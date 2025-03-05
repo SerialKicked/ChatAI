@@ -45,7 +45,7 @@
             ck_isuser = new CheckBox();
             ed_name = new TextBox();
             label1 = new Label();
-            tabMood = new TabPage();
+            tabAdvanc = new TabPage();
             groupBox5 = new GroupBox();
             ed_whims = new TextBox();
             label8 = new Label();
@@ -61,7 +61,13 @@
             tabPrompt = new TabPage();
             ed_sysprompt = new TextBox();
             textBox2 = new TextBox();
-            tabAdvanced = new TabPage();
+            tabDynamic = new TabPage();
+            groupBox9 = new GroupBox();
+            label13 = new Label();
+            num_selfedittokens = new NumericUpDown();
+            ed_selfedit = new TextBox();
+            label12 = new Label();
+            tabSettings = new TabPage();
             groupBox8 = new GroupBox();
             ed_outetts = new TextBox();
             label11 = new Label();
@@ -77,13 +83,16 @@
             tabControl1.SuspendLayout();
             tabBio.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pic).BeginInit();
-            tabMood.SuspendLayout();
+            tabAdvanc.SuspendLayout();
             groupBox5.SuspendLayout();
             groupBox4.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
             tabPrompt.SuspendLayout();
-            tabAdvanced.SuspendLayout();
+            tabDynamic.SuspendLayout();
+            groupBox9.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)num_selfedittokens).BeginInit();
+            tabSettings.SuspendLayout();
             groupBox8.SuspendLayout();
             groupBox7.SuspendLayout();
             groupBox6.SuspendLayout();
@@ -122,9 +131,10 @@
             // tabControl1
             // 
             tabControl1.Controls.Add(tabBio);
-            tabControl1.Controls.Add(tabMood);
+            tabControl1.Controls.Add(tabAdvanc);
             tabControl1.Controls.Add(tabPrompt);
-            tabControl1.Controls.Add(tabAdvanced);
+            tabControl1.Controls.Add(tabDynamic);
+            tabControl1.Controls.Add(tabSettings);
             tabControl1.Location = new Point(12, 75);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
@@ -255,18 +265,18 @@
             label1.TabIndex = 6;
             label1.Text = "Name";
             // 
-            // tabMood
+            // tabAdvanc
             // 
-            tabMood.Controls.Add(groupBox5);
-            tabMood.Controls.Add(groupBox4);
-            tabMood.Controls.Add(groupBox2);
-            tabMood.Controls.Add(groupBox1);
-            tabMood.Location = new Point(4, 24);
-            tabMood.Name = "tabMood";
-            tabMood.Size = new Size(943, 484);
-            tabMood.TabIndex = 2;
-            tabMood.Text = "Advanced";
-            tabMood.UseVisualStyleBackColor = true;
+            tabAdvanc.Controls.Add(groupBox5);
+            tabAdvanc.Controls.Add(groupBox4);
+            tabAdvanc.Controls.Add(groupBox2);
+            tabAdvanc.Controls.Add(groupBox1);
+            tabAdvanc.Location = new Point(4, 24);
+            tabAdvanc.Name = "tabAdvanc";
+            tabAdvanc.Size = new Size(943, 484);
+            tabAdvanc.TabIndex = 2;
+            tabAdvanc.Text = "Advanced";
+            tabAdvanc.UseVisualStyleBackColor = true;
             // 
             // groupBox5
             // 
@@ -283,6 +293,7 @@
             // ed_whims
             // 
             ed_whims.Enabled = false;
+            ed_whims.Font = new Font("Segoe UI", 9F);
             ed_whims.Location = new Point(6, 37);
             ed_whims.Multiline = true;
             ed_whims.Name = "ed_whims";
@@ -314,6 +325,7 @@
             // 
             // ed_writingstyle
             // 
+            ed_writingstyle.Font = new Font("Segoe UI", 9F);
             ed_writingstyle.Location = new Point(6, 37);
             ed_writingstyle.Multiline = true;
             ed_writingstyle.Name = "ed_writingstyle";
@@ -432,17 +444,82 @@
             textBox2.TabIndex = 1;
             textBox2.Text = resources.GetString("textBox2.Text");
             // 
-            // tabAdvanced
+            // tabDynamic
             // 
-            tabAdvanced.Controls.Add(groupBox8);
-            tabAdvanced.Controls.Add(groupBox7);
-            tabAdvanced.Controls.Add(groupBox6);
-            tabAdvanced.Location = new Point(4, 24);
-            tabAdvanced.Name = "tabAdvanced";
-            tabAdvanced.Size = new Size(943, 484);
-            tabAdvanced.TabIndex = 3;
-            tabAdvanced.Text = "Settings";
-            tabAdvanced.UseVisualStyleBackColor = true;
+            tabDynamic.Controls.Add(groupBox9);
+            tabDynamic.Location = new Point(4, 24);
+            tabDynamic.Name = "tabDynamic";
+            tabDynamic.Padding = new Padding(3);
+            tabDynamic.Size = new Size(943, 484);
+            tabDynamic.TabIndex = 4;
+            tabDynamic.Text = "Dynamic Bio";
+            tabDynamic.UseVisualStyleBackColor = true;
+            // 
+            // groupBox9
+            // 
+            groupBox9.Controls.Add(label13);
+            groupBox9.Controls.Add(num_selfedittokens);
+            groupBox9.Controls.Add(ed_selfedit);
+            groupBox9.Controls.Add(label12);
+            groupBox9.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            groupBox9.Location = new Point(8, 8);
+            groupBox9.Name = "groupBox9";
+            groupBox9.Size = new Size(929, 233);
+            groupBox9.TabIndex = 11;
+            groupBox9.TabStop = false;
+            groupBox9.Text = "Self Edit Field";
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Location = new Point(455, 40);
+            label13.Name = "label13";
+            label13.Size = new Size(223, 15);
+            label13.TabIndex = 15;
+            label13.Text = "Maximum tokens (0 to disable feature)";
+            // 
+            // num_selfedittokens
+            // 
+            num_selfedittokens.Font = new Font("Segoe UI", 9F);
+            num_selfedittokens.Increment = new decimal(new int[] { 128, 0, 0, 0 });
+            num_selfedittokens.Location = new Point(455, 58);
+            num_selfedittokens.Maximum = new decimal(new int[] { 2048, 0, 0, 0 });
+            num_selfedittokens.Name = "num_selfedittokens";
+            num_selfedittokens.Size = new Size(125, 23);
+            num_selfedittokens.TabIndex = 14;
+            // 
+            // ed_selfedit
+            // 
+            ed_selfedit.Font = new Font("Segoe UI", 9F);
+            ed_selfedit.Location = new Point(6, 37);
+            ed_selfedit.Multiline = true;
+            ed_selfedit.Name = "ed_selfedit";
+            ed_selfedit.ReadOnly = true;
+            ed_selfedit.ScrollBars = ScrollBars.Vertical;
+            ed_selfedit.Size = new Size(443, 183);
+            ed_selfedit.TabIndex = 13;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Font = new Font("Segoe UI", 9F);
+            label12.Location = new Point(6, 19);
+            label12.Name = "label12";
+            label12.Size = new Size(551, 15);
+            label12.TabIndex = 0;
+            label12.Text = "This is an optional field the character is allowed to edit on its own as new sessions are added to the chat";
+            // 
+            // tabSettings
+            // 
+            tabSettings.Controls.Add(groupBox8);
+            tabSettings.Controls.Add(groupBox7);
+            tabSettings.Controls.Add(groupBox6);
+            tabSettings.Location = new Point(4, 24);
+            tabSettings.Name = "tabSettings";
+            tabSettings.Size = new Size(943, 484);
+            tabSettings.TabIndex = 3;
+            tabSettings.Text = "Settings";
+            tabSettings.UseVisualStyleBackColor = true;
             // 
             // groupBox8
             // 
@@ -572,6 +649,7 @@
             Controls.Add(tabControl1);
             Controls.Add(groupBox3);
             FormBorderStyle = FormBorderStyle.FixedSingle;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "CharEditForm";
@@ -581,7 +659,7 @@
             tabBio.ResumeLayout(false);
             tabBio.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pic).EndInit();
-            tabMood.ResumeLayout(false);
+            tabAdvanc.ResumeLayout(false);
             groupBox5.ResumeLayout(false);
             groupBox5.PerformLayout();
             groupBox4.ResumeLayout(false);
@@ -592,7 +670,11 @@
             groupBox1.PerformLayout();
             tabPrompt.ResumeLayout(false);
             tabPrompt.PerformLayout();
-            tabAdvanced.ResumeLayout(false);
+            tabDynamic.ResumeLayout(false);
+            groupBox9.ResumeLayout(false);
+            groupBox9.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)num_selfedittokens).EndInit();
+            tabSettings.ResumeLayout(false);
             groupBox8.ResumeLayout(false);
             groupBox8.PerformLayout();
             groupBox7.ResumeLayout(false);
@@ -615,8 +697,8 @@
         private CheckBox ck_isuser;
         private TextBox ed_name;
         private Label label1;
-        private TabPage tabMood;
-        private TabPage tabAdvanced;
+        private TabPage tabAdvanc;
+        private TabPage tabSettings;
         private TextBox textBox2;
         private TextBox ed_scenario;
         private Label label3;
@@ -648,5 +730,11 @@
         private Label label11;
         private ComboBox cb_icon;
         private PictureBox pic;
+        private TabPage tabDynamic;
+        private GroupBox groupBox9;
+        private Label label13;
+        private NumericUpDown num_selfedittokens;
+        private TextBox ed_selfedit;
+        private Label label12;
     }
 }
