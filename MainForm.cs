@@ -102,6 +102,7 @@ namespace WaifuAI
             SetupChatMenu();
             _isinitloading = false;
             _activityTimer.OnTrigger += OnBotInitiateConversation;
+
         }
 
         private async void OnBotInitiateConversation(object? sender, EventArgs e)
@@ -1956,6 +1957,7 @@ namespace WaifuAI
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            AutoTalkTimer.Stop();
             SaveSettings();
             LLMSystem.Bot.EndChat(backup: true);
             if (!string.IsNullOrEmpty(LLMSystem.Bot.UniqueName))

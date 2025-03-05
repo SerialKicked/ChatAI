@@ -94,7 +94,7 @@ namespace WaifuAI.Plugins
             responseAppendNeeded = true;
 
             var formatedresponsed = new StringBuilder();
-            formatedresponsed.AppendLinuxLine("Possibly relevant information found on the internet that you can use to improve your response:");
+            formatedresponsed.AppendLinuxLine("You can search the web, and here are possibly relevant information found on the internet that you can use to improve your response:");
             foreach (var item in lastresponse)
             {
                 formatedresponsed.AppendLinuxLine("- " + item.title + " ["+ item.url + "]");
