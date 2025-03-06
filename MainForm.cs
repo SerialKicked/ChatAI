@@ -287,8 +287,6 @@ namespace WaifuAI
             else
             {
                 var stringfix = Settings.AsteriskCheck ? e.FixAsterisks() : e;
-                if (LLMSystem.Instruct.PrefillThinking && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart))
-                    stringfix = LLMSystem.Instruct.ThinkingStart + stringfix;
 
                 if (Settings.AntiSlop)
                     stringfix = stringfix.RemoveSlop(Settings.AntiSlopList, Settings.AntiSlopRatio);
@@ -928,8 +926,6 @@ namespace WaifuAI
                 await SendMessageToUI(msg);
                 // ready a new message for the bot's response
                 _currentgeneration = string.Empty;
-                if (LLMSystem.Instruct.PrefillThinking && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart))
-                    _currentgeneration = LLMSystem.Instruct.ThinkingStart;
                 _currentgenerationtokencount = 0;
                 await SendMessageToUI(
                     new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your post...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
@@ -940,8 +936,6 @@ namespace WaifuAI
             {
                 // ready a new message for the bot's response
                 _currentgeneration = string.Empty;
-                if (LLMSystem.Instruct.PrefillThinking && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart))
-                    _currentgeneration = LLMSystem.Instruct.ThinkingStart;
                 _currentgenerationtokencount = 0;
                 await SendMessageToUI(
                     new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is thinking...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
@@ -986,8 +980,6 @@ namespace WaifuAI
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await WebEditLastMessage($"**{LLMSystem.Bot.Name}:** *I am thinking...*");
             _currentgeneration = string.Empty;
-            if (LLMSystem.Instruct.PrefillThinking && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart))
-                _currentgeneration = LLMSystem.Instruct.ThinkingStart;
             _currentgenerationtokencount = 0;
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await LLMSystem.RerollLastMessage();
