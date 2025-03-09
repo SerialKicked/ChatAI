@@ -37,5 +37,6 @@ namespace WaifuAI.Files
         public string[] AntiSlopList { get; set; } = [];
         public bool WebsitePluginUseKeywords = false;
         public bool WebsitePluginGrammar = false;
+        public bool RemoveSingleWordEmphasis { get; set; } = false;
     }
 }

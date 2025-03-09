@@ -216,6 +216,7 @@
             label31 = new Label();
             tabSettings = new TabPage();
             groupBox24 = new GroupBox();
+            ck_removeemphasis = new CheckBox();
             label61 = new Label();
             num_antislopchance = new NumericUpDown();
             ed_sloplist = new TextBox();
@@ -2389,6 +2390,7 @@
             // 
             // groupBox24
             // 
+            groupBox24.Controls.Add(ck_removeemphasis);
             groupBox24.Controls.Add(label61);
             groupBox24.Controls.Add(num_antislopchance);
             groupBox24.Controls.Add(ed_sloplist);
@@ -2397,10 +2399,22 @@
             groupBox24.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox24.Location = new Point(416, 110);
             groupBox24.Name = "groupBox24";
-            groupBox24.Size = new Size(402, 146);
+            groupBox24.Size = new Size(402, 198);
             groupBox24.TabIndex = 29;
             groupBox24.TabStop = false;
             groupBox24.Text = "Output Formatting";
+            // 
+            // ck_removeemphasis
+            // 
+            ck_removeemphasis.AutoSize = true;
+            ck_removeemphasis.Font = new Font("Segoe UI", 9F);
+            ck_removeemphasis.Location = new Point(6, 134);
+            ck_removeemphasis.Name = "ck_removeemphasis";
+            ck_removeemphasis.Size = new Size(274, 19);
+            ck_removeemphasis.TabIndex = 30;
+            ck_removeemphasis.Text = "Remove single-word emphasis (bold and italic)";
+            ck_removeemphasis.UseVisualStyleBackColor = true;
+            ck_removeemphasis.CheckedChanged += ck_removeemphasis_CheckedChanged;
             // 
             // label61
             // 
@@ -2489,7 +2503,7 @@
             num_memtokens.Font = new Font("Segoe UI", 9F);
             num_memtokens.Increment = new decimal(new int[] { 512, 0, 0, 0 });
             num_memtokens.Location = new Point(6, 62);
-            num_memtokens.Maximum = new decimal(new int[] { 16384, 0, 0, 0 });
+            num_memtokens.Maximum = new decimal(new int[] { 128000, 0, 0, 0 });
             num_memtokens.Minimum = new decimal(new int[] { 512, 0, 0, 0 });
             num_memtokens.Name = "num_memtokens";
             num_memtokens.Size = new Size(125, 23);
@@ -2516,9 +2530,9 @@
             groupBox10.Controls.Add(cb_background);
             groupBox10.Controls.Add(label28);
             groupBox10.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox10.Location = new Point(416, 262);
+            groupBox10.Location = new Point(416, 314);
             groupBox10.Name = "groupBox10";
-            groupBox10.Size = new Size(402, 141);
+            groupBox10.Size = new Size(402, 89);
             groupBox10.TabIndex = 26;
             groupBox10.TabStop = false;
             groupBox10.Text = "User Interface";
@@ -3286,5 +3300,6 @@
         private Label label61;
         private NumericUpDown num_antislopchance;
         private Button bt_editchar;
+        private CheckBox ck_removeemphasis;
     }
 }

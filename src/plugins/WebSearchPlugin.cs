@@ -134,8 +134,9 @@ namespace WaifuAI.Plugins
             prompt.AppendLinuxLine("If the user directly asks you to search the internet, or if you think a web search would be beneficial, respond with the exact query you want to send (and ONLY that query). Otherwise, just say No.");
             var sysprompt = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, LLMSystem.User, LLMSystem.Bot, prompt.ToString());
             var msg = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.User, LLMSystem.User, LLMSystem.Bot, userinput);
-            if (LLMSystem.Instruct.BotStart != null)
-                msg += LLMSystem.Instruct.BotStart;
+            LLMSystem.NamesInPromptOverride = false;
+            msg += LLMSystem.Instruct.GetResponseStart(LLMSystem.Bot);
+            LLMSystem.NamesInPromptOverride = null;
             return sysprompt + msg;
         }
 
@@ -150,9 +151,16 @@ namespace WaifuAI.Plugins
             LLMSystem.NamesInPromptOverride = false;
             var fullprompt = BuildCheckPrompt(inputText);
             var llmparams = LLMSystem.Sampler.GetCopy();
-            llmparams.Temperature = 0.5;
+            if (llmparams.Temperature > 0.5)
+                llmparams.Temperature = 0.5;
+            llmparams.Max_context_length = LLMSystem.MaxContextLength;
+            llmparams.Max_length = LLMSystem.MaxReplyLength;
             llmparams.Prompt = fullprompt;
             var response = await LLMSystem.SimpleQuery(llmparams);
+            if (!string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingStart))
+            {
+                response = response.RemoveThinkingBlocks(LLMSystem.Instruct.ThinkingStart, LLMSystem.Instruct.ThinkingEnd);
+            }
             LLMSystem.Logger?.LogInformation("WebSearch Plugin Result: {output}", response);
             LLMSystem.NamesInPromptOverride = null;
 

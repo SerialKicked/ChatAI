@@ -123,7 +123,7 @@ namespace WaifuAI
             message = LLMSystem.ReplaceMacros(message);
             statusbar.Items[1].Text = "Analyzing...";
             var response = await LLMSystem.QuickInferenceForSystemPrompt(message, false);
-
+            response = response.RemoveThinkingBlocks(LLMSystem.Instruct.ThinkingStart, LLMSystem.Instruct.ThinkingEnd);
 
             if (!string.IsNullOrEmpty(response) && !response.StartsWith("no", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -256,7 +256,8 @@ namespace WaifuAI
                         statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                     });
                     var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
-                    await WebEditLastMessage(MsgPrefix + _currentgeneration);
+                    var stringfix = Settings.RemoveSingleWordEmphasis ? _currentgeneration.FixDeepseekRoleplayFormatting() : _currentgeneration;
+                    await WebEditLastMessage(MsgPrefix + stringfix);
                 }
                 else
                 {
@@ -291,14 +292,11 @@ namespace WaifuAI
                 if (Settings.AntiSlop)
                     stringfix = stringfix.RemoveSlop(Settings.AntiSlopList, Settings.AntiSlopRatio);
 
+                if (Settings.RemoveSingleWordEmphasis)
+                    stringfix = stringfix.FixDeepseekRoleplayFormatting();
+
                 var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
                 await WebEditLastMessage(MsgPrefix + stringfix);
-                if (!string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart) && stringfix.Contains(LLMSystem.Instruct.ThinkingStart) && stringfix.Contains(LLMSystem.Instruct.ThinkingEnd))
-                {
-                    // remove everything before the thinking end tag (included)
-                    var idx = stringfix.IndexOf(LLMSystem.Instruct.ThinkingEnd);
-                    stringfix = stringfix.Substring(idx + LLMSystem.Instruct.ThinkingEnd.Length).CleanupAndTrim();
-                }
                 var msg = LLMSystem.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMSystem.User, LLMSystem.Bot);
                 _currentgeneration = string.Empty;
                 _currentgenerationtokencount = 0;
@@ -928,7 +926,7 @@ namespace WaifuAI
                 _currentgeneration = string.Empty;
                 _currentgenerationtokencount = 0;
                 await SendMessageToUI(
-                    new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your post...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                    new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
                 ed_input.Text = string.Empty;
                 await LLMSystem.SendMessageToBot(msg);
             }
@@ -938,7 +936,7 @@ namespace WaifuAI
                 _currentgeneration = string.Empty;
                 _currentgenerationtokencount = 0;
                 await SendMessageToUI(
-                    new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is thinking...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                    new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
                 ed_input.Text = string.Empty;
                 await LLMSystem.AddBotMessage();
             }
@@ -1151,6 +1149,7 @@ namespace WaifuAI
             num_antislopchance.Value = (decimal)Settings.AntiSlopRatio;
             ck_webkeyword.Checked = Settings.WebsitePluginUseKeywords;
             ck_webgrammar.Checked = Settings.WebsitePluginGrammar;
+            ck_removeemphasis.Checked = Settings.RemoveSingleWordEmphasis;
             ed_sloplist.Text = Settings.AntiSlopList.Length > 0 ? string.Join(",", Settings.AntiSlopList) : string.Empty;
 
             if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
@@ -1198,6 +1197,7 @@ namespace WaifuAI
                 Settings.AntiSlop = ck_antislop.Checked;
                 Settings.AntiSlopRatio = (float)num_antislopchance.Value;
                 Settings.AntiSlopList = !string.IsNullOrEmpty(ed_sloplist.Text) ? ed_sloplist.Text.Split(',') : [];
+                Settings.RemoveSingleWordEmphasis = ck_removeemphasis.Checked;
 
                 Settings.WebsitePluginUseKeywords = ck_webkeyword.Checked;
                 Settings.WebsitePluginGrammar = ck_webgrammar.Checked;
@@ -1435,6 +1435,8 @@ namespace WaifuAI
                 res.Append(item + ", ");
             }
             res.AppendLinuxLine();
+            res.AppendLinuxLine("## Goals: ");
+            res.AppendLinuxLine(session.Projects).AppendLinuxLine();
             res.AppendLinuxLine("## Sentiments: ");
             foreach (var item in session.Sentiments)
             {
@@ -2181,5 +2183,9 @@ namespace WaifuAI
             cb_user.SelectedIndex = newidx == -1 ? 0 : newidx;
         }
 
+        private void ck_removeemphasis_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.RemoveSingleWordEmphasis = ck_removeemphasis.Checked;
+        }
     }
 }
