@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AIToolkit;
 using AIToolkit.Files;
 
 namespace WaifuAI.Files
@@ -37,6 +38,6 @@ namespace WaifuAI.Files
         public string[] AntiSlopList { get; set; } = [];
         public bool WebsitePluginUseKeywords = false;
         public bool WebsitePluginGrammar = false;
-        public bool RemoveSingleWordEmphasis { get; set; } = false;
+        public StringFix RoleplayFormatting { get; set; } = new StringFix(false,false,false,false);
     }
 }

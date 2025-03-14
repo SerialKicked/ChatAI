@@ -51,13 +51,13 @@ namespace WaifuAI
     {
         public QuoteColorInlineParser()
         {
-            OpeningCharacters = ['\"'];
+            OpeningCharacters = ['\"', '“'];
         }
 
         public override bool Match(InlineProcessor processor, ref StringSlice slice)
         {
             // Check if the current character is a double-quote
-            if (slice.CurrentChar != '\"')
+            if (slice.CurrentChar != '\"' && slice.CurrentChar != '“')
                 return false;
 
             // Save the initial position
@@ -71,7 +71,7 @@ namespace WaifuAI
             // Iterate through the slice to find the closing quote
             while (slice.CurrentChar != '\0')
             {
-                if (slice.CurrentChar == '\"')
+                if (slice.CurrentChar == '\"' || slice.CurrentChar == '”')
                 {
                     // Found the closing quote
                     // Capture the content and create the inline element
@@ -85,7 +85,6 @@ namespace WaifuAI
 
                     // Advance past the closing quote
                     slice.NextChar();
-
                     // Append the inline element to the processor
                     processor.Inline = quoteInline;
 

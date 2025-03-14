@@ -216,7 +216,10 @@
             label31 = new Label();
             tabSettings = new TabPage();
             groupBox24 = new GroupBox();
-            ck_removeemphasis = new CheckBox();
+            ck_noemphasisword = new CheckBox();
+            ck_fixquotes = new CheckBox();
+            ck_noquotes = new CheckBox();
+            ck_unbold = new CheckBox();
             label61 = new Label();
             num_antislopchance = new NumericUpDown();
             ed_sloplist = new TextBox();
@@ -2390,7 +2393,10 @@
             // 
             // groupBox24
             // 
-            groupBox24.Controls.Add(ck_removeemphasis);
+            groupBox24.Controls.Add(ck_noemphasisword);
+            groupBox24.Controls.Add(ck_fixquotes);
+            groupBox24.Controls.Add(ck_noquotes);
+            groupBox24.Controls.Add(ck_unbold);
             groupBox24.Controls.Add(label61);
             groupBox24.Controls.Add(num_antislopchance);
             groupBox24.Controls.Add(ed_sloplist);
@@ -2399,22 +2405,58 @@
             groupBox24.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox24.Location = new Point(416, 110);
             groupBox24.Name = "groupBox24";
-            groupBox24.Size = new Size(402, 198);
+            groupBox24.Size = new Size(402, 293);
             groupBox24.TabIndex = 29;
             groupBox24.TabStop = false;
             groupBox24.Text = "Output Formatting";
             // 
-            // ck_removeemphasis
+            // ck_noemphasisword
             // 
-            ck_removeemphasis.AutoSize = true;
-            ck_removeemphasis.Font = new Font("Segoe UI", 9F);
-            ck_removeemphasis.Location = new Point(6, 134);
-            ck_removeemphasis.Name = "ck_removeemphasis";
-            ck_removeemphasis.Size = new Size(274, 19);
-            ck_removeemphasis.TabIndex = 30;
-            ck_removeemphasis.Text = "Remove single-word emphasis (bold and italic)";
-            ck_removeemphasis.UseVisualStyleBackColor = true;
-            ck_removeemphasis.CheckedChanged += ck_removeemphasis_CheckedChanged;
+            ck_noemphasisword.AutoSize = true;
+            ck_noemphasisword.Font = new Font("Segoe UI", 9F);
+            ck_noemphasisword.Location = new Point(6, 209);
+            ck_noemphasisword.Name = "ck_noemphasisword";
+            ck_noemphasisword.Size = new Size(334, 19);
+            ck_noemphasisword.TabIndex = 33;
+            ck_noemphasisword.Text = "Don't emphasis single words (useful for QwQ / R1 models)";
+            ck_noemphasisword.UseVisualStyleBackColor = true;
+            ck_noemphasisword.CheckedChanged += ck_noemphasisword_CheckedChanged;
+            // 
+            // ck_fixquotes
+            // 
+            ck_fixquotes.AutoSize = true;
+            ck_fixquotes.Font = new Font("Segoe UI", 9F);
+            ck_fixquotes.Location = new Point(6, 184);
+            ck_fixquotes.Name = "ck_fixquotes";
+            ck_fixquotes.Size = new Size(260, 19);
+            ck_fixquotes.TabIndex = 32;
+            ck_fixquotes.Text = "Fix quoted text (useful for QwQ / R1 models)";
+            ck_fixquotes.UseVisualStyleBackColor = true;
+            ck_fixquotes.CheckedChanged += ck_fixquotes_CheckedChanged;
+            // 
+            // ck_noquotes
+            // 
+            ck_noquotes.AutoSize = true;
+            ck_noquotes.Font = new Font("Segoe UI", 9F);
+            ck_noquotes.Location = new Point(6, 159);
+            ck_noquotes.Name = "ck_noquotes";
+            ck_noquotes.Size = new Size(300, 19);
+            ck_noquotes.TabIndex = 31;
+            ck_noquotes.Text = "Don't use quotes (quotation marks will be removed)";
+            ck_noquotes.UseVisualStyleBackColor = true;
+            ck_noquotes.CheckedChanged += ck_noquotes_CheckedChanged;
+            // 
+            // ck_unbold
+            // 
+            ck_unbold.AutoSize = true;
+            ck_unbold.Font = new Font("Segoe UI", 9F);
+            ck_unbold.Location = new Point(6, 134);
+            ck_unbold.Name = "ck_unbold";
+            ck_unbold.Size = new Size(316, 19);
+            ck_unbold.TabIndex = 30;
+            ck_unbold.Text = "Don't bold text (any text in bold turned back to regular)";
+            ck_unbold.UseVisualStyleBackColor = true;
+            ck_unbold.CheckedChanged += ck_unbold_CheckedChanged;
             // 
             // label61
             // 
@@ -2530,7 +2572,7 @@
             groupBox10.Controls.Add(cb_background);
             groupBox10.Controls.Add(label28);
             groupBox10.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox10.Location = new Point(416, 314);
+            groupBox10.Location = new Point(8, 409);
             groupBox10.Name = "groupBox10";
             groupBox10.Size = new Size(402, 89);
             groupBox10.TabIndex = 26;
@@ -3300,6 +3342,9 @@
         private Label label61;
         private NumericUpDown num_antislopchance;
         private Button bt_editchar;
-        private CheckBox ck_removeemphasis;
+        private CheckBox ck_unbold;
+        private CheckBox ck_fixquotes;
+        private CheckBox ck_noquotes;
+        private CheckBox ck_noemphasisword;
     }
 }
