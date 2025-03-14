@@ -256,7 +256,7 @@ namespace WaifuAI
                         statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                     });
                     var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
-                    var stringfix = _currentgeneration.FixRoleplayString(Settings.RoleplayFormatting);
+                    var stringfix = _currentgeneration.FixRoleplayString(Settings.RoleplayFormatting, true);
                     await WebEditLastMessage(MsgPrefix + stringfix);
                 }
                 else
@@ -288,11 +288,12 @@ namespace WaifuAI
             else
             {
                 var stringfix = Settings.AsteriskCheck ? e.FixAsterisks() : e;
-
+                if (Settings.RemoveCutSentence)
+                    stringfix = stringfix.RemoveUnfinishedSentence();
                 if (Settings.AntiSlop)
                     stringfix = stringfix.RemoveSlop(Settings.AntiSlopList, Settings.AntiSlopRatio);
-
-                stringfix = stringfix.FixRoleplayString(Settings.RoleplayFormatting);
+                // Roleplay filter
+                stringfix = stringfix.FixRoleplayString(Settings.RoleplayFormatting, false);
 
                 var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
                 await WebEditLastMessage(MsgPrefix + stringfix);
@@ -1152,6 +1153,11 @@ namespace WaifuAI
             ck_noemphasisword.Checked = Settings.RoleplayFormatting.RemoveSingleWorldEmphasis;
             ck_noquotes.Checked = Settings.RoleplayFormatting.RemoveAllQuotes;
             ck_fixquotes.Checked = Settings.RoleplayFormatting.FixQuotes;
+            ck_reduceitalic.Checked = Settings.RoleplayFormatting.RemoveItalic;
+            num_italicratio.Value = (decimal)Settings.RoleplayFormatting.RemoveItalicRatio;
+            ck_remlastsentence.Checked = Settings.RemoveCutSentence;
+            ck_oneparagraph.Checked = Settings.StopOnFirstParagraph;
+            LLMSystem.StopGenerationOnFirstParagraph = Settings.StopOnFirstParagraph;
             ed_sloplist.Text = Settings.AntiSlopList.Length > 0 ? string.Join(",", Settings.AntiSlopList) : string.Empty;
 
             if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
@@ -1204,6 +1210,11 @@ namespace WaifuAI
                 Settings.RoleplayFormatting.RemoveSingleWorldEmphasis = ck_noemphasisword.Checked;
                 Settings.RoleplayFormatting.RemoveAllQuotes = ck_noquotes.Checked;
                 Settings.RoleplayFormatting.FixQuotes = ck_fixquotes.Checked;
+                Settings.RoleplayFormatting.RemoveItalic = ck_reduceitalic.Checked;
+                Settings.RoleplayFormatting.RemoveItalicRatio = (float)num_italicratio.Value;
+
+                Settings.RemoveCutSentence = ck_remlastsentence.Checked;
+                Settings.StopOnFirstParagraph = ck_oneparagraph.Checked;
 
                 Settings.WebsitePluginUseKeywords = ck_webkeyword.Checked;
                 Settings.WebsitePluginGrammar = ck_webgrammar.Checked;
@@ -1373,6 +1384,48 @@ namespace WaifuAI
         {
             if (!_isinitloading)
                 SaveSettings();
+        }
+
+        private void ck_unbold_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.RoleplayFormatting.RemoveAllBoldedText = ck_unbold.Checked;
+        }
+
+        private void ck_noquotes_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.RoleplayFormatting.RemoveAllQuotes = ck_noquotes.Checked;
+        }
+
+        private void ck_fixquotes_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.RoleplayFormatting.FixQuotes = ck_fixquotes.Checked;
+
+        }
+
+        private void ck_noemphasisword_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.RoleplayFormatting.RemoveSingleWorldEmphasis = ck_noemphasisword.Checked;
+        }
+
+        private void ck_oneparagraph_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.StopOnFirstParagraph = ck_oneparagraph.Checked;
+            LLMSystem.StopGenerationOnFirstParagraph = ck_oneparagraph.Checked;
+        }
+
+        private void ck_remlastsentence_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.RemoveCutSentence = ck_remlastsentence.Checked;
+        }
+
+        private void ck_reduceitalic_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.RoleplayFormatting.RemoveItalic = ck_reduceitalic.Checked;
+        }
+
+        private void num_italicratio_ValueChanged(object sender, EventArgs e)
+        {
+            Settings.RoleplayFormatting.RemoveItalicRatio = (float)num_italicratio.Value;
         }
 
         #endregion
@@ -2189,25 +2242,5 @@ namespace WaifuAI
             cb_user.SelectedIndex = newidx == -1 ? 0 : newidx;
         }
 
-        private void ck_unbold_CheckedChanged(object sender, EventArgs e)
-        {
-            Settings.RoleplayFormatting.RemoveAllBoldedText = ck_unbold.Checked;
-        }
-
-        private void ck_noquotes_CheckedChanged(object sender, EventArgs e)
-        {
-            Settings.RoleplayFormatting.RemoveAllQuotes = ck_noquotes.Checked;
-        }
-
-        private void ck_fixquotes_CheckedChanged(object sender, EventArgs e)
-        {
-            Settings.RoleplayFormatting.FixQuotes = ck_fixquotes.Checked;
-
-        }
-
-        private void ck_noemphasisword_CheckedChanged(object sender, EventArgs e)
-        {
-            Settings.RoleplayFormatting.RemoveSingleWorldEmphasis = ck_noemphasisword.Checked;
-        }
     }
 }

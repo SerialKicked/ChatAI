@@ -216,6 +216,11 @@
             label31 = new Label();
             tabSettings = new TabPage();
             groupBox24 = new GroupBox();
+            ck_oneparagraph = new CheckBox();
+            ck_remlastsentence = new CheckBox();
+            label62 = new Label();
+            num_italicratio = new NumericUpDown();
+            ck_reduceitalic = new CheckBox();
             ck_noemphasisword = new CheckBox();
             ck_fixquotes = new CheckBox();
             ck_noquotes = new CheckBox();
@@ -331,6 +336,7 @@
             ((System.ComponentModel.ISupportInitialize)num_topk).BeginInit();
             tabSettings.SuspendLayout();
             groupBox24.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)num_italicratio).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_antislopchance).BeginInit();
             groupBox11.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_memtokens).BeginInit();
@@ -2393,6 +2399,11 @@
             // 
             // groupBox24
             // 
+            groupBox24.Controls.Add(ck_oneparagraph);
+            groupBox24.Controls.Add(ck_remlastsentence);
+            groupBox24.Controls.Add(label62);
+            groupBox24.Controls.Add(num_italicratio);
+            groupBox24.Controls.Add(ck_reduceitalic);
             groupBox24.Controls.Add(ck_noemphasisword);
             groupBox24.Controls.Add(ck_fixquotes);
             groupBox24.Controls.Add(ck_noquotes);
@@ -2403,12 +2414,72 @@
             groupBox24.Controls.Add(ck_antislop);
             groupBox24.Controls.Add(ck_fixasterix);
             groupBox24.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox24.Location = new Point(416, 110);
+            groupBox24.Location = new Point(416, 90);
             groupBox24.Name = "groupBox24";
-            groupBox24.Size = new Size(402, 293);
+            groupBox24.Size = new Size(402, 386);
             groupBox24.TabIndex = 29;
             groupBox24.TabStop = false;
             groupBox24.Text = "Output Formatting";
+            // 
+            // ck_oneparagraph
+            // 
+            ck_oneparagraph.AutoSize = true;
+            ck_oneparagraph.Font = new Font("Segoe UI", 9F);
+            ck_oneparagraph.Location = new Point(6, 313);
+            ck_oneparagraph.Name = "ck_oneparagraph";
+            ck_oneparagraph.Size = new Size(203, 19);
+            ck_oneparagraph.TabIndex = 38;
+            ck_oneparagraph.Text = "Stop generation at first paragraph";
+            ck_oneparagraph.UseVisualStyleBackColor = true;
+            ck_oneparagraph.CheckedChanged += ck_oneparagraph_CheckedChanged;
+            // 
+            // ck_remlastsentence
+            // 
+            ck_remlastsentence.AutoSize = true;
+            ck_remlastsentence.Font = new Font("Segoe UI", 9F);
+            ck_remlastsentence.Location = new Point(6, 288);
+            ck_remlastsentence.Name = "ck_remlastsentence";
+            ck_remlastsentence.Size = new Size(275, 19);
+            ck_remlastsentence.TabIndex = 37;
+            ck_remlastsentence.Text = "If output > length, remove unfinished sentence";
+            ck_remlastsentence.UseVisualStyleBackColor = true;
+            ck_remlastsentence.CheckedChanged += ck_remlastsentence_CheckedChanged;
+            // 
+            // label62
+            // 
+            label62.AutoSize = true;
+            label62.Font = new Font("Segoe UI", 9F);
+            label62.Location = new Point(27, 262);
+            label62.Name = "label62";
+            label62.Size = new Size(96, 15);
+            label62.TabIndex = 36;
+            label62.Text = "Removal Chance";
+            // 
+            // num_italicratio
+            // 
+            num_italicratio.CausesValidation = false;
+            num_italicratio.DecimalPlaces = 2;
+            num_italicratio.Font = new Font("Segoe UI", 9F);
+            num_italicratio.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
+            num_italicratio.Location = new Point(129, 259);
+            num_italicratio.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+            num_italicratio.Name = "num_italicratio";
+            num_italicratio.Size = new Size(88, 23);
+            num_italicratio.TabIndex = 35;
+            num_italicratio.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            num_italicratio.ValueChanged += num_italicratio_ValueChanged;
+            // 
+            // ck_reduceitalic
+            // 
+            ck_reduceitalic.AutoSize = true;
+            ck_reduceitalic.Font = new Font("Segoe UI", 9F);
+            ck_reduceitalic.Location = new Point(6, 234);
+            ck_reduceitalic.Name = "ck_reduceitalic";
+            ck_reduceitalic.Size = new Size(270, 19);
+            ck_reduceitalic.TabIndex = 34;
+            ck_reduceitalic.Text = "Remove a ratio of italic sentences from output";
+            ck_reduceitalic.UseVisualStyleBackColor = true;
+            ck_reduceitalic.CheckedChanged += ck_reduceitalic_CheckedChanged;
             // 
             // ck_noemphasisword
             // 
@@ -2484,10 +2555,10 @@
             // 
             // ed_sloplist
             // 
-            ed_sloplist.Location = new Point(6, 72);
+            ed_sloplist.Location = new Point(27, 72);
             ed_sloplist.Name = "ed_sloplist";
             ed_sloplist.PlaceholderText = "comma separated list of words to filter out";
-            ed_sloplist.Size = new Size(390, 23);
+            ed_sloplist.Size = new Size(352, 23);
             ed_sloplist.TabIndex = 2;
             ed_sloplist.TextChanged += ed_sloplist_TextChanged;
             // 
@@ -2523,7 +2594,7 @@
             groupBox11.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox11.Location = new Point(416, 6);
             groupBox11.Name = "groupBox11";
-            groupBox11.Size = new Size(402, 98);
+            groupBox11.Size = new Size(402, 78);
             groupBox11.TabIndex = 27;
             groupBox11.TabStop = false;
             groupBox11.Text = "Session Memory System";
@@ -2532,7 +2603,7 @@
             // 
             ck_markdown.AutoSize = true;
             ck_markdown.Font = new Font("Segoe UI", 9F);
-            ck_markdown.Location = new Point(6, 22);
+            ck_markdown.Location = new Point(229, 22);
             ck_markdown.Name = "ck_markdown";
             ck_markdown.Size = new Size(167, 19);
             ck_markdown.TabIndex = 32;
@@ -2544,7 +2615,7 @@
             // 
             num_memtokens.Font = new Font("Segoe UI", 9F);
             num_memtokens.Increment = new decimal(new int[] { 512, 0, 0, 0 });
-            num_memtokens.Location = new Point(6, 62);
+            num_memtokens.Location = new Point(6, 40);
             num_memtokens.Maximum = new decimal(new int[] { 128000, 0, 0, 0 });
             num_memtokens.Minimum = new decimal(new int[] { 512, 0, 0, 0 });
             num_memtokens.Name = "num_memtokens";
@@ -2557,7 +2628,7 @@
             // 
             label32.AutoSize = true;
             label32.Font = new Font("Segoe UI", 9F);
-            label32.Location = new Point(6, 44);
+            label32.Location = new Point(6, 22);
             label32.Name = "label32";
             label32.Size = new Size(94, 15);
             label32.TabIndex = 28;
@@ -2574,7 +2645,7 @@
             groupBox10.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox10.Location = new Point(8, 409);
             groupBox10.Name = "groupBox10";
-            groupBox10.Size = new Size(402, 89);
+            groupBox10.Size = new Size(402, 67);
             groupBox10.TabIndex = 26;
             groupBox10.TabStop = false;
             groupBox10.Text = "User Interface";
@@ -3081,6 +3152,7 @@
             tabSettings.ResumeLayout(false);
             groupBox24.ResumeLayout(false);
             groupBox24.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)num_italicratio).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_antislopchance).EndInit();
             groupBox11.ResumeLayout(false);
             groupBox11.PerformLayout();
@@ -3346,5 +3418,10 @@
         private CheckBox ck_fixquotes;
         private CheckBox ck_noquotes;
         private CheckBox ck_noemphasisword;
+        private CheckBox ck_remlastsentence;
+        private Label label62;
+        private NumericUpDown num_italicratio;
+        private CheckBox ck_reduceitalic;
+        private CheckBox ck_oneparagraph;
     }
 }

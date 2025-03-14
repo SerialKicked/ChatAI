@@ -36,8 +36,11 @@ namespace WaifuAI.Files
         public bool AntiSlop { get; set; } = false;
         public float AntiSlopRatio { get; set; } = 1;
         public string[] AntiSlopList { get; set; } = [];
-        public bool WebsitePluginUseKeywords = false;
-        public bool WebsitePluginGrammar = false;
-        public StringFix RoleplayFormatting { get; set; } = new StringFix(false,false,false,false);
+        public bool WebsitePluginUseKeywords { get; set; } = false;
+        public bool WebsitePluginGrammar { get; set; } = false;
+        public bool StopOnFirstParagraph { get; set; } = false;
+        public bool RemoveCutSentence { get; set; } = false;
+
+        public StringFix RoleplayFormatting { get; set; } = new StringFix(false,false,false,false, false, 1);
     }
 }
