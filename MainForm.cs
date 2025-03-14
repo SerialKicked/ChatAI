@@ -1155,6 +1155,8 @@ namespace WaifuAI
             ck_fixquotes.Checked = Settings.RoleplayFormatting.FixQuotes;
             ck_reduceitalic.Checked = Settings.RoleplayFormatting.RemoveItalic;
             num_italicratio.Value = (decimal)Settings.RoleplayFormatting.RemoveItalicRatio;
+            num_removeitalicmaxword.Value = Settings.RoleplayFormatting.RemoveItalicMaxWords;
+
             ck_remlastsentence.Checked = Settings.RemoveCutSentence;
             ck_oneparagraph.Checked = Settings.StopOnFirstParagraph;
             LLMSystem.StopGenerationOnFirstParagraph = Settings.StopOnFirstParagraph;
@@ -1212,6 +1214,7 @@ namespace WaifuAI
                 Settings.RoleplayFormatting.FixQuotes = ck_fixquotes.Checked;
                 Settings.RoleplayFormatting.RemoveItalic = ck_reduceitalic.Checked;
                 Settings.RoleplayFormatting.RemoveItalicRatio = (float)num_italicratio.Value;
+                Settings.RoleplayFormatting.RemoveItalicMaxWords = (int)num_removeitalicmaxword.Value;
 
                 Settings.RemoveCutSentence = ck_remlastsentence.Checked;
                 Settings.StopOnFirstParagraph = ck_oneparagraph.Checked;
@@ -2242,5 +2245,9 @@ namespace WaifuAI
             cb_user.SelectedIndex = newidx == -1 ? 0 : newidx;
         }
 
+        private void num_removeitalicmaxword_ValueChanged(object sender, EventArgs e)
+        {
+            Settings.RoleplayFormatting.RemoveItalicMaxWords = (int)num_removeitalicmaxword.Value;
+        }
     }
 }

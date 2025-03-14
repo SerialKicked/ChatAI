@@ -41,6 +41,6 @@ namespace WaifuAI.Files
         public bool StopOnFirstParagraph { get; set; } = false;
         public bool RemoveCutSentence { get; set; } = false;
 
-        public StringFix RoleplayFormatting { get; set; } = new StringFix(false,false,false,false, false, 1);
+        public StringFix RoleplayFormatting { get; set; } = new StringFix(false, false, false, false, false, 1, 50);
     }
 }

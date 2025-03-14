@@ -216,6 +216,8 @@
             label31 = new Label();
             tabSettings = new TabPage();
             groupBox24 = new GroupBox();
+            num_removeitalicmaxword = new NumericUpDown();
+            label63 = new Label();
             ck_oneparagraph = new CheckBox();
             ck_remlastsentence = new CheckBox();
             label62 = new Label();
@@ -336,6 +338,7 @@
             ((System.ComponentModel.ISupportInitialize)num_topk).BeginInit();
             tabSettings.SuspendLayout();
             groupBox24.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)num_removeitalicmaxword).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_italicratio).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_antislopchance).BeginInit();
             groupBox11.SuspendLayout();
@@ -2399,6 +2402,8 @@
             // 
             // groupBox24
             // 
+            groupBox24.Controls.Add(num_removeitalicmaxword);
+            groupBox24.Controls.Add(label63);
             groupBox24.Controls.Add(ck_oneparagraph);
             groupBox24.Controls.Add(ck_remlastsentence);
             groupBox24.Controls.Add(label62);
@@ -2420,6 +2425,29 @@
             groupBox24.TabIndex = 29;
             groupBox24.TabStop = false;
             groupBox24.Text = "Output Formatting";
+            // 
+            // num_removeitalicmaxword
+            // 
+            num_removeitalicmaxword.CausesValidation = false;
+            num_removeitalicmaxword.Font = new Font("Segoe UI", 9F);
+            num_removeitalicmaxword.Location = new Point(273, 259);
+            num_removeitalicmaxword.Maximum = new decimal(new int[] { 50, 0, 0, 0 });
+            num_removeitalicmaxword.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            num_removeitalicmaxword.Name = "num_removeitalicmaxword";
+            num_removeitalicmaxword.Size = new Size(67, 23);
+            num_removeitalicmaxword.TabIndex = 40;
+            num_removeitalicmaxword.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            num_removeitalicmaxword.ValueChanged += num_removeitalicmaxword_ValueChanged;
+            // 
+            // label63
+            // 
+            label63.AutoSize = true;
+            label63.Font = new Font("Segoe UI", 9F);
+            label63.Location = new Point(202, 262);
+            label63.Name = "label63";
+            label63.Size = new Size(66, 15);
+            label63.TabIndex = 39;
+            label63.Text = "Max Words";
             // 
             // ck_oneparagraph
             // 
@@ -2464,7 +2492,7 @@
             num_italicratio.Location = new Point(129, 259);
             num_italicratio.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
             num_italicratio.Name = "num_italicratio";
-            num_italicratio.Size = new Size(88, 23);
+            num_italicratio.Size = new Size(67, 23);
             num_italicratio.TabIndex = 35;
             num_italicratio.Value = new decimal(new int[] { 1, 0, 0, 0 });
             num_italicratio.ValueChanged += num_italicratio_ValueChanged;
@@ -2548,7 +2576,7 @@
             num_antislopchance.Location = new Point(129, 101);
             num_antislopchance.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
             num_antislopchance.Name = "num_antislopchance";
-            num_antislopchance.Size = new Size(88, 23);
+            num_antislopchance.Size = new Size(67, 23);
             num_antislopchance.TabIndex = 28;
             num_antislopchance.Value = new decimal(new int[] { 1, 0, 0, 0 });
             num_antislopchance.ValueChanged += num_antislopchance_ValueChanged;
@@ -3152,6 +3180,7 @@
             tabSettings.ResumeLayout(false);
             groupBox24.ResumeLayout(false);
             groupBox24.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)num_removeitalicmaxword).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_italicratio).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_antislopchance).EndInit();
             groupBox11.ResumeLayout(false);
@@ -3423,5 +3452,7 @@
         private NumericUpDown num_italicratio;
         private CheckBox ck_reduceitalic;
         private CheckBox ck_oneparagraph;
+        private NumericUpDown num_removeitalicmaxword;
+        private Label label63;
     }
 }
