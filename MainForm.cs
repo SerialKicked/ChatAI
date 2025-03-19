@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.Drawing.Printing;
 using System.Windows.Forms;
 using NAudio.Gui;
+using System.Diagnostics;
 
 namespace WaifuAI
 {
@@ -1787,42 +1788,6 @@ namespace WaifuAI
             return $"<html><head>{css}</head><body>{scripts}<div id='chatContainer'>{htmlContent}<br/></div></body></html>";
         }
 
-        private void EditMessage(int messageIndex)
-        {
-            if (_editMessageForm != null || LLMSystem.Status == SystemStatus.Busy)
-                return;
-            try
-            {
-                // otherwise I get rare, but annoying, crashes that bypass the try/catch. Not sure how to fix
-                Task.Run(() =>
-                {
-                    var realid = LLMSystem.History.CurrentSession.Messages.Count - Settings.MaxMessagesOnScreen;
-                    if (realid < 0)
-                        realid = 0;
-                    realid += messageIndex - 1;
-                    if (realid >= LLMSystem.History.CurrentSession.Messages.Count)
-                        return;
-                    _editMessageForm = new EditMessageForm(LLMSystem.History.CurrentSession.Messages[realid].Guid);
-                    _editMessageForm.TopMost = true;
-                    if (_editMessageForm.ShowDialog() == DialogResult.OK && _editMessageForm.Message != null)
-                    {
-                        Invoke((System.Windows.Forms.MethodInvoker)async delegate
-                        {
-                            await LoadHistoryToUI();
-                            LLMSystem.InvalidatePromptCache();
-                        });
-                    }
-                    _editMessageForm?.Dispose();
-                    _editMessageForm = null;
-                });
-            }
-            catch (Exception ex)
-            {
-                // Log the exception
-                Console.WriteLine($"An error occurred while editing the message: {ex.Message}");
-            }
-        }
-
         private static string InjectDialogHtml(string imgPath, string dialog)
         {
             // Replace thinking tags with collapsible div structure, using the instruction format's tags
@@ -1855,9 +1820,10 @@ namespace WaifuAI
             var html = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + singleMessage.Message, CustomMarkDownPipeline);
             return InjectDialogHtml(img, html);
         }
-
         private async Task WebRemoveLastMessage()
         {
+            if (web_chat?.CoreWebView2 == null)
+                return;
             if (InvokeRequired)
             {
                 await InvokeAsync(new Func<Task>(WebRemoveLastMessage));
@@ -1869,6 +1835,9 @@ namespace WaifuAI
 
         private async Task WebEditLastMessage(string newMessage)
         {
+            if (web_chat?.CoreWebView2 == null)
+                return;
+
             if (InvokeRequired)
             {
                 await InvokeAsync(new Func<Task>(async () => await WebEditLastMessage(newMessage)));
@@ -1971,27 +1940,51 @@ namespace WaifuAI
 
         private async void OnWebChatContentLoaded(object sender, CoreWebView2DOMContentLoadedEventArgs e)
         {
-            await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
+            if (web_chat?.CoreWebView2 != null)
+            {
+                await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
+            }
         }
 
         private void OnWebChatWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
         {
-            var message = e.WebMessageAsJson;
-            if (message != null)
+            try
             {
+                var message = e.WebMessageAsJson;
+                if (string.IsNullOrEmpty(message))
+                    return;
                 var json = JsonConvert.DeserializeObject<Dictionary<string, object>>(message);
-                if (json != null && json.TryGetValue("type", out object? value) && value.ToString() == "EditMessage")
+                if (json == null || !json.TryGetValue("type", out object? value) || value.ToString() != "EditMessage")
+                    return;
+                if (!json.TryGetValue("index", out object? indexObj))
+                    return;
+                int divNumber = Convert.ToInt32(indexObj);
+
+                // Use BeginInvoke instead of Invoke to avoid potential deadlocks
+                BeginInvoke(new Action(() =>
                 {
-                    int divNumber = Convert.ToInt32(json["index"]);
-                    EditMessageSimple(divNumber);
-                    // Invoke(new Action<int>(EditMessage), divNumber);
-                }
+                    try
+                    {
+                        if (!IsDisposed && IsHandleCreated)
+                        {
+                            EditMessage(divNumber);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Error in EditMessageSimple: {ex}");
+                    }
+                }));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in OnWebChatWebMessageReceived: {ex}");
             }
         }
 
-        private void EditMessageSimple(int messageIndex)
+        private void EditMessage(int messageIndex)
         {
-            if (_editMessageForm != null || LLMSystem.Status == SystemStatus.Busy)
+            if (LLMSystem.Status == SystemStatus.Busy)
                 return;
             var realid = LLMSystem.History.CurrentSession.Messages.Count - Settings.MaxMessagesOnScreen;
             if (realid < 0)
@@ -1999,21 +1992,28 @@ namespace WaifuAI
             realid += messageIndex - 1;
             if (realid >= LLMSystem.History.CurrentSession.Messages.Count)
                 return;
-            _editMessageForm = new EditMessageForm(LLMSystem.History.CurrentSession.Messages[realid].Guid)
+            this.Enabled = false;
+            using var _editMessage = new EditMessageForm(LLMSystem.History.CurrentSession.Messages[realid].Guid)
             {
                 TopMost = true,
                 StartPosition = FormStartPosition.CenterParent
             };
-            if (_editMessageForm.ShowDialog() == DialogResult.OK && _editMessageForm.Message != null)
+            _editMessage.Refresh();
+            try
             {
-                Invoke((System.Windows.Forms.MethodInvoker)async delegate
+                if (_editMessage.ShowDialog() == DialogResult.OK && _editMessage.Message != null)
                 {
-                    await LoadHistoryToUI();
-                    LLMSystem.InvalidatePromptCache();
-                });
+                    Invoke((System.Windows.Forms.MethodInvoker)async delegate
+                    {
+                        await LoadHistoryToUI();
+                        LLMSystem.InvalidatePromptCache();
+                    });
+                }
             }
-            _editMessageForm?.Dispose();
-            _editMessageForm = null;
+            finally
+            {
+                this.Enabled = true;
+            }
         }
 
         #endregion

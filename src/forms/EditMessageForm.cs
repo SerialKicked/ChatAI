@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using AIToolkit.Files;
 using AIToolkit.LLM;
 using AIToolkit;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Diagnostics;
 
 namespace WaifuAI.src.forms
 {
@@ -49,15 +51,42 @@ namespace WaifuAI.src.forms
                 Close();
                 return;
             }
-            ed_message.Text = Message.Message.ToWinFormat();
+            Setup();
+        }
+
+        private void SafeInvoke(Action action)
+        {
+            if (IsHandleCreated && !Disposing && !IsDisposed)
+            {
+                Invoke(action);
+            }
+        }
+
+        private void Setup()
+        {
+            if (InvokeRequired)
+            {
+                SafeInvoke(() => ed_message.Text = Message!.Message.ToWinFormat());
+            }
+            else
+            {
+                ed_message.Text = Message!.Message.ToWinFormat();
+            }
         }
 
         private void EditMessageForm_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == (char)Keys.Escape)
+            if (InvokeRequired)
             {
-                DialogResult = DialogResult.Cancel;
-                Close();
+                Invoke(new Action(() => EditMessageForm_KeyPress(sender, e)));
+            }
+            else
+            {
+                if (e.KeyChar == (char)Keys.Escape)
+                {
+                    DialogResult = DialogResult.Cancel;
+                    Close();
+                }
             }
         }
     }
