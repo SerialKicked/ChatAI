@@ -1822,8 +1822,6 @@ namespace WaifuAI
         }
         private async Task WebRemoveLastMessage()
         {
-            if (web_chat?.CoreWebView2 == null)
-                return;
             if (InvokeRequired)
             {
                 await InvokeAsync(new Func<Task>(WebRemoveLastMessage));
@@ -1835,9 +1833,6 @@ namespace WaifuAI
 
         private async Task WebEditLastMessage(string newMessage)
         {
-            if (web_chat?.CoreWebView2 == null)
-                return;
-
             if (InvokeRequired)
             {
                 await InvokeAsync(new Func<Task>(async () => await WebEditLastMessage(newMessage)));
