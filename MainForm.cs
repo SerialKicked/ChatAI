@@ -976,7 +976,8 @@ namespace WaifuAI
             statusbar.Items[1].Text = "Analyzing...";
             UseCharacterDefinedSampler();
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
-            await WebEditLastMessage($"**{LLMSystem.Bot.Name}:** *I am thinking...*");
+            await WebRemoveLastMessage();
+            await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is thinking...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
@@ -996,28 +997,80 @@ namespace WaifuAI
             // Check if we're in a past sessions, if so, ask if the user wants to update the archive before going back to the current session
             if (LLMSystem.History.CurrentSessionID != -1 && LLMSystem.History.CurrentSessionID != LLMSystem.History.Sessions.Count - 1)
             {
-
-                if (MessageBox.Show("Do you want to update this session's summary before going back to the latest session?", "Refresh?", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-                    await Chatlog.UpdateSession(LLMSystem.History.CurrentSession);
-                }
-                LLMSystem.History.CurrentSessionID = -1;
-                (LLMSystem.Bot as Character)?.SaveChatHistory();
+                await UpdateOldSession();
             }
-            else
+            else if (MessageBox.Show("This will archive the current chat and start a new one.", "Confirm?", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                if (MessageBox.Show("This will archive the current chat and start a new one.", "Confirm?", MessageBoxButtons.YesNo) == DialogResult.No)
-                    return;
+                await UpdateLatestSession();
+            }
+        }
+
+        private async Task UpdateLatestSession()
+        {
+            this.Enabled = false;
+            using var loadingForm = new LoadingForm() { Owner = this, StartPosition = FormStartPosition.CenterParent };
+            loadingForm.Show();
+            loadingForm.Refresh();
+            try
+            {
+                loadingForm.SetMessage("Archiving and summarizing current session.");
+                loadingForm.SetProgress(0);
                 await LLMSystem.History.StartNewChatSession(true);
+                loadingForm.SetMessage("Saving history.");
+                loadingForm.SetProgress(50);
                 (LLMSystem.Bot as Character)?.SaveChatHistory();
                 await LLMSystem.Bot.UpdateSelfEditSection();
                 if (!string.IsNullOrEmpty(LLMSystem.Bot.UniqueName))
                     (LLMSystem.Bot as IFile).SaveToFile("data/chars/" + LLMSystem.Bot.UniqueName + ".json");
+                loadingForm.SetMessage("Loading new session.");
+                loadingForm.SetProgress(100);
+                await WebChatLoad();
+                LoadChatHistoryTab();
+                _afkmessagecount = 0;
+                _activityTimer?.Reset();
             }
-            await WebChatLoad();
-            LoadChatHistoryTab();
-            _afkmessagecount = 0;
-            _activityTimer?.Reset();
+            finally
+            {
+                loadingForm.Close();
+                this.Enabled = true;
+            }
+
+        }
+
+        private async Task UpdateOldSession()
+        {
+            this.Enabled = false;
+            using var loadingForm = new LoadingForm() { Owner = this, StartPosition = FormStartPosition.CenterParent };
+            var doupdate = false;
+
+            if (MessageBox.Show("Do you want to update this session's summary before going back to the latest session?", "Refresh?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                doupdate = true;
+            }
+            loadingForm.Show();
+            loadingForm.Refresh();
+            try
+            {
+                if (doupdate)
+                {
+                    loadingForm.SetMessage("Archiving and summarizing session.");
+                    loadingForm.SetProgress(0);
+                    await Chatlog.UpdateSession(LLMSystem.History.CurrentSession);
+                }
+                loadingForm.SetMessage("Loading current session.");
+                loadingForm.SetProgress(100);
+                LLMSystem.History.CurrentSessionID = -1;
+                (LLMSystem.Bot as Character)?.SaveChatHistory();
+                await WebChatLoad();
+                LoadChatHistoryTab();
+                _afkmessagecount = 0;
+                _activityTimer?.Reset();
+            }
+            finally
+            {
+                loadingForm.Close();
+                this.Enabled = true;
+            }
         }
 
         private async void DeleteLastMessage(object sender, EventArgs e)
@@ -1027,7 +1080,7 @@ namespace WaifuAI
                 return;
             LLMSystem.History.RemoveLast();
             LLMSystem.InvalidatePromptCache();
-            await WebChatLoad();
+            await WebRemoveLastMessage();
         }
 
         private async Task LoadHistoryToUI()
@@ -1083,6 +1136,29 @@ namespace WaifuAI
             await web_chat.CoreWebView2.ExecuteScriptAsync(script);
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
+
+        private void UseCharacterDefinedSampler()
+        {
+            if (!ck_charsampler.Checked || !ck_charsampler.Enabled || Bot == null)
+                return;
+            // make a list of samplers, looking at DataFiles.Inference and what samplers are allowed in the Character's settings
+            var samplers = new List<string>();
+            foreach (var item in DataFiles.Inference)
+            {
+                if (Bot.AllowedSamplers.Contains(item.Key))
+                    samplers.Add(item.Key);
+            }
+            // pick random on from list and change the cb_infer selection to it
+            if (samplers.Count > 0)
+            {
+                var idx = RNG.Next(0, samplers.Count);
+                cb_infer.SelectedIndex = cb_infer.Items.IndexOf(samplers[idx]);
+            }
+        }
+
+        #endregion
+
+        #region *** Settings Tab Functions ***
 
         private void LoadSettings()
         {
@@ -1241,29 +1317,6 @@ namespace WaifuAI
                 MessageBox.Show($"An error occurred while saving settings: {ex.Message}");
             }
         }
-
-        private void UseCharacterDefinedSampler()
-        {
-            if (!ck_charsampler.Checked || !ck_charsampler.Enabled || Bot == null)
-                return;
-            // make a list of samplers, looking at DataFiles.Inference and what samplers are allowed in the Character's settings
-            var samplers = new List<string>();
-            foreach (var item in DataFiles.Inference)
-            {
-                if (Bot.AllowedSamplers.Contains(item.Key))
-                    samplers.Add(item.Key);
-            }
-            // pick random on from list and change the cb_infer selection to it
-            if (samplers.Count > 0)
-            {
-                var idx = RNG.Next(0, samplers.Count);
-                cb_infer.SelectedIndex = cb_infer.Items.IndexOf(samplers[idx]);
-            }
-        }
-
-        #endregion
-
-        #region *** Settings Tab Functions ***
 
         private async void ConvertChatToSessionList(object sender, EventArgs e)
         {
@@ -1541,26 +1594,42 @@ namespace WaifuAI
         {
             if (_selectedSession == null)
                 return;
-            _selectedSession.StartTime = _selectedSession.Messages.First().Date;
-            // if the first message has a default date, try to find a message with a valid date
-            if (_selectedSession.StartTime == default)
+            this.Enabled = false;
+            using var loadingForm = new LoadingForm() { Owner = this, StartPosition = FormStartPosition.CenterParent };
+            loadingForm.Show();
+            loadingForm.Refresh();
+            try
             {
-                foreach (var item in _selectedSession.Messages)
+                loadingForm.SetMessage("Updating session summary and meta-data.");
+                loadingForm.SetProgress(0);
+                _selectedSession.StartTime = _selectedSession.Messages.First().Date;
+                // if the first message has a default date, try to find a message with a valid date
+                if (_selectedSession.StartTime == default)
                 {
-                    if (item.Date != default)
+                    foreach (var item in _selectedSession.Messages)
                     {
-                        _selectedSession.StartTime = item.Date;
-                        break;
+                        if (item.Date != default)
+                        {
+                            _selectedSession.StartTime = item.Date;
+                            break;
+                        }
                     }
                 }
+                _selectedSession = await Chatlog.UpdateSession(_selectedSession);
+                loadingForm.SetMessage("Finalizing.");
+                loadingForm.SetProgress(100);
+                DisplaySessionDetails(_selectedSession);
+                LoadChatHistoryTab();
+                (LLMSystem.Bot as Character)?.SaveChatHistory();
             }
-            _selectedSession = await Chatlog.UpdateSession(_selectedSession);
-            DisplaySessionDetails(_selectedSession);
-            LoadChatHistoryTab();
-            (LLMSystem.Bot as Character)?.SaveChatHistory();
+            finally
+            {
+                loadingForm.Close();
+                this.Enabled = true;
+            }
         }
 
-        private async void button5_Click(object sender, EventArgs e)
+        private async void bt_switchsession_Click(object sender, EventArgs e)
         {
             if (_selectedSession == null)
                 return;
@@ -1787,6 +1856,17 @@ namespace WaifuAI
             return InjectDialogHtml(img, html);
         }
 
+        private async Task WebRemoveLastMessage()
+        {
+            if (InvokeRequired)
+            {
+                await InvokeAsync(new Func<Task>(WebRemoveLastMessage));
+                return;
+            }
+            await web_chat.CoreWebView2.ExecuteScriptAsync("document.getElementsByClassName('chat-message')[document.getElementsByClassName('chat-message').length - 1].remove();");
+            await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
+        }
+
         private async Task WebEditLastMessage(string newMessage)
         {
             if (InvokeRequired)
@@ -1831,24 +1911,6 @@ namespace WaifuAI
                 var result = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
             }
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
-        }
-
-        private async Task WebEditMessageByID(string newMessage, int index)
-        {
-            if (InvokeRequired)
-            {
-                await InvokeAsync(new Func<Task>(async () => await WebEditMessageByID(newMessage, index)));
-                return;
-            }
-            var text = Markdown.ToHtml(newMessage, CustomMarkDownPipeline);
-            text = text.SanitizeForJS();
-            var script = $"updateMessageAtIndex(\"{text}\", {index}, false);";
-            await web_chat.CoreWebView2.ExecuteScriptAsync(script);
-        }
-
-        public void ForceWebChatReload()
-        {
-            _forcereload = true;
         }
 
         public async void ForceUpdateLastMessage(string update)
@@ -1909,8 +1971,7 @@ namespace WaifuAI
 
         private async void OnWebChatContentLoaded(object sender, CoreWebView2DOMContentLoadedEventArgs e)
         {
-            string script = "window.scrollTo(0, document.body.scrollHeight);";
-            await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+            await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
 
         private void OnWebChatWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
@@ -1922,9 +1983,37 @@ namespace WaifuAI
                 if (json != null && json.TryGetValue("type", out object? value) && value.ToString() == "EditMessage")
                 {
                     int divNumber = Convert.ToInt32(json["index"]);
-                    Invoke(new Action<int>(EditMessage), divNumber);
+                    EditMessageSimple(divNumber);
+                    // Invoke(new Action<int>(EditMessage), divNumber);
                 }
             }
+        }
+
+        private void EditMessageSimple(int messageIndex)
+        {
+            if (_editMessageForm != null || LLMSystem.Status == SystemStatus.Busy)
+                return;
+            var realid = LLMSystem.History.CurrentSession.Messages.Count - Settings.MaxMessagesOnScreen;
+            if (realid < 0)
+                realid = 0;
+            realid += messageIndex - 1;
+            if (realid >= LLMSystem.History.CurrentSession.Messages.Count)
+                return;
+            _editMessageForm = new EditMessageForm(LLMSystem.History.CurrentSession.Messages[realid].Guid)
+            {
+                TopMost = true,
+                StartPosition = FormStartPosition.CenterParent
+            };
+            if (_editMessageForm.ShowDialog() == DialogResult.OK && _editMessageForm.Message != null)
+            {
+                Invoke((System.Windows.Forms.MethodInvoker)async delegate
+                {
+                    await LoadHistoryToUI();
+                    LLMSystem.InvalidatePromptCache();
+                });
+            }
+            _editMessageForm?.Dispose();
+            _editMessageForm = null;
         }
 
         #endregion

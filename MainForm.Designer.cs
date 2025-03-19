@@ -79,7 +79,7 @@
             bt_delsession = new Button();
             bt_insertsession = new Button();
             ck_hist_sticky = new CheckBox();
-            button5 = new Button();
+            bt_switchsession = new Button();
             ck_hist_casesensitive = new CheckBox();
             label56 = new Label();
             cb_hist_kwlink = new ComboBox();
@@ -932,7 +932,7 @@
             panel2.Controls.Add(bt_delsession);
             panel2.Controls.Add(bt_insertsession);
             panel2.Controls.Add(ck_hist_sticky);
-            panel2.Controls.Add(button5);
+            panel2.Controls.Add(bt_switchsession);
             panel2.Controls.Add(ck_hist_casesensitive);
             panel2.Controls.Add(label56);
             panel2.Controls.Add(cb_hist_kwlink);
@@ -984,16 +984,16 @@
             ck_hist_sticky.UseVisualStyleBackColor = true;
             ck_hist_sticky.CheckedChanged += UpdateHistoryEntryEvent;
             // 
-            // button5
+            // bt_switchsession
             // 
-            button5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button5.Location = new Point(444, 38);
-            button5.Name = "button5";
-            button5.Size = new Size(151, 23);
-            button5.TabIndex = 20;
-            button5.Text = "Set as Active";
-            button5.UseVisualStyleBackColor = true;
-            button5.Click += button5_Click;
+            bt_switchsession.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            bt_switchsession.Location = new Point(444, 38);
+            bt_switchsession.Name = "bt_switchsession";
+            bt_switchsession.Size = new Size(151, 23);
+            bt_switchsession.TabIndex = 20;
+            bt_switchsession.Text = "Set as Active";
+            bt_switchsession.UseVisualStyleBackColor = true;
+            bt_switchsession.Click += bt_switchsession_Click;
             // 
             // ck_hist_casesensitive
             // 
@@ -3417,7 +3417,7 @@
         private TextBox ed_hist_kw1;
         private Label label58;
         private CheckBox ck_hist_kw;
-        private Button button5;
+        private Button bt_switchsession;
         private BindingSource bindingSource1;
         private CheckBox ck_hist_sticky;
         private Button bt_insertsession;
