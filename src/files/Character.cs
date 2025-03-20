@@ -3,6 +3,7 @@ using System.Text;
 using WaifuAI.Plugins;
 using AIToolkit.Files;
 using AIToolkit.LLM;
+using Microsoft.VisualBasic;
 
 namespace WaifuAI.Files
 {
@@ -28,6 +29,14 @@ namespace WaifuAI.Files
         /// </summary>
         public string TTSVoice { get; set; } = string.Empty;
 
+        /// <summary> Reference to the point system </summary>
+        public string PointSystem { get; set; } = string.Empty;
+
+        /// <summary> Current point value </summary>
+        public int PointValue { get; set; } = 0;
+
+        [JsonIgnore] public PointSystem MyPoints = new();
+
         public override void BeginChat()
         {
             if (IsUser)
@@ -37,6 +46,13 @@ namespace WaifuAI.Files
             {
                 item.Enabled = Plugins.Contains(item.PluginID);
             }
+            if (!string.IsNullOrEmpty(PointSystem))
+            {
+                if (DataFiles.Points.TryGetValue(PointSystem, out var ps))
+                    MyPoints = ps.Copy<PointSystem>()!;
+                MyPoints.PointCount = PointValue;
+            }
+
             LoadChatHistory();
             MyWorlds = DataFiles.WorldInfos.Values.Where(wi => Worlds.Contains(wi.UniqueName)).ToList();
             foreach (var item in MyWorlds)
@@ -45,6 +61,7 @@ namespace WaifuAI.Files
 
         public override void EndChat(bool backup = false)
         {
+            PointValue = MyPoints.PointCount;
             SaveChatHistory(backup);
         }
 

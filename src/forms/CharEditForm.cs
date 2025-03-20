@@ -30,6 +30,12 @@ namespace WaifuAI.src.forms
             {
                 cb_charlist.Items.Add(item.Value.UniqueName);
             }
+            cb_pointsystems.Items.Clear();
+            foreach (var item in DataFiles.Points)
+            {
+                cb_pointsystems.Items.Add(item.Key);
+            }
+
             var idwant = 0;
             if (Forceid != "")
                 idwant = cb_charlist.Items.IndexOf(Forceid);
@@ -54,7 +60,6 @@ namespace WaifuAI.src.forms
                 {
                     cb_icon.Items.Add(Path.GetFileName(item));
                 }
-
             }
             LoadCharacterSettings(SelectedCharacter);
         }
@@ -79,7 +84,9 @@ namespace WaifuAI.src.forms
                 Icon = cb_icon.Text,
                 Plugins = [.. ckl_plugins.CheckedItems.Cast<string>()],
                 Worlds = [.. ckl_worldinfo.CheckedItems.Cast<string>()],
-                AllowedSamplers = [.. ckl_samplers.CheckedItems.Cast<string>()]
+                AllowedSamplers = [.. ckl_samplers.CheckedItems.Cast<string>()],
+                PointSystem = (cb_pointsystems.SelectedIndex != -1) ? cb_pointsystems.Text : string.Empty,
+                PointValue = (int)num_ptvalue.Value
             };
         }
 
@@ -100,6 +107,7 @@ namespace WaifuAI.src.forms
             ck_sessionmemory.Checked = selectedCharacter.SessionMemorySystem;
             num_selfedittokens.Value = selectedCharacter.SelfEditTokens;
             ed_selfedit.Text = selectedCharacter.SelfEditField.ToWinFormat();
+            num_ptvalue.Value = selectedCharacter.PointValue;
             ckl_plugins.Items.Clear();
             foreach (var item in LLMSystem.ContextPlugins)
             {
@@ -117,6 +125,8 @@ namespace WaifuAI.src.forms
             }
             // set cb_icon item index to the one that matches the selected character icon
             cb_icon.SelectedIndex = cb_icon.Items.IndexOf(selectedCharacter.Icon);
+
+            cb_pointsystems.SelectedIndex = !string.IsNullOrWhiteSpace(selectedCharacter.PointSystem) && DataFiles.Points.ContainsKey(selectedCharacter.PointSystem) ? cb_pointsystems.Items.IndexOf(selectedCharacter.PointSystem) : -1;
         }
 
         private void bt_worldsave_Click(object sender, EventArgs e)

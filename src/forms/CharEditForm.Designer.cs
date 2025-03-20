@@ -68,6 +68,10 @@
             ed_selfedit = new TextBox();
             label12 = new Label();
             tabSettings = new TabPage();
+            groupBox10 = new GroupBox();
+            num_ptvalue = new NumericUpDown();
+            cb_pointsystems = new ComboBox();
+            label14 = new Label();
             groupBox8 = new GroupBox();
             ed_outetts = new TextBox();
             label11 = new Label();
@@ -93,6 +97,8 @@
             groupBox9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_selfedittokens).BeginInit();
             tabSettings.SuspendLayout();
+            groupBox10.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)num_ptvalue).BeginInit();
             groupBox8.SuspendLayout();
             groupBox7.SuspendLayout();
             groupBox6.SuspendLayout();
@@ -511,6 +517,7 @@
             // 
             // tabSettings
             // 
+            tabSettings.Controls.Add(groupBox10);
             tabSettings.Controls.Add(groupBox8);
             tabSettings.Controls.Add(groupBox7);
             tabSettings.Controls.Add(groupBox6);
@@ -520,6 +527,48 @@
             tabSettings.TabIndex = 3;
             tabSettings.Text = "Settings";
             tabSettings.UseVisualStyleBackColor = true;
+            // 
+            // groupBox10
+            // 
+            groupBox10.Controls.Add(num_ptvalue);
+            groupBox10.Controls.Add(cb_pointsystems);
+            groupBox10.Controls.Add(label14);
+            groupBox10.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            groupBox10.Location = new Point(8, 222);
+            groupBox10.Name = "groupBox10";
+            groupBox10.Size = new Size(455, 97);
+            groupBox10.TabIndex = 12;
+            groupBox10.TabStop = false;
+            groupBox10.Text = "Gold / Point System (optional)";
+            // 
+            // num_ptvalue
+            // 
+            num_ptvalue.Font = new Font("Segoe UI", 9F);
+            num_ptvalue.Location = new Point(329, 63);
+            num_ptvalue.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
+            num_ptvalue.Minimum = new decimal(new int[] { 10000000, 0, 0, int.MinValue });
+            num_ptvalue.Name = "num_ptvalue";
+            num_ptvalue.Size = new Size(120, 23);
+            num_ptvalue.TabIndex = 4;
+            // 
+            // cb_pointsystems
+            // 
+            cb_pointsystems.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_pointsystems.FormattingEnabled = true;
+            cb_pointsystems.Location = new Point(6, 37);
+            cb_pointsystems.Name = "cb_pointsystems";
+            cb_pointsystems.Size = new Size(443, 23);
+            cb_pointsystems.TabIndex = 3;
+            // 
+            // label14
+            // 
+            label14.AutoSize = true;
+            label14.Font = new Font("Segoe UI", 9F);
+            label14.Location = new Point(6, 19);
+            label14.Name = "label14";
+            label14.Size = new Size(356, 15);
+            label14.TabIndex = 1;
+            label14.Text = "Select the point system this character will use (/pointhelp for help)";
             // 
             // groupBox8
             // 
@@ -615,7 +664,7 @@
             groupBox6.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox6.Location = new Point(8, 8);
             groupBox6.Name = "groupBox6";
-            groupBox6.Size = new Size(455, 311);
+            groupBox6.Size = new Size(455, 208);
             groupBox6.TabIndex = 9;
             groupBox6.TabStop = false;
             groupBox6.Text = "Plugins";
@@ -628,7 +677,7 @@
             ckl_plugins.Location = new Point(6, 37);
             ckl_plugins.Name = "ckl_plugins";
             ckl_plugins.ScrollAlwaysVisible = true;
-            ckl_plugins.Size = new Size(443, 256);
+            ckl_plugins.Size = new Size(443, 130);
             ckl_plugins.TabIndex = 1;
             // 
             // label9
@@ -675,6 +724,9 @@
             groupBox9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)num_selfedittokens).EndInit();
             tabSettings.ResumeLayout(false);
+            groupBox10.ResumeLayout(false);
+            groupBox10.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)num_ptvalue).EndInit();
             groupBox8.ResumeLayout(false);
             groupBox8.PerformLayout();
             groupBox7.ResumeLayout(false);
@@ -736,5 +788,9 @@
         private NumericUpDown num_selfedittokens;
         private TextBox ed_selfedit;
         private Label label12;
+        private GroupBox groupBox10;
+        private ComboBox cb_pointsystems;
+        private Label label14;
+        private NumericUpDown num_ptvalue;
     }
 }

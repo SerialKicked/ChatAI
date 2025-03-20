@@ -1,0 +1,57 @@
+﻿{
+	"PointUpperLimit": 10000,
+	"PointLowerLimit": 0,
+	"PointCount": 100,
+	"PointName": "Gold",
+	"PointDescription": "Currency used for buying items and paying penalties.",
+	"PersistentMessages": true,
+	"Rewards": [
+		{
+			"Name": "Defeating Mob",
+			"Description": "Pay for defeating a random mob.",
+			"Cost": 25
+		},
+		{
+			"Name": "Defeating Boss",
+			"Description": "Pay for defeating a boss level enemy.",
+			"Cost": 100
+		},
+		{
+			"Name": "Finishing Quest",
+			"Description": "Pay for finishing a quest.",
+			"Cost": 250
+		}
+	],
+	"Spendings": [
+		{
+			"Name": "Magic Scroll",
+			"Description": "Grants a random spell effect",
+			"Cost": 75
+		},
+		{
+			"Name": "Dragon's Blessing",
+			"Description": "Increases luck for 1 hour",
+			"Cost": 150
+		},
+		{
+			"Name": "Royal Guard Armor",
+			"Description": "A prestigious set of armor",
+			"Cost": 500
+		},
+		{
+			"Name": "Death Tax",
+			"Description": "Fee for being revived",
+			"Cost": 50
+		},
+		{
+			"Name": "Equipment Repair",
+			"Description": "Fix damaged equipment",
+			"Cost": 30
+		},
+		{
+			"Name": "Curse Removal",
+			"Description": "Remove a negative status effect",
+			"Cost": 100
+		}
+	]
+}

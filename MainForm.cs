@@ -60,7 +60,6 @@ namespace WaifuAI
         private System.Media.SoundPlayer? _player;
         private MemoryStream? _audioStream;
 
-
         public static Character? Bot => LLMSystem.Bot as Character;
         public static Character? User => LLMSystem.User as Character;
 
@@ -879,6 +878,48 @@ namespace WaifuAI
             await LLMSystem.ImpersonateUser();
         }
 
+        private async Task<(SingleMessage? response, bool usercmdonly)> ProcessPointCommands(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return (null, false);
+
+            var workstring = input.Trim();
+            // with input a multi-line string, we want to check if any of the lines starts with a command "/" character and if so, remove this particular line from workstring (set it aside for processing)
+            var lines = workstring.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var commands = new List<string>();
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("/"))
+                {
+                    commands.Add(line);
+                }
+            }
+            var foundacommand = false;
+            StringBuilder sb = new();
+            foreach (var cmd in commands)
+            {
+                var result = Bot!.MyPoints.ProcessCommand(cmd);
+                if (!string.IsNullOrEmpty(result))
+                {
+                    foundacommand = true;
+                    sb.AppendLinuxLine(result);
+                }
+            }
+            if (!foundacommand)
+                return (null, false);
+
+            var response = sb.ToString().CleanupAndTrim();
+
+            // check if the user sent only commands or not
+            var usercmdonly = commands.Count == lines.Length;
+
+            if (!string.IsNullOrEmpty(response))
+            {
+                return (new SingleMessage(AuthorRole.System, DateTime.Now, LLMSystem.ReplaceMacros(response), LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), usercmdonly);
+            }
+            return (null, usercmdonly);
+        }
+
         private async void SendMessage(object sender, EventArgs e)
         {
             ForceCloseEditMenu();
@@ -897,39 +938,59 @@ namespace WaifuAI
             {
                 var messagetext = LLMSystem.ReplaceMacros(LLMSystem.GetAwayString() + ed_input.Text.ToLinuxFormat(), LLMSystem.User, LLMSystem.Bot);
                 var msg = new SingleMessage(AuthorRole.User, DateTime.Now, messagetext, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
+
                 if (ed_input.Text.StartsWith("/sys "))
                 {
                     msg.Role = AuthorRole.System;
                     // remove the /sys prefix
                     msg.Message = msg.Message[5..].Trim();
+                    await SendMessageToUI(msg);
+                    // ready a new message for the bot's response
+                    _currentgeneration = string.Empty;
+                    _currentgenerationtokencount = 0;
+                    await SendMessageToUI(
+                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                    ed_input.Text = string.Empty;
+                    await LLMSystem.SendMessageToBot(msg);
                 }
-                else if (ed_input.Text.Contains("/scrape "))
+                else
                 {
-                    // retrieve first word after /scrape, and only the first word
-                    var scrape = ed_input.Text[8..].Trim();
-                    if (scrape.Contains(' '))
-                        scrape = scrape[..scrape.IndexOf(' ')];
-
-                    if (DataFiles.Websites.TryGetValue(scrape, out var web))
+                    var sysmessage = await ProcessPointCommands(messagetext);
+                    if (sysmessage.response != null)
                     {
-                        var listing = await WebScraper.ParseWebListing(web.Address, web, true);
-                        msg.Role = AuthorRole.System;
-                        msg.Message = listing.ExportToMarkdown();
+                        if (sysmessage.usercmdonly)
+                        {
+                            await SendMessageToUI(sysmessage.response);
+                            LLMSystem.History.LogMessage(sysmessage.response);
+                            ed_input.Text = string.Empty;
+                            statusbar.Items[1].Text = "Ready!";
+                            return;
+                        }
+                        else
+                        {
+                            await SendMessageToUI(msg);
+                            LLMSystem.History.LogMessage(msg);
+                            await SendMessageToUI(sysmessage.response);
+                            _currentgeneration = string.Empty;
+                            _currentgenerationtokencount = 0;
+                            await SendMessageToUI(
+                                new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                            ed_input.Text = string.Empty;
+                            await LLMSystem.SendMessageToBot(sysmessage.response);
+                        }
                     }
                     else
                     {
+                        await SendMessageToUI(msg);
+                        // ready a new message for the bot's response
+                        _currentgeneration = string.Empty;
+                        _currentgenerationtokencount = 0;
+                        await SendMessageToUI(
+                            new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
                         ed_input.Text = string.Empty;
-                        return;
+                        await LLMSystem.SendMessageToBot(msg);
                     }
                 }
-                await SendMessageToUI(msg);
-                // ready a new message for the bot's response
-                _currentgeneration = string.Empty;
-                _currentgenerationtokencount = 0;
-                await SendMessageToUI(
-                    new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
-                ed_input.Text = string.Empty;
-                await LLMSystem.SendMessageToBot(msg);
             }
             else
             {

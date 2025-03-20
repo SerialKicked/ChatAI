@@ -21,6 +21,7 @@ namespace WaifuAI
         public static Dictionary<string, WorldInfo> WorldInfos = [];
         public static Dictionary<string, SystemPrompt> SysPrompts = [];
         public static Dictionary<string, WebsiteDefinition> Websites = [];
+        public static Dictionary<string, PointSystem> Points = [];
 
         /// <summary>
         /// Generic Loader for database items
@@ -70,6 +71,7 @@ namespace WaifuAI
             WorldInfos = Load<WorldInfo>("data/worlds/", "*.json");
             SysPrompts = Load<SystemPrompt>("data/sysprompts/", "*.json");
             Websites = Load<WebsiteDefinition>("data/websites/", "*.json");
+            Points = Load<PointSystem>("data/pointsystems/", "*.json");
         }
 
         public static void ReloadChars()
