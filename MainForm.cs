@@ -123,14 +123,14 @@ namespace WaifuAI
             message = LLMSystem.ReplaceMacros(message);
             statusbar.Items[1].Text = "Analyzing...";
             var response = await LLMSystem.QuickInferenceForSystemPrompt(message, false);
-            response = response.RemoveThinkingBlocks(LLMSystem.Instruct.ThinkingStart, LLMSystem.Instruct.ThinkingEnd);
+            response = response.RemoveThinkingBlocks(LLMSystem.Instruct.ThinkingStart, LLMSystem.Instruct.ThinkingEnd).Trim();
 
             if (!string.IsNullOrEmpty(response) && !response.StartsWith("no", StringComparison.InvariantCultureIgnoreCase))
             {
                 var msg = new SingleMessage(AuthorRole.Assistant, DateTime.Now, response, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
                 Bot.History.LogMessage(msg);
                 _afkmessagecount++;
-                await SendMessageToUI(msg);
+                await SendMessageToUI(msg, Bot.History.CurrentSession.Messages.Count -1);
                 // play a notification sound
                 System.Media.SystemSounds.Question.Play();
             }
@@ -944,12 +944,12 @@ namespace WaifuAI
                     msg.Role = AuthorRole.System;
                     // remove the /sys prefix
                     msg.Message = msg.Message[5..].Trim();
-                    await SendMessageToUI(msg);
+                    await SendMessageToUI(msg, Bot!.History.CurrentSession.Messages.Count);
                     // ready a new message for the bot's response
                     _currentgeneration = string.Empty;
                     _currentgenerationtokencount = 0;
                     await SendMessageToUI(
-                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), Bot.History.CurrentSession.Messages.Count + 1);
                     ed_input.Text = string.Empty;
                     await LLMSystem.SendMessageToBot(msg);
                 }
@@ -960,33 +960,33 @@ namespace WaifuAI
                     {
                         if (sysmessage.usercmdonly)
                         {
-                            await SendMessageToUI(sysmessage.response);
                             LLMSystem.History.LogMessage(sysmessage.response);
+                            await SendMessageToUI(sysmessage.response, LLMSystem.History.CurrentSession.Messages.Count - 1);
                             ed_input.Text = string.Empty;
                             statusbar.Items[1].Text = "Ready!";
                             return;
                         }
                         else
                         {
-                            await SendMessageToUI(msg);
                             LLMSystem.History.LogMessage(msg);
-                            await SendMessageToUI(sysmessage.response);
+                            await SendMessageToUI(msg, LLMSystem.History.CurrentSession.Messages.Count - 1);
+                            await SendMessageToUI(sysmessage.response, LLMSystem.History.CurrentSession.Messages.Count);
                             _currentgeneration = string.Empty;
                             _currentgenerationtokencount = 0;
                             await SendMessageToUI(
-                                new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                                new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count + 1);
                             ed_input.Text = string.Empty;
                             await LLMSystem.SendMessageToBot(sysmessage.response);
                         }
                     }
                     else
                     {
-                        await SendMessageToUI(msg);
+                        await SendMessageToUI(msg, LLMSystem.History.CurrentSession.Messages.Count);
                         // ready a new message for the bot's response
                         _currentgeneration = string.Empty;
                         _currentgenerationtokencount = 0;
                         await SendMessageToUI(
-                            new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                            new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count+1);
                         ed_input.Text = string.Empty;
                         await LLMSystem.SendMessageToBot(msg);
                     }
@@ -998,7 +998,7 @@ namespace WaifuAI
                 _currentgeneration = string.Empty;
                 _currentgenerationtokencount = 0;
                 await SendMessageToUI(
-                    new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                    new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count);
                 ed_input.Text = string.Empty;
                 await LLMSystem.AddBotMessage();
             }
@@ -1039,7 +1039,7 @@ namespace WaifuAI
             UseCharacterDefinedSampler();
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await WebRemoveLastMessage();
-            await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is thinking...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+            await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is thinking...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count - 1);
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
@@ -1150,7 +1150,7 @@ namespace WaifuAI
             await WebChatLoad();
         }
 
-        private async Task SendMessageToUI(SingleMessage singleMessage)
+        private async Task SendMessageToUI(SingleMessage singleMessage, int index = -1)
         {
             string img = "gears.png";
             switch (singleMessage.Role)
@@ -1194,7 +1194,7 @@ namespace WaifuAI
             }
 
             coremsg = coremsg.SanitizeForJS();
-            var script = $"addHtmlAfterLastChatMessage(\"{coremsg}\");";
+            var script = $"addHtmlAfterLastChatMessage(\"{coremsg}\", {index});";
             await web_chat.CoreWebView2.ExecuteScriptAsync(script);
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
@@ -1816,12 +1816,13 @@ namespace WaifuAI
                         console.error('Index out of bounds');
                     }
                 }
-                function addHtmlAfterLastChatMessage(htmlContent) {
+                function addHtmlAfterLastChatMessage(htmlContent, index) {
                     const chatMessages = document.querySelectorAll('.chat-message');
                     if (chatMessages.length > 0) {
                         const lastChatMessage = chatMessages[chatMessages.length - 1];
                         const newDiv = document.createElement('div');
                         newDiv.className = 'chat-message';
+                        newDiv.setAttribute('data-message-index', index);
                         newDiv.innerHTML = htmlContent;
                         lastChatMessage.insertAdjacentElement('afterend', newDiv);
                     } else {
@@ -1840,8 +1841,8 @@ namespace WaifuAI
                         }
                         if (targetElement && targetElement.classList.contains('chat-message')) 
                         {
-                            const index = Array.from(chatContainer.children).indexOf(targetElement);
-                            window.chrome.webview.postMessage({ type: 'EditMessage', index: index + 1 });
+                            const messageIndex = parseInt(targetElement.getAttribute('data-message-index'));
+                            window.chrome.webview.postMessage({ type: 'EditMessage', index: messageIndex });
                         }
                     });
                 });         
@@ -1849,12 +1850,12 @@ namespace WaifuAI
             return $"<html><head>{css}</head><body>{scripts}<div id='chatContainer'>{htmlContent}<br/></div></body></html>";
         }
 
-        private static string InjectDialogHtml(string imgPath, string dialog)
+        private static string InjectDialogHtml(string imgPath, string dialog, int index)
         {
             // Replace thinking tags with collapsible div structure, using the instruction format's tags
             var processedDialog = dialog;
             return $@"
-                <div class='chat-message'>
+                <div class='chat-message' data-message-index='{index}'>
                     <div class='portrait'>
                         <img src='https://appassets.test/img/{imgPath}' alt='Portrait' width='60'>
                     </div>
@@ -1866,7 +1867,7 @@ namespace WaifuAI
                 </div>";
         }
 
-        private static string AddHtmlMessage(SingleMessage singleMessage)
+        private static string AddHtmlMessage(SingleMessage singleMessage, int index)
         {
             string img = "gears.png";
             switch (singleMessage.Role)
@@ -1879,8 +1880,9 @@ namespace WaifuAI
                     break;
             }
             var html = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + singleMessage.Message, CustomMarkDownPipeline);
-            return InjectDialogHtml(img, html);
+            return InjectDialogHtml(img, html, index);
         }
+
         private async Task WebRemoveLastMessage()
         {
             if (InvokeRequired)
@@ -1963,7 +1965,7 @@ namespace WaifuAI
                 start = 0;
             for (int i = start; i < LLMSystem.History.CurrentSession.Messages.Count; i++)
             {
-                html += AddHtmlMessage(LLMSystem.History.CurrentSession.Messages[i]);
+                html += AddHtmlMessage(LLMSystem.History.CurrentSession.Messages[i], i);
             }
             html = InjectDialogCSS(html);
             web_chat.NavigateToString(html);
@@ -2040,14 +2042,14 @@ namespace WaifuAI
 
         private void EditMessage(int messageIndex)
         {
-            if (LLMSystem.Status == SystemStatus.Busy)
+            if (LLMSystem.Status == SystemStatus.Busy || messageIndex < 0 || messageIndex >= LLMSystem.History.CurrentSession.Messages.Count)
                 return;
-            var realid = LLMSystem.History.CurrentSession.Messages.Count - Settings.MaxMessagesOnScreen;
-            if (realid < 0)
-                realid = 0;
-            realid += messageIndex - 1;
-            if (realid >= LLMSystem.History.CurrentSession.Messages.Count)
-                return;
+            var realid = messageIndex;
+            //if (realid < 0)
+            //    realid = 0;
+            //realid += messageIndex - 1;
+            //if (realid >= LLMSystem.History.CurrentSession.Messages.Count)
+            //    return;
             this.Enabled = false;
             using var _editMessage = new EditMessageForm(LLMSystem.History.CurrentSession.Messages[realid].Guid)
             {
