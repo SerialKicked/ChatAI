@@ -147,7 +147,7 @@ namespace WaifuAI.Files
                 return "Invalid option.";
             var use = Rewards[id];
             PointCount += use.Cost;
-            return $"You selected *{use.Name}*, giving you {use.Cost} {PointName}. You now have {PointCount} {PointName} left.";
+            return $"You selected *{use.Name}* ({use.Description}), giving you {use.Cost} {PointName}. You now have {PointCount} {PointName} left.";
         }
 
         public string GainPointsFor(string name)
@@ -158,7 +158,7 @@ namespace WaifuAI.Files
                 return "Invalid option.";
             var use = Rewards[id];
             PointCount += use.Cost;
-            return $"You selected *{use.Name}*, giving you {use.Cost} {PointName}. You now have {PointCount} {PointName} left.";
+            return $"You selected *{use.Name}* ({use.Description}), giving you {use.Cost} {PointName}. You now have {PointCount} {PointName} left.";
         }
 
         public string SpendPoints(int value)
@@ -168,7 +168,7 @@ namespace WaifuAI.Files
                 return "Invalid option.";
             var use = Spendings[id];
             PointCount -= use.Cost;
-            return $"You selected *{use.Name}*. Removing {use.Cost} {PointName}. You now have {PointCount} {PointName} left.";
+            return $"You selected *{use.Name}* ({use.Description}). Removing {use.Cost} {PointName}. You now have {PointCount} {PointName} left.";
         }
 
         public string SpendPoints(string name)
@@ -179,7 +179,7 @@ namespace WaifuAI.Files
                 return "Invalid option.";
             var use = Spendings[id];
             PointCount -= use.Cost;
-            return $"You selected *{use.Name}*. Removing {use.Cost} {PointName}. You now have {PointCount} {PointName} left.";
+            return $"You selected *{use.Name}* ({use.Description}). Removing {use.Cost} {PointName}. You now have {PointCount} {PointName} left.";
         }
 
 

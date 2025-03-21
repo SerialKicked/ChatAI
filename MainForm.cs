@@ -1965,7 +1965,8 @@ namespace WaifuAI
                 start = 0;
             for (int i = start; i < LLMSystem.History.CurrentSession.Messages.Count; i++)
             {
-                html += AddHtmlMessage(LLMSystem.History.CurrentSession.Messages[i], i);
+                if (!LLMSystem.History.CurrentSession.Messages[i].Hidden)
+                    html += AddHtmlMessage(LLMSystem.History.CurrentSession.Messages[i], i);
             }
             html = InjectDialogCSS(html);
             web_chat.NavigateToString(html);
