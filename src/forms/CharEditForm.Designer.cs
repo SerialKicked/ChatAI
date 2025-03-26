@@ -83,6 +83,7 @@
             groupBox6 = new GroupBox();
             ckl_plugins = new CheckedListBox();
             label9 = new Label();
+            btRegenBio = new Button();
             groupBox3.SuspendLayout();
             tabControl1.SuspendLayout();
             tabBio.SuspendLayout();
@@ -463,6 +464,7 @@
             // 
             // groupBox9
             // 
+            groupBox9.Controls.Add(btRegenBio);
             groupBox9.Controls.Add(label13);
             groupBox9.Controls.Add(num_selfedittokens);
             groupBox9.Controls.Add(ed_selfedit);
@@ -470,7 +472,7 @@
             groupBox9.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox9.Location = new Point(8, 8);
             groupBox9.Name = "groupBox9";
-            groupBox9.Size = new Size(929, 233);
+            groupBox9.Size = new Size(929, 290);
             groupBox9.TabIndex = 11;
             groupBox9.TabStop = false;
             groupBox9.Text = "Self Edit Field";
@@ -478,9 +480,10 @@
             // label13
             // 
             label13.AutoSize = true;
-            label13.Location = new Point(455, 40);
+            label13.Font = new Font("Segoe UI", 9F);
+            label13.Location = new Point(6, 228);
             label13.Name = "label13";
-            label13.Size = new Size(223, 15);
+            label13.Size = new Size(210, 15);
             label13.TabIndex = 15;
             label13.Text = "Maximum tokens (0 to disable feature)";
             // 
@@ -488,7 +491,7 @@
             // 
             num_selfedittokens.Font = new Font("Segoe UI", 9F);
             num_selfedittokens.Increment = new decimal(new int[] { 128, 0, 0, 0 });
-            num_selfedittokens.Location = new Point(455, 58);
+            num_selfedittokens.Location = new Point(6, 246);
             num_selfedittokens.Maximum = new decimal(new int[] { 2048, 0, 0, 0 });
             num_selfedittokens.Name = "num_selfedittokens";
             num_selfedittokens.Size = new Size(125, 23);
@@ -502,7 +505,7 @@
             ed_selfedit.Name = "ed_selfedit";
             ed_selfedit.ReadOnly = true;
             ed_selfedit.ScrollBars = ScrollBars.Vertical;
-            ed_selfedit.Size = new Size(443, 183);
+            ed_selfedit.Size = new Size(917, 183);
             ed_selfedit.TabIndex = 13;
             // 
             // label12
@@ -690,6 +693,17 @@
             label9.TabIndex = 0;
             label9.Text = "Plugins this character has access to. Some can be toggled on/off in main chat.";
             // 
+            // btRegenBio
+            // 
+            btRegenBio.Font = new Font("Segoe UI", 9F);
+            btRegenBio.Location = new Point(761, 228);
+            btRegenBio.Name = "btRegenBio";
+            btRegenBio.Size = new Size(162, 23);
+            btRegenBio.TabIndex = 16;
+            btRegenBio.Text = "Regenerate";
+            btRegenBio.UseVisualStyleBackColor = true;
+            btRegenBio.Click += btRegenBio_Click;
+            // 
             // CharEditForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -792,5 +806,6 @@
         private ComboBox cb_pointsystems;
         private Label label14;
         private NumericUpDown num_ptvalue;
+        private Button btRegenBio;
     }
 }

@@ -169,5 +169,23 @@ namespace WaifuAI.src.forms
             }
         }
 
+        private async void btRegenBio_Click(object sender, EventArgs e)
+        {
+            if (SelectedCharacter == null)
+                return;
+            if (num_selfedittokens.Value == 0)
+            {
+                ed_selfedit.Text = string.Empty;
+                SelectedCharacter.SelfEditField = string.Empty;
+                SelectedCharacter.SelfEditTokens = 0;
+                return;
+            }
+            SelectedCharacter.LoadChatHistory();
+            if (SelectedCharacter.History.Sessions.Count < 2)
+                return;
+            SelectedCharacter.SelfEditTokens = (int)num_selfedittokens.Value;
+            await SelectedCharacter.UpdateSelfEditSection();
+            ed_selfedit.Text = SelectedCharacter.SelfEditField;
+        }
     }
 }

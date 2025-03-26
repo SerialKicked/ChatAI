@@ -65,7 +65,7 @@ namespace WaifuAI.Files
             SaveChatHistory(backup);
         }
 
-        protected void LoadChatHistory() => LoadChatHistory("data/chatlogs/");
+        public void LoadChatHistory() => LoadChatHistory("data/chatlogs/");
 
         public void SaveChatHistory(bool backup = false) => SaveChatHistory("data/chatlogs/", backup);
 

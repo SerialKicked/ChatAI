@@ -40,6 +40,8 @@
             ed_input = new TextBox();
             panel1 = new Panel();
             groupBox23 = new GroupBox();
+            bt_clearimg = new Button();
+            pictEmbed = new PictureBox();
             ck_ttstoggle = new CheckBox();
             bt_test = new Button();
             ck_onlinerag = new CheckBox();
@@ -281,6 +283,7 @@
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
             panel1.SuspendLayout();
             groupBox23.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictEmbed).BeginInit();
             groupBox5.SuspendLayout();
             groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_temperature).BeginInit();
@@ -373,7 +376,7 @@
             tabMain.Location = new Point(0, 0);
             tabMain.Name = "tabMain";
             tabMain.SelectedIndex = 0;
-            tabMain.Size = new Size(978, 761);
+            tabMain.Size = new Size(1004, 839);
             tabMain.TabIndex = 1;
             // 
             // tabChat
@@ -388,7 +391,7 @@
             tabChat.Location = new Point(4, 27);
             tabChat.Name = "tabChat";
             tabChat.Padding = new Padding(3);
-            tabChat.Size = new Size(970, 730);
+            tabChat.Size = new Size(996, 808);
             tabChat.TabIndex = 1;
             tabChat.Text = "Chat";
             tabChat.UseVisualStyleBackColor = true;
@@ -399,7 +402,7 @@
             bt_impersonate.BackColor = Color.Turquoise;
             bt_impersonate.FlatStyle = FlatStyle.Flat;
             bt_impersonate.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_impersonate.Location = new Point(902, 641);
+            bt_impersonate.Location = new Point(928, 719);
             bt_impersonate.Name = "bt_impersonate";
             bt_impersonate.Size = new Size(60, 25);
             bt_impersonate.TabIndex = 7;
@@ -415,7 +418,7 @@
             web_chat.DefaultBackgroundColor = Color.White;
             web_chat.Location = new Point(212, 3);
             web_chat.Name = "web_chat";
-            web_chat.Size = new Size(752, 631);
+            web_chat.Size = new Size(778, 709);
             web_chat.TabIndex = 6;
             web_chat.ZoomFactor = 1D;
             // 
@@ -425,7 +428,7 @@
             bt_delete.BackColor = Color.LightCoral;
             bt_delete.FlatStyle = FlatStyle.Flat;
             bt_delete.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_delete.Location = new Point(902, 702);
+            bt_delete.Location = new Point(928, 780);
             bt_delete.Name = "bt_delete";
             bt_delete.Size = new Size(60, 25);
             bt_delete.TabIndex = 5;
@@ -439,7 +442,7 @@
             bt_reroll.BackColor = Color.PaleGoldenrod;
             bt_reroll.FlatStyle = FlatStyle.Flat;
             bt_reroll.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_reroll.Location = new Point(902, 672);
+            bt_reroll.Location = new Point(928, 750);
             bt_reroll.Name = "bt_reroll";
             bt_reroll.Size = new Size(60, 25);
             bt_reroll.TabIndex = 4;
@@ -453,7 +456,7 @@
             bt_send.BackColor = Color.PaleGreen;
             bt_send.FlatStyle = FlatStyle.Flat;
             bt_send.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_send.Location = new Point(838, 641);
+            bt_send.Location = new Point(864, 719);
             bt_send.Name = "bt_send";
             bt_send.Size = new Size(60, 86);
             bt_send.TabIndex = 3;
@@ -467,11 +470,11 @@
             ed_input.BackColor = Color.WhiteSmoke;
             ed_input.BorderStyle = BorderStyle.FixedSingle;
             ed_input.Font = new Font("Segoe UI", 11F);
-            ed_input.Location = new Point(212, 639);
+            ed_input.Location = new Point(212, 717);
             ed_input.Multiline = true;
             ed_input.Name = "ed_input";
             ed_input.ScrollBars = ScrollBars.Vertical;
-            ed_input.Size = new Size(620, 87);
+            ed_input.Size = new Size(646, 87);
             ed_input.TabIndex = 2;
             ed_input.KeyPress += ed_input_KeyPress;
             // 
@@ -485,12 +488,14 @@
             panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
-            panel1.Size = new Size(203, 724);
+            panel1.Size = new Size(203, 802);
             panel1.TabIndex = 0;
             // 
             // groupBox23
             // 
             groupBox23.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox23.Controls.Add(bt_clearimg);
+            groupBox23.Controls.Add(pictEmbed);
             groupBox23.Controls.Add(ck_ttstoggle);
             groupBox23.Controls.Add(bt_test);
             groupBox23.Controls.Add(ck_onlinerag);
@@ -502,10 +507,30 @@
             groupBox23.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox23.Location = new Point(6, 541);
             groupBox23.Name = "groupBox23";
-            groupBox23.Size = new Size(187, 180);
+            groupBox23.Size = new Size(187, 258);
             groupBox23.TabIndex = 26;
             groupBox23.TabStop = false;
             groupBox23.Text = "Quick Settings";
+            // 
+            // bt_clearimg
+            // 
+            bt_clearimg.Location = new Point(75, 195);
+            bt_clearimg.Name = "bt_clearimg";
+            bt_clearimg.Size = new Size(75, 23);
+            bt_clearimg.TabIndex = 34;
+            bt_clearimg.Text = "Clear";
+            bt_clearimg.UseVisualStyleBackColor = true;
+            bt_clearimg.Click += bt_clearimg_Click;
+            // 
+            // pictEmbed
+            // 
+            pictEmbed.BorderStyle = BorderStyle.FixedSingle;
+            pictEmbed.Location = new Point(4, 195);
+            pictEmbed.Name = "pictEmbed";
+            pictEmbed.Size = new Size(65, 50);
+            pictEmbed.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictEmbed.TabIndex = 33;
+            pictEmbed.TabStop = false;
             // 
             // ck_ttstoggle
             // 
@@ -909,7 +934,7 @@
             tabHistory.Controls.Add(listSession);
             tabHistory.Location = new Point(4, 27);
             tabHistory.Name = "tabHistory";
-            tabHistory.Size = new Size(970, 730);
+            tabHistory.Size = new Size(996, 808);
             tabHistory.TabIndex = 6;
             tabHistory.Text = "Chat History";
             tabHistory.UseVisualStyleBackColor = true;
@@ -922,7 +947,7 @@
             web_sessioncontent.Dock = DockStyle.Fill;
             web_sessioncontent.Location = new Point(367, 240);
             web_sessioncontent.Name = "web_sessioncontent";
-            web_sessioncontent.Size = new Size(603, 490);
+            web_sessioncontent.Size = new Size(629, 568);
             web_sessioncontent.TabIndex = 2;
             web_sessioncontent.ZoomFactor = 1D;
             // 
@@ -948,13 +973,13 @@
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(367, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(603, 240);
+            panel2.Size = new Size(629, 240);
             panel2.TabIndex = 1;
             // 
             // bt_delsession
             // 
             bt_delsession.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_delsession.Location = new Point(444, 96);
+            bt_delsession.Location = new Point(470, 96);
             bt_delsession.Name = "bt_delsession";
             bt_delsession.Size = new Size(151, 23);
             bt_delsession.TabIndex = 23;
@@ -965,7 +990,7 @@
             // bt_insertsession
             // 
             bt_insertsession.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_insertsession.Location = new Point(444, 67);
+            bt_insertsession.Location = new Point(470, 67);
             bt_insertsession.Name = "bt_insertsession";
             bt_insertsession.Size = new Size(151, 23);
             bt_insertsession.TabIndex = 22;
@@ -987,7 +1012,7 @@
             // bt_switchsession
             // 
             bt_switchsession.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_switchsession.Location = new Point(444, 38);
+            bt_switchsession.Location = new Point(470, 38);
             bt_switchsession.Name = "bt_switchsession";
             bt_switchsession.Size = new Size(151, 23);
             bt_switchsession.TabIndex = 20;
@@ -1077,7 +1102,7 @@
             bt_deleteAllHistory.BackColor = SystemColors.ButtonFace;
             bt_deleteAllHistory.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_deleteAllHistory.ForeColor = Color.DarkRed;
-            bt_deleteAllHistory.Location = new Point(444, 125);
+            bt_deleteAllHistory.Location = new Point(470, 125);
             bt_deleteAllHistory.Name = "bt_deleteAllHistory";
             bt_deleteAllHistory.Size = new Size(151, 23);
             bt_deleteAllHistory.TabIndex = 3;
@@ -1088,7 +1113,7 @@
             // bt_sessionrefresh
             // 
             bt_sessionrefresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_sessionrefresh.Location = new Point(444, 9);
+            bt_sessionrefresh.Location = new Point(470, 9);
             bt_sessionrefresh.Name = "bt_sessionrefresh";
             bt_sessionrefresh.Size = new Size(151, 23);
             bt_sessionrefresh.TabIndex = 2;
@@ -1122,7 +1147,7 @@
             listSession.FullRowSelect = true;
             listSession.Location = new Point(0, 0);
             listSession.Name = "listSession";
-            listSession.Size = new Size(367, 730);
+            listSession.Size = new Size(367, 808);
             listSession.TabIndex = 0;
             listSession.UseCompatibleStateImageBehavior = false;
             listSession.View = View.Details;
@@ -1142,7 +1167,7 @@
             // 
             tabDocs.Location = new Point(4, 27);
             tabDocs.Name = "tabDocs";
-            tabDocs.Size = new Size(970, 730);
+            tabDocs.Size = new Size(996, 808);
             tabDocs.TabIndex = 7;
             tabDocs.Text = "Documents";
             tabDocs.UseVisualStyleBackColor = true;
@@ -1154,7 +1179,7 @@
             tabWorldInfo.Controls.Add(groupBox3);
             tabWorldInfo.Location = new Point(4, 27);
             tabWorldInfo.Name = "tabWorldInfo";
-            tabWorldInfo.Size = new Size(970, 730);
+            tabWorldInfo.Size = new Size(996, 808);
             tabWorldInfo.TabIndex = 8;
             tabWorldInfo.Text = "World Info";
             tabWorldInfo.UseVisualStyleBackColor = true;
@@ -1166,7 +1191,7 @@
             panel3.Dock = DockStyle.Fill;
             panel3.Location = new Point(241, 57);
             panel3.Name = "panel3";
-            panel3.Size = new Size(729, 673);
+            panel3.Size = new Size(755, 751);
             panel3.TabIndex = 4;
             // 
             // groupBox8
@@ -1192,7 +1217,7 @@
             groupBox8.Dock = DockStyle.Fill;
             groupBox8.Location = new Point(0, 246);
             groupBox8.Name = "groupBox8";
-            groupBox8.Size = new Size(729, 427);
+            groupBox8.Size = new Size(755, 505);
             groupBox8.TabIndex = 1;
             groupBox8.TabStop = false;
             groupBox8.Text = "Entry Settings";
@@ -1374,7 +1399,7 @@
             groupBox7.Dock = DockStyle.Top;
             groupBox7.Location = new Point(0, 0);
             groupBox7.Name = "groupBox7";
-            groupBox7.Size = new Size(729, 246);
+            groupBox7.Size = new Size(755, 246);
             groupBox7.TabIndex = 0;
             groupBox7.TabStop = false;
             groupBox7.Text = "Entry Info";
@@ -1395,7 +1420,7 @@
             ed_wentrymem.Multiline = true;
             ed_wentrymem.Name = "ed_wentrymem";
             ed_wentrymem.ScrollBars = ScrollBars.Vertical;
-            ed_wentrymem.Size = new Size(715, 159);
+            ed_wentrymem.Size = new Size(741, 159);
             ed_wentrymem.TabIndex = 2;
             ed_wentrymem.TextChanged += UpdateWorldEntryEvent;
             // 
@@ -1404,7 +1429,7 @@
             ed_wentryname.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             ed_wentryname.Location = new Point(6, 37);
             ed_wentryname.Name = "ed_wentryname";
-            ed_wentryname.Size = new Size(715, 23);
+            ed_wentryname.Size = new Size(741, 23);
             ed_wentryname.TabIndex = 1;
             ed_wentryname.TextChanged += UpdateWorldEntryEvent;
             // 
@@ -1431,7 +1456,7 @@
             groupBox6.Dock = DockStyle.Left;
             groupBox6.Location = new Point(0, 57);
             groupBox6.Name = "groupBox6";
-            groupBox6.Size = new Size(241, 673);
+            groupBox6.Size = new Size(241, 751);
             groupBox6.TabIndex = 3;
             groupBox6.TabStop = false;
             groupBox6.Text = "World Settings";
@@ -1450,7 +1475,7 @@
             // bt_delwentry
             // 
             bt_delwentry.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            bt_delwentry.Location = new Point(145, 645);
+            bt_delwentry.Location = new Point(145, 723);
             bt_delwentry.Name = "bt_delwentry";
             bt_delwentry.Size = new Size(90, 23);
             bt_delwentry.TabIndex = 7;
@@ -1461,7 +1486,7 @@
             // bt_addwentry
             // 
             bt_addwentry.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            bt_addwentry.Location = new Point(3, 645);
+            bt_addwentry.Location = new Point(3, 723);
             bt_addwentry.Name = "bt_addwentry";
             bt_addwentry.Size = new Size(90, 23);
             bt_addwentry.TabIndex = 6;
@@ -1486,7 +1511,7 @@
             lb_worldentries.ItemHeight = 15;
             lb_worldentries.Location = new Point(3, 215);
             lb_worldentries.Name = "lb_worldentries";
-            lb_worldentries.Size = new Size(232, 424);
+            lb_worldentries.Size = new Size(232, 499);
             lb_worldentries.TabIndex = 4;
             lb_worldentries.SelectedIndexChanged += lb_worldentries_SelectedIndexChanged;
             // 
@@ -1537,7 +1562,7 @@
             groupBox3.Dock = DockStyle.Top;
             groupBox3.Location = new Point(0, 0);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(970, 57);
+            groupBox3.Size = new Size(996, 57);
             groupBox3.TabIndex = 0;
             groupBox3.TabStop = false;
             groupBox3.Text = "File Selection";
@@ -1569,7 +1594,7 @@
             tabInstruct.Location = new Point(4, 27);
             tabInstruct.Name = "tabInstruct";
             tabInstruct.Padding = new Padding(3);
-            tabInstruct.Size = new Size(970, 730);
+            tabInstruct.Size = new Size(996, 808);
             tabInstruct.TabIndex = 2;
             tabInstruct.Text = "Instruction Format";
             tabInstruct.UseVisualStyleBackColor = true;
@@ -1577,7 +1602,7 @@
             // bt_instructsave
             // 
             bt_instructsave.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_instructsave.Location = new Point(576, 8);
+            bt_instructsave.Location = new Point(602, 8);
             bt_instructsave.Name = "bt_instructsave";
             bt_instructsave.Size = new Size(75, 23);
             bt_instructsave.TabIndex = 9;
@@ -1601,7 +1626,7 @@
             cb_instructlist.FormattingEnabled = true;
             cb_instructlist.Location = new Point(118, 8);
             cb_instructlist.Name = "cb_instructlist";
-            cb_instructlist.Size = new Size(452, 23);
+            cb_instructlist.Size = new Size(478, 23);
             cb_instructlist.TabIndex = 7;
             // 
             // pan_instruct
@@ -1610,7 +1635,7 @@
             pan_instruct.AutoScroll = true;
             pan_instruct.Location = new Point(8, 38);
             pan_instruct.Name = "pan_instruct";
-            pan_instruct.Size = new Size(951, 611);
+            pan_instruct.Size = new Size(977, 611);
             pan_instruct.TabIndex = 6;
             // 
             // tabSysPrompt
@@ -1622,7 +1647,7 @@
             tabSysPrompt.Location = new Point(4, 27);
             tabSysPrompt.Name = "tabSysPrompt";
             tabSysPrompt.Padding = new Padding(3);
-            tabSysPrompt.Size = new Size(970, 730);
+            tabSysPrompt.Size = new Size(996, 808);
             tabSysPrompt.TabIndex = 5;
             tabSysPrompt.Text = "System Prompt";
             tabSysPrompt.UseVisualStyleBackColor = true;
@@ -1630,7 +1655,7 @@
             // bt_promptsave
             // 
             bt_promptsave.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_promptsave.Location = new Point(579, 8);
+            bt_promptsave.Location = new Point(605, 8);
             bt_promptsave.Name = "bt_promptsave";
             bt_promptsave.Size = new Size(75, 23);
             bt_promptsave.TabIndex = 13;
@@ -1654,7 +1679,7 @@
             cb_promptlist.FormattingEnabled = true;
             cb_promptlist.Location = new Point(118, 8);
             cb_promptlist.Name = "cb_promptlist";
-            cb_promptlist.Size = new Size(455, 23);
+            cb_promptlist.Size = new Size(481, 23);
             cb_promptlist.TabIndex = 11;
             // 
             // pan_prompt
@@ -1665,7 +1690,7 @@
             pan_prompt.Controls.Add(groupBox21);
             pan_prompt.Location = new Point(8, 38);
             pan_prompt.Name = "pan_prompt";
-            pan_prompt.Size = new Size(956, 672);
+            pan_prompt.Size = new Size(982, 672);
             pan_prompt.TabIndex = 10;
             // 
             // groupBox22
@@ -1679,7 +1704,7 @@
             groupBox22.Controls.Add(label53);
             groupBox22.Controls.Add(ed_editsys_scenario);
             groupBox22.Controls.Add(label52);
-            groupBox22.Location = new Point(584, 3);
+            groupBox22.Location = new Point(610, 3);
             groupBox22.Name = "groupBox22";
             groupBox22.Size = new Size(369, 206);
             groupBox22.TabIndex = 1;
@@ -1756,7 +1781,7 @@
             groupBox21.Controls.Add(ed_editsys_prompt);
             groupBox21.Location = new Point(3, 3);
             groupBox21.Name = "groupBox21";
-            groupBox21.Size = new Size(575, 666);
+            groupBox21.Size = new Size(601, 666);
             groupBox21.TabIndex = 0;
             groupBox21.TabStop = false;
             groupBox21.Text = "Main Prompt (intro, char and user bio)";
@@ -1768,7 +1793,7 @@
             ed_editsys_prompt.Location = new Point(3, 19);
             ed_editsys_prompt.Multiline = true;
             ed_editsys_prompt.Name = "ed_editsys_prompt";
-            ed_editsys_prompt.Size = new Size(569, 644);
+            ed_editsys_prompt.Size = new Size(595, 644);
             ed_editsys_prompt.TabIndex = 0;
             // 
             // tabSamplers
@@ -1780,7 +1805,7 @@
             tabSamplers.Location = new Point(4, 27);
             tabSamplers.Name = "tabSamplers";
             tabSamplers.Padding = new Padding(3);
-            tabSamplers.Size = new Size(970, 730);
+            tabSamplers.Size = new Size(996, 808);
             tabSamplers.TabIndex = 3;
             tabSamplers.Text = "Samplers";
             tabSamplers.UseVisualStyleBackColor = true;
@@ -1788,7 +1813,7 @@
             // bt_savesampler
             // 
             bt_savesampler.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_savesampler.Location = new Point(580, 8);
+            bt_savesampler.Location = new Point(606, 8);
             bt_savesampler.Name = "bt_savesampler";
             bt_savesampler.Size = new Size(75, 23);
             bt_savesampler.TabIndex = 5;
@@ -1812,7 +1837,7 @@
             cb_samplerlist.FormattingEnabled = true;
             cb_samplerlist.Location = new Point(118, 8);
             cb_samplerlist.Name = "cb_samplerlist";
-            cb_samplerlist.Size = new Size(456, 23);
+            cb_samplerlist.Size = new Size(482, 23);
             cb_samplerlist.TabIndex = 1;
             // 
             // pan_samplers
@@ -1829,7 +1854,7 @@
             pan_samplers.Controls.Add(groupBox13);
             pan_samplers.Location = new Point(8, 38);
             pan_samplers.Name = "pan_samplers";
-            pan_samplers.Size = new Size(956, 686);
+            pan_samplers.Size = new Size(982, 686);
             pan_samplers.TabIndex = 0;
             // 
             // groupBox20
@@ -1840,7 +1865,7 @@
             groupBox20.Controls.Add(ck_ignoreeos);
             groupBox20.Location = new Point(736, 71);
             groupBox20.Name = "groupBox20";
-            groupBox20.Size = new Size(203, 300);
+            groupBox20.Size = new Size(229, 300);
             groupBox20.TabIndex = 7;
             groupBox20.TabStop = false;
             groupBox20.Text = "Misc Settings";
@@ -1937,7 +1962,7 @@
             groupBox18.Controls.Add(label49);
             groupBox18.Location = new Point(487, 71);
             groupBox18.Name = "groupBox18";
-            groupBox18.Size = new Size(243, 112);
+            groupBox18.Size = new Size(269, 112);
             groupBox18.TabIndex = 5;
             groupBox18.TabStop = false;
             groupBox18.Text = "DRY Anti Repetition";
@@ -2205,7 +2230,7 @@
             groupBox14.Controls.Add(label38);
             groupBox14.Location = new Point(3, 3);
             groupBox14.Name = "groupBox14";
-            groupBox14.Size = new Size(936, 62);
+            groupBox14.Size = new Size(962, 62);
             groupBox14.TabIndex = 1;
             groupBox14.TabStop = false;
             groupBox14.Text = "Core Settings";
@@ -2395,7 +2420,7 @@
             tabSettings.Location = new Point(4, 27);
             tabSettings.Name = "tabSettings";
             tabSettings.Padding = new Padding(3);
-            tabSettings.Size = new Size(970, 730);
+            tabSettings.Size = new Size(996, 808);
             tabSettings.TabIndex = 4;
             tabSettings.Text = "Settings";
             tabSettings.UseVisualStyleBackColor = true;
@@ -3027,7 +3052,7 @@
             tabConsole.Location = new Point(4, 27);
             tabConsole.Name = "tabConsole";
             tabConsole.Padding = new Padding(3);
-            tabConsole.Size = new Size(970, 730);
+            tabConsole.Size = new Size(996, 808);
             tabConsole.TabIndex = 9;
             tabConsole.Text = "Raw Prompt";
             tabConsole.UseVisualStyleBackColor = true;
@@ -3042,7 +3067,7 @@
             ed_log.Multiline = true;
             ed_log.Name = "ed_log";
             ed_log.ScrollBars = ScrollBars.Vertical;
-            ed_log.Size = new Size(964, 724);
+            ed_log.Size = new Size(990, 802);
             ed_log.TabIndex = 3;
             // 
             // openFileDialog1
@@ -3061,9 +3086,9 @@
             // statusbar
             // 
             statusbar.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, toolStripStatusLabel2 });
-            statusbar.Location = new Point(0, 764);
+            statusbar.Location = new Point(0, 842);
             statusbar.Name = "statusbar";
-            statusbar.Size = new Size(978, 22);
+            statusbar.Size = new Size(1004, 22);
             statusbar.TabIndex = 2;
             statusbar.Text = "statusStrip1";
             // 
@@ -3091,7 +3116,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(978, 786);
+            ClientSize = new Size(1004, 864);
             Controls.Add(statusbar);
             Controls.Add(tabMain);
             Icon = (Icon)resources.GetObject("$this.Icon");
@@ -3105,6 +3130,7 @@
             panel1.ResumeLayout(false);
             groupBox23.ResumeLayout(false);
             groupBox23.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictEmbed).EndInit();
             groupBox5.ResumeLayout(false);
             groupBox5.PerformLayout();
             groupBox4.ResumeLayout(false);
@@ -3454,5 +3480,7 @@
         private CheckBox ck_oneparagraph;
         private NumericUpDown num_removeitalicmaxword;
         private Label label63;
+        private Button bt_clearimg;
+        private PictureBox pictEmbed;
     }
 }

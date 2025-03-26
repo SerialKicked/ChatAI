@@ -31,6 +31,18 @@ namespace WaifuAI.src.forms
             }
         }
 
+        public void AddProgress(int progress)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => progress_bar.Value += progress));
+            }
+            else
+            {
+                progress_bar.Value += progress;
+            }
+        }
+
         public void SetMessage(string message)
         {
             if (InvokeRequired)

@@ -59,6 +59,7 @@ namespace WaifuAI
 
         private System.Media.SoundPlayer? _player;
         private MemoryStream? _audioStream;
+        private string? base64Image = null;
 
         public static Character? Bot => LLMSystem.Bot as Character;
         public static Character? User => LLMSystem.User as Character;
@@ -130,7 +131,7 @@ namespace WaifuAI
                 var msg = new SingleMessage(AuthorRole.Assistant, DateTime.Now, response, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
                 Bot.History.LogMessage(msg);
                 _afkmessagecount++;
-                await SendMessageToUI(msg, Bot.History.CurrentSession.Messages.Count -1);
+                await SendMessageToUI(msg, Bot.History.CurrentSession.Messages.Count - 1);
                 // play a notification sound
                 System.Media.SystemSounds.Question.Play();
             }
@@ -176,6 +177,40 @@ namespace WaifuAI
             LLMSystem.OnInferenceEnded += OnStreamInferenceEnded;
             LLMSystem.OnFullPromptReady += OnFullPromptReady;
             LLMSystem.OnStatusChanged += OnStatusChanged;
+
+            ed_input.EnableImageDragDrop(basestr =>
+            {
+                base64Image = basestr;
+                DisplayImage(base64Image);
+            }, 1024);
+            pictEmbed.EnableImageDragDrop(basestr =>
+            {
+                base64Image = basestr;
+                DisplayImage(base64Image);
+            }, 1024);
+        }
+
+        private void DisplayImage(string base64String)
+        {
+            try
+            {
+                // Convert base64 back to an image to display in a PictureBox
+                byte[] imageBytes = Convert.FromBase64String(base64String);
+                using (var ms = new MemoryStream(imageBytes))
+                {
+                    pictEmbed.Image = Image.FromStream(ms);
+                    // If you have a PictureBox named pictureBox1, you can display the image like this:
+                    // pictureBox1.Image = Image.FromStream(ms);
+
+                    // Or you can create a new form with a PictureBox to show the image
+                    // in a popup window if you prefer
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error displaying image: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void OnStatusChanged(object? sender, SystemStatus e)
@@ -951,7 +986,7 @@ namespace WaifuAI
                     await SendMessageToUI(
                         new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), Bot.History.CurrentSession.Messages.Count + 1);
                     ed_input.Text = string.Empty;
-                    await LLMSystem.SendMessageToBot(msg);
+                    await LLMSystem.SendMessageToBot(msg, base64Image);
                 }
                 else
                 {
@@ -986,9 +1021,9 @@ namespace WaifuAI
                         _currentgeneration = string.Empty;
                         _currentgenerationtokencount = 0;
                         await SendMessageToUI(
-                            new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count+1);
+                            new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count + 1);
                         ed_input.Text = string.Empty;
-                        await LLMSystem.SendMessageToBot(msg);
+                        await LLMSystem.SendMessageToBot(msg, base64Image);
                     }
                 }
             }
@@ -1075,17 +1110,23 @@ namespace WaifuAI
             loadingForm.Refresh();
             try
             {
-                loadingForm.SetMessage("Archiving and summarizing current session.");
-                loadingForm.SetProgress(0);
+                loadingForm.SetMessage("Archiving and summarizing current session. Depending on your computer, the model, and the context size, it might take a while.");
+                loadingForm.SetProgress(10);
+
+                LLMSystem.OnQuickInferenceEnded += (s, e) =>
+                {
+                    loadingForm.AddProgress(15);
+                };
                 await LLMSystem.History.StartNewChatSession(true);
                 loadingForm.SetMessage("Saving history.");
-                loadingForm.SetProgress(50);
+                loadingForm.SetProgress(90);
                 (LLMSystem.Bot as Character)?.SaveChatHistory();
                 await LLMSystem.Bot.UpdateSelfEditSection();
                 if (!string.IsNullOrEmpty(LLMSystem.Bot.UniqueName))
                     (LLMSystem.Bot as IFile).SaveToFile("data/chars/" + LLMSystem.Bot.UniqueName + ".json");
                 loadingForm.SetMessage("Loading new session.");
                 loadingForm.SetProgress(100);
+                LLMSystem.RemoveQuickInferenceEventHandler();
                 await WebChatLoad();
                 LoadChatHistoryTab();
                 _afkmessagecount = 0;
@@ -1115,12 +1156,17 @@ namespace WaifuAI
             {
                 if (doupdate)
                 {
-                    loadingForm.SetMessage("Archiving and summarizing session.");
+                    loadingForm.SetMessage("Archiving and summarizing session. Depending on your computer, the model, and the context size, it might take a while.");
                     loadingForm.SetProgress(0);
+                    LLMSystem.OnQuickInferenceEnded += (s, e) =>
+                    {
+                        loadingForm.AddProgress(15);
+                    };
                     await Chatlog.UpdateSession(LLMSystem.History.CurrentSession);
+                    LLMSystem.RemoveQuickInferenceEventHandler();
                 }
                 loadingForm.SetMessage("Loading current session.");
-                loadingForm.SetProgress(100);
+                loadingForm.SetProgress(90);
                 LLMSystem.History.CurrentSessionID = -1;
                 (LLMSystem.Bot as Character)?.SaveChatHistory();
                 await WebChatLoad();
@@ -1662,8 +1708,12 @@ namespace WaifuAI
             loadingForm.Refresh();
             try
             {
-                loadingForm.SetMessage("Updating session summary and meta-data.");
-                loadingForm.SetProgress(0);
+                loadingForm.SetMessage("Updating session summary and meta-data. Depending on your computer, the model, and the context window, it might take a while.");
+                loadingForm.SetProgress(10);
+                LLMSystem.OnQuickInferenceEnded += (s, e) =>
+                {
+                    loadingForm.AddProgress(20);
+                };
                 _selectedSession.StartTime = _selectedSession.Messages.First().Date;
                 // if the first message has a default date, try to find a message with a valid date
                 if (_selectedSession.StartTime == default)
@@ -1686,6 +1736,7 @@ namespace WaifuAI
             }
             finally
             {
+                LLMSystem.RemoveQuickInferenceEventHandler();
                 loadingForm.Close();
                 this.Enabled = true;
             }
@@ -2396,6 +2447,12 @@ namespace WaifuAI
         private void num_removeitalicmaxword_ValueChanged(object sender, EventArgs e)
         {
             Settings.RoleplayFormatting.RemoveItalicMaxWords = (int)num_removeitalicmaxword.Value;
+        }
+
+        private void bt_clearimg_Click(object sender, EventArgs e)
+        {
+            base64Image = null;
+            pictEmbed.Image = null;
         }
     }
 }
