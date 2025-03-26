@@ -99,7 +99,7 @@ namespace WaifuAI
             SetupInstructEditor();
             SetupWorldEditor();
             SetupPromptEditor();
-
+            SetupListSessionContextMenu();
             SetupChatMenu();
             _isinitloading = false;
             _activityTimer.OnTrigger += OnBotInitiateConversation;
@@ -1596,6 +1596,107 @@ namespace WaifuAI
 
         #region *** Chat History Tab Functions ***
 
+        private void SetupListSessionContextMenu()
+        {
+            // Create context menu
+            ContextMenuStrip contextMenu = new ContextMenuStrip();
+
+            // Add menu items
+            ToolStripMenuItem switchSessionItem = new ToolStripMenuItem("Set Session As Active");
+            switchSessionItem.Click += async (sender, e) => await SwitchToSelectedSession();
+
+            ToolStripMenuItem insertSessionItem = new ToolStripMenuItem("Insert New Session Below");
+            insertSessionItem.Click += async (sender, e) => await InsertSessionAfterSelected();
+
+            ToolStripMenuItem deleteSessionItem = new ToolStripMenuItem("Delete Selected Session");
+            deleteSessionItem.Click += async (sender, e) => await DeleteSelectedSession();
+
+            // Add items to menu
+            contextMenu.Items.Add(switchSessionItem);
+            contextMenu.Items.Add(insertSessionItem);
+            contextMenu.Items.Add(deleteSessionItem);
+
+            // Attach opening event to control items' visibility based on selection
+            contextMenu.Opening += (sender, e) =>
+            {
+                bool hasSelection = listSession.SelectedItems.Count > 0;
+                switchSessionItem.Enabled = hasSelection;
+                insertSessionItem.Enabled = hasSelection;
+                deleteSessionItem.Enabled = hasSelection;
+
+                // Cancel opening if no items selected
+                if (!hasSelection)
+                    e.Cancel = true;
+            };
+
+            // Assign menu to ListView
+            listSession.ContextMenuStrip = contextMenu;
+        }
+
+        private async Task SwitchToSelectedSession()
+        {
+            if (_selectedSession == null)
+                return;
+
+            LLMSystem.Bot.History.CurrentSessionID = LLMSystem.Bot.History.Sessions.IndexOf(_selectedSession);
+            _activityTimer?.Reset();
+            LoadChatHistoryTab();
+            await WebChatLoad();
+        }
+
+        private async Task InsertSessionAfterSelected()
+        {
+            if (_selectedSession == null)
+                return;
+
+            LLMSystem.Bot.History.CurrentSessionID = LLMSystem.Bot.History.Sessions.IndexOf(_selectedSession);
+            var id = LLMSystem.Bot.History.CurrentSessionID;
+            if (id == LLMSystem.Bot.History.Sessions.Count - 1)
+            {
+                LLMSystem.Bot.History.Sessions.Add(new ChatSession());
+            }
+            else
+            {
+                LLMSystem.Bot.History.Sessions.Insert(id + 1, new ChatSession());
+            }
+            LLMSystem.Bot.History.CurrentSessionID++;
+            _activityTimer?.Reset();
+            _selectedSession = LLMSystem.History.CurrentSession;
+            await LLMSystem.History.StartNewChatSession(true);
+            await WebChatLoad();
+            LoadChatHistoryTab();
+        }
+
+        private async Task DeleteSelectedSession()
+        {
+            if (_selectedSession == null)
+                return;
+
+            if (LLMSystem.History.Sessions.Count < 1)
+            {
+                bt_deleteAllHistory_Click(this, EventArgs.Empty);
+                return;
+            }
+
+            if (MessageBox.Show("This will delete the selected session permanently. Are you sure?",
+                              "Delete Session?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                var needchangesession = LLMSystem.History.CurrentSession == _selectedSession;
+                LLMSystem.History.Sessions.Remove(_selectedSession);
+                if (needchangesession)
+                {
+                    LLMSystem.History.CurrentSessionID = LLMSystem.History.Sessions.Count - 1;
+                }
+            }
+
+            _activityTimer?.Reset();
+            _selectedSession = LLMSystem.History.CurrentSession;
+            DisplaySessionDetails(_selectedSession);
+            LoadChatHistoryTab();
+            await WebChatLoad();
+        }
+
+
         public void LoadChatHistoryTab()
         {
             listSession.Items.Clear();
@@ -1630,11 +1731,12 @@ namespace WaifuAI
 
         private async void DisplaySessionDetails(ChatSession session)
         {
-            lbl_sessiontitle.Text = session.Title;
-            lbl_sessioninfo.Text = session.StartTime.ToString("g") + " - " + session.EndTime.ToString("g") + " - " + session.Messages.Count + " messages";
-
             var sv = _isinitloading;
             _isinitloading = true;
+            ed_sessiontitle.Text = session.Title;
+            ed_sessioninfo.Text = session.Summary.ToWinFormat();
+            lbl_sessiondata.Text = session.StartTime.ToString("g") + " - " + session.EndTime.ToString("g") + " - " + session.Messages.Count + " messages";
+
             ed_hist_kw1.Text = string.Join(",", session.KeyWordsMain);
             ed_hist_kw2.Text = string.Join(",", session.KeyWordsSecondary);
             cb_hist_kwlink.SelectedIndex = (int)session.WordLink;
@@ -1740,38 +1842,6 @@ namespace WaifuAI
                 loadingForm.Close();
                 this.Enabled = true;
             }
-        }
-
-        private async void bt_switchsession_Click(object sender, EventArgs e)
-        {
-            if (_selectedSession == null)
-                return;
-            LLMSystem.Bot.History.CurrentSessionID = LLMSystem.Bot.History.Sessions.IndexOf(_selectedSession);
-            _activityTimer?.Reset();
-            LoadChatHistoryTab();
-            await WebChatLoad();
-        }
-
-        private async void bt_insertsession_Click(object sender, EventArgs e)
-        {
-            if (_selectedSession == null)
-                return;
-            LLMSystem.Bot.History.CurrentSessionID = LLMSystem.Bot.History.Sessions.IndexOf(_selectedSession);
-            var id = LLMSystem.Bot.History.CurrentSessionID;
-            if (id == LLMSystem.Bot.History.Sessions.Count - 1)
-            {
-                LLMSystem.Bot.History.Sessions.Add(new ChatSession());
-            }
-            else
-            {
-                LLMSystem.Bot.History.Sessions.Insert(id + 1, new ChatSession());
-            }
-            LLMSystem.Bot.History.CurrentSessionID++;
-            _activityTimer?.Reset();
-            _selectedSession = LLMSystem.History.CurrentSession;
-            await LLMSystem.History.StartNewChatSession(true);
-            await WebChatLoad();
-            LoadChatHistoryTab();
         }
 
         #endregion
@@ -2395,31 +2465,6 @@ namespace WaifuAI
 
         }
 
-        private async void bt_delsession_Click(object sender, EventArgs e)
-        {
-            if (_selectedSession == null)
-                return;
-            if (LLMSystem.History.Sessions.Count < 1)
-            {
-                bt_deleteAllHistory_Click(sender, e);
-                return;
-            }
-            if (MessageBox.Show("This will delete the selected session permanently. Are you sure?", "Delete Session?", MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                var needchangesession = LLMSystem.History.CurrentSession == _selectedSession;
-                LLMSystem.History.Sessions.Remove(_selectedSession);
-                if (needchangesession)
-                {
-                    LLMSystem.History.CurrentSessionID = LLMSystem.History.Sessions.Count - 1;
-                }
-            }
-            _activityTimer?.Reset();
-            _selectedSession = LLMSystem.History.CurrentSession;
-            DisplaySessionDetails(_selectedSession);
-            LoadChatHistoryTab();
-            await WebChatLoad();
-        }
-
         private void bt_editchar_Click(object sender, EventArgs e)
         {
             var editForm = new CharEditForm();
@@ -2453,6 +2498,21 @@ namespace WaifuAI
         {
             base64Image = null;
             pictEmbed.Image = null;
+        }
+
+        private void ed_sessiontitle_TextChanged(object sender, EventArgs e)
+        {
+            if (_isinitloading || _selectedSession == null)
+                return;
+            _selectedSession.Title = ed_sessiontitle.Text;
+        }
+
+        private void ed_sessioninfo_TextChanged(object sender, EventArgs e)
+        {
+            if (_isinitloading || _selectedSession == null)
+                return;
+            _selectedSession.Summary = ed_sessioninfo.Text.ToLinuxFormat();
+
         }
     }
 }
