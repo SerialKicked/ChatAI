@@ -63,6 +63,7 @@
             textBox2 = new TextBox();
             tabDynamic = new TabPage();
             groupBox9 = new GroupBox();
+            btRegenBio = new Button();
             label13 = new Label();
             num_selfedittokens = new NumericUpDown();
             ed_selfedit = new TextBox();
@@ -83,7 +84,7 @@
             groupBox6 = new GroupBox();
             ckl_plugins = new CheckedListBox();
             label9 = new Label();
-            btRegenBio = new Button();
+            ck_selfbio = new CheckBox();
             groupBox3.SuspendLayout();
             tabControl1.SuspendLayout();
             tabBio.SuspendLayout();
@@ -464,6 +465,7 @@
             // 
             // groupBox9
             // 
+            groupBox9.Controls.Add(ck_selfbio);
             groupBox9.Controls.Add(btRegenBio);
             groupBox9.Controls.Add(label13);
             groupBox9.Controls.Add(num_selfedittokens);
@@ -472,10 +474,21 @@
             groupBox9.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox9.Location = new Point(8, 8);
             groupBox9.Name = "groupBox9";
-            groupBox9.Size = new Size(929, 290);
+            groupBox9.Size = new Size(929, 312);
             groupBox9.TabIndex = 11;
             groupBox9.TabStop = false;
             groupBox9.Text = "Self Edit Field";
+            // 
+            // btRegenBio
+            // 
+            btRegenBio.Font = new Font("Segoe UI", 9F);
+            btRegenBio.Location = new Point(761, 228);
+            btRegenBio.Name = "btRegenBio";
+            btRegenBio.Size = new Size(162, 23);
+            btRegenBio.TabIndex = 16;
+            btRegenBio.Text = "Regenerate";
+            btRegenBio.UseVisualStyleBackColor = true;
+            btRegenBio.Click += btRegenBio_Click;
             // 
             // label13
             // 
@@ -693,16 +706,15 @@
             label9.TabIndex = 0;
             label9.Text = "Plugins this character has access to. Some can be toggled on/off in main chat.";
             // 
-            // btRegenBio
+            // ck_selfbio
             // 
-            btRegenBio.Font = new Font("Segoe UI", 9F);
-            btRegenBio.Location = new Point(761, 228);
-            btRegenBio.Name = "btRegenBio";
-            btRegenBio.Size = new Size(162, 23);
-            btRegenBio.TabIndex = 16;
-            btRegenBio.Text = "Regenerate";
-            btRegenBio.UseVisualStyleBackColor = true;
-            btRegenBio.Click += btRegenBio_Click;
+            ck_selfbio.AutoSize = true;
+            ck_selfbio.Location = new Point(6, 275);
+            ck_selfbio.Name = "ck_selfbio";
+            ck_selfbio.Size = new Size(167, 19);
+            ck_selfbio.TabIndex = 17;
+            ck_selfbio.Text = "Allow Dynamic Biography";
+            ck_selfbio.UseVisualStyleBackColor = true;
             // 
             // CharEditForm
             // 
@@ -807,5 +819,6 @@
         private Label label14;
         private NumericUpDown num_ptvalue;
         private Button btRegenBio;
+        private CheckBox ck_selfbio;
     }
 }

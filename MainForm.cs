@@ -1118,13 +1118,12 @@ namespace WaifuAI
 
                 LLMSystem.OnQuickInferenceEnded += (s, e) =>
                 {
-                    loadingForm.AddProgress(15);
+                    loadingForm.AddProgress(LLMSystem.Bot.DynamicBio ? 10 : 15);
                 };
                 await LLMSystem.History.StartNewChatSession(true);
                 if (LLMSystem.Bot.SelfEditTokens > 0)
                 {
                     loadingForm.SetMessage("Updating dynamic character (this might take a few minutes).");
-                    loadingForm.SetProgress(85);
                 }
                 else
                 {
@@ -1133,6 +1132,7 @@ namespace WaifuAI
                 }
                 (LLMSystem.Bot as Character)?.SaveChatHistory();
                 await LLMSystem.Bot.UpdateSelfEditSection();
+                await LLMSystem.Bot.UpdatePersonaAttributes();
                 if (!string.IsNullOrEmpty(LLMSystem.Bot.UniqueName))
                     (LLMSystem.Bot as IFile).SaveToFile("data/chars/" + LLMSystem.Bot.UniqueName + ".json");
                 loadingForm.SetMessage("Loading new session.");

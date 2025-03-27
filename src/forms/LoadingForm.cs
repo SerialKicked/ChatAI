@@ -38,8 +38,11 @@ namespace WaifuAI.src.forms
                 Invoke(new Action(() => progress_bar.Value += progress));
             }
             else
-            {
-                progress_bar.Value += progress;
+            { 
+                if (progress_bar.Value + progress > progress_bar.Maximum)
+                    progress_bar.Value = progress_bar.Maximum;
+                else
+                    progress_bar.Value += progress;
             }
         }
 

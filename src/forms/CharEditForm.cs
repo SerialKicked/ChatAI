@@ -1,6 +1,7 @@
 ﻿using AIToolkit;
 using AIToolkit.Files;
 using AIToolkit.LLM;
+using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -66,28 +67,28 @@ namespace WaifuAI.src.forms
 
         private Character SaveUIToCharacter()
         {
-            return new Character()
-            {
-                Name = ed_name.Text,
-                Bio = ed_bio.Text.ToLinuxFormat(),
-                Scenario = ed_scenario.Text.ToLinuxFormat(),
-                FirstMessage = ed_firstmessage.Lines.ToList(),
-                IsUser = ck_isuser.Checked,
-                SystemPrompt = ed_sysprompt.Text.ToLinuxFormat(),
-                TTSVoice = ed_outetts.Text,
-                ExampleDialogs = ed_writingstyle.Lines.ToList(),
-                CanInitiateChat = ck_caninitchat.Checked,
-                SenseOfTime = ck_senseoftime.Checked,
-                SessionMemorySystem = ck_sessionmemory.Checked,
-                SelfEditTokens = (int)num_selfedittokens.Value,
-                SelfEditField = ed_selfedit.Text.ToLinuxFormat(),
-                Icon = cb_icon.Text,
-                Plugins = [.. ckl_plugins.CheckedItems.Cast<string>()],
-                Worlds = [.. ckl_worldinfo.CheckedItems.Cast<string>()],
-                AllowedSamplers = [.. ckl_samplers.CheckedItems.Cast<string>()],
-                PointSystem = (cb_pointsystems.SelectedIndex != -1) ? cb_pointsystems.Text : string.Empty,
-                PointValue = (int)num_ptvalue.Value
-            };
+            var mychar = SelectedCharacter.Copy<Character>()!;
+            mychar.Name = ed_name.Text;
+            mychar.Bio = ed_bio.Text.ToLinuxFormat();
+            mychar.Scenario = ed_scenario.Text.ToLinuxFormat();
+            mychar.FirstMessage = ed_firstmessage.Lines.ToList();
+            mychar.IsUser = ck_isuser.Checked;
+            mychar.SystemPrompt = ed_sysprompt.Text.ToLinuxFormat();
+            mychar.TTSVoice = ed_outetts.Text;
+            mychar.ExampleDialogs = ed_writingstyle.Lines.ToList();
+            mychar.CanInitiateChat = ck_caninitchat.Checked;
+            mychar.SenseOfTime = ck_senseoftime.Checked;
+            mychar.SessionMemorySystem = ck_sessionmemory.Checked;
+            mychar.SelfEditTokens = (int)num_selfedittokens.Value;
+            mychar.SelfEditField = ed_selfedit.Text.ToLinuxFormat();
+            mychar.Icon = cb_icon.Text;
+            mychar.Plugins = [.. ckl_plugins.CheckedItems.Cast<string>()];
+            mychar.Worlds = [.. ckl_worldinfo.CheckedItems.Cast<string>()];
+            mychar.AllowedSamplers = [.. ckl_samplers.CheckedItems.Cast<string>()];
+            mychar.PointSystem = (cb_pointsystems.SelectedIndex != -1) ? cb_pointsystems.Text : string.Empty;
+            mychar.PointValue = (int)num_ptvalue.Value;
+            mychar.DynamicBio = ck_selfbio.Checked;
+            return mychar;
         }
 
         private void LoadCharacterSettings(Character selectedCharacter)
@@ -108,6 +109,7 @@ namespace WaifuAI.src.forms
             num_selfedittokens.Value = selectedCharacter.SelfEditTokens;
             ed_selfedit.Text = selectedCharacter.SelfEditField.ToWinFormat();
             num_ptvalue.Value = selectedCharacter.PointValue;
+            ck_selfbio.Checked = selectedCharacter.DynamicBio;
             ckl_plugins.Items.Clear();
             foreach (var item in LLMSystem.ContextPlugins)
             {
@@ -134,7 +136,7 @@ namespace WaifuAI.src.forms
             var NewName = cb_charlist.Text;
             if (string.IsNullOrWhiteSpace(NewName))
             {
-                MessageBox.Show("Please select a valide name for the new sampler");
+                MessageBox.Show("Please select a valide name for the character");
                 return;
             }
             // If name already exists ask for confirmation
@@ -186,7 +188,8 @@ namespace WaifuAI.src.forms
             SelectedCharacter.SelfEditTokens = (int)num_selfedittokens.Value;
             // await SelectedCharacter.UpdateSelfEditSection();
             await SelectedCharacter.UpdatePersonaAttributes();
-            ed_selfedit.Text = SelectedCharacter.SelfEditField;
+            ed_selfedit.Text = SelectedCharacter.SelfEditField.ToWinFormat();
+            ed_sysprompt.Text = SelectedCharacter.SystemPrompt.ToWinFormat();
         }
     }
 }
