@@ -184,7 +184,8 @@ namespace WaifuAI.src.forms
             if (SelectedCharacter.History.Sessions.Count < 2)
                 return;
             SelectedCharacter.SelfEditTokens = (int)num_selfedittokens.Value;
-            await SelectedCharacter.UpdateSelfEditSection();
+            // await SelectedCharacter.UpdateSelfEditSection();
+            await SelectedCharacter.UpdatePersonaAttributes();
             ed_selfedit.Text = SelectedCharacter.SelfEditField;
         }
     }
