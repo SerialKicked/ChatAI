@@ -1,23 +1,19 @@
-using System;
-using System.Net;
-using WaifuAI.Files;
 using AIToolkit;
-using System.Reflection;
-using Newtonsoft.Json;
-using Markdig;
-using Microsoft.Web.WebView2.Core;
 using AIToolkit.Files;
 using AIToolkit.LLM;
+using Markdig;
+using Microsoft.Web.WebView2.Core;
+using Newtonsoft.Json;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Media;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+using WaifuAI.Files;
+using WaifuAI.Plugins;
 using WaifuAI.src.forms;
 using WaifuAI.Web;
-using WaifuAI.Plugins;
-using System.Text;
-using System.Media;
-using System.ComponentModel;
-using System.Drawing.Printing;
-using System.Windows.Forms;
-using NAudio.Gui;
-using System.Diagnostics;
 
 namespace WaifuAI
 {
@@ -63,7 +59,6 @@ namespace WaifuAI
 
         public static Character? Bot => LLMSystem.Bot as Character;
         public static Character? User => LLMSystem.User as Character;
-
 
         public static MarkdownPipeline CustomMarkDownPipeline { get; } = new MarkdownPipelineBuilder()
             .UseSoftlineBreakAsHardlineBreak().UseAdvancedExtensions()
@@ -277,6 +272,12 @@ namespace WaifuAI
 
         private async void OnStreamMessageReceived(object? sender, string e)
         {
+            if (!_impersonatemode && string.IsNullOrEmpty(_currentgeneration) && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart))
+            {
+                var thoughts = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + $"*{LLMSystem.Bot.UniqueName} is thinking...*";
+                await WebEditLastMessage(thoughts);
+            }
+
             _currentgeneration += e;
             _currentgenerationtokencount++;
             _responselength = DateTime.Now - _postdate;
@@ -913,7 +914,7 @@ namespace WaifuAI
             await LLMSystem.ImpersonateUser();
         }
 
-        private async Task<(SingleMessage? response, bool usercmdonly)> ProcessPointCommands(string input)
+        private (SingleMessage? response, bool usercmdonly) ProcessSlashCommands(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
                 return (null, false);
@@ -990,7 +991,7 @@ namespace WaifuAI
                 }
                 else
                 {
-                    var sysmessage = await ProcessPointCommands(messagetext);
+                    var sysmessage = ProcessSlashCommands(messagetext);
                     if (sysmessage.response != null)
                     {
                         if (sysmessage.usercmdonly)
@@ -1074,7 +1075,7 @@ namespace WaifuAI
             UseCharacterDefinedSampler();
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await WebRemoveLastMessage();
-            await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is thinking...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count - 1);
+            await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count - 1);
             _currentgeneration = string.Empty;
             _currentgenerationtokencount = 0;
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
@@ -1111,15 +1112,15 @@ namespace WaifuAI
             try
             {
                 loadingForm.SetMessage("Archiving and summarizing current session. Depending on your computer, the model, and the context size, it might take a while.");
-                loadingForm.SetProgress(10);
+                loadingForm.SetProgress(5);
 
                 LLMSystem.OnQuickInferenceEnded += (s, e) =>
                 {
-                    loadingForm.AddProgress(15);
+                    loadingForm.AddProgress(20);
                 };
                 await LLMSystem.History.StartNewChatSession(true);
                 loadingForm.SetMessage("Saving history.");
-                loadingForm.SetProgress(90);
+                loadingForm.SetProgress(95);
                 (LLMSystem.Bot as Character)?.SaveChatHistory();
                 await LLMSystem.Bot.UpdateSelfEditSection();
                 if (!string.IsNullOrEmpty(LLMSystem.Bot.UniqueName))
@@ -1157,16 +1158,16 @@ namespace WaifuAI
                 if (doupdate)
                 {
                     loadingForm.SetMessage("Archiving and summarizing session. Depending on your computer, the model, and the context size, it might take a while.");
-                    loadingForm.SetProgress(0);
+                    loadingForm.SetProgress(5);
                     LLMSystem.OnQuickInferenceEnded += (s, e) =>
                     {
-                        loadingForm.AddProgress(15);
+                        loadingForm.AddProgress(20);
                     };
                     await Chatlog.UpdateSession(LLMSystem.History.CurrentSession);
                     LLMSystem.RemoveQuickInferenceEventHandler();
                 }
                 loadingForm.SetMessage("Loading current session.");
-                loadingForm.SetProgress(90);
+                loadingForm.SetProgress(95);
                 LLMSystem.History.CurrentSessionID = -1;
                 (LLMSystem.Bot as Character)?.SaveChatHistory();
                 await WebChatLoad();
@@ -1696,7 +1697,6 @@ namespace WaifuAI
             await WebChatLoad();
         }
 
-
         public void LoadChatHistoryTab()
         {
             listSession.Items.Clear();
@@ -1811,7 +1811,7 @@ namespace WaifuAI
             try
             {
                 loadingForm.SetMessage("Updating session summary and meta-data. Depending on your computer, the model, and the context window, it might take a while.");
-                loadingForm.SetProgress(10);
+                loadingForm.SetProgress(5);
                 LLMSystem.OnQuickInferenceEnded += (s, e) =>
                 {
                     loadingForm.AddProgress(20);
@@ -1831,7 +1831,7 @@ namespace WaifuAI
                 }
                 _selectedSession = await Chatlog.UpdateSession(_selectedSession);
                 loadingForm.SetMessage("Finalizing.");
-                loadingForm.SetProgress(100);
+                loadingForm.SetProgress(95);
                 DisplaySessionDetails(_selectedSession);
                 LoadChatHistoryTab();
                 (LLMSystem.Bot as Character)?.SaveChatHistory();
@@ -2046,7 +2046,8 @@ namespace WaifuAI
                     var script = $"updateMessageAtIndex(\"{thinkingText}\", document.getElementsByClassName('message-content').length - 1, true);";
                     var result = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
 
-                    var messageText = Markdown.ToHtml(parts[1], CustomMarkDownPipeline).SanitizeForJS();
+                    var msgoutput = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + parts[1].TrimStart('\n');
+                    var messageText = Markdown.ToHtml(msgoutput, CustomMarkDownPipeline).SanitizeForJS();
                     script = $"updateMessageAtIndex(\"{messageText}\", document.getElementsByClassName('message-content').length - 1, false);";
                     result = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
                 }
