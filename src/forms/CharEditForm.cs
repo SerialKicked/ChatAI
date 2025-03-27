@@ -88,6 +88,7 @@ namespace WaifuAI.src.forms
             mychar.PointSystem = (cb_pointsystems.SelectedIndex != -1) ? cb_pointsystems.Text : string.Empty;
             mychar.PointValue = (int)num_ptvalue.Value;
             mychar.DynamicBio = ck_selfbio.Checked;
+            mychar.DynamicBioHistoryDepth = (int)num_dyndepth.Value;
             return mychar;
         }
 
@@ -110,6 +111,8 @@ namespace WaifuAI.src.forms
             ed_selfedit.Text = selectedCharacter.SelfEditField.ToWinFormat();
             num_ptvalue.Value = selectedCharacter.PointValue;
             ck_selfbio.Checked = selectedCharacter.DynamicBio;
+            num_dyndepth.Value = selectedCharacter.DynamicBioHistoryDepth;
+            ed_dynbio.Text = selectedCharacter.GetBio("{{user}}").ToWinFormat();
             ckl_plugins.Items.Clear();
             foreach (var item in LLMSystem.ContextPlugins)
             {
@@ -175,21 +178,40 @@ namespace WaifuAI.src.forms
         {
             if (SelectedCharacter == null)
                 return;
+            SelectedCharacter.LoadChatHistory();
+            if (SelectedCharacter.History.Sessions.Count < 2)
+                return;
             if (num_selfedittokens.Value == 0)
             {
                 ed_selfedit.Text = string.Empty;
                 SelectedCharacter.SelfEditField = string.Empty;
                 SelectedCharacter.SelfEditTokens = 0;
-                return;
             }
+            else
+            {
+                SelectedCharacter.SelfEditTokens = (int)num_selfedittokens.Value;
+                await SelectedCharacter.UpdateSelfEditSection();
+                ed_selfedit.Text = SelectedCharacter.SelfEditField.ToWinFormat();
+            }
+            if (ck_selfbio.Checked)
+            {
+                await SelectedCharacter.UpdatePersonaAttributes();
+                ed_sysprompt.Text = SelectedCharacter.SystemPrompt.ToWinFormat();
+            }
+        }
+
+        private async void button1_Click(object sender, EventArgs e)
+        {
             SelectedCharacter.LoadChatHistory();
             if (SelectedCharacter.History.Sessions.Count < 2)
                 return;
-            SelectedCharacter.SelfEditTokens = (int)num_selfedittokens.Value;
-            // await SelectedCharacter.UpdateSelfEditSection();
-            await SelectedCharacter.UpdatePersonaAttributes();
-            ed_selfedit.Text = SelectedCharacter.SelfEditField.ToWinFormat();
-            ed_sysprompt.Text = SelectedCharacter.SystemPrompt.ToWinFormat();
+            if (ck_selfbio.Checked)
+            {
+                await SelectedCharacter.UpdatePersonaAttributes();
+                ed_sysprompt.Text = SelectedCharacter.SystemPrompt.ToWinFormat();
+                ed_dynbio.Text = SelectedCharacter.GetBio("{{user}}").ToWinFormat();
+            }
+
         }
     }
 }
