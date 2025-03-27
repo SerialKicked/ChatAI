@@ -42,6 +42,7 @@ namespace WaifuAI
 
         private string? _currentgeneration = null;
         private int _currentgenerationtokencount = 0;
+        private int _currentgencalls = 0;
         private ChatSession? _selectedSession = null;
         private bool _impersonatemode = false;
         private bool _forcereload = false;
@@ -272,13 +273,14 @@ namespace WaifuAI
 
         private async void OnStreamMessageReceived(object? sender, string e)
         {
-            if (!_impersonatemode && string.IsNullOrEmpty(_currentgeneration) && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart))
+            if (!_impersonatemode && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart) && _currentgencalls == 1)
             {
                 var thoughts = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + $"*{LLMSystem.Bot.UniqueName} is thinking...*";
                 await WebEditLastMessage(thoughts);
             }
 
             _currentgeneration += e;
+            _currentgencalls++;
             _currentgenerationtokencount++;
             _responselength = DateTime.Now - _postdate;
             _activityTimer?.Reset();
@@ -334,8 +336,7 @@ namespace WaifuAI
                 var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
                 await WebEditLastMessage(MsgPrefix + stringfix);
                 var msg = LLMSystem.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMSystem.User, LLMSystem.Bot);
-                _currentgeneration = string.Empty;
-                _currentgenerationtokencount = 0;
+                PrepareResponse();
                 if (_forcereload || Settings.MaxMessagesOnScreen <= LLMSystem.History.CurrentSession.Messages.Count)
                 {
                     Invoke((System.Windows.Forms.MethodInvoker)async delegate
@@ -899,6 +900,13 @@ namespace WaifuAI
 
         #region *** Main Chat Functions ***
 
+        private void PrepareResponse()
+        {
+            _currentgeneration = string.Empty;
+            _currentgenerationtokencount = 0;
+            _currentgencalls = 0;
+        }
+
         private async void Impersonate(object sender, EventArgs e)
         {
             ForceCloseEditMenu();
@@ -908,8 +916,7 @@ namespace WaifuAI
             statusbar.Items[1].Text = "Analyzing...";
             _postdate = DateTime.Now;
             _impersonatemode = true;
-            _currentgeneration = string.Empty;
-            _currentgenerationtokencount = 0;
+            PrepareResponse();
             ed_input.Text = string.Empty;
             await LLMSystem.ImpersonateUser();
         }
@@ -982,8 +989,7 @@ namespace WaifuAI
                     msg.Message = msg.Message[5..].Trim();
                     await SendMessageToUI(msg, Bot!.History.CurrentSession.Messages.Count);
                     // ready a new message for the bot's response
-                    _currentgeneration = string.Empty;
-                    _currentgenerationtokencount = 0;
+                    PrepareResponse();
                     await SendMessageToUI(
                         new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), Bot.History.CurrentSession.Messages.Count + 1);
                     ed_input.Text = string.Empty;
@@ -1007,8 +1013,7 @@ namespace WaifuAI
                             LLMSystem.History.LogMessage(msg);
                             await SendMessageToUI(msg, LLMSystem.History.CurrentSession.Messages.Count - 1);
                             await SendMessageToUI(sysmessage.response, LLMSystem.History.CurrentSession.Messages.Count);
-                            _currentgeneration = string.Empty;
-                            _currentgenerationtokencount = 0;
+                            PrepareResponse();
                             await SendMessageToUI(
                                 new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count + 1);
                             ed_input.Text = string.Empty;
@@ -1019,8 +1024,7 @@ namespace WaifuAI
                     {
                         await SendMessageToUI(msg, LLMSystem.History.CurrentSession.Messages.Count);
                         // ready a new message for the bot's response
-                        _currentgeneration = string.Empty;
-                        _currentgenerationtokencount = 0;
+                        PrepareResponse();
                         await SendMessageToUI(
                             new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count + 1);
                         ed_input.Text = string.Empty;
@@ -1031,8 +1035,7 @@ namespace WaifuAI
             else
             {
                 // ready a new message for the bot's response
-                _currentgeneration = string.Empty;
-                _currentgenerationtokencount = 0;
+                PrepareResponse();
                 await SendMessageToUI(
                     new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count);
                 ed_input.Text = string.Empty;
@@ -1076,8 +1079,7 @@ namespace WaifuAI
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await WebRemoveLastMessage();
             await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count - 1);
-            _currentgeneration = string.Empty;
-            _currentgenerationtokencount = 0;
+            PrepareResponse();
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await LLMSystem.RerollLastMessage();
         }
@@ -2046,7 +2048,7 @@ namespace WaifuAI
                     var script = $"updateMessageAtIndex(\"{thinkingText}\", document.getElementsByClassName('message-content').length - 1, true);";
                     var result = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
 
-                    var msgoutput = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + parts[1].TrimStart('\n');
+                    var msgoutput = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + parts[1].TrimStart().TrimStart('\n').TrimStart();
                     var messageText = Markdown.ToHtml(msgoutput, CustomMarkDownPipeline).SanitizeForJS();
                     script = $"updateMessageAtIndex(\"{messageText}\", document.getElementsByClassName('message-content').length - 1, false);";
                     result = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
