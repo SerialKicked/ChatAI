@@ -1118,11 +1118,19 @@ namespace WaifuAI
 
                 LLMSystem.OnQuickInferenceEnded += (s, e) =>
                 {
-                    loadingForm.AddProgress(20);
+                    loadingForm.AddProgress(15);
                 };
                 await LLMSystem.History.StartNewChatSession(true);
-                loadingForm.SetMessage("Saving history.");
-                loadingForm.SetProgress(95);
+                if (LLMSystem.Bot.SelfEditTokens > 0)
+                {
+                    loadingForm.SetMessage("Updating dynamic character (this might take a few minutes).");
+                    loadingForm.SetProgress(85);
+                }
+                else
+                {
+                    loadingForm.SetMessage("Saving history.");
+                    loadingForm.SetProgress(95);
+                }
                 (LLMSystem.Bot as Character)?.SaveChatHistory();
                 await LLMSystem.Bot.UpdateSelfEditSection();
                 if (!string.IsNullOrEmpty(LLMSystem.Bot.UniqueName))
