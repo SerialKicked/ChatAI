@@ -293,6 +293,18 @@ namespace WaifuAI
                     {
                         statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                     });
+                    if (!string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingStart) && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingEnd))
+                    {
+                        // Check if we have more than a single ThinkingEnd block, if so, we need to end the generation
+                        var endcount = _currentgeneration.CountSubstring(LLMSystem.Instruct.ThinkingEnd);
+                        if (endcount > 1)
+                        {
+                            LLMSystem.CancelGeneration();
+                            return;
+                        }
+
+                    }
+
                     var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
                     var stringfix = _currentgeneration.FixRoleplayString(Settings.RoleplayFormatting, true);
                     await WebEditLastMessage(MsgPrefix + stringfix);
@@ -326,6 +338,11 @@ namespace WaifuAI
             else
             {
                 var stringfix = Settings.AsteriskCheck ? e.FixAsterisks() : e;
+                if (!string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingEnd) && stringfix.CountSubstring(LLMSystem.Instruct.ThinkingEnd) > 1)
+                {
+                    stringfix = stringfix.RemoveEverythingAfterLast(LLMSystem.Instruct.ThinkingEnd);
+                }
+
                 if (Settings.RemoveCutSentence)
                     stringfix = stringfix.RemoveUnfinishedSentence();
                 if (Settings.AntiSlop)
