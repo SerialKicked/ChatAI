@@ -59,6 +59,8 @@
             ck_antislop = new CheckBox();
             ck_fixasterix = new CheckBox();
             groupBox11 = new GroupBox();
+            label65 = new Label();
+            cb_pastsession = new ComboBox();
             ck_markdown = new CheckBox();
             num_memtokens = new NumericUpDown();
             label32 = new Label();
@@ -225,6 +227,7 @@
             label58 = new Label();
             ed_hist_kw2 = new TextBox();
             groupBox12 = new GroupBox();
+            bt_historyupdate = new Button();
             lbl_sessiondata = new Label();
             ed_sessioninfo = new TextBox();
             label64 = new Label();
@@ -469,9 +472,9 @@
             groupBox24.Controls.Add(ck_antislop);
             groupBox24.Controls.Add(ck_fixasterix);
             groupBox24.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox24.Location = new Point(416, 90);
+            groupBox24.Location = new Point(416, 124);
             groupBox24.Name = "groupBox24";
-            groupBox24.Size = new Size(402, 386);
+            groupBox24.Size = new Size(402, 352);
             groupBox24.TabIndex = 29;
             groupBox24.TabStop = false;
             groupBox24.Text = "Output Formatting";
@@ -666,22 +669,45 @@
             // 
             // groupBox11
             // 
+            groupBox11.Controls.Add(label65);
+            groupBox11.Controls.Add(cb_pastsession);
             groupBox11.Controls.Add(ck_markdown);
             groupBox11.Controls.Add(num_memtokens);
             groupBox11.Controls.Add(label32);
             groupBox11.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox11.Location = new Point(416, 6);
             groupBox11.Name = "groupBox11";
-            groupBox11.Size = new Size(402, 78);
+            groupBox11.Size = new Size(402, 116);
             groupBox11.TabIndex = 27;
             groupBox11.TabStop = false;
             groupBox11.Text = "Session Memory System";
+            // 
+            // label65
+            // 
+            label65.AutoSize = true;
+            label65.Font = new Font("Segoe UI", 9F);
+            label65.Location = new Point(6, 66);
+            label65.Name = "label65";
+            label65.Size = new Size(135, 15);
+            label65.TabIndex = 34;
+            label65.Text = "Handling of chat history";
+            // 
+            // cb_pastsession
+            // 
+            cb_pastsession.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_pastsession.Font = new Font("Segoe UI", 9F);
+            cb_pastsession.Items.AddRange(new object[] { "Current session only", "Fit as much as possible, including previous sessions" });
+            cb_pastsession.Location = new Point(6, 84);
+            cb_pastsession.Name = "cb_pastsession";
+            cb_pastsession.Size = new Size(373, 23);
+            cb_pastsession.TabIndex = 33;
+            cb_pastsession.SelectedIndexChanged += cb_pastsession_SelectedIndexChanged;
             // 
             // ck_markdown
             // 
             ck_markdown.AutoSize = true;
             ck_markdown.Font = new Font("Segoe UI", 9F);
-            ck_markdown.Location = new Point(229, 22);
+            ck_markdown.Location = new Point(137, 41);
             ck_markdown.Name = "ck_markdown";
             ck_markdown.Size = new Size(167, 19);
             ck_markdown.TabIndex = 32;
@@ -708,9 +734,9 @@
             label32.Font = new Font("Segoe UI", 9F);
             label32.Location = new Point(6, 22);
             label32.Name = "label32";
-            label32.Size = new Size(94, 15);
+            label32.Size = new Size(258, 15);
             label32.TabIndex = 28;
-            label32.Text = "Reserved Tokens";
+            label32.Text = "Reserved Tokens for summaries of past sessions";
             // 
             // groupBox10
             // 
@@ -2470,6 +2496,7 @@
             // groupBox12
             // 
             groupBox12.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox12.Controls.Add(bt_historyupdate);
             groupBox12.Controls.Add(lbl_sessiondata);
             groupBox12.Controls.Add(ed_sessioninfo);
             groupBox12.Controls.Add(label64);
@@ -2482,6 +2509,16 @@
             groupBox12.TabIndex = 0;
             groupBox12.TabStop = false;
             groupBox12.Text = "Session Information";
+            // 
+            // bt_historyupdate
+            // 
+            bt_historyupdate.Location = new Point(335, 11);
+            bt_historyupdate.Name = "bt_historyupdate";
+            bt_historyupdate.Size = new Size(108, 23);
+            bt_historyupdate.TabIndex = 4;
+            bt_historyupdate.Text = "Update Entry";
+            bt_historyupdate.UseVisualStyleBackColor = true;
+            bt_historyupdate.Click += bt_historyupdate_Click;
             // 
             // lbl_sessiondata
             // 
@@ -3540,5 +3577,8 @@
         private Label label8;
         private Button bt_connect;
         private TabControl tabMain;
+        private Button bt_historyupdate;
+        private Label label65;
+        private ComboBox cb_pastsession;
     }
 }

@@ -1319,6 +1319,7 @@ namespace WaifuAI
             LLMSystem.MaxRAGEntries = Settings.MaxRAGEntries;
             LLMSystem.RAGIndex = Settings.RAGPosition;
             LLMSystem.ScenarioOverride = Settings.ScenarioOverride;
+            LLMSystem.SessionHandling = Settings.SessionHandling;
             // set cb_user to the settings.UserFile value if it's in the list, otherwise set index to 0.
             cb_user.SelectedIndex = cb_user.Items.Contains(Settings.UserFile) ? cb_user.Items.IndexOf(Settings.UserFile) : 0;
             // set cb_infer to the settings.InferenceFile value if it's in the list, otherwise set index to 0.
@@ -1368,6 +1369,7 @@ namespace WaifuAI
             ck_reduceitalic.Checked = Settings.RoleplayFormatting.RemoveItalic;
             num_italicratio.Value = (decimal)Settings.RoleplayFormatting.RemoveItalicRatio;
             num_removeitalicmaxword.Value = Settings.RoleplayFormatting.RemoveItalicMaxWords;
+            cb_pastsession.SelectedIndex = (int)Settings.SessionHandling;
 
             ck_remlastsentence.Checked = Settings.RemoveCutSentence;
             ck_oneparagraph.Checked = Settings.StopOnFirstParagraph;
@@ -1385,7 +1387,6 @@ namespace WaifuAI
                 webplug.KeywordDetection = Settings.WebsitePluginUseKeywords;
             }
             _isinitloading = saveinit;
-
         }
 
         private void SaveSettings()
@@ -1414,7 +1415,7 @@ namespace WaifuAI
                 Settings.BackgroundFile = cb_background.SelectedItem?.ToString() ?? "bedroom_cozy.jpg";
                 Settings.AlwaysWebSearchQuery = ck_alwayswebsearch.Checked;
                 Settings.UseTTS = ck_ttstoggle.Checked;
-
+                Settings.SessionHandling = cb_pastsession.SelectedIndex == -1 ? SessionHandling.FitAll : (SessionHandling)cb_pastsession.SelectedIndex;
                 Settings.AsteriskCheck = ck_fixasterix.Checked;
                 Settings.AntiSlop = ck_antislop.Checked;
                 Settings.AntiSlopRatio = (float)num_antislopchance.Value;
@@ -1618,6 +1619,14 @@ namespace WaifuAI
         private void num_italicratio_ValueChanged(object sender, EventArgs e)
         {
             Settings.RoleplayFormatting.RemoveItalicRatio = (float)num_italicratio.Value;
+        }
+
+        private void cb_pastsession_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isinitloading || cb_pastsession.SelectedIndex == -1)
+                return;
+            Settings.SessionHandling = (SessionHandling)cb_pastsession.SelectedIndex;
+            LLMSystem.SessionHandling = Settings.SessionHandling;
         }
 
         #endregion
@@ -1869,6 +1878,32 @@ namespace WaifuAI
                 loadingForm.Close();
                 this.Enabled = true;
             }
+        }
+
+        private void ed_sessiontitle_TextChanged(object sender, EventArgs e)
+        {
+            if (_isinitloading || _selectedSession == null)
+                return;
+            _selectedSession.Title = ed_sessiontitle.Text;
+        }
+
+        private void ed_sessioninfo_TextChanged(object sender, EventArgs e)
+        {
+            if (_isinitloading || _selectedSession == null)
+                return;
+            _selectedSession.Summary = ed_sessioninfo.Text.ToLinuxFormat();
+
+        }
+
+        private async void bt_historyupdate_Click(object sender, EventArgs e)
+        {
+            if (_selectedSession == null)
+                return;
+            await _selectedSession.GenerateEmbeds();
+            DisplaySessionDetails(_selectedSession);
+            LoadChatHistoryTab();
+            (LLMSystem.Bot as Character)?.SaveChatHistory();
+
         }
 
         #endregion
@@ -2528,19 +2563,6 @@ namespace WaifuAI
             pictEmbed.Image = null;
         }
 
-        private void ed_sessiontitle_TextChanged(object sender, EventArgs e)
-        {
-            if (_isinitloading || _selectedSession == null)
-                return;
-            _selectedSession.Title = ed_sessiontitle.Text;
-        }
 
-        private void ed_sessioninfo_TextChanged(object sender, EventArgs e)
-        {
-            if (_isinitloading || _selectedSession == null)
-                return;
-            _selectedSession.Summary = ed_sessioninfo.Text.ToLinuxFormat();
-
-        }
     }
 }

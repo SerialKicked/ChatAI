@@ -40,6 +40,7 @@ namespace WaifuAI.Files
         public bool WebsitePluginGrammar { get; set; } = false;
         public bool StopOnFirstParagraph { get; set; } = false;
         public bool RemoveCutSentence { get; set; } = false;
+        public SessionHandling SessionHandling { get; set; } = SessionHandling.FitAll;
 
         public StringFix RoleplayFormatting { get; set; } = new StringFix(false, false, false, false, false, 1, 50);
     }
