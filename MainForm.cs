@@ -194,15 +194,8 @@ namespace WaifuAI
             {
                 // Convert base64 back to an image to display in a PictureBox
                 byte[] imageBytes = Convert.FromBase64String(base64String);
-                using (var ms = new MemoryStream(imageBytes))
-                {
-                    pictEmbed.Image = Image.FromStream(ms);
-                    // If you have a PictureBox named pictureBox1, you can display the image like this:
-                    // pictureBox1.Image = Image.FromStream(ms);
-
-                    // Or you can create a new form with a PictureBox to show the image
-                    // in a popup window if you prefer
-                }
+                using var ms = new MemoryStream(imageBytes);
+                pictEmbed.Image = Image.FromStream(ms);
             }
             catch (Exception ex)
             {
@@ -947,11 +940,11 @@ namespace WaifuAI
 
             var workstring = input.Trim();
             // with input a multi-line string, we want to check if any of the lines starts with a command "/" character and if so, remove this particular line from workstring (set it aside for processing)
-            var lines = workstring.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var lines = workstring.Split(["\n"], StringSplitOptions.RemoveEmptyEntries);
             var commands = new List<string>();
             foreach (var line in lines)
             {
-                if (line.StartsWith("/"))
+                if (line.StartsWith('/'))
                 {
                     commands.Add(line);
                 }
@@ -1012,7 +1005,7 @@ namespace WaifuAI
                     await SendMessageToUI(
                         new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), Bot.History.CurrentSession.Messages.Count + 1);
                     ed_input.Text = string.Empty;
-                    await LLMSystem.SendMessageToBot(msg, base64Image);
+                    await LLMSystem.SendMessageToBot(msg);
                 }
                 else
                 {
@@ -1047,7 +1040,7 @@ namespace WaifuAI
                         await SendMessageToUI(
                             new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count + 1);
                         ed_input.Text = string.Empty;
-                        await LLMSystem.SendMessageToBot(msg, base64Image);
+                        await LLMSystem.SendMessageToBot(msg);
                     }
                 }
             }
@@ -1444,8 +1437,7 @@ namespace WaifuAI
                     searchplug.KeywordDetection = !ck_alwayswebsearch.Checked;
                 }
 
-                var webplug = LLMSystem.ContextPlugins.Find(e => e is BrowsePlugin) as BrowsePlugin;
-                if (webplug != null)
+                if (LLMSystem.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
                 {
                     webplug.EnforceCorrectGrammar = Settings.WebsitePluginGrammar;
                     webplug.KeywordDetection = Settings.WebsitePluginUseKeywords;
@@ -1638,16 +1630,16 @@ namespace WaifuAI
         private void SetupListSessionContextMenu()
         {
             // Create context menu
-            ContextMenuStrip contextMenu = new ContextMenuStrip();
+            ContextMenuStrip contextMenu = new();
 
             // Add menu items
-            ToolStripMenuItem switchSessionItem = new ToolStripMenuItem("Set Session As Active");
+            ToolStripMenuItem switchSessionItem = new("Set Session As Active");
             switchSessionItem.Click += async (sender, e) => await SwitchToSelectedSession();
 
-            ToolStripMenuItem insertSessionItem = new ToolStripMenuItem("Insert New Session Below");
+            ToolStripMenuItem insertSessionItem = new("Insert New Session Below");
             insertSessionItem.Click += async (sender, e) => await InsertSessionAfterSelected();
 
-            ToolStripMenuItem deleteSessionItem = new ToolStripMenuItem("Delete Selected Session");
+            ToolStripMenuItem deleteSessionItem = new("Delete Selected Session");
             deleteSessionItem.Click += async (sender, e) => await DeleteSelectedSession();
 
             // Add items to menu
@@ -2104,7 +2096,7 @@ namespace WaifuAI
                 else
                 {
                     // both tokens are found, so we want two strings now: the first one is the thinking part, the second one is the message part
-                    var parts = worktext.Split(new string[] { LLMSystem.Instruct.ThinkingEnd }, 2, StringSplitOptions.None);
+                    var parts = worktext.Split([LLMSystem.Instruct.ThinkingEnd], 2, StringSplitOptions.None);
                     var thinkingText = parts[0].Replace(LLMSystem.Instruct.ThinkingStart, string.Empty);
                     thinkingText = Markdown.ToHtml(thinkingText, CustomMarkDownPipeline).SanitizeForJS();
                     var script = $"updateMessageAtIndex(\"{thinkingText}\", document.getElementsByClassName('message-content').length - 1, true);";

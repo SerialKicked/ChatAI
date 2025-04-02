@@ -54,7 +54,7 @@ namespace WaifuAI.Files
             }
 
             LoadChatHistory();
-            MyWorlds = DataFiles.WorldInfos.Values.Where(wi => Worlds.Contains(wi.UniqueName)).ToList();
+            MyWorlds = [.. DataFiles.WorldInfos.Values.Where(wi => Worlds.Contains(wi.UniqueName))];
             foreach (var item in MyWorlds)
                 item.Reset();
         }
