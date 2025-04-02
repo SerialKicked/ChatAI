@@ -181,7 +181,7 @@ namespace WaifuAI.Plugins
             if (!EnforceCorrectGrammar && !string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingStart))
                 response = response.RemoveThinkingBlocks(LLMSystem.Instruct.ThinkingStart, LLMSystem.Instruct.ThinkingEnd);
             // strip anything that is not a number from response
-            response = new string(response.Where(c => char.IsDigit(c)).ToArray());
+            response = new string([.. response.Where(c => char.IsDigit(c))]);
             return response;
         }
 
