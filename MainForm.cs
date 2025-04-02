@@ -176,13 +176,15 @@ namespace WaifuAI
 
             ed_input.EnableImageDragDrop(basestr =>
             {
-                base64Image = basestr;
-                DisplayImage(base64Image);
+                LLMSystem.VLM_ClearImages();
+                LLMSystem.VLM_AddB64Image(basestr);
+                DisplayImage(basestr);
             }, 1024);
             pictEmbed.EnableImageDragDrop(basestr =>
             {
-                base64Image = basestr;
-                DisplayImage(base64Image);
+                LLMSystem.VLM_ClearImages();
+                LLMSystem.VLM_AddB64Image(basestr);
+                DisplayImage(basestr);
             }, 1024);
         }
 
@@ -2559,7 +2561,7 @@ namespace WaifuAI
 
         private void bt_clearimg_Click(object sender, EventArgs e)
         {
-            base64Image = null;
+            LLMSystem.VLM_ClearImages();
             pictEmbed.Image = null;
         }
 
