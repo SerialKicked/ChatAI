@@ -1099,6 +1099,16 @@ namespace WaifuAI
             num_maxcontext.Maximum = LLMSystem.MaxContextLength;
             num_maxcontext.Value = LLMSystem.MaxContextLength;
             grp_model.Text = LLMSystem.CurrentModel;
+            ck_ttstoggle.Enabled = LLMSystem.SupportsTTS;
+            ck_onlinerag.Enabled = LLMSystem.SupportsWebSearch;
+            if (!LLMSystem.SupportsTTS)
+            {
+                ck_ttstoggle.Checked = false;
+            }
+            if (!LLMSystem.SupportsWebSearch)
+            {
+                ck_onlinerag.Checked = false;
+            }
         }
 
         private async void StartNewSession(object sender, EventArgs e)

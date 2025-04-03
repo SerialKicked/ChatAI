@@ -43,7 +43,7 @@ namespace WaifuAI.src.forms
             }
         }
 
-        public void CenterToParent()
+        public new void CenterToParent()
         {
             if (Owner != null)
             {
