@@ -31,6 +31,50 @@ namespace WaifuAI.src.forms
             }
         }
 
+        public void SetMax(int max)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => progress_bar.Maximum = max));
+            }
+            else
+            {
+                progress_bar.Maximum = max;
+            }
+        }
+
+        public void CenterToParent()
+        {
+            if (Owner != null)
+            {
+                this.StartPosition = FormStartPosition.Manual;
+
+                // Get the owner's center point
+                Point ownerCenter = new Point(
+                    Owner.Left + (Owner.Width / 2),
+                    Owner.Top + (Owner.Height / 2)
+                );
+
+                // Calculate where to place this form
+                this.Location = new Point(
+                    ownerCenter.X - (this.Width / 2),
+                    ownerCenter.Y - (this.Height / 2)
+                );
+
+                // Ensure the form is fully visible on screen
+                Rectangle screenBounds = Screen.FromControl(Owner).Bounds;
+                if (this.Left < screenBounds.Left)
+                    this.Left = screenBounds.Left + 10;
+                else if (this.Right > screenBounds.Right)
+                    this.Left = screenBounds.Right - this.Width - 10;
+
+                if (this.Top < screenBounds.Top)
+                    this.Top = screenBounds.Top + 10;
+                else if (this.Bottom > screenBounds.Bottom)
+                    this.Top = screenBounds.Bottom - this.Height - 10;
+            }
+        }
+
         public void AddProgress(int progress)
         {
             if (InvokeRequired)

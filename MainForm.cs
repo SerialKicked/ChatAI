@@ -54,10 +54,6 @@ namespace WaifuAI
         private EditMessageForm? _editMessageForm;
         private readonly Random RNG = new();
 
-        private System.Media.SoundPlayer? _player;
-        private MemoryStream? _audioStream;
-        private string? base64Image = null;
-
         public static Character? Bot => LLMSystem.Bot as Character;
         public static Character? User => LLMSystem.User as Character;
 
@@ -79,14 +75,15 @@ namespace WaifuAI
 
             HelptoolTip.SetToolTip(ck_webgrammar, "If checked, the LLM will be better at navigating the website, but its results will be less accurate." + Environment.NewLine + "Only enable if the LLM is consistently failing at browsing the web.");
 
-            HelptoolTip.SetToolTip(ck_ragenabled, "Use RAG and keywords to insert summaries of relevant previous sessions based on the user's input." + Environment.NewLine + "Configurable in the Settings tab.");
+            HelptoolTip.SetToolTip(ck_ragenabled, "Use RAG functionalities to insert summaries of relevant previous sessions based on the user's input." + Environment.NewLine + "Configurable in the Settings tab.");
             HelptoolTip.SetToolTip(ck_senseoftime, "Insert day and time information to prompt when relevant to give the bot a better understanding of time.");
             HelptoolTip.SetToolTip(ck_sessionmemory, "Use a set amount of tokens (set in settings) to insert summaries of previous chat sessions with this bot." + Environment.NewLine + "This drastically increases the bot's long-term memory.");
             HelptoolTip.SetToolTip(ck_worldinfo, "Use the WorldInfo file(s) associated with this bot. WorldInfo is a list of keyword-triggered textual information that is inserted into the prompt when the conditions are met." + Environment.NewLine + "See the World Info tab for additional information.");
 
             HelptoolTip.SetToolTip(ck_alwayswebsearch, "Normally, Online RAG (using DuckDuckGo API search) will only be attempt if you explicitely ask the bot to search the web. If you check this box, the LLM will always try to determine if a search would be useful." + Environment.NewLine + Environment.NewLine + "May lead to many false positive, and overall slower generation with some models.");
             HelptoolTip.SetToolTip(ck_charsampler, "If checked, and when using a bot persona containing a list of compatible inference settings, the inference settings will be picked at random from that list each time the bot write a new message." + Environment.NewLine + Environment.NewLine + "Will lead to a more creative and less repetitive interaction, but also less consistent.");
-            HelptoolTip.SetToolTip(ck_onlinerag, "If checked, the bot may perform web search (using DuckDuckGo) to improve its responses when asked to.");
+            HelptoolTip.SetToolTip(ck_onlinerag, "If checked, the bot may perform a web search (using DuckDuckGo) to improve its responses when asked to.");
+            HelptoolTip.SetToolTip(btEmbedAll, "If you're using RAG and have manually edited some entries in the history, press this button to update all the embeddings so RAG functionalities are accurate.");
 
             // Chat related events
             bt_chattosessions.Click += ConvertChatToSessionList!;
@@ -1009,13 +1006,13 @@ namespace WaifuAI
                 }
                 else
                 {
-                    var sysmessage = ProcessSlashCommands(messagetext);
-                    if (sysmessage.response != null)
+                    var (response, usercmdonly) = ProcessSlashCommands(messagetext);
+                    if (response != null)
                     {
-                        if (sysmessage.usercmdonly)
+                        if (usercmdonly)
                         {
-                            LLMSystem.History.LogMessage(sysmessage.response);
-                            await SendMessageToUI(sysmessage.response, LLMSystem.History.CurrentSession.Messages.Count - 1);
+                            LLMSystem.History.LogMessage(response);
+                            await SendMessageToUI(response, LLMSystem.History.CurrentSession.Messages.Count - 1);
                             ed_input.Text = string.Empty;
                             statusbar.Items[1].Text = "Ready!";
                             return;
@@ -1024,12 +1021,12 @@ namespace WaifuAI
                         {
                             LLMSystem.History.LogMessage(msg);
                             await SendMessageToUI(msg, LLMSystem.History.CurrentSession.Messages.Count - 1);
-                            await SendMessageToUI(sysmessage.response, LLMSystem.History.CurrentSession.Messages.Count);
+                            await SendMessageToUI(response, LLMSystem.History.CurrentSession.Messages.Count);
                             PrepareResponse();
                             await SendMessageToUI(
                                 new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count + 1);
                             ed_input.Text = string.Empty;
-                            await LLMSystem.SendMessageToBot(sysmessage.response);
+                            await LLMSystem.SendMessageToBot(response);
                         }
                     }
                     else
@@ -1120,8 +1117,10 @@ namespace WaifuAI
         private async Task UpdateLatestSession()
         {
             this.Enabled = false;
-            using var loadingForm = new LoadingForm() { Owner = this, StartPosition = FormStartPosition.CenterParent };
+            using var loadingForm = new LoadingForm() { Owner = this, StartPosition = FormStartPosition.Manual };
+            loadingForm.CenterToParent();
             loadingForm.Show();
+            loadingForm.BringToFront();
             loadingForm.Refresh();
             try
             {
@@ -1166,14 +1165,16 @@ namespace WaifuAI
         private async Task UpdateOldSession()
         {
             this.Enabled = false;
-            using var loadingForm = new LoadingForm() { Owner = this, StartPosition = FormStartPosition.CenterParent };
             var doupdate = false;
 
             if (MessageBox.Show("Do you want to update this session's summary before going back to the latest session?", "Refresh?", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 doupdate = true;
             }
+            using var loadingForm = new LoadingForm() { Owner = this, StartPosition = FormStartPosition.Manual };
+            loadingForm.CenterToParent();
             loadingForm.Show();
+            loadingForm.BringToFront();
             loadingForm.Refresh();
             try
             {
@@ -1307,12 +1308,12 @@ namespace WaifuAI
             RAGSystem.UseSummaries = Settings.RAGUseSummaries;
             RAGSystem.UseTitles = Settings.RAGUseTitles;
             RAGSystem.DistanceCutOff = Settings.RAGDistanceCutOff;
+            RAGSystem.MaxRAGEntries = Settings.MaxRAGEntries;
+            RAGSystem.RAGIndex = Settings.RAGPosition;
             LLMSystem.MaxContextLength = Settings.MaxTotalTokens;
             LLMSystem.MaxReplyLength = Settings.MaxResponseTokens;
             LLMSystem.ReservedSessionTokens = Settings.ReservedSessionTokens;
             LLMSystem.MarkdownMemoryFormating = Settings.MarkdownMemoryFormating;
-            LLMSystem.MaxRAGEntries = Settings.MaxRAGEntries;
-            LLMSystem.RAGIndex = Settings.RAGPosition;
             LLMSystem.ScenarioOverride = Settings.ScenarioOverride;
             LLMSystem.SessionHandling = Settings.SessionHandling;
             // set cb_user to the settings.UserFile value if it's in the list, otherwise set index to 0.
@@ -1402,8 +1403,8 @@ namespace WaifuAI
                 Settings.RAGDistanceCutOff = RAGSystem.DistanceCutOff;
                 Settings.ReservedSessionTokens = LLMSystem.ReservedSessionTokens;
                 Settings.MarkdownMemoryFormating = LLMSystem.MarkdownMemoryFormating;
-                Settings.MaxRAGEntries = LLMSystem.MaxRAGEntries;
-                Settings.RAGPosition = LLMSystem.RAGIndex;
+                Settings.MaxRAGEntries = RAGSystem.MaxRAGEntries;
+                Settings.RAGPosition = RAGSystem.RAGIndex;
                 Settings.ScenarioOverride = LLMSystem.ScenarioOverride;
                 Settings.FontSize = (int)num_fontsize.Value;
                 Settings.MaxMessagesOnScreen = (int)num_msgcount.Value;
@@ -1477,26 +1478,13 @@ namespace WaifuAI
                 );
         }
 
-        private async void EmbedAllSessions(object sender, EventArgs e)
-        {
-            if (!RAGSystem.Enabled)
-            {
-                MessageBox.Show("The RAG System is not enabled. Operation cancelled.");
-                return;
-            }
-            await RAGSystem.EmbedChatSessions(LLMSystem.History);
-            MessageBox.Show("All sessions have been embedded successfully.");
-            (LLMSystem.Bot as Character)?.SaveChatHistory(true);
-            RAGSystem.VectorizeChatBot(LLMSystem.Bot);
-        }
-
         private void ApplyRAGSettings(object sender, EventArgs e)
         {
             RAGSystem.UseSummaries = ck_ragsummaries.Checked;
             RAGSystem.UseTitles = ck_ragtitles.Checked;
             RAGSystem.DistanceCutOff = (float)num_ragcutoff.Value;
-            LLMSystem.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
-            LLMSystem.RAGIndex = (int)num_ragindex.Value;
+            RAGSystem.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
+            RAGSystem.RAGIndex = (int)num_ragindex.Value;
             if (cb_ragheuristic.SelectedIndex == 0)
                 RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
             else if (cb_ragheuristic.SelectedIndex == 1)
@@ -1520,7 +1508,7 @@ namespace WaifuAI
 
         private void num_ragmaxretrieve_ValueChanged(object sender, EventArgs e)
         {
-            LLMSystem.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
+            RAGSystem.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
         }
 
         private void ck_ragenabled_CheckedChanged(object sender, EventArgs e)
@@ -1530,7 +1518,7 @@ namespace WaifuAI
 
         private void num_ragindex_ValueChanged(object sender, EventArgs e)
         {
-            LLMSystem.RAGIndex = (int)num_ragindex.Value;
+            RAGSystem.RAGIndex = (int)num_ragindex.Value;
         }
 
         private async void num_fontsize_ValueChanged(object sender, EventArgs e)
@@ -1835,8 +1823,10 @@ namespace WaifuAI
             if (_selectedSession == null)
                 return;
             this.Enabled = false;
-            using var loadingForm = new LoadingForm() { Owner = this, StartPosition = FormStartPosition.CenterParent };
+            using var loadingForm = new LoadingForm() { Owner = this, StartPosition = FormStartPosition.Manual };
+            loadingForm.CenterToParent();
             loadingForm.Show();
+            loadingForm.BringToFront();
             loadingForm.Refresh();
             try
             {
@@ -1897,6 +1887,49 @@ namespace WaifuAI
             DisplaySessionDetails(_selectedSession);
             LoadChatHistoryTab();
             (LLMSystem.Bot as Character)?.SaveChatHistory();
+
+        }
+
+        private async void btEmbedAll_Click(object sender, EventArgs e)
+        {
+            if (!RAGSystem.Enabled)
+            {
+                MessageBox.Show("The RAG System is not enabled. Operation cancelled.");
+                return;
+            }
+            this.Enabled = false;
+
+            using var loadingForm = new LoadingForm() { Owner = this };
+
+            // Set the position in a way that doesn't affect the internal layout
+            loadingForm.StartPosition = FormStartPosition.Manual;
+            loadingForm.CenterToParent();
+            loadingForm.Show();
+            loadingForm.BringToFront();
+            loadingForm.Refresh();
+
+            try
+            {
+                loadingForm.SetMessage("Embedding all chat sessions. This might take a moment.");
+                loadingForm.SetProgress(0);
+                loadingForm.SetMax(LLMSystem.History.Sessions.Count);
+                RAGSystem.OnEmbedSession += (s, e) =>
+                {
+                    loadingForm.AddProgress(1);
+                };
+                await RAGSystem.EmbedChatSessions(LLMSystem.History);
+                loadingForm.SetMessage("Saving history...");
+                (LLMSystem.Bot as Character)?.SaveChatHistory(true);
+                loadingForm.SetMessage("Loading Updated Vector Database...");
+                RAGSystem.VectorizeChatBot(LLMSystem.Bot);
+            }
+            finally
+            {
+                RAGSystem.RemoveEmbedEventHandler();
+                loadingForm.Close();
+                this.Enabled = true;
+                MessageBox.Show("All sessions have been embedded successfully.");
+            }
 
         }
 
@@ -2556,7 +2589,5 @@ namespace WaifuAI
             LLMSystem.VLM_ClearImages();
             pictEmbed.Image = null;
         }
-
-
     }
 }

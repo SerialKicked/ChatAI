@@ -90,7 +90,6 @@
             num_ragcutoff = new NumericUpDown();
             label12 = new Label();
             cb_ragheuristic = new ComboBox();
-            bt_embedall = new Button();
             button1 = new Button();
             ck_ragsummaries = new CheckBox();
             ck_ragtitles = new CheckBox();
@@ -234,11 +233,12 @@
             ed_sessiontitle = new TextBox();
             bt_sessionrefresh = new Button();
             panel4 = new Panel();
-            panel5 = new Panel();
-            bt_deleteAllHistory = new Button();
             listSession = new ListView();
             columnHeader1 = new ColumnHeader();
             columnHeader2 = new ColumnHeader();
+            panel5 = new Panel();
+            btEmbedAll = new Button();
+            bt_deleteAllHistory = new Button();
             tabChat = new TabPage();
             bt_impersonate = new Button();
             web_chat = new Microsoft.Web.WebView2.WinForms.WebView2();
@@ -914,7 +914,6 @@
             groupBox1.Controls.Add(num_ragcutoff);
             groupBox1.Controls.Add(label12);
             groupBox1.Controls.Add(cb_ragheuristic);
-            groupBox1.Controls.Add(bt_embedall);
             groupBox1.Controls.Add(button1);
             groupBox1.Controls.Add(ck_ragsummaries);
             groupBox1.Controls.Add(ck_ragtitles);
@@ -1049,17 +1048,6 @@
             cb_ragheuristic.Size = new Size(144, 23);
             cb_ragheuristic.TabIndex = 3;
             cb_ragheuristic.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
-            // 
-            // bt_embedall
-            // 
-            bt_embedall.Font = new Font("Segoe UI", 9F);
-            bt_embedall.Location = new Point(182, 165);
-            bt_embedall.Name = "bt_embedall";
-            bt_embedall.Size = new Size(214, 23);
-            bt_embedall.TabIndex = 22;
-            bt_embedall.Text = "Embed all chat sessions ";
-            bt_embedall.UseVisualStyleBackColor = true;
-            bt_embedall.Click += EmbedAllSessions;
             // 
             // button1
             // 
@@ -2577,35 +2565,13 @@
             // 
             // panel4
             // 
-            panel4.Controls.Add(panel5);
             panel4.Controls.Add(listSession);
+            panel4.Controls.Add(panel5);
             panel4.Dock = DockStyle.Left;
             panel4.Location = new Point(0, 0);
             panel4.Name = "panel4";
             panel4.Size = new Size(376, 808);
             panel4.TabIndex = 0;
-            // 
-            // panel5
-            // 
-            panel5.Controls.Add(bt_deleteAllHistory);
-            panel5.Dock = DockStyle.Bottom;
-            panel5.Location = new Point(0, 776);
-            panel5.Name = "panel5";
-            panel5.Size = new Size(376, 32);
-            panel5.TabIndex = 1;
-            // 
-            // bt_deleteAllHistory
-            // 
-            bt_deleteAllHistory.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_deleteAllHistory.BackColor = SystemColors.Control;
-            bt_deleteAllHistory.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_deleteAllHistory.ForeColor = Color.DarkRed;
-            bt_deleteAllHistory.Location = new Point(3, 3);
-            bt_deleteAllHistory.Name = "bt_deleteAllHistory";
-            bt_deleteAllHistory.Size = new Size(367, 23);
-            bt_deleteAllHistory.TabIndex = 4;
-            bt_deleteAllHistory.Text = "Delete All History";
-            bt_deleteAllHistory.UseVisualStyleBackColor = false;
             // 
             // listSession
             // 
@@ -2614,8 +2580,8 @@
             listSession.FullRowSelect = true;
             listSession.Location = new Point(0, 0);
             listSession.Name = "listSession";
-            listSession.Size = new Size(376, 808);
-            listSession.TabIndex = 0;
+            listSession.Size = new Size(376, 751);
+            listSession.TabIndex = 2;
             listSession.UseCompatibleStateImageBehavior = false;
             listSession.View = View.Details;
             listSession.SelectedIndexChanged += listSession_SelectedIndexChanged;
@@ -2629,6 +2595,42 @@
             // 
             columnHeader2.Text = "Date";
             columnHeader2.Width = 80;
+            // 
+            // panel5
+            // 
+            panel5.Controls.Add(btEmbedAll);
+            panel5.Controls.Add(bt_deleteAllHistory);
+            panel5.Dock = DockStyle.Bottom;
+            panel5.Location = new Point(0, 751);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(376, 57);
+            panel5.TabIndex = 1;
+            // 
+            // btEmbedAll
+            // 
+            btEmbedAll.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btEmbedAll.BackColor = SystemColors.Control;
+            btEmbedAll.Font = new Font("Segoe UI", 9F);
+            btEmbedAll.Location = new Point(3, 6);
+            btEmbedAll.Name = "btEmbedAll";
+            btEmbedAll.Size = new Size(367, 23);
+            btEmbedAll.TabIndex = 5;
+            btEmbedAll.Text = "Embed Everything";
+            btEmbedAll.UseVisualStyleBackColor = false;
+            btEmbedAll.Click += btEmbedAll_Click;
+            // 
+            // bt_deleteAllHistory
+            // 
+            bt_deleteAllHistory.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            bt_deleteAllHistory.BackColor = SystemColors.Control;
+            bt_deleteAllHistory.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            bt_deleteAllHistory.ForeColor = Color.DarkRed;
+            bt_deleteAllHistory.Location = new Point(3, 31);
+            bt_deleteAllHistory.Name = "bt_deleteAllHistory";
+            bt_deleteAllHistory.Size = new Size(367, 23);
+            bt_deleteAllHistory.TabIndex = 4;
+            bt_deleteAllHistory.Text = "Delete All History";
+            bt_deleteAllHistory.UseVisualStyleBackColor = false;
             // 
             // tabChat
             // 
@@ -3384,7 +3386,6 @@
         private NumericUpDown num_ragcutoff;
         private Label label12;
         private ComboBox cb_ragheuristic;
-        private Button bt_embedall;
         private Button button1;
         private CheckBox ck_ragsummaries;
         private CheckBox ck_ragtitles;
@@ -3529,9 +3530,6 @@
         private Panel panel4;
         private Panel panel5;
         private Button bt_deleteAllHistory;
-        private ListView listSession;
-        private ColumnHeader columnHeader1;
-        private ColumnHeader columnHeader2;
         private TabPage tabChat;
         private Button bt_impersonate;
         private Microsoft.Web.WebView2.WinForms.WebView2 web_chat;
@@ -3580,5 +3578,9 @@
         private Button bt_historyupdate;
         private Label label65;
         private ComboBox cb_pastsession;
+        private ListView listSession;
+        private ColumnHeader columnHeader1;
+        private ColumnHeader columnHeader2;
+        private Button btEmbedAll;
     }
 }
