@@ -234,7 +234,7 @@ namespace WaifuAI
                 cb_user.Enabled = true;
                 ShowCurrentSessionInfo();
             }
-            else if(LLMSystem.Status == SystemStatus.Ready)
+            else if (LLMSystem.Status == SystemStatus.Busy)
             {
                 bt_delete.Enabled = false;
                 bt_connect.Enabled = false;
