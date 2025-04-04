@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AIToolkit;
 using AIToolkit.Files;
+using AIToolkit.LLM;
 
 namespace WaifuAI.Files
 {
@@ -41,6 +42,10 @@ namespace WaifuAI.Files
         public bool StopOnFirstParagraph { get; set; } = false;
         public bool RemoveCutSentence { get; set; } = false;
         public SessionHandling SessionHandling { get; set; } = SessionHandling.FitAll;
+
+        public BackendAPI API { get; set; } = BackendAPI.KoboldAPI;
+        public string BaseURL { get; set; } = "http://localhost:5001";
+        public string APIKey { get; set; } = string.Empty;
 
         public StringFix RoleplayFormatting { get; set; } = new StringFix(false, false, false, false, false, 1, 50);
     }

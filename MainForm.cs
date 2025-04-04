@@ -20,9 +20,6 @@ namespace WaifuAI
     public partial class MainForm : Form
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public WaifuSettings Settings { get; set; } = new WaifuSettings();
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WebScraper WebScraper { get; set; } = new WebScraper();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -75,13 +72,13 @@ namespace WaifuAI
 
             HelptoolTip.SetToolTip(ck_webgrammar, "If checked, the LLM will be better at navigating the website, but its results will be less accurate." + Environment.NewLine + "Only enable if the LLM is consistently failing at browsing the web.");
 
-            HelptoolTip.SetToolTip(ck_ragenabled, "Use RAG functionalities to insert summaries of relevant previous sessions based on the user's input." + Environment.NewLine + "Configurable in the Settings tab.");
+            HelptoolTip.SetToolTip(ck_ragenabled, "Use RAG functionalities to insert summaries of relevant previous sessions based on the user's input." + Environment.NewLine + "Configurable in the Program.Settings tab.");
             HelptoolTip.SetToolTip(ck_senseoftime, "Insert day and time information to prompt when relevant to give the bot a better understanding of time.");
-            HelptoolTip.SetToolTip(ck_sessionmemory, "Use a set amount of tokens (set in settings) to insert summaries of previous chat sessions with this bot." + Environment.NewLine + "This drastically increases the bot's long-term memory.");
+            HelptoolTip.SetToolTip(ck_sessionmemory, "Use a set amount of tokens (set in Program.Settings) to insert summaries of previous chat sessions with this bot." + Environment.NewLine + "This drastically increases the bot's long-term memory.");
             HelptoolTip.SetToolTip(ck_worldinfo, "Use the WorldInfo file(s) associated with this bot. WorldInfo is a list of keyword-triggered textual information that is inserted into the prompt when the conditions are met." + Environment.NewLine + "See the World Info tab for additional information.");
 
             HelptoolTip.SetToolTip(ck_alwayswebsearch, "Normally, Online RAG (using DuckDuckGo API search) will only be attempt if you explicitely ask the bot to search the web. If you check this box, the LLM will always try to determine if a search would be useful." + Environment.NewLine + Environment.NewLine + "May lead to many false positive, and overall slower generation with some models.");
-            HelptoolTip.SetToolTip(ck_charsampler, "If checked, and when using a bot persona containing a list of compatible inference settings, the inference settings will be picked at random from that list each time the bot write a new message." + Environment.NewLine + Environment.NewLine + "Will lead to a more creative and less repetitive interaction, but also less consistent.");
+            HelptoolTip.SetToolTip(ck_charsampler, "If checked, and when using a bot persona containing a list of compatible inference Program.Settings, the inference Program.Settings will be picked at random from that list each time the bot write a new message." + Environment.NewLine + Environment.NewLine + "Will lead to a more creative and less repetitive interaction, but also less consistent.");
             HelptoolTip.SetToolTip(ck_onlinerag, "If checked, the bot may perform a web search (using DuckDuckGo) to improve its responses when asked to.");
             HelptoolTip.SetToolTip(btEmbedAll, "If you're using RAG and have manually edited some entries in the history, press this button to update all the embeddings so RAG functionalities are accurate.");
 
@@ -132,11 +129,6 @@ namespace WaifuAI
 
         private void SetupChatMenu()
         {
-            LLMSystem.Init();
-            LLMSystem.ContextPlugins = [];
-            LLMSystem.ContextPlugins.Add(new BrowsePlugin());
-            LLMSystem.ContextPlugins.Add(new LocationPlugin("Locations"));
-            LLMSystem.ContextPlugins.Add(new WebSearchPlugin());
             cb_bot.Items.Clear();
             cb_user.Items.Clear();
             bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.ScenarioOverride) ? Color.Black : Color.DarkGreen;
@@ -163,6 +155,20 @@ namespace WaifuAI
                 cb_sysprompt.Items.Add(item.Value.UniqueName);
             }
             LoadSettings();
+
+            // Show LoginForm
+            var loginForm = new LoginForm();
+            loginForm.ShowDialog(this);
+            if (loginForm.DialogResult != DialogResult.OK)
+            {
+                MessageBox.Show("No connection with backend server. You can use the application, but you cannot chat with the AI.");
+            }
+
+            LLMSystem.Init();
+            LLMSystem.ContextPlugins = [];
+            LLMSystem.ContextPlugins.Add(new BrowsePlugin());
+            LLMSystem.ContextPlugins.Add(new LocationPlugin("Locations"));
+            LLMSystem.ContextPlugins.Add(new WebSearchPlugin());
             RAGSystem.Enabled = true;
             ck_ragenabled.Checked = RAGSystem.Enabled;
             ck_worldinfo.Checked = LLMSystem.WorldInfo;
@@ -228,7 +234,7 @@ namespace WaifuAI
                 cb_user.Enabled = true;
                 ShowCurrentSessionInfo();
             }
-            else
+            else if(LLMSystem.Status == SystemStatus.Ready)
             {
                 bt_delete.Enabled = false;
                 bt_connect.Enabled = false;
@@ -241,6 +247,20 @@ namespace WaifuAI
                 bt_impersonate.Enabled = false;
                 cb_bot.Enabled = false;
                 cb_user.Enabled = false;
+            }
+            else if (LLMSystem.Status == SystemStatus.NotInit)
+            {
+                bt_delete.Enabled = false;
+                bt_connect.Enabled = false;
+                bt_send.Enabled = false;
+                bt_send.Text = "Offline";
+                bt_send.BackColor = Color.OrangeRed;
+                bt_reroll.Enabled = false;
+                bt_chattosessions.Enabled = false;
+                bt_newsession.Enabled = false;
+                bt_impersonate.Enabled = false;
+                cb_bot.Enabled = true;
+                cb_user.Enabled = true;
             }
             if (Bot?.AllowedSamplers.Count > 0)
             {
@@ -298,7 +318,7 @@ namespace WaifuAI
                     }
 
                     var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
-                    var stringfix = _currentgeneration.FixRoleplayString(Settings.RoleplayFormatting, true);
+                    var stringfix = _currentgeneration.FixRoleplayString(Program.Settings.RoleplayFormatting, true);
                     await WebEditLastMessage(MsgPrefix + stringfix);
                 }
                 else
@@ -329,24 +349,24 @@ namespace WaifuAI
             }
             else
             {
-                var stringfix = Settings.AsteriskCheck ? e.FixAsterisks() : e;
+                var stringfix = Program.Settings.AsteriskCheck ? e.FixAsterisks() : e;
                 if (!string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingEnd) && stringfix.CountSubstring(LLMSystem.Instruct.ThinkingEnd) > 1)
                 {
                     stringfix = stringfix.RemoveEverythingAfterLast(LLMSystem.Instruct.ThinkingEnd);
                 }
 
-                if (Settings.RemoveCutSentence)
+                if (Program.Settings.RemoveCutSentence)
                     stringfix = stringfix.RemoveUnfinishedSentence();
-                if (Settings.AntiSlop)
-                    stringfix = stringfix.RemoveSlop(Settings.AntiSlopList, Settings.AntiSlopRatio);
+                if (Program.Settings.AntiSlop)
+                    stringfix = stringfix.RemoveSlop(Program.Settings.AntiSlopList, Program.Settings.AntiSlopRatio);
                 // Roleplay filter
-                stringfix = stringfix.FixRoleplayString(Settings.RoleplayFormatting, false);
+                stringfix = stringfix.FixRoleplayString(Program.Settings.RoleplayFormatting, false);
 
                 var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
                 await WebEditLastMessage(MsgPrefix + stringfix);
                 var msg = LLMSystem.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMSystem.User, LLMSystem.Bot);
                 PrepareResponse();
-                if (_forcereload || Settings.MaxMessagesOnScreen <= LLMSystem.History.CurrentSession.Messages.Count)
+                if (_forcereload || Program.Settings.MaxMessagesOnScreen <= LLMSystem.History.CurrentSession.Messages.Count)
                 {
                     Invoke((System.Windows.Forms.MethodInvoker)async delegate
                     {
@@ -357,7 +377,7 @@ namespace WaifuAI
                 {
                     statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                 });
-                if (Settings.UseTTS && !string.IsNullOrEmpty(Bot?.TTSVoice))
+                if (Program.Settings.UseTTS && !string.IsNullOrEmpty(Bot?.TTSVoice))
                 {
                     await OutputTTS(stringfix);
                 }
@@ -379,7 +399,7 @@ namespace WaifuAI
             var currentWaveTask = LLMSystem.GenerateTTS(paragraphs[index], voiceID);
             index++;
 
-            while (Settings.UseTTS && LLMSystem.Status != SystemStatus.Busy)
+            while (Program.Settings.UseTTS && LLMSystem.Status != SystemStatus.Busy)
             {
                 // Wait for the current TTS generation to complete
                 var currentWave = await currentWaveTask;
@@ -437,7 +457,7 @@ namespace WaifuAI
         #region *** Sampler Editor ***
 
         /// <summary>
-        /// Initialize the inference settings editor panel
+        /// Initialize the inference Program.Settings editor panel
         /// </summary>
         /// <param name="Forceid"></param>
         private void SetupSamplerEditor(string Forceid = "", bool addEvents = true)
@@ -809,7 +829,7 @@ namespace WaifuAI
         }
 
         /// <summary>
-        /// Create the editor for the instruction format settings
+        /// Create the editor for the instruction format Program.Settings
         /// </summary>
         /// <param name="target"></param>
         /// <param name="instructsetting"></param>
@@ -1283,7 +1303,7 @@ namespace WaifuAI
         {
             if (!ck_charsampler.Checked || !ck_charsampler.Enabled || Bot == null)
                 return;
-            // make a list of samplers, looking at DataFiles.Inference and what samplers are allowed in the Character's settings
+            // make a list of samplers, looking at DataFiles.Inference and what samplers are allowed in the Character's Program.Settings
             var samplers = new List<string>();
             foreach (var item in DataFiles.Inference)
             {
@@ -1300,48 +1320,50 @@ namespace WaifuAI
 
         #endregion
 
-        #region *** Settings Tab Functions ***
+        #region *** Program.Settings Tab Functions ***
 
         private void LoadSettings()
         {
             if (!File.Exists("settings.json"))
             {
-                Settings = new WaifuSettings();
-                File.WriteAllText("settings.json", JsonConvert.SerializeObject(Settings, Formatting.Indented));
+                Program.Settings = new WaifuSettings();
+                File.WriteAllText("settings.json", JsonConvert.SerializeObject(Program.Settings, Formatting.Indented));
             }
 
             var str = File.ReadAllText("settings.json");
-            Settings = JsonConvert.DeserializeObject<WaifuSettings>(str)!;
+            Program.Settings = JsonConvert.DeserializeObject<WaifuSettings>(str)!;
             var saveinit = _isinitloading;
             _isinitloading = true;
-            RAGSystem.Heuristic = Settings.RAGHeurisitc;
-            RAGSystem.UseSummaries = Settings.RAGUseSummaries;
-            RAGSystem.UseTitles = Settings.RAGUseTitles;
-            RAGSystem.DistanceCutOff = Settings.RAGDistanceCutOff;
-            RAGSystem.MaxRAGEntries = Settings.MaxRAGEntries;
-            RAGSystem.RAGIndex = Settings.RAGPosition;
-            LLMSystem.MaxContextLength = Settings.MaxTotalTokens;
-            LLMSystem.MaxReplyLength = Settings.MaxResponseTokens;
-            LLMSystem.ReservedSessionTokens = Settings.ReservedSessionTokens;
-            LLMSystem.MarkdownMemoryFormating = Settings.MarkdownMemoryFormating;
-            LLMSystem.ScenarioOverride = Settings.ScenarioOverride;
-            LLMSystem.SessionHandling = Settings.SessionHandling;
-            // set cb_user to the settings.UserFile value if it's in the list, otherwise set index to 0.
-            cb_user.SelectedIndex = cb_user.Items.Contains(Settings.UserFile) ? cb_user.Items.IndexOf(Settings.UserFile) : 0;
-            // set cb_infer to the settings.InferenceFile value if it's in the list, otherwise set index to 0.
-            cb_infer.SelectedIndex = cb_infer.Items.Contains(Settings.SamplerFile) ? cb_infer.Items.IndexOf(Settings.SamplerFile) : 0;
-            // set cb_instruct to the settings.InstructFile value if it's in the list, otherwise set index to 0.
-            cb_instruct.SelectedIndex = cb_instruct.Items.Contains(Settings.Instruct) ? cb_instruct.Items.IndexOf(Settings.Instruct) : 0;
-            // set cb_bot to the settings.BotFile value if it's in the list, otherwise set index to 0.
-            cb_bot.SelectedIndex = cb_bot.Items.Contains(Settings.BotFile) ? cb_bot.Items.IndexOf(Settings.BotFile) : 0;
-            // set cb_sysprompt to the settings.PromptFile value if it's in the list, otherwise set index to 0.
-            cb_sysprompt.SelectedIndex = cb_sysprompt.Items.Contains(Settings.PromptFile) ? cb_sysprompt.Items.IndexOf(Settings.PromptFile) : 0;
-            num_maxcontext.Maximum = Settings.MaxTotalTokens;
-            num_maxcontext.Value = Settings.MaxTotalTokens;
-            num_maxresponse.Value = Settings.MaxResponseTokens;
-            num_temperature.Value = (decimal)Settings.Temperature;
-            num_memtokens.Value = Settings.ReservedSessionTokens;
-            ck_markdown.Checked = Settings.MarkdownMemoryFormating;
+            RAGSystem.Heuristic = Program.Settings.RAGHeurisitc;
+            RAGSystem.UseSummaries = Program.Settings.RAGUseSummaries;
+            RAGSystem.UseTitles = Program.Settings.RAGUseTitles;
+            RAGSystem.DistanceCutOff = Program.Settings.RAGDistanceCutOff;
+            RAGSystem.MaxRAGEntries = Program.Settings.MaxRAGEntries;
+            RAGSystem.RAGIndex = Program.Settings.RAGPosition;
+            LLMSystem.MaxContextLength = Program.Settings.MaxTotalTokens;
+            LLMSystem.MaxReplyLength = Program.Settings.MaxResponseTokens;
+            LLMSystem.ReservedSessionTokens = Program.Settings.ReservedSessionTokens;
+            LLMSystem.MarkdownMemoryFormating = Program.Settings.MarkdownMemoryFormating;
+            LLMSystem.ScenarioOverride = Program.Settings.ScenarioOverride;
+            LLMSystem.SessionHandling = Program.Settings.SessionHandling;
+            LLMSystem.BackendUrl = Program.Settings.BaseURL;
+            LLMSystem.BackendAPI = Program.Settings.API;
+            // set cb_user to the Program.Settings.UserFile value if it's in the list, otherwise set index to 0.
+            cb_user.SelectedIndex = cb_user.Items.Contains(Program.Settings.UserFile) ? cb_user.Items.IndexOf(Program.Settings.UserFile) : 0;
+            // set cb_infer to the Program.Settings.InferenceFile value if it's in the list, otherwise set index to 0.
+            cb_infer.SelectedIndex = cb_infer.Items.Contains(Program.Settings.SamplerFile) ? cb_infer.Items.IndexOf(Program.Settings.SamplerFile) : 0;
+            // set cb_instruct to the Program.Settings.InstructFile value if it's in the list, otherwise set index to 0.
+            cb_instruct.SelectedIndex = cb_instruct.Items.Contains(Program.Settings.Instruct) ? cb_instruct.Items.IndexOf(Program.Settings.Instruct) : 0;
+            // set cb_bot to the Program.Settings.BotFile value if it's in the list, otherwise set index to 0.
+            cb_bot.SelectedIndex = cb_bot.Items.Contains(Program.Settings.BotFile) ? cb_bot.Items.IndexOf(Program.Settings.BotFile) : 0;
+            // set cb_sysprompt to the Program.Settings.PromptFile value if it's in the list, otherwise set index to 0.
+            cb_sysprompt.SelectedIndex = cb_sysprompt.Items.Contains(Program.Settings.PromptFile) ? cb_sysprompt.Items.IndexOf(Program.Settings.PromptFile) : 0;
+            num_maxcontext.Maximum = Program.Settings.MaxTotalTokens;
+            num_maxcontext.Value = Program.Settings.MaxTotalTokens;
+            num_maxresponse.Value = Program.Settings.MaxResponseTokens;
+            num_temperature.Value = (decimal)Program.Settings.Temperature;
+            num_memtokens.Value = Program.Settings.ReservedSessionTokens;
+            ck_markdown.Checked = Program.Settings.MarkdownMemoryFormating;
             switch (RAGSystem.Heuristic)
             {
                 case HNSW.Net.NeighbourSelectionHeuristic.SelectSimple:
@@ -1353,34 +1375,34 @@ namespace WaifuAI
                 default:
                     break;
             }
-            ck_ragsummaries.Checked = Settings.RAGUseSummaries;
-            ck_ragtitles.Checked = Settings.RAGUseTitles;
-            num_ragcutoff.Value = (decimal)Settings.RAGDistanceCutOff;
-            num_ragmaxretrieve.Value = Settings.MaxRAGEntries;
-            num_ragindex.Value = Settings.RAGPosition;
-            cb_background.SelectedIndex = cb_background.Items.IndexOf(Settings.BackgroundFile);
-            num_fontsize.Value = Settings.FontSize;
-            num_msgcount.Value = Settings.MaxMessagesOnScreen;
-            ck_alwayswebsearch.Checked = Settings.AlwaysWebSearchQuery;
-            ck_ttstoggle.Checked = Settings.UseTTS;
-            ck_fixasterix.Checked = Settings.AsteriskCheck;
-            ck_antislop.Checked = Settings.AntiSlop;
-            num_antislopchance.Value = (decimal)Settings.AntiSlopRatio;
-            ck_webkeyword.Checked = Settings.WebsitePluginUseKeywords;
-            ck_webgrammar.Checked = Settings.WebsitePluginGrammar;
-            ck_unbold.Checked = Settings.RoleplayFormatting.RemoveAllBoldedText;
-            ck_noemphasisword.Checked = Settings.RoleplayFormatting.RemoveSingleWorldEmphasis;
-            ck_noquotes.Checked = Settings.RoleplayFormatting.RemoveAllQuotes;
-            ck_fixquotes.Checked = Settings.RoleplayFormatting.FixQuotes;
-            ck_reduceitalic.Checked = Settings.RoleplayFormatting.RemoveItalic;
-            num_italicratio.Value = (decimal)Settings.RoleplayFormatting.RemoveItalicRatio;
-            num_removeitalicmaxword.Value = Settings.RoleplayFormatting.RemoveItalicMaxWords;
-            cb_pastsession.SelectedIndex = (int)Settings.SessionHandling;
+            ck_ragsummaries.Checked = Program.Settings.RAGUseSummaries;
+            ck_ragtitles.Checked = Program.Settings.RAGUseTitles;
+            num_ragcutoff.Value = (decimal)Program.Settings.RAGDistanceCutOff;
+            num_ragmaxretrieve.Value = Program.Settings.MaxRAGEntries;
+            num_ragindex.Value = Program.Settings.RAGPosition;
+            cb_background.SelectedIndex = cb_background.Items.IndexOf(Program.Settings.BackgroundFile);
+            num_fontsize.Value = Program.Settings.FontSize;
+            num_msgcount.Value = Program.Settings.MaxMessagesOnScreen;
+            ck_alwayswebsearch.Checked = Program.Settings.AlwaysWebSearchQuery;
+            ck_ttstoggle.Checked = Program.Settings.UseTTS;
+            ck_fixasterix.Checked = Program.Settings.AsteriskCheck;
+            ck_antislop.Checked = Program.Settings.AntiSlop;
+            num_antislopchance.Value = (decimal)Program.Settings.AntiSlopRatio;
+            ck_webkeyword.Checked = Program.Settings.WebsitePluginUseKeywords;
+            ck_webgrammar.Checked = Program.Settings.WebsitePluginGrammar;
+            ck_unbold.Checked = Program.Settings.RoleplayFormatting.RemoveAllBoldedText;
+            ck_noemphasisword.Checked = Program.Settings.RoleplayFormatting.RemoveSingleWorldEmphasis;
+            ck_noquotes.Checked = Program.Settings.RoleplayFormatting.RemoveAllQuotes;
+            ck_fixquotes.Checked = Program.Settings.RoleplayFormatting.FixQuotes;
+            ck_reduceitalic.Checked = Program.Settings.RoleplayFormatting.RemoveItalic;
+            num_italicratio.Value = (decimal)Program.Settings.RoleplayFormatting.RemoveItalicRatio;
+            num_removeitalicmaxword.Value = Program.Settings.RoleplayFormatting.RemoveItalicMaxWords;
+            cb_pastsession.SelectedIndex = (int)Program.Settings.SessionHandling;
 
-            ck_remlastsentence.Checked = Settings.RemoveCutSentence;
-            ck_oneparagraph.Checked = Settings.StopOnFirstParagraph;
-            LLMSystem.StopGenerationOnFirstParagraph = Settings.StopOnFirstParagraph;
-            ed_sloplist.Text = Settings.AntiSlopList.Length > 0 ? string.Join(",", Settings.AntiSlopList) : string.Empty;
+            ck_remlastsentence.Checked = Program.Settings.RemoveCutSentence;
+            ck_oneparagraph.Checked = Program.Settings.StopOnFirstParagraph;
+            LLMSystem.StopGenerationOnFirstParagraph = Program.Settings.StopOnFirstParagraph;
+            ed_sloplist.Text = Program.Settings.AntiSlopList.Length > 0 ? string.Join(",", Program.Settings.AntiSlopList) : string.Empty;
 
             if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
             {
@@ -1389,8 +1411,8 @@ namespace WaifuAI
 
             if (LLMSystem.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
             {
-                webplug.EnforceCorrectGrammar = Settings.WebsitePluginGrammar;
-                webplug.KeywordDetection = Settings.WebsitePluginUseKeywords;
+                webplug.EnforceCorrectGrammar = Program.Settings.WebsitePluginGrammar;
+                webplug.KeywordDetection = Program.Settings.WebsitePluginUseKeywords;
             }
             _isinitloading = saveinit;
         }
@@ -1399,49 +1421,49 @@ namespace WaifuAI
         {
             try
             {
-                Settings.BotFile = cb_bot.SelectedItem?.ToString() ?? string.Empty;
-                Settings.UserFile = cb_user.SelectedItem?.ToString() ?? string.Empty;
-                Settings.SamplerFile = cb_infer.SelectedItem?.ToString() ?? string.Empty;
-                Settings.Instruct = cb_instruct.SelectedItem?.ToString() ?? string.Empty;
-                Settings.PromptFile = cb_sysprompt.SelectedItem?.ToString() ?? string.Empty;
-                Settings.MaxTotalTokens = LLMSystem.MaxContextLength;
-                Settings.MaxResponseTokens = LLMSystem.MaxReplyLength;
-                Settings.Temperature = (double)num_temperature.Value;
-                Settings.RAGHeurisitc = RAGSystem.Heuristic;
-                Settings.RAGUseSummaries = RAGSystem.UseSummaries;
-                Settings.RAGUseTitles = RAGSystem.UseTitles;
-                Settings.RAGDistanceCutOff = RAGSystem.DistanceCutOff;
-                Settings.ReservedSessionTokens = LLMSystem.ReservedSessionTokens;
-                Settings.MarkdownMemoryFormating = LLMSystem.MarkdownMemoryFormating;
-                Settings.MaxRAGEntries = RAGSystem.MaxRAGEntries;
-                Settings.RAGPosition = RAGSystem.RAGIndex;
-                Settings.ScenarioOverride = LLMSystem.ScenarioOverride;
-                Settings.FontSize = (int)num_fontsize.Value;
-                Settings.MaxMessagesOnScreen = (int)num_msgcount.Value;
-                Settings.BackgroundFile = cb_background.SelectedItem?.ToString() ?? "bedroom_cozy.jpg";
-                Settings.AlwaysWebSearchQuery = ck_alwayswebsearch.Checked;
-                Settings.UseTTS = ck_ttstoggle.Checked;
-                Settings.SessionHandling = cb_pastsession.SelectedIndex == -1 ? SessionHandling.FitAll : (SessionHandling)cb_pastsession.SelectedIndex;
-                Settings.AsteriskCheck = ck_fixasterix.Checked;
-                Settings.AntiSlop = ck_antislop.Checked;
-                Settings.AntiSlopRatio = (float)num_antislopchance.Value;
-                Settings.AntiSlopList = !string.IsNullOrEmpty(ed_sloplist.Text) ? ed_sloplist.Text.Split(',') : [];
+                Program.Settings.BotFile = cb_bot.SelectedItem?.ToString() ?? string.Empty;
+                Program.Settings.UserFile = cb_user.SelectedItem?.ToString() ?? string.Empty;
+                Program.Settings.SamplerFile = cb_infer.SelectedItem?.ToString() ?? string.Empty;
+                Program.Settings.Instruct = cb_instruct.SelectedItem?.ToString() ?? string.Empty;
+                Program.Settings.PromptFile = cb_sysprompt.SelectedItem?.ToString() ?? string.Empty;
+                Program.Settings.MaxTotalTokens = LLMSystem.MaxContextLength;
+                Program.Settings.MaxResponseTokens = LLMSystem.MaxReplyLength;
+                Program.Settings.Temperature = (double)num_temperature.Value;
+                Program.Settings.RAGHeurisitc = RAGSystem.Heuristic;
+                Program.Settings.RAGUseSummaries = RAGSystem.UseSummaries;
+                Program.Settings.RAGUseTitles = RAGSystem.UseTitles;
+                Program.Settings.RAGDistanceCutOff = RAGSystem.DistanceCutOff;
+                Program.Settings.ReservedSessionTokens = LLMSystem.ReservedSessionTokens;
+                Program.Settings.MarkdownMemoryFormating = LLMSystem.MarkdownMemoryFormating;
+                Program.Settings.MaxRAGEntries = RAGSystem.MaxRAGEntries;
+                Program.Settings.RAGPosition = RAGSystem.RAGIndex;
+                Program.Settings.ScenarioOverride = LLMSystem.ScenarioOverride;
+                Program.Settings.FontSize = (int)num_fontsize.Value;
+                Program.Settings.MaxMessagesOnScreen = (int)num_msgcount.Value;
+                Program.Settings.BackgroundFile = cb_background.SelectedItem?.ToString() ?? "bedroom_cozy.jpg";
+                Program.Settings.AlwaysWebSearchQuery = ck_alwayswebsearch.Checked;
+                Program.Settings.UseTTS = ck_ttstoggle.Checked;
+                Program.Settings.SessionHandling = cb_pastsession.SelectedIndex == -1 ? SessionHandling.FitAll : (SessionHandling)cb_pastsession.SelectedIndex;
+                Program.Settings.AsteriskCheck = ck_fixasterix.Checked;
+                Program.Settings.AntiSlop = ck_antislop.Checked;
+                Program.Settings.AntiSlopRatio = (float)num_antislopchance.Value;
+                Program.Settings.AntiSlopList = !string.IsNullOrEmpty(ed_sloplist.Text) ? ed_sloplist.Text.Split(',') : [];
 
-                Settings.RoleplayFormatting.RemoveAllBoldedText = ck_unbold.Checked;
-                Settings.RoleplayFormatting.RemoveSingleWorldEmphasis = ck_noemphasisword.Checked;
-                Settings.RoleplayFormatting.RemoveAllQuotes = ck_noquotes.Checked;
-                Settings.RoleplayFormatting.FixQuotes = ck_fixquotes.Checked;
-                Settings.RoleplayFormatting.RemoveItalic = ck_reduceitalic.Checked;
-                Settings.RoleplayFormatting.RemoveItalicRatio = (float)num_italicratio.Value;
-                Settings.RoleplayFormatting.RemoveItalicMaxWords = (int)num_removeitalicmaxword.Value;
+                Program.Settings.RoleplayFormatting.RemoveAllBoldedText = ck_unbold.Checked;
+                Program.Settings.RoleplayFormatting.RemoveSingleWorldEmphasis = ck_noemphasisword.Checked;
+                Program.Settings.RoleplayFormatting.RemoveAllQuotes = ck_noquotes.Checked;
+                Program.Settings.RoleplayFormatting.FixQuotes = ck_fixquotes.Checked;
+                Program.Settings.RoleplayFormatting.RemoveItalic = ck_reduceitalic.Checked;
+                Program.Settings.RoleplayFormatting.RemoveItalicRatio = (float)num_italicratio.Value;
+                Program.Settings.RoleplayFormatting.RemoveItalicMaxWords = (int)num_removeitalicmaxword.Value;
 
-                Settings.RemoveCutSentence = ck_remlastsentence.Checked;
-                Settings.StopOnFirstParagraph = ck_oneparagraph.Checked;
+                Program.Settings.RemoveCutSentence = ck_remlastsentence.Checked;
+                Program.Settings.StopOnFirstParagraph = ck_oneparagraph.Checked;
 
-                Settings.WebsitePluginUseKeywords = ck_webkeyword.Checked;
-                Settings.WebsitePluginGrammar = ck_webgrammar.Checked;
+                Program.Settings.WebsitePluginUseKeywords = ck_webkeyword.Checked;
+                Program.Settings.WebsitePluginGrammar = ck_webgrammar.Checked;
 
-                var str = JsonConvert.SerializeObject(Settings, Formatting.Indented);
+                var str = JsonConvert.SerializeObject(Program.Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
                 if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
                 {
@@ -1450,13 +1472,13 @@ namespace WaifuAI
 
                 if (LLMSystem.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
                 {
-                    webplug.EnforceCorrectGrammar = Settings.WebsitePluginGrammar;
-                    webplug.KeywordDetection = Settings.WebsitePluginUseKeywords;
+                    webplug.EnforceCorrectGrammar = Program.Settings.WebsitePluginGrammar;
+                    webplug.KeywordDetection = Program.Settings.WebsitePluginUseKeywords;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred while saving settings: {ex.Message}");
+                MessageBox.Show($"An error occurred while saving Program.Settings: {ex.Message}");
             }
         }
 
@@ -1533,36 +1555,36 @@ namespace WaifuAI
 
         private async void num_fontsize_ValueChanged(object sender, EventArgs e)
         {
-            Settings.FontSize = (int)num_fontsize.Value;
+            Program.Settings.FontSize = (int)num_fontsize.Value;
             if (!_isinitloading)
                 await WebChatLoad();
         }
 
         private async void cb_background_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Settings.BackgroundFile = cb_background.SelectedItem?.ToString() ?? "bedroom_cozy.jpg";
+            Program.Settings.BackgroundFile = cb_background.SelectedItem?.ToString() ?? "bedroom_cozy.jpg";
             if (!_isinitloading)
                 await WebChatLoad();
         }
 
         private void ck_fixasterix_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.AsteriskCheck = ck_fixasterix.Checked;
+            Program.Settings.AsteriskCheck = ck_fixasterix.Checked;
         }
 
         private void ck_antislop_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.AntiSlop = ck_antislop.Checked;
+            Program.Settings.AntiSlop = ck_antislop.Checked;
         }
 
         private void num_antislopchance_ValueChanged(object sender, EventArgs e)
         {
-            Settings.AntiSlopRatio = (float)num_antislopchance.Value;
+            Program.Settings.AntiSlopRatio = (float)num_antislopchance.Value;
         }
 
         private void ed_sloplist_TextChanged(object sender, EventArgs e)
         {
-            Settings.AntiSlopList = !string.IsNullOrEmpty(ed_sloplist.Text) ? ed_sloplist.Text.Split(',') : [];
+            Program.Settings.AntiSlopList = !string.IsNullOrEmpty(ed_sloplist.Text) ? ed_sloplist.Text.Split(',') : [];
         }
 
         private void ck_webkeyword_CheckedChanged(object sender, EventArgs e)
@@ -1573,52 +1595,52 @@ namespace WaifuAI
 
         private void ck_unbold_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.RoleplayFormatting.RemoveAllBoldedText = ck_unbold.Checked;
+            Program.Settings.RoleplayFormatting.RemoveAllBoldedText = ck_unbold.Checked;
         }
 
         private void ck_noquotes_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.RoleplayFormatting.RemoveAllQuotes = ck_noquotes.Checked;
+            Program.Settings.RoleplayFormatting.RemoveAllQuotes = ck_noquotes.Checked;
         }
 
         private void ck_fixquotes_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.RoleplayFormatting.FixQuotes = ck_fixquotes.Checked;
+            Program.Settings.RoleplayFormatting.FixQuotes = ck_fixquotes.Checked;
 
         }
 
         private void ck_noemphasisword_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.RoleplayFormatting.RemoveSingleWorldEmphasis = ck_noemphasisword.Checked;
+            Program.Settings.RoleplayFormatting.RemoveSingleWorldEmphasis = ck_noemphasisword.Checked;
         }
 
         private void ck_oneparagraph_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.StopOnFirstParagraph = ck_oneparagraph.Checked;
+            Program.Settings.StopOnFirstParagraph = ck_oneparagraph.Checked;
             LLMSystem.StopGenerationOnFirstParagraph = ck_oneparagraph.Checked;
         }
 
         private void ck_remlastsentence_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.RemoveCutSentence = ck_remlastsentence.Checked;
+            Program.Settings.RemoveCutSentence = ck_remlastsentence.Checked;
         }
 
         private void ck_reduceitalic_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.RoleplayFormatting.RemoveItalic = ck_reduceitalic.Checked;
+            Program.Settings.RoleplayFormatting.RemoveItalic = ck_reduceitalic.Checked;
         }
 
         private void num_italicratio_ValueChanged(object sender, EventArgs e)
         {
-            Settings.RoleplayFormatting.RemoveItalicRatio = (float)num_italicratio.Value;
+            Program.Settings.RoleplayFormatting.RemoveItalicRatio = (float)num_italicratio.Value;
         }
 
         private void cb_pastsession_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isinitloading || cb_pastsession.SelectedIndex == -1)
                 return;
-            Settings.SessionHandling = (SessionHandling)cb_pastsession.SelectedIndex;
-            LLMSystem.SessionHandling = Settings.SessionHandling;
+            Program.Settings.SessionHandling = (SessionHandling)cb_pastsession.SelectedIndex;
+            LLMSystem.SessionHandling = Program.Settings.SessionHandling;
         }
 
         #endregion
@@ -1956,10 +1978,10 @@ namespace WaifuAI
                     overflow-y: auto;
                     overflow-x: hidden;
                     padding: 16px;
-                    font-size: {Settings.FontSize}px;
+                    font-size: {Program.Settings.FontSize}px;
                     width: 100%;
                     box-sizing: border-box;
-                    background-image: url('https://appassets.test/background/{Settings.BackgroundFile}');
+                    background-image: url('https://appassets.test/background/{Program.Settings.BackgroundFile}');
                     background-size: cover; /* Ensures the image covers the entire background */
                     background-attachment: fixed; /* Keeps the background image fixed in place */
                     background-position: center; /* Centers the background image */
@@ -2181,7 +2203,7 @@ namespace WaifuAI
             }
             var html = string.Empty;
             _forcereload = false;
-            var start = LLMSystem.History.CurrentSession.Messages.Count - Settings.MaxMessagesOnScreen;
+            var start = LLMSystem.History.CurrentSession.Messages.Count - Program.Settings.MaxMessagesOnScreen;
             if (start < 0)
                 start = 0;
             for (int i = start; i < LLMSystem.History.CurrentSession.Messages.Count; i++)
@@ -2446,7 +2468,7 @@ namespace WaifuAI
 
         private void num_msgcount_ValueChanged(object sender, EventArgs e)
         {
-            Settings.MaxMessagesOnScreen = (int)num_msgcount.Value;
+            Program.Settings.MaxMessagesOnScreen = (int)num_msgcount.Value;
         }
 
         private void ck_forceNames_CheckedChanged(object sender, EventArgs e)
@@ -2462,13 +2484,13 @@ namespace WaifuAI
 
         private void num_memtokens_ValueChanged(object sender, EventArgs e)
         {
-            Settings.ReservedSessionTokens = (int)num_memtokens.Value;
+            Program.Settings.ReservedSessionTokens = (int)num_memtokens.Value;
             LLMSystem.ReservedSessionTokens = (int)num_memtokens.Value;
         }
 
         private void ck_markdown_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.MarkdownMemoryFormating = ck_markdown.Checked;
+            Program.Settings.MarkdownMemoryFormating = ck_markdown.Checked;
             LLMSystem.MarkdownMemoryFormating = ck_markdown.Checked;
         }
 
@@ -2560,7 +2582,7 @@ namespace WaifuAI
 
         private void ck_ttstoggle_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.UseTTS = ck_ttstoggle.Checked;
+            Program.Settings.UseTTS = ck_ttstoggle.Checked;
         }
 
         private void label59_Click(object sender, EventArgs e)
@@ -2594,7 +2616,7 @@ namespace WaifuAI
 
         private void num_removeitalicmaxword_ValueChanged(object sender, EventArgs e)
         {
-            Settings.RoleplayFormatting.RemoveItalicMaxWords = (int)num_removeitalicmaxword.Value;
+            Program.Settings.RoleplayFormatting.RemoveItalicMaxWords = (int)num_removeitalicmaxword.Value;
         }
 
         private void bt_clearimg_Click(object sender, EventArgs e)
