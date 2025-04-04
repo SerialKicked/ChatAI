@@ -2539,9 +2539,12 @@ namespace WaifuAI
             });
         }
 
-        private async void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)
         {
-            await LLMSystem.Bot.UpdateSelfEditSection();
+            var approx = StringExtensions.ApproxTokenCount(LLMSystem._LastGeneratedPrompt);
+            var real = LLMSystem.GetTokenCount(LLMSystem._LastGeneratedPrompt);
+
+            MessageBox.Show($"Approx: {approx} - Real: {real}");
 
             //// female: "Tina", "super chariot of death", "super chariot in death"
             //// matel: "Lor_ Merciless", "kobo", "chatty"
