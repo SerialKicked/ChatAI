@@ -2563,10 +2563,12 @@ namespace WaifuAI
 
         private void button2_Click(object sender, EventArgs e)
         {
-            var approx = StringExtensions.ApproxTokenCount(LLMSystem._LastGeneratedPrompt);
+            TokenTools.SetEncoding("cl100k_base");
+            var tokenized = TokenTools.CountTokens(LLMSystem._LastGeneratedPrompt, null);// LLMSystem.Instruct);
+            var approx = TokenTools.CountTokensApprox(LLMSystem._LastGeneratedPrompt);
             var real = LLMSystem.GetTokenCount(LLMSystem._LastGeneratedPrompt);
 
-            MessageBox.Show($"Approx: {approx} - Real: {real}");
+            MessageBox.Show($"Tokenized: {tokenized} -Approx: {approx} - Real: {real}");
 
             //// female: "Tina", "super chariot of death", "super chariot in death"
             //// matel: "Lor_ Merciless", "kobo", "chatty"
