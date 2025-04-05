@@ -2631,6 +2631,7 @@
             bt_deleteAllHistory.TabIndex = 4;
             bt_deleteAllHistory.Text = "Delete All History";
             bt_deleteAllHistory.UseVisualStyleBackColor = false;
+            bt_deleteAllHistory.Click += bt_deleteAllHistory_Click;
             // 
             // tabChat
             // 

@@ -1723,7 +1723,7 @@ namespace WaifuAI
             if (_selectedSession == null)
                 return;
 
-            if (LLMSystem.History.Sessions.Count < 1)
+            if (LLMSystem.History.Sessions.Count <= 1)
             {
                 bt_deleteAllHistory_Click(this, EventArgs.Empty);
                 return;

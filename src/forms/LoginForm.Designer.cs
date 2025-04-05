@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
             groupBox1 = new GroupBox();
             edKey = new TextBox();
             label3 = new Label();
@@ -159,14 +160,14 @@
             Controls.Add(btCancel);
             Controls.Add(btCheck);
             Controls.Add(groupBox1);
-            FormBorderStyle = FormBorderStyle.FixedDialog;
+            FormBorderStyle = FormBorderStyle.Fixed3D;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "LoginForm";
-            ShowIcon = false;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Connect...";
+            Text = "w(AI)fu.NET: Connect...";
             Shown += LoginForm_Shown;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
