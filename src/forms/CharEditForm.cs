@@ -193,11 +193,6 @@ namespace WaifuAI.src.forms
                 await SelectedCharacter.UpdateSelfEditSection();
                 ed_selfedit.Text = SelectedCharacter.SelfEditField.ToWinFormat();
             }
-            if (ck_selfbio.Checked)
-            {
-                await SelectedCharacter.UpdatePersonaAttributes();
-                ed_sysprompt.Text = SelectedCharacter.SystemPrompt.ToWinFormat();
-            }
         }
 
         private async void button1_Click(object sender, EventArgs e)
