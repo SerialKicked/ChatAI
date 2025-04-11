@@ -34,7 +34,7 @@ namespace WaifuAI.src.forms
         private async void btCheck_Click(object sender, EventArgs e)
         {
             this.Enabled = false;
-            LLMSystem.Setup(edUrl.Text, (BackendAPI)cbAPI.SelectedIndex);
+            LLMSystem.Setup(edUrl.Text, (BackendAPI)cbAPI.SelectedIndex, !string.IsNullOrEmpty(edKey.Text) ? edKey.Text : null);
             var res = await LLMSystem.CheckBackend();
             if (res)
             {
@@ -50,12 +50,14 @@ namespace WaifuAI.src.forms
         private async void btConnect_Click(object sender, EventArgs e)
         {
             this.Enabled = false;
-            LLMSystem.Setup(edUrl.Text, (BackendAPI)cbAPI.SelectedIndex);
+            LLMSystem.Setup(edUrl.Text, (BackendAPI)cbAPI.SelectedIndex, !string.IsNullOrEmpty(edKey.Text) ? edKey.Text : null);
             var res = await LLMSystem.CheckBackend();
             if (res)
             {
                 Program.Settings.BaseURL = edUrl.Text;
                 Program.Settings.API = (BackendAPI)cbAPI.SelectedIndex;
+                if (!string.IsNullOrEmpty(edKey.Text))
+                    Program.Settings.APIKey = edKey.Text;
                 await LLMSystem.Connect();
                 this.Enabled = true;
                 Close();
