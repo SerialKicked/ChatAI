@@ -361,10 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/data/chars/*.json
 /data/chatlogs/*.json
 /data/worlds/*.json
-/data/img/*.png
-/data/img/*.jpg
 /data/models/*.gguf
 /data/websites/*.*
