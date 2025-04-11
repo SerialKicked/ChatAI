@@ -2541,11 +2541,6 @@ namespace WaifuAI
             }
         }
 
-        private void label9_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void ck_wiembed_CheckedChanged(object sender, EventArgs e)
         {
             SelectedWorldEditor.DoEmbeds = ck_wiembed.Checked;
@@ -2563,23 +2558,18 @@ namespace WaifuAI
 
         private void button2_Click(object sender, EventArgs e)
         {
-            TokenTools.SetEncoding("cl100k_base");
-            var tokenized = TokenTools.CountTokens(LLMSystem._LastGeneratedPrompt, null);// LLMSystem.Instruct);
-            var approx = TokenTools.CountTokensApprox(LLMSystem._LastGeneratedPrompt);
-            var real = LLMSystem.GetTokenCount(LLMSystem._LastGeneratedPrompt);
 
-            MessageBox.Show($"Tokenized: {tokenized} -Approx: {approx} - Real: {real}");
+            // female: "Tina", "super chariot of death", "super chariot in death"
+            // matel: "Lor_ Merciless", "kobo", "chatty"
+        //    var ttsinput = new AIToolkit.API.TextToSpeechInput()
+        //    {
+        //        Input = ed_input.Text,
+        //        Voice = "super chariot in death",
+        //    };
 
-            //// female: "Tina", "super chariot of death", "super chariot in death"
-            //// matel: "Lor_ Merciless", "kobo", "chatty"
-            //var ttsinput = new AIToolkit.API.TextToSpeechInput()
-            //{
-            //    Input = ed_input.Text,
-            //    Voice = "super chariot in death",
-            //};
-
-            //var audioData = await LLMSystem.GenerateTTS(ttsinput.Input, ttsinput.Voice);
-            //PlayAudio(audioData);
+        //    var audioData = await LLMSystem.GenerateTTS(ttsinput.Input, ttsinput.Voice);
+        //    PlayAudio(audioData);
+        //
         }
 
         private void ck_ttstoggle_CheckedChanged(object sender, EventArgs e)

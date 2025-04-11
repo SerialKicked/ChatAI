@@ -3095,8 +3095,7 @@
             label9.Size = new Size(122, 15);
             label9.TabIndex = 16;
             label9.Text = "Temperature Override";
-            label9.Click += label9_Click;
-            // 
+             // 
             // num_temperature
             // 
             num_temperature.DecimalPlaces = 2;
