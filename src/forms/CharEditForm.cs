@@ -17,7 +17,7 @@ namespace WaifuAI.src.forms
 {
     public partial class CharEditForm : Form
     {
-        private Character SelectedCharacter = new Character();
+        private Character SelectedCharacter = new();
 
         public CharEditForm()
         {

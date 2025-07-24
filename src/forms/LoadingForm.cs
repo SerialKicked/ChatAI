@@ -48,20 +48,9 @@ namespace WaifuAI.src.forms
             if (Owner != null)
             {
                 this.StartPosition = FormStartPosition.Manual;
-
-                // Get the owner's center point
-                Point ownerCenter = new Point(
-                    Owner.Left + (Owner.Width / 2),
-                    Owner.Top + (Owner.Height / 2)
-                );
-
-                // Calculate where to place this form
-                this.Location = new Point(
-                    ownerCenter.X - (this.Width / 2),
-                    ownerCenter.Y - (this.Height / 2)
-                );
-
-                // Ensure the form is fully visible on screen
+                // Get the owner's center point and where to put this
+                Point ownerCenter = new(Owner.Left + (Owner.Width / 2),Owner.Top + (Owner.Height / 2));
+                this.Location = new(ownerCenter.X - (this.Width / 2), ownerCenter.Y - (this.Height / 2));
                 Rectangle screenBounds = Screen.FromControl(Owner).Bounds;
                 if (this.Left < screenBounds.Left)
                     this.Left = screenBounds.Left + 10;

@@ -2149,7 +2149,7 @@ namespace WaifuAI
                 newMessage.Contains(LLMSystem.Instruct.ThinkingStart))
             {
                 // remove prefix from message
-                var worktext = newMessage.Substring(ChatRender.GetMessagePrefix(AuthorRole.Assistant).Length);
+                var worktext = newMessage[ChatRender.GetMessagePrefix(AuthorRole.Assistant).Length..];
                 if (!worktext.Contains(LLMSystem.Instruct.ThinkingEnd))
                 {
                     worktext = worktext.Replace(LLMSystem.Instruct.ThinkingStart, string.Empty);
