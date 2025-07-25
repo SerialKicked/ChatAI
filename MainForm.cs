@@ -316,7 +316,6 @@ namespace WaifuAI
                         }
 
                     }
-
                     var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
                     var stringfix = _currentgeneration.FixRoleplayString(Program.Settings.RoleplayFormatting, true);
                     await WebEditLastMessage(MsgPrefix + stringfix);
@@ -1121,6 +1120,8 @@ namespace WaifuAI
             grp_model.Text = LLMSystem.CurrentModel;
             ck_ttstoggle.Enabled = LLMSystem.SupportsTTS;
             ck_onlinerag.Enabled = LLMSystem.SupportsWebSearch;
+            ck_disablethink.Checked = LLMSystem.DisableThinkingPrompt;
+            ck_ragtothink.Checked = LLMSystem.PutRAGInThinkingPrompt;
             if (!LLMSystem.SupportsTTS)
             {
                 ck_ttstoggle.Checked = false;
@@ -2561,15 +2562,15 @@ namespace WaifuAI
 
             // female: "Tina", "super chariot of death", "super chariot in death"
             // matel: "Lor_ Merciless", "kobo", "chatty"
-        //    var ttsinput = new AIToolkit.API.TextToSpeechInput()
-        //    {
-        //        Input = ed_input.Text,
-        //        Voice = "super chariot in death",
-        //    };
+            //    var ttsinput = new AIToolkit.API.TextToSpeechInput()
+            //    {
+            //        Input = ed_input.Text,
+            //        Voice = "super chariot in death",
+            //    };
 
-        //    var audioData = await LLMSystem.GenerateTTS(ttsinput.Input, ttsinput.Voice);
-        //    PlayAudio(audioData);
-        //
+            //    var audioData = await LLMSystem.GenerateTTS(ttsinput.Input, ttsinput.Voice);
+            //    PlayAudio(audioData);
+            //
         }
 
         private void ck_ttstoggle_CheckedChanged(object sender, EventArgs e)
@@ -2615,6 +2616,16 @@ namespace WaifuAI
         {
             LLMSystem.VLM_ClearImages();
             pictEmbed.Image = null;
+        }
+
+        private void ck_disablethink_CheckedChanged(object sender, EventArgs e)
+        {
+            LLMSystem.DisableThinkingPrompt = ck_disablethink.Checked;
+        }
+
+        private void ck_ragtothink_CheckedChanged(object sender, EventArgs e)
+        {
+            LLMSystem.PutRAGInThinkingPrompt = ck_ragtothink.Checked;
         }
     }
 }
