@@ -542,7 +542,7 @@ namespace WaifuAI
                 Render_special = ck_renderspecial.Checked,
                 Trim_stop = ck_trimstop.Checked,
                 Sampler_order = [6, 0, 1, 3, 4, 2, 5],
-                Dry_sequence_breakers = ["\n", ":", "\"", "*"],
+                Dry_sequence_breakers = ["\n", ":", "\"", "*", "<|im_end|>", "<|im_start|>"],
                 Max_context_length = 8192,
                 Max_length = 512,
                 Prompt = "",

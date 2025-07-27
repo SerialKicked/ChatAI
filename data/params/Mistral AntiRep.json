@@ -35,7 +35,7 @@
   "banned_tokens": [],
   "dry_multiplier": 0.8,
   "dry_base": 1.75,
-  "dry_allowed_length": 2048,
+  "dry_allowed_length": 4,
   "dry_sequence_breakers": [
     "\n",
     ":",

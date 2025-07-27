@@ -1,7 +1,7 @@
 {
   "Description": "Default sampling settings. This should work with most models out of the box. Might be repetitive.",
   "UniqueName": "Default",
-  "prompt":  "",
+  "prompt": "",
   "rep_pen": 1.05,
   "rep_pen_range": 2048,
   "sampler_order": [
@@ -35,12 +35,14 @@
   "banned_tokens": [],
   "dry_multiplier": 0,
   "dry_base": 1.75,
-  "dry_allowed_length": 0,
+  "dry_allowed_length": 4,
   "dry_sequence_breakers": [
     "\n",
     ":",
     "\"",
-    "*"
+    "*",
+    "<|im_start|>",
+    "<|im_end|>"
   ],
   "xtc_threshold": 0.1,
   "xtc_probability": 0.33

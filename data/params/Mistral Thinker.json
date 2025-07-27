@@ -39,12 +39,14 @@
   "banned_tokens": [],
   "dry_multiplier": 0.0,
   "dry_base": 1.75,
-  "dry_allowed_length": 0,
+  "dry_allowed_length": 4,
   "dry_sequence_breakers": [
     "\n",
     ":",
     "\"",
-    "*"
+    "*",
+    "<|im_start|>",
+    "<|im_end|>"
   ],
   "xtc_threshold": 0.15,
   "xtc_probability": 0.0
