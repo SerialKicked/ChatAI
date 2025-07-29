@@ -226,6 +226,7 @@
             label58 = new Label();
             ed_hist_kw2 = new TextBox();
             groupBox12 = new GroupBox();
+            ck_hist_isrp = new CheckBox();
             bt_historyupdate = new Button();
             lbl_sessiondata = new Label();
             ed_sessioninfo = new TextBox();
@@ -248,6 +249,7 @@
             ed_input = new TextBox();
             panel1 = new Panel();
             groupBox23 = new GroupBox();
+            ck_ragtothink = new CheckBox();
             ck_disablethink = new CheckBox();
             bt_clearimg = new Button();
             pictEmbed = new PictureBox();
@@ -285,7 +287,6 @@
             label8 = new Label();
             bt_connect = new Button();
             tabMain = new TabControl();
-            ck_ragtothink = new CheckBox();
             statusbar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
             tabConsole.SuspendLayout();
@@ -2485,6 +2486,7 @@
             // groupBox12
             // 
             groupBox12.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox12.Controls.Add(ck_hist_isrp);
             groupBox12.Controls.Add(bt_historyupdate);
             groupBox12.Controls.Add(lbl_sessiondata);
             groupBox12.Controls.Add(ed_sessioninfo);
@@ -2498,6 +2500,18 @@
             groupBox12.TabIndex = 0;
             groupBox12.TabStop = false;
             groupBox12.Text = "Session Information";
+            // 
+            // ck_hist_isrp
+            // 
+            ck_hist_isrp.AutoSize = true;
+            ck_hist_isrp.Font = new Font("Segoe UI", 9F);
+            ck_hist_isrp.Location = new Point(229, 14);
+            ck_hist_isrp.Name = "ck_hist_isrp";
+            ck_hist_isrp.Size = new Size(99, 19);
+            ck_hist_isrp.TabIndex = 20;
+            ck_hist_isrp.Text = "Roleplay Only";
+            ck_hist_isrp.UseVisualStyleBackColor = true;
+            ck_hist_isrp.CheckedChanged += UpdateHistoryEntryEvent;
             // 
             // bt_historyupdate
             // 
@@ -2581,7 +2595,7 @@
             listSession.FullRowSelect = true;
             listSession.Location = new Point(0, 0);
             listSession.Name = "listSession";
-            listSession.Size = new Size(376, 830);
+            listSession.Size = new Size(376, 821);
             listSession.TabIndex = 2;
             listSession.UseCompatibleStateImageBehavior = false;
             listSession.View = View.Details;
@@ -2602,9 +2616,9 @@
             panel5.Controls.Add(btEmbedAll);
             panel5.Controls.Add(bt_deleteAllHistory);
             panel5.Dock = DockStyle.Bottom;
-            panel5.Location = new Point(0, 830);
+            panel5.Location = new Point(0, 821);
             panel5.Name = "panel5";
-            panel5.Size = new Size(376, 57);
+            panel5.Size = new Size(376, 66);
             panel5.TabIndex = 1;
             // 
             // btEmbedAll
@@ -2626,7 +2640,7 @@
             bt_deleteAllHistory.BackColor = SystemColors.Control;
             bt_deleteAllHistory.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_deleteAllHistory.ForeColor = Color.DarkRed;
-            bt_deleteAllHistory.Location = new Point(3, 31);
+            bt_deleteAllHistory.Location = new Point(3, 35);
             bt_deleteAllHistory.Name = "bt_deleteAllHistory";
             bt_deleteAllHistory.Size = new Size(367, 23);
             bt_deleteAllHistory.TabIndex = 4;
@@ -2768,6 +2782,18 @@
             groupBox23.TabIndex = 26;
             groupBox23.TabStop = false;
             groupBox23.Text = "Quick Settings";
+            // 
+            // ck_ragtothink
+            // 
+            ck_ragtothink.AutoSize = true;
+            ck_ragtothink.Font = new Font("Segoe UI", 9F);
+            ck_ragtothink.Location = new Point(6, 220);
+            ck_ragtothink.Name = "ck_ragtothink";
+            ck_ragtothink.Size = new Size(161, 19);
+            ck_ragtothink.TabIndex = 36;
+            ck_ragtothink.Text = "Put context in think block";
+            ck_ragtothink.UseVisualStyleBackColor = true;
+            ck_ragtothink.CheckedChanged += ck_ragtothink_CheckedChanged;
             // 
             // ck_disablethink
             // 
@@ -3215,18 +3241,6 @@
             tabMain.Size = new Size(1004, 918);
             tabMain.TabIndex = 1;
             // 
-            // ck_ragtothink
-            // 
-            ck_ragtothink.AutoSize = true;
-            ck_ragtothink.Font = new Font("Segoe UI", 9F);
-            ck_ragtothink.Location = new Point(6, 220);
-            ck_ragtothink.Name = "ck_ragtothink";
-            ck_ragtothink.Size = new Size(161, 19);
-            ck_ragtothink.TabIndex = 36;
-            ck_ragtothink.Text = "Put context in think block";
-            ck_ragtothink.UseVisualStyleBackColor = true;
-            ck_ragtothink.CheckedChanged += ck_ragtothink_CheckedChanged;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -3612,5 +3626,6 @@
         private CheckBox ck_disablethink;
         private CheckBox ck_nothink;
         private CheckBox ck_ragtothink;
+        private CheckBox ck_hist_isrp;
     }
 }

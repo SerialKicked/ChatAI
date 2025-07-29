@@ -1663,10 +1663,14 @@ namespace WaifuAI
             ToolStripMenuItem deleteSessionItem = new("Delete Selected Session");
             deleteSessionItem.Click += async (sender, e) => await DeleteSelectedSession();
 
+            ToolStripMenuItem CheckRPItem = new("Recheck if RP");
+            CheckRPItem.Click += async (sender, e) => await RefreshRPInfo();
+
             // Add items to menu
             contextMenu.Items.Add(switchSessionItem);
             contextMenu.Items.Add(insertSessionItem);
             contextMenu.Items.Add(deleteSessionItem);
+            contextMenu.Items.Add(CheckRPItem);
 
             // Attach opening event to control items' visibility based on selection
             contextMenu.Opening += (sender, e) =>
@@ -1675,6 +1679,7 @@ namespace WaifuAI
                 switchSessionItem.Enabled = hasSelection;
                 insertSessionItem.Enabled = hasSelection;
                 deleteSessionItem.Enabled = hasSelection;
+                CheckRPItem.Enabled = hasSelection;
 
                 // Cancel opening if no items selected
                 if (!hasSelection)
@@ -1718,6 +1723,16 @@ namespace WaifuAI
             await WebChatLoad();
             LoadChatHistoryTab();
         }
+
+
+        private async Task RefreshRPInfo()
+        {
+            if (_selectedSession == null)
+                return;
+            _selectedSession.IsRP = await _selectedSession.IsRoleplay();
+            DisplaySessionDetails(_selectedSession);
+        }
+
 
         private async Task DeleteSelectedSession()
         {
@@ -1794,6 +1809,7 @@ namespace WaifuAI
             ck_hist_casesensitive.Checked = session.CaseSensitive;
             ck_hist_kw.Checked = session.Enabled;
             ck_hist_sticky.Checked = session.Sticky;
+            ck_hist_isrp.Checked = session.IsRP;
             _isinitloading = sv;
 
             if (web_sessioncontent.CoreWebView2 == null)
@@ -1849,6 +1865,7 @@ namespace WaifuAI
             _selectedSession.CaseSensitive = ck_hist_casesensitive.Checked;
             _selectedSession.Enabled = ck_hist_kw.Checked;
             _selectedSession.Sticky = ck_hist_sticky.Checked;
+            _selectedSession.IsRP = ck_hist_isrp.Checked;
         }
 
         private async void bt_sessionrefresh_Click(object sender, EventArgs e)
