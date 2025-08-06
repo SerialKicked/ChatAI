@@ -3624,7 +3624,6 @@
         private ColumnHeader columnHeader2;
         private Button btEmbedAll;
         private CheckBox ck_disablethink;
-        private CheckBox ck_nothink;
         private CheckBox ck_ragtothink;
         private CheckBox ck_hist_isrp;
     }
