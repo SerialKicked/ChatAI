@@ -162,6 +162,12 @@ namespace WaifuAI.Plugins
         /// <returns></returns>
         private async Task QueryLLM(string inputText)
         {
+            var savedKV = false;
+            if (LLMSystem.Client!.SupportsStateSave)
+            {
+                savedKV = await LLMSystem.Client.SaveKVState(0);
+                await Task.Delay(100);
+            }
             var fullprompt = BuildCheckPrompt(inputText);
             var fullresponse = new StringBuilder();
             var llmparams = LLMSystem.Sampler.GetCopy();
@@ -169,6 +175,15 @@ namespace WaifuAI.Plugins
             llmparams.Prompt = fullprompt;
             var finalstr = await LLMSystem.SimpleQuery(llmparams);
             LLMSystem.Logger?.LogInformation("LocationPlugin Result: {output}", finalstr);
+            if (LLMSystem.Client!.SupportsStateSave && savedKV)
+            {
+                var doneKV = await LLMSystem.Client.LoadKVState(0);
+                if (doneKV)
+                {
+                    await LLMSystem.Client.ClearKVStates();
+                }
+                await Task.Delay(100);
+            }
             if (string.IsNullOrEmpty(finalstr))
                 return;
             if (finalstr.Equals("no", StringComparison.InvariantCultureIgnoreCase))
