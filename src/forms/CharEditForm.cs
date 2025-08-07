@@ -56,7 +56,7 @@ namespace WaifuAI.src.forms
                 cb_icon.Items.Clear();
                 // load all the png and jpg files in the data/img folder
                 var files = Directory.GetFiles("data/img", "*.png");
-                files = files.Concat(Directory.GetFiles("data/img", "*.jpg")).ToArray();
+                files = [.. files, .. Directory.GetFiles("data/img", "*.jpg")];
                 foreach (var item in files)
                 {
                     cb_icon.Items.Add(Path.GetFileName(item));
@@ -71,11 +71,11 @@ namespace WaifuAI.src.forms
             mychar.Name = ed_name.Text;
             mychar.Bio = ed_bio.Text.ToLinuxFormat();
             mychar.Scenario = ed_scenario.Text.ToLinuxFormat();
-            mychar.FirstMessage = ed_firstmessage.Lines.ToList();
+            mychar.FirstMessage = [.. ed_firstmessage.Lines];
             mychar.IsUser = ck_isuser.Checked;
             mychar.SystemPrompt = ed_sysprompt.Text.ToLinuxFormat();
             mychar.TTSVoice = ed_outetts.Text;
-            mychar.ExampleDialogs = ed_writingstyle.Lines.ToList();
+            mychar.ExampleDialogs = [.. ed_writingstyle.Lines];
             mychar.CanInitiateChat = ck_caninitchat.Checked;
             mychar.SenseOfTime = ck_senseoftime.Checked;
             mychar.SessionMemorySystem = ck_sessionmemory.Checked;
@@ -98,12 +98,12 @@ namespace WaifuAI.src.forms
             ed_bio.Text = selectedCharacter.Bio.ToWinFormat();
             ed_scenario.Text = selectedCharacter.Scenario.ToWinFormat();
             ed_firstmessage.Clear();
-            ed_firstmessage.Lines = selectedCharacter.FirstMessage.ToArray();
+            ed_firstmessage.Lines = [.. selectedCharacter.FirstMessage];
             ck_isuser.Checked = selectedCharacter.IsUser;
             ed_sysprompt.Text = selectedCharacter.SystemPrompt.ToWinFormat();
             ed_outetts.Text = selectedCharacter.TTSVoice;
             ed_writingstyle.Clear();
-            ed_writingstyle.Lines = selectedCharacter.ExampleDialogs.ToArray();
+            ed_writingstyle.Lines = [.. selectedCharacter.ExampleDialogs];
             ck_caninitchat.Checked = selectedCharacter.CanInitiateChat;
             ck_senseoftime.Checked = selectedCharacter.SenseOfTime;
             ck_sessionmemory.Checked = selectedCharacter.SessionMemorySystem;
