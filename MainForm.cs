@@ -1730,10 +1730,9 @@ namespace WaifuAI
         {
             if (_selectedSession == null)
                 return;
-            _selectedSession.IsRP = await _selectedSession.IsRoleplay();
+            _selectedSession.MetaData.IsRoleplaySession = await _selectedSession.IsRoleplay();
             DisplaySessionDetails(_selectedSession);
         }
-
 
         private async Task DeleteSelectedSession()
         {
@@ -1810,7 +1809,7 @@ namespace WaifuAI
             ck_hist_casesensitive.Checked = session.CaseSensitive;
             ck_hist_kw.Checked = session.Enabled;
             ck_hist_sticky.Checked = session.Sticky;
-            ck_hist_isrp.Checked = session.IsRP;
+            ck_hist_isrp.Checked = session.MetaData.IsRoleplaySession;
             _isinitloading = sv;
 
             if (web_sessioncontent.CoreWebView2 == null)
@@ -1823,22 +1822,19 @@ namespace WaifuAI
             res.AppendLinuxLine($"# {session.Title}").AppendLinuxLine();
             res.AppendLinuxLine("## Summary:").AppendLinuxLine().AppendLinuxLine(session.Summary).AppendLinuxLine();
             res.AppendLinuxLine("## Keywords: ");
-            foreach (var item in session.Associations)
+            foreach (var item in session.MetaData.Keywords)
             {
                 res.Append(item + ", ");
             }
             res.AppendLinuxLine();
             res.AppendLinuxLine("## Goals: ");
-            res.AppendLinuxLine(session.Projects).AppendLinuxLine();
-            res.AppendLinuxLine("## Sentiments: ");
-            foreach (var item in session.Sentiments)
+            foreach (var item in session.MetaData.FutureGoals)
             {
-                res.Append(item + ", ");
+                res.AppendLinuxLine("- " + item);
             }
+            res.AppendLinuxLine("## Relevance: " + session.MetaData.Relevance.ToString());
             res.AppendLinuxLine().AppendLinuxLine();
             res.AppendLinuxLine("## Dialogs:").AppendLinuxLine().AppendLinuxLine(dialogs);
-
-            //var inf = "# " + session.Title + LLMSystem.NewLine + LLMSystem.NewLine + "## Summary:" + LLMSystem.NewLine + LLMSystem.NewLine + session.Summary + LLMSystem.NewLine + LLMSystem.NewLine + "## Dialogs:" + LLMSystem.NewLine + LLMSystem.NewLine + dialogs;
             web_sessioncontent.NavigateToString(Markdown.ToHtml(res.ToString(), CustomMarkDownPipeline));
         }
 
@@ -1866,7 +1862,7 @@ namespace WaifuAI
             _selectedSession.CaseSensitive = ck_hist_casesensitive.Checked;
             _selectedSession.Enabled = ck_hist_kw.Checked;
             _selectedSession.Sticky = ck_hist_sticky.Checked;
-            _selectedSession.IsRP = ck_hist_isrp.Checked;
+            _selectedSession.MetaData.IsRoleplaySession = ck_hist_isrp.Checked;
         }
 
         private async void bt_sessionrefresh_Click(object sender, EventArgs e)
@@ -1919,14 +1915,14 @@ namespace WaifuAI
         {
             if (_isinitloading || _selectedSession == null)
                 return;
-            _selectedSession.Title = ed_sessiontitle.Text;
+            _selectedSession.MetaData.Title = ed_sessiontitle.Text;
         }
 
         private void ed_sessioninfo_TextChanged(object sender, EventArgs e)
         {
             if (_isinitloading || _selectedSession == null)
                 return;
-            _selectedSession.Summary = ed_sessioninfo.Text.ToLinuxFormat();
+            _selectedSession.MetaData.Summary = ed_sessioninfo.Text.ToLinuxFormat();
 
         }
 
@@ -2577,6 +2573,34 @@ namespace WaifuAI
 
         private void button2_Click(object sender, EventArgs e)
         {
+            //foreach (var persona in DataFiles.Characters)
+            //{
+            //    var chatbot = persona.Value;
+            //    chatbot.LoadChatHistory();
+            //    foreach (var session in chatbot.History.Sessions)
+            //    {
+            //        if (string.IsNullOrEmpty(session.MetaData.Title) && !string.IsNullOrEmpty(session.Title))
+            //        {
+            //            session.MetaData.Title = session.Title;
+            //            session.MetaData.Summary = session.Summary;
+            //            session.MetaData.Keywords = session.MetaData.Keywords.ToList();
+            //            session.MetaData.IsRoleplaySession = session.IsRP;
+            //            session.MetaData.Relevance = session.Relevance;
+            //            session.MetaData.FutureGoals = [];
+            //            // turn session.Projects string into a list of strings using new lines as separators
+            //            if (!string.IsNullOrEmpty(session.Projects))
+            //            {
+            //                session.MetaData.FutureGoals = session.Projects.Split(new[] { LLMSystem.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            //                // remove any leading "-" or whitespace from each goal
+            //                for (int i = 0; i < session.MetaData.FutureGoals.Count; i++)
+            //                {
+            //                    session.MetaData.FutureGoals[i] = session.MetaData.FutureGoals[i].TrimStart('-', ' ', '\t');
+            //                }
+            //            }
+            //        }
+            //    }
+            //    chatbot.SaveChatHistory(true);
+            //}
 
             // female: "Tina", "super chariot of death", "super chariot in death"
             // matel: "Lor_ Merciless", "kobo", "chatty"
