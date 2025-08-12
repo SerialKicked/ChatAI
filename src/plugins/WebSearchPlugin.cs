@@ -1,4 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AIToolkit;
+using AIToolkit.API;
+using AIToolkit.Files;
+using AIToolkit.LLM;
+using AngleSharp.Dom;
+using Microsoft.Extensions.Logging;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -7,11 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using WaifuAI.Files;
-using AIToolkit.Files;
-using AIToolkit.LLM;
-using AIToolkit;
-using AngleSharp.Dom;
-using AIToolkit.API;
+using static AIToolkit.SearchAPI.WebSearchAPI;
 
 namespace WaifuAI.Plugins
 
@@ -26,7 +27,7 @@ namespace WaifuAI.Plugins
         public bool KeywordDetection { get; set; } = false;
 
         private bool responseAppendNeeded = false;
-        private WebQueryFullResponse? lastresponse = null;
+        private List<EnrichedSearchResult>? lastresponse = null;
 
         #region *** Interface Implementation ***
 
@@ -53,7 +54,7 @@ namespace WaifuAI.Plugins
                 formatedresponsed.AppendLinuxLine("**Sources:**");
                 foreach (var item in lastresponse)
                 {
-                    formatedresponsed.AppendLinuxLine($"- [{item.title}]({item.url})");
+                    formatedresponsed.AppendLinuxLine($"- [{item.Title}]({item.Url})");
                 }
                 response = formatedresponsed.ToString();
                 return true;
@@ -93,17 +94,14 @@ namespace WaifuAI.Plugins
                 return new PluginResponse { IsHandled = false, Response = null };
             responseAppendNeeded = true;
 
+            Program.BigForm!.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am processing web info about '{response}'...*");
+            var mergedResponse = await MergeResults(response, lastresponse);
+            if (string.IsNullOrWhiteSpace(mergedResponse))
+                return new PluginResponse { IsHandled = false, Response = null };
+
             var formatedresponsed = new StringBuilder();
-            formatedresponsed.AppendLinuxLine("You can search the web, and here are possibly relevant information found on the internet that you can use to improve your response:");
-            foreach (var item in lastresponse)
-            {
-                formatedresponsed.AppendLinuxLine("- " + item.title + " ["+ item.url + "]");
-                if (!string.IsNullOrEmpty(item.desc))
-                    formatedresponsed.AppendLinuxLine(item.desc.RemoveNewLines().CleanupAndTrim());
-                if (!string.IsNullOrEmpty(item.content))
-                    formatedresponsed.AppendLinuxLine(item.content.RemoveNewLines().CleanupAndTrim());
-                formatedresponsed.AppendLinuxLine();
-            }
+            formatedresponsed.AppendLinuxLine("You looked up the information on the web and found the following information that you can use to improve your response:").AppendLine();
+            formatedresponsed.AppendLinuxLine(mergedResponse.CleanupAndTrim());
 
             var output = new PluginResponse
             {
@@ -116,6 +114,42 @@ namespace WaifuAI.Plugins
         }
 
         #endregion
+
+
+        private static string BuildMergedPrompt(string userinput, List<EnrichedSearchResult> webresults)
+        {
+            var prompt = new StringBuilder();
+            prompt.AppendLinuxLine("Your goal is analyze and merge information from the follow documents regarding the subject of '" +userinput+"'.");
+            prompt.AppendLinuxLine();
+            var cnt = 0;
+            foreach (var item in webresults)
+            {
+                prompt.AppendLinuxLine($"# {item.Title}");
+                prompt.AppendLinuxLine($"{item.Description}").AppendLinuxLine();
+                if (item.ContentExtracted && LLMSystem.GetTokenCount(item.FullContent) <= 3000)
+                    cnt++;
+            }
+            prompt.AppendLinuxLine();
+            if (cnt > 0)
+            {
+                prompt.AppendLinuxLine($"You can also use the following content to improve your response.").AppendLinuxLine();
+                for (var i = 0; i < webresults.Count; i++)
+                {
+                    var item = webresults[i];
+                    if (item.ContentExtracted && LLMSystem.GetTokenCount(item.FullContent) <= 3000)
+                    {
+                        prompt.AppendLinuxLine($"# {item.Title} (Full Content)");
+                        prompt.AppendLinuxLine($"{item.FullContent.CleanupAndTrim()}").AppendLinuxLine().AppendLinuxLine();
+                    }
+                }
+            }
+            var sysprompt = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, LLMSystem.User, LLMSystem.Bot, prompt.ToString());
+            var msg = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.User, LLMSystem.User, LLMSystem.Bot, $"Merge the information available in the system prompt regarding '{userinput}' to offer a detailed explanation on about this topic.");
+            LLMSystem.NamesInPromptOverride = false;
+            msg += LLMSystem.Instruct.GetResponseStart(LLMSystem.Bot);
+            LLMSystem.NamesInPromptOverride = null;
+            return sysprompt + msg;
+        }
 
         private static string BuildCheckPrompt(string userinput)
         {
@@ -182,6 +216,26 @@ namespace WaifuAI.Plugins
             if (string.IsNullOrEmpty(response) || 
                 (response.StartsWith("no", StringComparison.InvariantCultureIgnoreCase) && response.Length<5))
                 return string.Empty;
+            return response;
+        }
+
+        private static async Task<string> MergeResults(string topic, List<EnrichedSearchResult> webresults)
+        {
+            LLMSystem.NamesInPromptOverride = false;
+            var fullprompt = BuildMergedPrompt(topic, webresults);
+            var llmparams = LLMSystem.Sampler.GetCopy();
+            if (llmparams.Temperature > 0.75)
+                llmparams.Temperature = 0.75;
+            llmparams.Max_context_length = LLMSystem.MaxContextLength;
+            llmparams.Max_length = LLMSystem.MaxReplyLength;
+            llmparams.Prompt = fullprompt;
+            var response = await LLMSystem.SimpleQuery(llmparams);
+            if (!string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingStart))
+            {
+                response = response.RemoveThinkingBlocks(LLMSystem.Instruct.ThinkingStart, LLMSystem.Instruct.ThinkingEnd);
+            }
+            LLMSystem.Logger?.LogInformation("WebSearch Plugin Result: {output}", response);
+            LLMSystem.NamesInPromptOverride = null;
             return response;
         }
     }

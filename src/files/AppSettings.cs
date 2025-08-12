@@ -1,11 +1,12 @@
-﻿using System;
+﻿using AIToolkit;
+using AIToolkit.Files;
+using AIToolkit.LLM;
+using AIToolkit.SearchAPI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AIToolkit;
-using AIToolkit.Files;
-using AIToolkit.LLM;
 
 namespace WaifuAI.Files
 {
@@ -42,10 +43,14 @@ namespace WaifuAI.Files
         public bool StopOnFirstParagraph { get; set; } = false;
         public bool RemoveCutSentence { get; set; } = false;
         public SessionHandling SessionHandling { get; set; } = SessionHandling.FitAll;
-
+        // LLM API
         public BackendAPI API { get; set; } = BackendAPI.KoboldAPI;
         public string BaseURL { get; set; } = "http://localhost:5001";
         public string APIKey { get; set; } = string.Empty;
+        // Search API
+        public string BraveAPIKey { get; set; } = string.Empty;
+        public BackendSearchAPI SearchAPI { get; set; } = BackendSearchAPI.DuckDuckGo;
+        public bool SearchDetailedResults { get; set; } = true;
 
         public StringFix RoleplayFormatting { get; set; } = new StringFix(false, false, false, false, false, 1, 50);
     }

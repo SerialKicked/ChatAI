@@ -1351,6 +1351,9 @@ namespace WaifuAI
             LLMSystem.SessionHandling = Program.Settings.SessionHandling;
             LLMSystem.BackendUrl = Program.Settings.BaseURL;
             LLMSystem.BackendAPI = Program.Settings.API;
+            WebSearchAPI.SearchAPI = Program.Settings.SearchAPI;
+            WebSearchAPI.SearchDetailedResults = Program.Settings.SearchDetailedResults;
+            WebSearchAPI.BraveAPIKey = Program.Settings.BraveAPIKey;
             // set cb_user to the Program.Settings.UserFile value if it's in the list, otherwise set index to 0.
             cb_user.SelectedIndex = cb_user.Items.Contains(Program.Settings.UserFile) ? cb_user.Items.IndexOf(Program.Settings.UserFile) : 0;
             // set cb_infer to the Program.Settings.InferenceFile value if it's in the list, otherwise set index to 0.
