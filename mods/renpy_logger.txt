@@ -1,0 +1,13 @@
+﻿Menu and Dialog Realtime Logging For Ren'Py Games | EsKa - Anarkis Gaming
+
+This script is designed to log menu and dialog events in Ren'Py games in real-time. It captures the current menu, dialogs, and label, highlighting narrator and choice.
+Allows for easy integration into a LLM's workflow.
+
+# Usage:
+
+- Copy renpy_logger.rpy to the "game" subfolder of the Ren'Py game.
+- All menu and dialog events will be logged in the "dialogue_log.txt" file in the game's root directory.
+
+
+
+
