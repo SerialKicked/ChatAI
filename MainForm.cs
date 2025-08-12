@@ -2,6 +2,7 @@ using AIToolkit;
 using AIToolkit.Agent;
 using AIToolkit.Files;
 using AIToolkit.LLM;
+using AIToolkit.SearchAPI;
 using Markdig;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
@@ -2573,34 +2574,7 @@ namespace WaifuAI
 
         private void button2_Click(object sender, EventArgs e)
         {
-            //foreach (var persona in DataFiles.Characters)
-            //{
-            //    var chatbot = persona.Value;
-            //    chatbot.LoadChatHistory();
-            //    foreach (var session in chatbot.History.Sessions)
-            //    {
-            //        if (string.IsNullOrEmpty(session.MetaData.Title) && !string.IsNullOrEmpty(session.Title))
-            //        {
-            //            session.MetaData.Title = session.Title;
-            //            session.MetaData.Summary = session.Summary;
-            //            session.MetaData.Keywords = session.MetaData.Keywords.ToList();
-            //            session.MetaData.IsRoleplaySession = session.IsRP;
-            //            session.MetaData.Relevance = session.Relevance;
-            //            session.MetaData.FutureGoals = [];
-            //            // turn session.Projects string into a list of strings using new lines as separators
-            //            if (!string.IsNullOrEmpty(session.Projects))
-            //            {
-            //                session.MetaData.FutureGoals = session.Projects.Split(new[] { LLMSystem.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            //                // remove any leading "-" or whitespace from each goal
-            //                for (int i = 0; i < session.MetaData.FutureGoals.Count; i++)
-            //                {
-            //                    session.MetaData.FutureGoals[i] = session.MetaData.FutureGoals[i].TrimStart('-', ' ', '\t');
-            //                }
-            //            }
-            //        }
-            //    }
-            //    chatbot.SaveChatHistory(true);
-            //}
+            SearchUsageExample.ExampleUsage();
 
             // female: "Tina", "super chariot of death", "super chariot in death"
             // matel: "Lor_ Merciless", "kobo", "chatty"
