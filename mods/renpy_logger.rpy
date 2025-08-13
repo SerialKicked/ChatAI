@@ -1,16 +1,15 @@
-# logger.rpy
 init python:
     import os
     import time
     import re
 
     # --- CONFIG ---
-    ENABLE_LABEL_LOGGING = True  # <--- toggle this to True if you want label/call logging
+    ENABLE_LABEL_LOGGING = False  # Toggle on/off internal label logging
 
     # --- Setup ---
     log_filename = os.path.join(config.basedir, "dialogue_log.txt")
 
-    # Regex to strip Ren'Py inline text tags (like {fast}, {i}, etc.)
+    # Regex to strip inline tags like {fast}, {i}, {/i}
     tag_pattern = re.compile(r"\{.*?\}")
 
     def clean_text(t):
@@ -18,13 +17,12 @@ init python:
         return re.sub(tag_pattern, "", t).strip() if t else t
 
     def log_line(line_type, who, what):
-        """Write a log line with timestamp and clean text."""
-        ts = time.strftime("[%Y-%m-%d %H:%M:%S]")
+        """Write a timestamped log line."""
         speaker = who if who else "Narrator"
         with open(log_filename, "a", encoding="utf-8") as f:
-            f.write(f"{ts} [{line_type}] {speaker}: {what}\n")
+            f.write(f"[{line_type}] {speaker}: {what}\n")
 
-    # --- SAY hook (no duplicates, strips tags before comparing) ---
+    # --- SAY hook (dedupe + tag clean) ---
     old_say = renpy.exports.say
     last_line = [None, None]  # [who, cleaned_text]
 
@@ -37,22 +35,6 @@ init python:
         return old_say(who, what, interact=interact, **kwargs)
 
     renpy.exports.say = hooked_say
-
-    # --- MENU hook (supports any tuple/list length) ---
-    old_menu = renpy.exports.menu
-
-    def hooked_menu(items, *args, **kwargs):
-        for entry in items:
-            if isinstance(entry, (list, tuple)) and len(entry) >= 1:
-                caption = entry[0]
-            else:
-                caption = str(entry)
-            caption_clean = clean_text(str(caption))
-            if caption_clean:
-                log_line("CHOICE", None, caption_clean)
-        return old_menu(items, *args, **kwargs)
-
-    renpy.exports.menu = hooked_menu
 
     # --- LABEL logging (optional) ---
     if ENABLE_LABEL_LOGGING:
@@ -69,3 +51,29 @@ init python:
 
         renpy.exports.jump = hooked_jump
         renpy.exports.call = hooked_call
+
+    # --- CHOICE overlay finder ---
+    _last_choices = None
+
+    def log_visible_choices_overlay():
+        """
+        Runs every frame; if 'choice' screen is visible, log current choices.
+        Only logs when the active visible list changes to avoid spam.
+        """
+        global _last_choices
+
+        si = renpy.display.screen.get_screen("choice")
+        if si:
+            ctx = getattr(si, "scope", {})
+            if "items" in ctx:
+                # Extract and clean captions from visible items
+                caps = [clean_text(str(i.caption))
+                        for i in ctx["items"]
+                        if clean_text(str(i.caption))]
+                if caps and caps != _last_choices:
+                    for caption in caps:
+                        log_line("CHOICE", None, caption)
+                    _last_choices = caps
+
+    # Register the overlay logger
+    config.overlay_functions.append(log_visible_choices_overlay)

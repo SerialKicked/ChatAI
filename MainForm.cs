@@ -3,6 +3,7 @@ using AIToolkit.Agent;
 using AIToolkit.Files;
 using AIToolkit.LLM;
 using AIToolkit.SearchAPI;
+using AngleSharp.Text;
 using Markdig;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
@@ -13,6 +14,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using WaifuAI.Files;
+using WaifuAI.Game;
 using WaifuAI.Plugins;
 using WaifuAI.src.forms;
 using WaifuAI.Web;
@@ -52,6 +54,7 @@ namespace WaifuAI
         private int _afkmessagecount = 0;
         private EditMessageForm? _editMessageForm;
         private readonly Random RNG = new();
+        private RenPyDialogHandler? _renpyDialogHandler;
 
         public static Character? Bot => LLMSystem.Bot as Character;
         public static Character? User => LLMSystem.User as Character;
@@ -108,7 +111,7 @@ namespace WaifuAI
             var lastusermessage = LLMSystem.History.CurrentSession.Messages.LastOrDefault(m => m.Role == AuthorRole.User);
             if (lastusermessage == null)
                 return;
-            var message = "The last message from {{user}} was posted " + StringExtensions.TimeSpanToHumanString(DateTime.Now - lastusermessage.Date) + " ago. We're {{day}}, the {{date}} at {{time}} now. Would you like to send a message to {{user}} now? Use your best judgement based on the conversation above. In case you don't want to send a message, just respond with No. If you want to send a message, write the message to {{user}} directly while making sure it's contextually relevant. \n\nThis query will repeat every few minutes.";
+            var message = "The last message from {{user}} was posted " + AIToolkit.StringExtensions.TimeSpanToHumanString(DateTime.Now - lastusermessage.Date) + " ago. We're {{day}}, the {{date}} at {{time}} now. Would you like to send a message to {{user}} now? Use your best judgement based on the conversation above. In case you don't want to send a message, just respond with No. If you want to send a message, write the message to {{user}} directly while making sure it's contextually relevant. \n\nThis query will repeat every few minutes.";
             if (_afkmessagecount > 1)
                 message += " You've already sent " + _afkmessagecount + " unanswered messages in a row.";
             else if (_afkmessagecount == 1)
@@ -1017,6 +1020,62 @@ namespace WaifuAI
                     msg.Role = AuthorRole.System;
                     // remove the /sys prefix
                     msg.Message = msg.Message[5..].Trim();
+                    await SendMessageToUI(msg, Bot!.History.CurrentSession.Messages.Count);
+                    // ready a new message for the bot's response
+                    PrepareResponse();
+                    await SendMessageToUI(
+                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), Bot.History.CurrentSession.Messages.Count + 1);
+                    ed_input.Text = string.Empty;
+                    await LLMSystem.SendMessageToBot(msg);
+                }
+                else if (ed_input.Text.StartsWith("/game "))
+                {
+                    // remove the /sys prefix
+                    var msgpath = msg.Message[6..].Trim();
+                    _renpyDialogHandler = new RenPyDialogHandler(msgpath, "Slay The Princess");
+                    var message = new SingleMessage(AuthorRole.System, DateTime.Now, "*Game Loaded: Slay The Princess*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName, false);
+                    await SendMessageToUI(message);
+                    LLMSystem.Bot.History.LogMessage(message);
+                    ed_input.Text = string.Empty;
+                }
+                else if (ed_input.Text.StartsWith("/continue") && _renpyDialogHandler != null)
+                {
+                    var gameinfo = _renpyDialogHandler.Continue();
+
+                    msg.Role = AuthorRole.System;
+                    // remove the /sys prefix
+                    msg.Message = gameinfo.ShowFullScreen();
+                    await SendMessageToUI(msg, Bot!.History.CurrentSession.Messages.Count);
+                    // ready a new message for the bot's response
+                    PrepareResponse();
+                    await SendMessageToUI(
+                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), Bot.History.CurrentSession.Messages.Count + 1);
+                    ed_input.Text = string.Empty;
+                    await LLMSystem.SendMessageToBot(msg);
+                }
+                else if (ed_input.Text.StartsWith("/pick ") && _renpyDialogHandler != null)
+                {
+                    var select = msg.Message[6..].Trim();
+                    var id = int.TryParse(select, out var test) ? test : 0;
+                    var gameinfo = _renpyDialogHandler.MakeChoice(id);
+
+                    msg.Role = AuthorRole.System;
+                    // remove the /sys prefix
+                    msg.Message = gameinfo;
+                    await SendMessageToUI(msg, Bot!.History.CurrentSession.Messages.Count);
+                    // ready a new message for the bot's response
+                    PrepareResponse();
+                    await SendMessageToUI(
+                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), Bot.History.CurrentSession.Messages.Count + 1);
+                    ed_input.Text = string.Empty;
+                    await LLMSystem.SendMessageToBot(msg);
+                }
+                else if (ed_input.Text.StartsWith("/dialogs") && _renpyDialogHandler != null)
+                {
+                    var gameinfo = _renpyDialogHandler.Continue();
+                    msg.Role = AuthorRole.System;
+                    // remove the /sys prefix
+                    msg.Message = gameinfo.ShowDialogs();
                     await SendMessageToUI(msg, Bot!.History.CurrentSession.Messages.Count);
                     // ready a new message for the bot's response
                     PrepareResponse();
