@@ -22,14 +22,17 @@ namespace WaifuAI.Game
         public string ShowFullScreen()
         {
             var str = new StringBuilder();
-            str.AppendLinuxLine(ShowDialogs());
-            str.AppendLinuxLine(ShowMenu());
+            if (Dialogue.Count > 0)
+                str.AppendLinuxLine(ShowDialogs());
+            if (Choices.Count > 0)
+                str.AppendLinuxLine(ShowMenu());
             return str.ToString();
         }
 
         public string ShowDialogs()
         {
             var str = new StringBuilder();
+            str.AppendLinuxLine("**Dialogs:**");
             foreach (var item in Dialogue)
             {
                 str.AppendLinuxLine(item);
@@ -42,7 +45,7 @@ namespace WaifuAI.Game
             str.AppendLinuxLine("**Available Choices:**");
             for (int i = 0; i < Choices.Count; i++)
             {
-                str.AppendLinuxLine($"[{i + 1}] {Choices[i]}");
+                str.AppendLinuxLine($"{i + 1}. {Choices[i]}");
             }
             return str.ToString();
         }
@@ -74,8 +77,8 @@ namespace WaifuAI.Game
 
             // Step 1: move up from EOF to find last contiguous block of [CHOICE] lines
             int i = allLines.Length - 1;
-            if (!allLines[i].StartsWith("[CHOICE]"))
-                return bundle; // No choice block at EOF => incomplete turn/end of game
+            //if (!allLines[i].StartsWith("[CHOICE]"))
+            //    return bundle; // No choice block at EOF => incomplete turn/end of game
 
             // Collect bottom [CHOICE] block
             while (i >= 0 && allLines[i].StartsWith("[CHOICE]"))
@@ -160,9 +163,12 @@ namespace WaifuAI.Game
             text = text.Replace("•", "");
             text = text.Replace("â\u0080¢","").Trim();
 
-            // Strip any double brackets [[ ]]
-            if (text.StartsWith("[[") && text.EndsWith("]]"))
-                text = text[2..^2];
+            // Fix brackets "[[some text]" by removing the first "["
+            if (text.StartsWith("[[") && text.EndsWith("]"))
+            {
+                text = text.Substring(1).Trim();
+            }
+
 
             return text.Trim();
         }

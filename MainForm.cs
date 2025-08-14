@@ -1041,10 +1041,23 @@ namespace WaifuAI
                 else if (ed_input.Text.StartsWith("/continue") && _renpyDialogHandler != null)
                 {
                     var gameinfo = _renpyDialogHandler.Continue();
+                    // check if there's something after "/continue" in ed_input.Text and if there is, store in variable
+                    var extra = string.Empty;
+                    if (ed_input.Text.Length > 9)
+                    {
+                        extra = ed_input.Text[10..].Trim();
+                    }
 
-                    msg.Role = AuthorRole.System;
+                    msg.Role = AuthorRole.User;
                     // remove the /sys prefix
-                    msg.Message = gameinfo.ShowFullScreen();
+                    if (!string.IsNullOrEmpty(extra))
+                    {
+                        msg.Message = extra + LLMSystem.NewLine + LLMSystem.NewLine + gameinfo.ShowFullScreen();
+                    }
+                    else
+                    {
+                        msg.Message = gameinfo.ShowFullScreen();
+                    }
                     await SendMessageToUI(msg, Bot!.History.CurrentSession.Messages.Count);
                     // ready a new message for the bot's response
                     PrepareResponse();
