@@ -143,8 +143,14 @@ namespace WaifuAI.Game
 
         private static string FormatSay(string raw)
         {
-            // raw example: [SAY] Narrator: Hello there.
-            return raw.Substring("[SAY] ".Length).Trim();
+            // raw example: [SAY] Narrator: Hello there. Remove "[SAY] "
+            var res = raw.Substring("[SAY] ".Length).Trim();
+            // now if there's no "narrator" or talking in general, the sentence will start with just ":" in that case we need to encase everything into 2 asterisks
+            if (res.StartsWith(":"))
+            {
+                res = $"*{res.Substring(1).Trim()}*";
+            }
+            return res;
         }
 
         private static string FormatChoice(string raw, bool stripSpeaker)
@@ -162,14 +168,7 @@ namespace WaifuAI.Game
             // Strip bullet dots
             text = text.Replace("•", "");
             text = text.Replace("â\u0080¢","").Trim();
-
-            // Fix brackets "[[some text]" by removing the first "["
-            if (text.StartsWith("[[") && text.EndsWith("]"))
-            {
-                text = text.Substring(1).Trim();
-            }
-
-
+            text = text.Replace("[[", "[");
             return text.Trim();
         }
     }

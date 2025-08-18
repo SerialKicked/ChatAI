@@ -1052,7 +1052,7 @@ namespace WaifuAI
                     // remove the /sys prefix
                     if (!string.IsNullOrEmpty(extra))
                     {
-                        msg.Message = extra + LLMSystem.NewLine + LLMSystem.NewLine + gameinfo.ShowFullScreen();
+                        msg.Message = $"**{User.Name}'s Comment**" + LLMSystem.NewLine + extra + LLMSystem.NewLine + LLMSystem.NewLine + gameinfo.ShowFullScreen();
                     }
                     else
                     {
