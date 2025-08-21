@@ -194,6 +194,18 @@ namespace WaifuAI
                 LLMSystem.VLM_AddB64Image(basestr);
                 DisplayImage(basestr);
             }, 1024);
+
+            // Agent Stuff
+            AgentRuntime.Instance.Start();
+            EventBus.Subscribe<StagedMessageReadyEvent>(e =>
+            {
+                BeginInvoke(new Action(() =>
+                {
+                    statusbar.Items[1].Text = "Background suggestion ready.";
+                    // (Later) open a panel listing e.Message.Draft & allow accept/discard.
+                }));
+            });
+
         }
 
         private void DisplayImage(string base64String)
@@ -1052,7 +1064,7 @@ namespace WaifuAI
                     // remove the /sys prefix
                     if (!string.IsNullOrEmpty(extra))
                     {
-                        msg.Message = $"**{User.Name}'s Comment**" + LLMSystem.NewLine + extra + LLMSystem.NewLine + LLMSystem.NewLine + gameinfo.ShowFullScreen();
+                        msg.Message = $"**{User?.Name ?? "User"}'s Comment**" + LLMSystem.NewLine + extra + LLMSystem.NewLine + LLMSystem.NewLine + gameinfo.ShowFullScreen();
                     }
                     else
                     {
@@ -1234,7 +1246,7 @@ namespace WaifuAI
 
                 LLMSystem.OnQuickInferenceEnded += (s, e) =>
                 {
-                    loadingForm.AddProgress(LLMSystem.Bot.DynamicBio ? 10 : 15);
+                    loadingForm.AddProgress(50);
                 };
                 await LLMSystem.History.StartNewChatSession(true);
                 if (LLMSystem.Bot.SelfEditTokens > 0)
@@ -1248,7 +1260,6 @@ namespace WaifuAI
                 }
                 (LLMSystem.Bot as Character)?.SaveChatHistory();
                 await LLMSystem.Bot.UpdateSelfEditSection();
-                await LLMSystem.Bot.UpdatePersonaAttributes();
                 if (!string.IsNullOrEmpty(LLMSystem.Bot.UniqueName))
                     (LLMSystem.Bot as IFile).SaveToFile("data/chars/" + LLMSystem.Bot.UniqueName + ".json");
                 loadingForm.SetMessage("Loading new session.");
@@ -2500,6 +2511,7 @@ namespace WaifuAI
             LLMSystem.Bot.EndChat(backup: true);
             if (!string.IsNullOrEmpty(LLMSystem.Bot.UniqueName))
                 (LLMSystem.Bot as IFile).SaveToFile("data/chars/" + LLMSystem.Bot.UniqueName + ".json");
+            AgentRuntime.Instance.Stop();
         }
 
         private void ck_senseoftime_CheckedChanged(object sender, EventArgs e)

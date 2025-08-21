@@ -62,13 +62,6 @@
             ed_sysprompt = new TextBox();
             textBox2 = new TextBox();
             tabDynamic = new TabPage();
-            groupBox11 = new GroupBox();
-            button1 = new Button();
-            label16 = new Label();
-            ed_dynbio = new TextBox();
-            label15 = new Label();
-            num_dyndepth = new NumericUpDown();
-            ck_selfbio = new CheckBox();
             groupBox9 = new GroupBox();
             btRegenBio = new Button();
             label13 = new Label();
@@ -102,8 +95,6 @@
             groupBox1.SuspendLayout();
             tabPrompt.SuspendLayout();
             tabDynamic.SuspendLayout();
-            groupBox11.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)num_dyndepth).BeginInit();
             groupBox9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_selfedittokens).BeginInit();
             tabSettings.SuspendLayout();
@@ -462,7 +453,6 @@
             // 
             // tabDynamic
             // 
-            tabDynamic.Controls.Add(groupBox11);
             tabDynamic.Controls.Add(groupBox9);
             tabDynamic.Location = new Point(4, 24);
             tabDynamic.Name = "tabDynamic";
@@ -471,88 +461,6 @@
             tabDynamic.TabIndex = 4;
             tabDynamic.Text = "Dynamic Bio";
             tabDynamic.UseVisualStyleBackColor = true;
-            // 
-            // groupBox11
-            // 
-            groupBox11.Controls.Add(button1);
-            groupBox11.Controls.Add(label16);
-            groupBox11.Controls.Add(ed_dynbio);
-            groupBox11.Controls.Add(label15);
-            groupBox11.Controls.Add(num_dyndepth);
-            groupBox11.Controls.Add(ck_selfbio);
-            groupBox11.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox11.Location = new Point(8, 246);
-            groupBox11.Name = "groupBox11";
-            groupBox11.Size = new Size(929, 232);
-            groupBox11.TabIndex = 18;
-            groupBox11.TabStop = false;
-            groupBox11.Text = "Dynamic Biography";
-            // 
-            // button1
-            // 
-            button1.Font = new Font("Segoe UI", 9F);
-            button1.Location = new Point(733, 203);
-            button1.Name = "button1";
-            button1.Size = new Size(190, 23);
-            button1.TabIndex = 22;
-            button1.Text = "Regenerate";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
-            // 
-            // label16
-            // 
-            label16.AutoSize = true;
-            label16.Font = new Font("Segoe UI", 9F);
-            label16.Location = new Point(6, 22);
-            label16.Name = "label16";
-            label16.Size = new Size(431, 15);
-            label16.TabIndex = 21;
-            label16.Text = "Characters can gradually alter their own biography.  Consult the documentation.";
-            // 
-            // ed_dynbio
-            // 
-            ed_dynbio.BorderStyle = BorderStyle.FixedSingle;
-            ed_dynbio.Font = new Font("Segoe UI", 9F);
-            ed_dynbio.Location = new Point(6, 43);
-            ed_dynbio.Multiline = true;
-            ed_dynbio.Name = "ed_dynbio";
-            ed_dynbio.ReadOnly = true;
-            ed_dynbio.ScrollBars = ScrollBars.Vertical;
-            ed_dynbio.Size = new Size(721, 183);
-            ed_dynbio.TabIndex = 20;
-            // 
-            // label15
-            // 
-            label15.AutoSize = true;
-            label15.Font = new Font("Segoe UI", 9F);
-            label15.Location = new Point(733, 68);
-            label15.Name = "label15";
-            label15.Size = new Size(81, 15);
-            label15.TabIndex = 19;
-            label15.Text = "Session Depth";
-            // 
-            // num_dyndepth
-            // 
-            num_dyndepth.Font = new Font("Segoe UI", 9F);
-            num_dyndepth.Increment = new decimal(new int[] { 128, 0, 0, 0 });
-            num_dyndepth.Location = new Point(733, 86);
-            num_dyndepth.Maximum = new decimal(new int[] { 50, 0, 0, 0 });
-            num_dyndepth.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            num_dyndepth.Name = "num_dyndepth";
-            num_dyndepth.Size = new Size(190, 23);
-            num_dyndepth.TabIndex = 18;
-            num_dyndepth.Value = new decimal(new int[] { 1, 0, 0, 0 });
-            // 
-            // ck_selfbio
-            // 
-            ck_selfbio.AutoSize = true;
-            ck_selfbio.Font = new Font("Segoe UI", 9F);
-            ck_selfbio.Location = new Point(733, 43);
-            ck_selfbio.Name = "ck_selfbio";
-            ck_selfbio.Size = new Size(163, 19);
-            ck_selfbio.TabIndex = 17;
-            ck_selfbio.Text = "Allow Dynamic Biography";
-            ck_selfbio.UseVisualStyleBackColor = true;
             // 
             // groupBox9
             // 
@@ -564,7 +472,7 @@
             groupBox9.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox9.Location = new Point(8, 8);
             groupBox9.Name = "groupBox9";
-            groupBox9.Size = new Size(929, 232);
+            groupBox9.Size = new Size(929, 229);
             groupBox9.TabIndex = 11;
             groupBox9.TabStop = false;
             groupBox9.Text = "Character's Journal";
@@ -827,9 +735,6 @@
             tabPrompt.ResumeLayout(false);
             tabPrompt.PerformLayout();
             tabDynamic.ResumeLayout(false);
-            groupBox11.ResumeLayout(false);
-            groupBox11.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)num_dyndepth).EndInit();
             groupBox9.ResumeLayout(false);
             groupBox9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)num_selfedittokens).EndInit();
@@ -903,12 +808,5 @@
         private Label label14;
         private NumericUpDown num_ptvalue;
         private Button btRegenBio;
-        private CheckBox ck_selfbio;
-        private GroupBox groupBox11;
-        private Label label15;
-        private NumericUpDown num_dyndepth;
-        private Button button1;
-        private Label label16;
-        private TextBox ed_dynbio;
     }
 }

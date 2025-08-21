@@ -87,8 +87,6 @@ namespace WaifuAI.src.forms
             mychar.AllowedSamplers = [.. ckl_samplers.CheckedItems.Cast<string>()];
             mychar.PointSystem = (cb_pointsystems.SelectedIndex != -1) ? cb_pointsystems.Text : string.Empty;
             mychar.PointValue = (int)num_ptvalue.Value;
-            mychar.DynamicBio = ck_selfbio.Checked;
-            mychar.DynamicBioHistoryDepth = (int)num_dyndepth.Value;
             return mychar;
         }
 
@@ -110,9 +108,6 @@ namespace WaifuAI.src.forms
             num_selfedittokens.Value = selectedCharacter.SelfEditTokens;
             ed_selfedit.Text = selectedCharacter.SelfEditField.ToWinFormat();
             num_ptvalue.Value = selectedCharacter.PointValue;
-            ck_selfbio.Checked = selectedCharacter.DynamicBio;
-            num_dyndepth.Value = selectedCharacter.DynamicBioHistoryDepth;
-            ed_dynbio.Text = selectedCharacter.GetBio("{{user}}").ToWinFormat();
             ckl_plugins.Items.Clear();
             foreach (var item in LLMSystem.ContextPlugins)
             {
@@ -193,20 +188,6 @@ namespace WaifuAI.src.forms
                 await SelectedCharacter.UpdateSelfEditSection();
                 ed_selfedit.Text = SelectedCharacter.SelfEditField.ToWinFormat();
             }
-        }
-
-        private async void button1_Click(object sender, EventArgs e)
-        {
-            SelectedCharacter.LoadChatHistory();
-            if (SelectedCharacter.History.Sessions.Count < 2)
-                return;
-            if (ck_selfbio.Checked)
-            {
-                await SelectedCharacter.UpdatePersonaAttributes();
-                ed_sysprompt.Text = SelectedCharacter.SystemPrompt.ToWinFormat();
-                ed_dynbio.Text = SelectedCharacter.GetBio("{{user}}").ToWinFormat();
-            }
-
         }
     }
 }
