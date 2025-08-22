@@ -1434,6 +1434,7 @@ namespace WaifuAI
             LLMSystem.SessionHandling = Program.Settings.SessionHandling;
             LLMSystem.BackendUrl = Program.Settings.BaseURL;
             LLMSystem.BackendAPI = Program.Settings.API;
+            LLMSystem.ForceRAGInSysPrompt = Program.Settings.ForceAllRagInSysPrompt;
             WebSearchAPI.SearchAPI = Program.Settings.SearchAPI;
             WebSearchAPI.SearchDetailedResults = Program.Settings.SearchDetailedResults;
             WebSearchAPI.BraveAPIKey = Program.Settings.BraveAPIKey;
@@ -1487,6 +1488,7 @@ namespace WaifuAI
             num_italicratio.Value = (decimal)Program.Settings.RoleplayFormatting.RemoveItalicRatio;
             num_removeitalicmaxword.Value = Program.Settings.RoleplayFormatting.RemoveItalicMaxWords;
             cb_pastsession.SelectedIndex = (int)Program.Settings.SessionHandling;
+            ck_sysrag.Checked = Program.Settings.ForceAllRagInSysPrompt;
 
             ck_remlastsentence.Checked = Program.Settings.RemoveCutSentence;
             ck_oneparagraph.Checked = Program.Settings.StopOnFirstParagraph;
@@ -1537,6 +1539,7 @@ namespace WaifuAI
                 Program.Settings.AntiSlop = ck_antislop.Checked;
                 Program.Settings.AntiSlopRatio = (float)num_antislopchance.Value;
                 Program.Settings.AntiSlopList = !string.IsNullOrEmpty(ed_sloplist.Text) ? ed_sloplist.Text.Split(',') : [];
+                Program.Settings.ForceAllRagInSysPrompt = LLMSystem.ForceRAGInSysPrompt;
 
                 Program.Settings.RoleplayFormatting.RemoveAllBoldedText = ck_unbold.Checked;
                 Program.Settings.RoleplayFormatting.RemoveSingleWorldEmphasis = ck_noemphasisword.Checked;
@@ -1606,6 +1609,7 @@ namespace WaifuAI
             RAGSystem.DistanceCutOff = (float)num_ragcutoff.Value;
             RAGSystem.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
             RAGSystem.RAGIndex = (int)num_ragindex.Value;
+            LLMSystem.ForceRAGInSysPrompt = ck_sysrag.Checked;
             if (cb_ragheuristic.SelectedIndex == 0)
                 RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
             else if (cb_ragheuristic.SelectedIndex == 1)
@@ -2729,6 +2733,16 @@ namespace WaifuAI
         private void ck_ragtothink_CheckedChanged(object sender, EventArgs e)
         {
             LLMSystem.PutRAGInThinkingPrompt = ck_ragtothink.Checked;
+        }
+
+        private void ck_alwayswebsearch_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ck_sysrag_CheckedChanged(object sender, EventArgs e)
+        {
+            LLMSystem.ForceRAGInSysPrompt = ck_sysrag.Checked;
         }
     }
 }

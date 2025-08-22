@@ -287,6 +287,7 @@
             label8 = new Label();
             bt_connect = new Button();
             tabMain = new TabControl();
+            ck_sysrag = new CheckBox();
             statusbar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
             tabConsole.SuspendLayout();
@@ -906,6 +907,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(ck_sysrag);
             groupBox1.Controls.Add(ck_alwayswebsearch);
             groupBox1.Controls.Add(checkBox1);
             groupBox1.Controls.Add(ck_ragdocs);
@@ -938,6 +940,7 @@
             ck_alwayswebsearch.TabIndex = 35;
             ck_alwayswebsearch.Text = "No keyword for online RAG";
             ck_alwayswebsearch.UseVisualStyleBackColor = true;
+            ck_alwayswebsearch.CheckedChanged += ck_alwayswebsearch_CheckedChanged;
             // 
             // checkBox1
             // 
@@ -3241,6 +3244,18 @@
             tabMain.Size = new Size(1004, 918);
             tabMain.TabIndex = 1;
             // 
+            // ck_sysrag
+            // 
+            ck_sysrag.AutoSize = true;
+            ck_sysrag.Font = new Font("Segoe UI", 9F);
+            ck_sysrag.Location = new Point(195, 147);
+            ck_sysrag.Name = "ck_sysrag";
+            ck_sysrag.Size = new Size(196, 19);
+            ck_sysrag.TabIndex = 36;
+            ck_sysrag.Text = "Force All RAG to System Prompt";
+            ck_sysrag.UseVisualStyleBackColor = true;
+            ck_sysrag.CheckedChanged += ck_sysrag_CheckedChanged;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -3626,5 +3641,6 @@
         private CheckBox ck_disablethink;
         private CheckBox ck_ragtothink;
         private CheckBox ck_hist_isrp;
+        private CheckBox ck_sysrag;
     }
 }

@@ -31,6 +31,8 @@ namespace WaifuAI.Files
         public int MaxMessagesOnScreen { get; set; } = 100;
         public int FontSize { get; set; } = 18;
         public bool AlwaysWebSearchQuery { get; set; } = false;
+        public bool ForceAllRagInSysPrompt { get; set; } = false;
+
         public string BackgroundFile { get; set; } = "bedroom_cozy.jpg";
         public bool MarkdownMemoryFormating { get; set; } = false;
         public bool UseTTS { get; set; } = false;
