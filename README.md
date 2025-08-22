@@ -37,3 +37,7 @@ This application is designed for local deployment. The backend must be running o
 - Runs on Windows 10+ (may work on 7, untested)
 - To take full advantage of the LTM and dynamic character systems, a context window of at least 10K is required, 16K+ is *heavily* recommended
 - Small models (<=8B params), and models with poor instruction following, may struggle with some of the features
+
+## License
+
+w(AI)fu.NET is under [CC BY-NC-SA 4.0](https://github.com/SerialKicked/ChatAI/tree/master?tab=License-1-ov-file#readme). You may not use this code for commercial purposes.
