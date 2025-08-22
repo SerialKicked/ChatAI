@@ -1,6 +1,6 @@
 # w(AI)fu.NET
 
-Windows-based high-performance front-end for KoboldCPP and OpenAI API written in C#.NET. Using LLamaSharp for secondary functions like embed generation for RAG functionalities.
+Windows-based high-performance front-end for [KoboldCPP](https://github.com/LostRuins/koboldcpp) and OpenAI API written in C#.NET. Using [AIToolkit](https://github.com/SerialKicked/AIToolkit) to do the heavy lifting.
 
 ![WaifuAI_RjiqpbMiTq](https://github.com/user-attachments/assets/a4d1595d-a5f4-41f6-885e-5c50cd8fa619)
 
@@ -13,9 +13,7 @@ Windows-based high-performance front-end for KoboldCPP and OpenAI API written in
   - Vector Search done on previous sessions to retrieve contextual information based on user prompt
   - Space can be reserved to insert the summaries of the last X sessions in chronological order, improving the model's contextual awareness notably
   - Keyword-activated text insertion (or **World Info**) which can also be triggered using a keyword-less vector search
-- **Dynamic personality system** (toggle)
-  - Characters can change their biography (or parts of it) over time based on your interactions
-  - Characters can use a configurable part of the system prompt to write a small journal entry that changes over time based on their interactions
+- Characters can use a configurable part of the system prompt to write a small journal entry that changes over time based on their interactions with the user
 - TTS (text-to-speech) support through KoboldCPP API
 - Ability for the bot to augment its responses by searching on DuckDuckGo through KoboldCPP API (toggle)
 - Customizable system allowing the bot to browse user-defined websites in search of requested information
