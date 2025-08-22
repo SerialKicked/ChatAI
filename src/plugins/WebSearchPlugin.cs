@@ -4,6 +4,7 @@ using AIToolkit.Files;
 using AIToolkit.LLM;
 using AngleSharp.Dom;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -72,31 +73,36 @@ namespace WaifuAI.Plugins
         /// <returns></returns>
         public async Task<PluginResponse> ReplaceUserInput(string userinput)
         {
+            var token = LLMSystem.CurrentOperationToken; 
             var response = string.Empty;
             responseAppendNeeded = false;
+
+            if (token.IsCancellationRequested)
+                return new PluginResponse { IsHandled = false, Response = null };
+
             if (KeywordDetection)
             {
                 if (kwEnter.Any(kw => userinput.Contains(kw, StringComparison.OrdinalIgnoreCase)))
                 {
-                    response = await QueryLLM(userinput);
+                    response = await QueryLLM(userinput, token);
                 }
             }
             else
             {
-                response = await QueryLLM(userinput);
+                response = await QueryLLM(userinput, token);
             }
-            if (string.IsNullOrEmpty(response))
+            if (token.IsCancellationRequested || string.IsNullOrEmpty(response))
                 return new PluginResponse { IsHandled = false, Response = null };
             // run web search
             Program.BigForm!.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am searching the web for '{response}'...*");
-            lastresponse = await LLMSystem.WebSearch(response);
-            if (lastresponse == null || lastresponse.Count == 0)
+            lastresponse = await LLMSystem.WebSearch(response, token);
+            if (token.IsCancellationRequested || lastresponse == null || lastresponse.Count == 0)
                 return new PluginResponse { IsHandled = false, Response = null };
             responseAppendNeeded = true;
 
             Program.BigForm!.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am processing web info about '{response}'...*");
-            var mergedResponse = await MergeResults(response, lastresponse);
-            if (string.IsNullOrWhiteSpace(mergedResponse))
+            var mergedResponse = await MergeResults(response, lastresponse, token);
+            if (token.IsCancellationRequested || string.IsNullOrWhiteSpace(mergedResponse))
                 return new PluginResponse { IsHandled = false, Response = null };
 
             var formatedresponsed = new StringBuilder();
@@ -180,7 +186,7 @@ namespace WaifuAI.Plugins
         /// <param name="inputText"></param>
         /// <param name="lb"></param>
         /// <returns></returns>
-        private static async Task<string> QueryLLM(string inputText)
+        private static async Task<string> QueryLLM(string inputText, CancellationToken ct)
         {
             var savedKV = false;
             if (LLMSystem.Client!.SupportsStateSave)
@@ -196,7 +202,8 @@ namespace WaifuAI.Plugins
             llmparams.Max_context_length = LLMSystem.MaxContextLength;
             llmparams.Max_length = LLMSystem.MaxReplyLength;
             llmparams.Prompt = fullprompt;
-            var response = await LLMSystem.SimpleQuery(llmparams);
+
+            var response = await LLMSystem.SimpleQuery(llmparams, ct); // <-- pass ct
             if (!string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingStart))
             {
                 response = response.RemoveThinkingBlocks(LLMSystem.Instruct.ThinkingStart, LLMSystem.Instruct.ThinkingEnd);
@@ -214,13 +221,15 @@ namespace WaifuAI.Plugins
             }
 
             if (string.IsNullOrEmpty(response) || 
-                (response.StartsWith("no", StringComparison.InvariantCultureIgnoreCase) && response.Length<5))
+                (response.StartsWith("no", StringComparison.InvariantCultureIgnoreCase) && response.Length < 5))
                 return string.Empty;
             return response;
         }
 
-        private static async Task<string> MergeResults(string topic, List<EnrichedSearchResult> webresults)
+        private static async Task<string> MergeResults(string topic, List<EnrichedSearchResult> webresults, CancellationToken ct)
         {
+            if (ct.IsCancellationRequested) 
+                return string.Empty;
             LLMSystem.NamesInPromptOverride = false;
             var fullprompt = BuildMergedPrompt(topic, webresults);
             var llmparams = LLMSystem.Sampler.GetCopy();
@@ -229,14 +238,14 @@ namespace WaifuAI.Plugins
             llmparams.Max_context_length = LLMSystem.MaxContextLength;
             llmparams.Max_length = LLMSystem.MaxReplyLength;
             llmparams.Prompt = fullprompt;
-            var response = await LLMSystem.SimpleQuery(llmparams);
+            var response = await LLMSystem.SimpleQuery(llmparams, ct);
             if (!string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingStart))
             {
                 response = response.RemoveThinkingBlocks(LLMSystem.Instruct.ThinkingStart, LLMSystem.Instruct.ThinkingEnd);
             }
             LLMSystem.Logger?.LogInformation("WebSearch Plugin Result: {output}", response);
             LLMSystem.NamesInPromptOverride = null;
-            return response;
+            return ct.IsCancellationRequested ? string.Empty : response;
         }
     }
 }

@@ -1015,7 +1015,8 @@ namespace WaifuAI
             _afkmessagecount = 0;
             if (LLMSystem.Status == SystemStatus.Busy)
             {
-                LLMSystem.CancelGeneration();
+                LLMSystem.CancelActiveOperation(true);
+                //LLMSystem.CancelGeneration();
                 return;
             }
             _impersonatemode = false;
