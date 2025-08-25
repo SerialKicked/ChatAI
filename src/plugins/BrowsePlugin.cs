@@ -169,7 +169,7 @@ namespace WaifuAI.Plugins
             if (llmparams.Temperature > 0.5)
                 llmparams.Temperature = 0.5;
             llmparams.Max_context_length = LLMSystem.MaxContextLength;
-            llmparams.Max_length = LLMSystem.MaxReplyLength;
+            llmparams.Max_length = LLMSystem.Settings.MaxReplyLength;
             llmparams.Prompt = prompt;
             llmparams.Rep_pen = 1;
             llmparams.Dry_base = 0;
@@ -342,7 +342,7 @@ namespace WaifuAI.Plugins
             var fullprompt = TaskSelectionPrompt(inputText, cmd);
             var llmparams = LLMSystem.Sampler.GetCopy();
             llmparams.Max_context_length = LLMSystem.MaxContextLength;
-            llmparams.Max_length = LLMSystem.MaxReplyLength;
+            llmparams.Max_length = LLMSystem.Settings.MaxReplyLength;
             if (llmparams.Temperature > 0.4f)
                 llmparams.Temperature = 0.4f;
             llmparams.Prompt = fullprompt;

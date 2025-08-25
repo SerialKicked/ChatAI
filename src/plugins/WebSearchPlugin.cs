@@ -194,7 +194,7 @@ namespace WaifuAI.Plugins
             if (llmparams.Temperature > 0.5)
                 llmparams.Temperature = 0.5;
             llmparams.Max_context_length = LLMSystem.MaxContextLength;
-            llmparams.Max_length = LLMSystem.MaxReplyLength;
+            llmparams.Max_length = LLMSystem.Settings.MaxReplyLength;
             llmparams.Prompt = fullprompt;
             var response = await LLMSystem.SimpleQuery(llmparams);
             if (!string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingStart))
@@ -227,7 +227,7 @@ namespace WaifuAI.Plugins
             if (llmparams.Temperature > 0.75)
                 llmparams.Temperature = 0.75;
             llmparams.Max_context_length = LLMSystem.MaxContextLength;
-            llmparams.Max_length = LLMSystem.MaxReplyLength;
+            llmparams.Max_length = LLMSystem.Settings.MaxReplyLength;
             llmparams.Prompt = fullprompt;
             var response = await LLMSystem.SimpleQuery(llmparams);
             if (!string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingStart))

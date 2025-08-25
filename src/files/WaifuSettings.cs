@@ -10,31 +10,20 @@ using System.Threading.Tasks;
 
 namespace WaifuAI.Files
 {
-    public class WaifuSettings : BaseFile
+    public class WaifuSettings : LLMSettings
     {
         public string BotFile { get; set; } = "Assistant";
         public string UserFile { get; set; } = "User";
         public string PromptFile { get; set; } = "Standard";
         public string Instruct { get; set; } = "ChatML";
         public string SamplerFile { get; set; } = "Default";
-        public string ScenarioOverride { get; set; } = string.Empty;
         public double Temperature { get; set; } = 0.70;
-        public int MaxResponseTokens { get; set; } = 512;
         public int MaxTotalTokens { get; set; } = 16384;
-        public bool RAGUseTitles { get; set; } = true;
-        public bool RAGUseSummaries { get; set; } = true;
-        public float RAGDistanceCutOff { get; set; } = 0.165f;
-        public HNSW.Net.NeighbourSelectionHeuristic RAGHeurisitc { get; set; } = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
-        public int MaxRAGEntries { get; set; } = 3;
-        public int ReservedSessionTokens { get; set; } = 2048;
-        public int RAGPosition { get; set; } = 3;
         public int MaxMessagesOnScreen { get; set; } = 100;
         public int FontSize { get; set; } = 18;
         public bool AlwaysWebSearchQuery { get; set; } = false;
-        public bool ForceAllRagInSysPrompt { get; set; } = false;
 
         public string BackgroundFile { get; set; } = "bedroom_cozy.jpg";
-        public bool MarkdownMemoryFormating { get; set; } = false;
         public bool UseTTS { get; set; } = false;
         public bool AsteriskCheck { get; set; } = false;
         public bool AntiSlop { get; set; } = false;
@@ -42,18 +31,11 @@ namespace WaifuAI.Files
         public string[] AntiSlopList { get; set; } = [];
         public bool WebsitePluginUseKeywords { get; set; } = false;
         public bool WebsitePluginGrammar { get; set; } = false;
-        public bool StopOnFirstParagraph { get; set; } = false;
         public bool RemoveCutSentence { get; set; } = false;
-        public SessionHandling SessionHandling { get; set; } = SessionHandling.FitAll;
-        // LLM API
-        public BackendAPI API { get; set; } = BackendAPI.KoboldAPI;
-        public string BaseURL { get; set; } = "http://localhost:5001";
-        public string APIKey { get; set; } = string.Empty;
         // Search API
         public string BraveAPIKey { get; set; } = string.Empty;
         public BackendSearchAPI SearchAPI { get; set; } = BackendSearchAPI.DuckDuckGo;
         public bool SearchDetailedResults { get; set; } = true;
-
         public StringFix RoleplayFormatting { get; set; } = new StringFix(false, false, false, false, false, 1, 50);
     }
 }

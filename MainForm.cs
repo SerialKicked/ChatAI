@@ -136,7 +136,7 @@ namespace WaifuAI
         {
             cb_bot.Items.Clear();
             cb_user.Items.Clear();
-            bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.ScenarioOverride) ? Color.Black : Color.DarkGreen;
+            bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.Settings.ScenarioOverride) ? Color.Black : Color.DarkGreen;
             foreach (var item in DataFiles.Characters)
             {
                 if (item.Value.IsUser)
@@ -176,7 +176,7 @@ namespace WaifuAI
             LLMSystem.ContextPlugins.Add(new WebSearchPlugin());
             RAGSystem.Enabled = true;
             ck_ragenabled.Checked = RAGSystem.Enabled;
-            ck_worldinfo.Checked = LLMSystem.WorldInfo;
+            ck_worldinfo.Checked = LLMSystem.Settings.AllowWorldInfo;
             LLMSystem.OnInferenceStreamed += OnStreamMessageReceived;
             LLMSystem.OnInferenceEnded += OnStreamInferenceEnded;
             LLMSystem.OnFullPromptReady += OnFullPromptReady;
@@ -235,7 +235,7 @@ namespace WaifuAI
         private void UpdateUIState()
         {
             _activityTimer?.Reset();
-            bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.ScenarioOverride) ? Color.Black : Color.DarkGreen;
+            bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.Settings.ScenarioOverride) ? Color.Black : Color.DarkGreen;
             if (LLMSystem.Status == SystemStatus.Ready)
             {
                 bt_delete.Enabled = true;
@@ -1206,16 +1206,6 @@ namespace WaifuAI
             grp_model.Text = LLMSystem.CurrentModel;
             ck_ttstoggle.Enabled = LLMSystem.SupportsTTS;
             ck_onlinerag.Enabled = LLMSystem.SupportsWebSearch;
-            ck_disablethink.Checked = LLMSystem.DisableThinkingPrompt;
-            ck_ragtothink.Checked = LLMSystem.PutRAGInThinkingPrompt;
-            if (!LLMSystem.SupportsTTS)
-            {
-                ck_ttstoggle.Checked = false;
-            }
-            if (!LLMSystem.SupportsWebSearch)
-            {
-                ck_onlinerag.Checked = false;
-            }
         }
 
         private async void StartNewSession(object sender, EventArgs e)
@@ -1418,23 +1408,11 @@ namespace WaifuAI
 
             var str = File.ReadAllText("settings.json");
             Program.Settings = JsonConvert.DeserializeObject<WaifuSettings>(str)!;
+            LLMSystem.Settings = Program.Settings;
             var saveinit = _isinitloading;
             _isinitloading = true;
-            RAGSystem.Heuristic = Program.Settings.RAGHeurisitc;
-            RAGSystem.UseSummaries = Program.Settings.RAGUseSummaries;
-            RAGSystem.UseTitles = Program.Settings.RAGUseTitles;
-            RAGSystem.DistanceCutOff = Program.Settings.RAGDistanceCutOff;
-            RAGSystem.MaxRAGEntries = Program.Settings.MaxRAGEntries;
-            RAGSystem.RAGIndex = Program.Settings.RAGPosition;
             LLMSystem.MaxContextLength = Program.Settings.MaxTotalTokens;
-            LLMSystem.MaxReplyLength = Program.Settings.MaxResponseTokens;
-            LLMSystem.ReservedSessionTokens = Program.Settings.ReservedSessionTokens;
-            LLMSystem.MarkdownMemoryFormating = Program.Settings.MarkdownMemoryFormating;
-            LLMSystem.ScenarioOverride = Program.Settings.ScenarioOverride;
-            LLMSystem.SessionHandling = Program.Settings.SessionHandling;
-            LLMSystem.BackendUrl = Program.Settings.BaseURL;
-            LLMSystem.BackendAPI = Program.Settings.API;
-            LLMSystem.ForceRAGInSysPrompt = Program.Settings.ForceAllRagInSysPrompt;
+
             WebSearchAPI.SearchAPI = Program.Settings.SearchAPI;
             WebSearchAPI.SearchDetailedResults = Program.Settings.SearchDetailedResults;
             WebSearchAPI.BraveAPIKey = Program.Settings.BraveAPIKey;
@@ -1450,11 +1428,11 @@ namespace WaifuAI
             cb_sysprompt.SelectedIndex = cb_sysprompt.Items.Contains(Program.Settings.PromptFile) ? cb_sysprompt.Items.IndexOf(Program.Settings.PromptFile) : 0;
             num_maxcontext.Maximum = Program.Settings.MaxTotalTokens;
             num_maxcontext.Value = Program.Settings.MaxTotalTokens;
-            num_maxresponse.Value = Program.Settings.MaxResponseTokens;
+            num_maxresponse.Value = Program.Settings.MaxReplyLength;
             num_temperature.Value = (decimal)Program.Settings.Temperature;
             num_memtokens.Value = Program.Settings.ReservedSessionTokens;
             ck_markdown.Checked = Program.Settings.MarkdownMemoryFormating;
-            switch (RAGSystem.Heuristic)
+            switch (LLMSystem.Settings.Heuristic)
             {
                 case HNSW.Net.NeighbourSelectionHeuristic.SelectSimple:
                     cb_ragheuristic.SelectedIndex = 1;
@@ -1465,11 +1443,11 @@ namespace WaifuAI
                 default:
                     break;
             }
-            ck_ragsummaries.Checked = Program.Settings.RAGUseSummaries;
-            ck_ragtitles.Checked = Program.Settings.RAGUseTitles;
-            num_ragcutoff.Value = (decimal)Program.Settings.RAGDistanceCutOff;
+            ck_ragsummaries.Checked = Program.Settings.UseSummaries;
+            ck_ragtitles.Checked = Program.Settings.UseTitles;
+            num_ragcutoff.Value = (decimal)Program.Settings.DistanceCutOff;
             num_ragmaxretrieve.Value = Program.Settings.MaxRAGEntries;
-            num_ragindex.Value = Program.Settings.RAGPosition;
+            num_ragindex.Value = Program.Settings.RAGIndex;
             cb_background.SelectedIndex = cb_background.Items.IndexOf(Program.Settings.BackgroundFile);
             num_fontsize.Value = Program.Settings.FontSize;
             num_msgcount.Value = Program.Settings.MaxMessagesOnScreen;
@@ -1488,12 +1466,13 @@ namespace WaifuAI
             num_italicratio.Value = (decimal)Program.Settings.RoleplayFormatting.RemoveItalicRatio;
             num_removeitalicmaxword.Value = Program.Settings.RoleplayFormatting.RemoveItalicMaxWords;
             cb_pastsession.SelectedIndex = (int)Program.Settings.SessionHandling;
-            ck_sysrag.Checked = Program.Settings.ForceAllRagInSysPrompt;
-
+            ck_sysrag.Checked = Program.Settings.ForceRAGInSysPrompt;
             ck_remlastsentence.Checked = Program.Settings.RemoveCutSentence;
-            ck_oneparagraph.Checked = Program.Settings.StopOnFirstParagraph;
-            LLMSystem.StopGenerationOnFirstParagraph = Program.Settings.StopOnFirstParagraph;
+            ck_oneparagraph.Checked = Program.Settings.StopGenerationOnFirstParagraph;
             ed_sloplist.Text = Program.Settings.AntiSlopList.Length > 0 ? string.Join(",", Program.Settings.AntiSlopList) : string.Empty;
+            ck_disablethink.Checked = Program.Settings.DisableThinkingPrompt;
+            ck_ragtothink.Checked = Program.Settings.PutRAGInThinkingPrompt;
+
 
             if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
             {
@@ -1517,18 +1496,7 @@ namespace WaifuAI
                 Program.Settings.SamplerFile = cb_infer.SelectedItem?.ToString() ?? string.Empty;
                 Program.Settings.Instruct = cb_instruct.SelectedItem?.ToString() ?? string.Empty;
                 Program.Settings.PromptFile = cb_sysprompt.SelectedItem?.ToString() ?? string.Empty;
-                Program.Settings.MaxTotalTokens = LLMSystem.MaxContextLength;
-                Program.Settings.MaxResponseTokens = LLMSystem.MaxReplyLength;
                 Program.Settings.Temperature = (double)num_temperature.Value;
-                Program.Settings.RAGHeurisitc = RAGSystem.Heuristic;
-                Program.Settings.RAGUseSummaries = RAGSystem.UseSummaries;
-                Program.Settings.RAGUseTitles = RAGSystem.UseTitles;
-                Program.Settings.RAGDistanceCutOff = RAGSystem.DistanceCutOff;
-                Program.Settings.ReservedSessionTokens = LLMSystem.ReservedSessionTokens;
-                Program.Settings.MarkdownMemoryFormating = LLMSystem.MarkdownMemoryFormating;
-                Program.Settings.MaxRAGEntries = RAGSystem.MaxRAGEntries;
-                Program.Settings.RAGPosition = RAGSystem.RAGIndex;
-                Program.Settings.ScenarioOverride = LLMSystem.ScenarioOverride;
                 Program.Settings.FontSize = (int)num_fontsize.Value;
                 Program.Settings.MaxMessagesOnScreen = (int)num_msgcount.Value;
                 Program.Settings.BackgroundFile = cb_background.SelectedItem?.ToString() ?? "bedroom_cozy.jpg";
@@ -1539,8 +1507,6 @@ namespace WaifuAI
                 Program.Settings.AntiSlop = ck_antislop.Checked;
                 Program.Settings.AntiSlopRatio = (float)num_antislopchance.Value;
                 Program.Settings.AntiSlopList = !string.IsNullOrEmpty(ed_sloplist.Text) ? ed_sloplist.Text.Split(',') : [];
-                Program.Settings.ForceAllRagInSysPrompt = LLMSystem.ForceRAGInSysPrompt;
-
                 Program.Settings.RoleplayFormatting.RemoveAllBoldedText = ck_unbold.Checked;
                 Program.Settings.RoleplayFormatting.RemoveSingleWorldEmphasis = ck_noemphasisword.Checked;
                 Program.Settings.RoleplayFormatting.RemoveAllQuotes = ck_noquotes.Checked;
@@ -1548,10 +1514,8 @@ namespace WaifuAI
                 Program.Settings.RoleplayFormatting.RemoveItalic = ck_reduceitalic.Checked;
                 Program.Settings.RoleplayFormatting.RemoveItalicRatio = (float)num_italicratio.Value;
                 Program.Settings.RoleplayFormatting.RemoveItalicMaxWords = (int)num_removeitalicmaxword.Value;
-
                 Program.Settings.RemoveCutSentence = ck_remlastsentence.Checked;
-                Program.Settings.StopOnFirstParagraph = ck_oneparagraph.Checked;
-
+                Program.Settings.StopGenerationOnFirstParagraph = ck_oneparagraph.Checked;
                 Program.Settings.WebsitePluginUseKeywords = ck_webkeyword.Checked;
                 Program.Settings.WebsitePluginGrammar = ck_webgrammar.Checked;
 
@@ -1604,16 +1568,16 @@ namespace WaifuAI
 
         private void ApplyRAGSettings(object sender, EventArgs e)
         {
-            RAGSystem.UseSummaries = ck_ragsummaries.Checked;
-            RAGSystem.UseTitles = ck_ragtitles.Checked;
-            RAGSystem.DistanceCutOff = (float)num_ragcutoff.Value;
-            RAGSystem.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
-            RAGSystem.RAGIndex = (int)num_ragindex.Value;
-            LLMSystem.ForceRAGInSysPrompt = ck_sysrag.Checked;
+            LLMSystem.Settings.UseSummaries = ck_ragsummaries.Checked;
+            LLMSystem.Settings.UseTitles = ck_ragtitles.Checked;
+            LLMSystem.Settings.DistanceCutOff = (float)num_ragcutoff.Value;
+            LLMSystem.Settings.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
+            LLMSystem.Settings.RAGIndex = (int)num_ragindex.Value;
+            LLMSystem.Settings.ForceRAGInSysPrompt = ck_sysrag.Checked;
             if (cb_ragheuristic.SelectedIndex == 0)
-                RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
+                LLMSystem.Settings.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
             else if (cb_ragheuristic.SelectedIndex == 1)
-                RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
+                LLMSystem.Settings.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
             RAGSystem.ApplySettings();
             SaveSettings();
         }
@@ -1621,19 +1585,19 @@ namespace WaifuAI
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cb_ragheuristic.SelectedIndex == 0)
-                RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
+                LLMSystem.Settings.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
             else if (cb_ragheuristic.SelectedIndex == 1)
-                RAGSystem.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
+                LLMSystem.Settings.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
         }
 
         private void num_ragcutoff_ValueChanged(object sender, EventArgs e)
         {
-            RAGSystem.DistanceCutOff = (float)num_ragcutoff.Value;
+            LLMSystem.Settings.DistanceCutOff = (float)num_ragcutoff.Value;
         }
 
         private void num_ragmaxretrieve_ValueChanged(object sender, EventArgs e)
         {
-            RAGSystem.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
+            LLMSystem.Settings.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
         }
 
         private void ck_ragenabled_CheckedChanged(object sender, EventArgs e)
@@ -1643,7 +1607,7 @@ namespace WaifuAI
 
         private void num_ragindex_ValueChanged(object sender, EventArgs e)
         {
-            RAGSystem.RAGIndex = (int)num_ragindex.Value;
+            LLMSystem.Settings.RAGIndex = (int)num_ragindex.Value;
         }
 
         private async void num_fontsize_ValueChanged(object sender, EventArgs e)
@@ -1709,8 +1673,7 @@ namespace WaifuAI
 
         private void ck_oneparagraph_CheckedChanged(object sender, EventArgs e)
         {
-            Program.Settings.StopOnFirstParagraph = ck_oneparagraph.Checked;
-            LLMSystem.StopGenerationOnFirstParagraph = ck_oneparagraph.Checked;
+            LLMSystem.Settings.StopGenerationOnFirstParagraph = ck_oneparagraph.Checked;
         }
 
         private void ck_remlastsentence_CheckedChanged(object sender, EventArgs e)
@@ -1732,8 +1695,7 @@ namespace WaifuAI
         {
             if (_isinitloading || cb_pastsession.SelectedIndex == -1)
                 return;
-            Program.Settings.SessionHandling = (SessionHandling)cb_pastsession.SelectedIndex;
-            LLMSystem.SessionHandling = Program.Settings.SessionHandling;
+            LLMSystem.Settings.SessionHandling = (SessionHandling)cb_pastsession.SelectedIndex;
         }
 
         #endregion
@@ -2460,7 +2422,7 @@ namespace WaifuAI
 
         private void num_maxresponse_ValueChanged(object sender, EventArgs e)
         {
-            LLMSystem.MaxReplyLength = (int)num_maxresponse.Value;
+            LLMSystem.Settings.MaxReplyLength = (int)num_maxresponse.Value;
         }
 
         private void cb_user_SelectedIndexChanged(object sender, EventArgs e)
@@ -2533,7 +2495,7 @@ namespace WaifuAI
             var editForm = new ScenarioEditForm();
             editForm.ShowDialog();
             editForm.Dispose();
-            bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.ScenarioOverride) ? Color.Black : Color.DarkGreen;
+            bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.Settings.ScenarioOverride) ? Color.Black : Color.DarkGreen;
             LLMSystem.InvalidatePromptCache();
         }
 
@@ -2586,19 +2548,17 @@ namespace WaifuAI
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.WorldInfo = ck_worldinfo.Checked;
+            LLMSystem.Settings.AllowWorldInfo = ck_worldinfo.Checked;
         }
 
         private void num_memtokens_ValueChanged(object sender, EventArgs e)
         {
-            Program.Settings.ReservedSessionTokens = (int)num_memtokens.Value;
-            LLMSystem.ReservedSessionTokens = (int)num_memtokens.Value;
+            LLMSystem.Settings.ReservedSessionTokens = (int)num_memtokens.Value;
         }
 
         private void ck_markdown_CheckedChanged(object sender, EventArgs e)
         {
-            Program.Settings.MarkdownMemoryFormating = ck_markdown.Checked;
-            LLMSystem.MarkdownMemoryFormating = ck_markdown.Checked;
+            LLMSystem.Settings.MarkdownMemoryFormating = ck_markdown.Checked;
         }
 
         private async void bt_deleteAllHistory_Click(object sender, EventArgs e)
@@ -2727,12 +2687,12 @@ namespace WaifuAI
 
         private void ck_disablethink_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.DisableThinkingPrompt = ck_disablethink.Checked;
+            LLMSystem.Settings.DisableThinkingPrompt = ck_disablethink.Checked;
         }
 
         private void ck_ragtothink_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.PutRAGInThinkingPrompt = ck_ragtothink.Checked;
+            LLMSystem.Settings.PutRAGInThinkingPrompt = ck_ragtothink.Checked;
         }
 
         private void ck_alwayswebsearch_CheckedChanged(object sender, EventArgs e)
@@ -2742,7 +2702,7 @@ namespace WaifuAI
 
         private void ck_sysrag_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.ForceRAGInSysPrompt = ck_sysrag.Checked;
+            LLMSystem.Settings.ForceRAGInSysPrompt = ck_sysrag.Checked;
         }
     }
 }

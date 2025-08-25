@@ -18,13 +18,13 @@ namespace WaifuAI.src.forms
         {
             InitializeComponent();
             ed_message.PlaceholderText = LLMSystem.Bot.Scenario.ToWinFormat();
-            ed_message.Text = LLMSystem.ScenarioOverride.ToWinFormat();
+            ed_message.Text = LLMSystem.Settings.ScenarioOverride.ToWinFormat();
 
         }
 
         private void bt_save_Click(object sender, EventArgs e)
         {
-            LLMSystem.ScenarioOverride = !string.IsNullOrWhiteSpace(ed_message.Text) ? LLMSystem.ReplaceMacros(ed_message.Text.ToLinuxFormat()) : string.Empty;
+            LLMSystem.Settings.ScenarioOverride = !string.IsNullOrWhiteSpace(ed_message.Text) ? LLMSystem.ReplaceMacros(ed_message.Text.ToLinuxFormat()) : string.Empty;
             DialogResult = DialogResult.OK;
             Close();
         }
@@ -40,7 +40,7 @@ namespace WaifuAI.src.forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            LLMSystem.ScenarioOverride = string.Empty;
+            LLMSystem.Settings.ScenarioOverride = string.Empty;
             DialogResult = DialogResult.OK;
             Close();
         }

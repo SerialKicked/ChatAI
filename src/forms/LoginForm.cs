@@ -21,9 +21,9 @@ namespace WaifuAI.src.forms
 
         public void LoadSettings()
         {
-            edUrl.Text = Program.Settings.BaseURL;
-            cbAPI.SelectedIndex = (int)Program.Settings.API;
-            edKey.Text = Program.Settings.APIKey;
+            edUrl.Text = Program.Settings.BackendUrl;
+            cbAPI.SelectedIndex = (int)Program.Settings.BackendAPI;
+            edKey.Text = Program.Settings.OpenAIKey;
         }
 
         private void btCancel_Click(object sender, EventArgs e)
@@ -54,10 +54,10 @@ namespace WaifuAI.src.forms
             var res = await LLMSystem.CheckBackend();
             if (res)
             {
-                Program.Settings.BaseURL = edUrl.Text;
-                Program.Settings.API = (BackendAPI)cbAPI.SelectedIndex;
+                Program.Settings.BackendUrl = edUrl.Text;
+                Program.Settings.BackendAPI = (BackendAPI)cbAPI.SelectedIndex;
                 if (!string.IsNullOrEmpty(edKey.Text))
-                    Program.Settings.APIKey = edKey.Text;
+                    Program.Settings.OpenAIKey = edKey.Text;
                 await LLMSystem.Connect();
                 this.Enabled = true;
                 Close();
