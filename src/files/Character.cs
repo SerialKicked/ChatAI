@@ -39,6 +39,7 @@ namespace WaifuAI.Files
 
         public override void BeginChat()
         {
+            base.BeginChat();
             if (IsUser)
                 return;
             // Location plugin
@@ -61,6 +62,7 @@ namespace WaifuAI.Files
 
         public override void EndChat(bool backup = false)
         {
+            base.EndChat(backup);
             PointValue = MyPoints.PointCount;
             SaveChatHistory(backup);
         }
