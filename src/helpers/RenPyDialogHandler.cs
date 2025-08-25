@@ -16,8 +16,8 @@ namespace WaifuAI.Game
 
     public class TurnBundle
     {
-        public List<string> Dialogue { get; } = new();
-        public List<string> Choices { get; } = new();
+        public List<string> Dialogue { get; } = [];
+        public List<string> Choices { get; } = [];
 
         public string ShowFullScreen()
         {
@@ -144,11 +144,11 @@ namespace WaifuAI.Game
         private static string FormatSay(string raw)
         {
             // raw example: [SAY] Narrator: Hello there. Remove "[SAY] "
-            var res = raw.Substring("[SAY] ".Length).Trim();
+            var res = raw["[SAY] ".Length..].Trim();
             // now if there's no "narrator" or talking in general, the sentence will start with just ":" in that case we need to encase everything into 2 asterisks
-            if (res.StartsWith(":"))
+            if (res.StartsWith(':'))
             {
-                res = $"*{res.Substring(1).Trim()}*";
+                res = $"*{res[1..].Trim()}*";
             }
             return res;
         }
@@ -156,13 +156,13 @@ namespace WaifuAI.Game
         private static string FormatChoice(string raw, bool stripSpeaker)
         {
             // raw example: [CHOICE] Narrator: • [[Proceed into the cabin.]
-            var text = raw.Substring("[CHOICE] ".Length).Trim();
+            var text = raw["[CHOICE] ".Length..].Trim();
             if (stripSpeaker)
             {
-                int colonIndex = text.IndexOf(":");
+                int colonIndex = text.IndexOf(':');
                 if (colonIndex >= 0)
                 {
-                    text = text.Substring(colonIndex + 1).Trim();
+                    text = text[(colonIndex + 1)..].Trim();
                 }
             }
             // Strip bullet dots

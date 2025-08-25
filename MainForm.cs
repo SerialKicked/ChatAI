@@ -1432,7 +1432,7 @@ namespace WaifuAI
             num_temperature.Value = (decimal)Program.Settings.Temperature;
             num_memtokens.Value = Program.Settings.ReservedSessionTokens;
             ck_markdown.Checked = Program.Settings.MarkdownMemoryFormating;
-            switch (LLMSystem.Settings.Heuristic)
+            switch (LLMSystem.Settings.RAGHeuristic)
             {
                 case HNSW.Net.NeighbourSelectionHeuristic.SelectSimple:
                     cb_ragheuristic.SelectedIndex = 1;
@@ -1443,10 +1443,10 @@ namespace WaifuAI
                 default:
                     break;
             }
-            ck_ragsummaries.Checked = Program.Settings.UseSummaries;
-            ck_ragtitles.Checked = Program.Settings.UseTitles;
-            num_ragcutoff.Value = (decimal)Program.Settings.DistanceCutOff;
-            num_ragmaxretrieve.Value = Program.Settings.MaxRAGEntries;
+            ck_ragsummaries.Checked = Program.Settings.RAGUseSummaries;
+            ck_ragtitles.Checked = Program.Settings.RAGUseTitles;
+            num_ragcutoff.Value = (decimal)Program.Settings.RAGDistanceCutOff;
+            num_ragmaxretrieve.Value = Program.Settings.RAGMaxEntries;
             num_ragindex.Value = Program.Settings.RAGIndex;
             cb_background.SelectedIndex = cb_background.Items.IndexOf(Program.Settings.BackgroundFile);
             num_fontsize.Value = Program.Settings.FontSize;
@@ -1466,12 +1466,12 @@ namespace WaifuAI
             num_italicratio.Value = (decimal)Program.Settings.RoleplayFormatting.RemoveItalicRatio;
             num_removeitalicmaxword.Value = Program.Settings.RoleplayFormatting.RemoveItalicMaxWords;
             cb_pastsession.SelectedIndex = (int)Program.Settings.SessionHandling;
-            ck_sysrag.Checked = Program.Settings.ForceRAGInSysPrompt;
+            ck_sysrag.Checked = Program.Settings.RAGMoveToSysPrompt;
             ck_remlastsentence.Checked = Program.Settings.RemoveCutSentence;
             ck_oneparagraph.Checked = Program.Settings.StopGenerationOnFirstParagraph;
             ed_sloplist.Text = Program.Settings.AntiSlopList.Length > 0 ? string.Join(",", Program.Settings.AntiSlopList) : string.Empty;
-            ck_disablethink.Checked = Program.Settings.DisableThinkingPrompt;
-            ck_ragtothink.Checked = Program.Settings.PutRAGInThinkingPrompt;
+            ck_disablethink.Checked = Program.Settings.DisableThinking;
+            ck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
 
 
             if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
@@ -1568,16 +1568,16 @@ namespace WaifuAI
 
         private void ApplyRAGSettings(object sender, EventArgs e)
         {
-            LLMSystem.Settings.UseSummaries = ck_ragsummaries.Checked;
-            LLMSystem.Settings.UseTitles = ck_ragtitles.Checked;
-            LLMSystem.Settings.DistanceCutOff = (float)num_ragcutoff.Value;
-            LLMSystem.Settings.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
+            LLMSystem.Settings.RAGUseSummaries = ck_ragsummaries.Checked;
+            LLMSystem.Settings.RAGUseTitles = ck_ragtitles.Checked;
+            LLMSystem.Settings.RAGDistanceCutOff = (float)num_ragcutoff.Value;
+            LLMSystem.Settings.RAGMaxEntries = (int)num_ragmaxretrieve.Value;
             LLMSystem.Settings.RAGIndex = (int)num_ragindex.Value;
-            LLMSystem.Settings.ForceRAGInSysPrompt = ck_sysrag.Checked;
+            LLMSystem.Settings.RAGMoveToSysPrompt = ck_sysrag.Checked;
             if (cb_ragheuristic.SelectedIndex == 0)
-                LLMSystem.Settings.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
+                LLMSystem.Settings.RAGHeuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
             else if (cb_ragheuristic.SelectedIndex == 1)
-                LLMSystem.Settings.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
+                LLMSystem.Settings.RAGHeuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
             RAGSystem.ApplySettings();
             SaveSettings();
         }
@@ -1585,19 +1585,19 @@ namespace WaifuAI
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cb_ragheuristic.SelectedIndex == 0)
-                LLMSystem.Settings.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
+                LLMSystem.Settings.RAGHeuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
             else if (cb_ragheuristic.SelectedIndex == 1)
-                LLMSystem.Settings.Heuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
+                LLMSystem.Settings.RAGHeuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
         }
 
         private void num_ragcutoff_ValueChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.DistanceCutOff = (float)num_ragcutoff.Value;
+            LLMSystem.Settings.RAGDistanceCutOff = (float)num_ragcutoff.Value;
         }
 
         private void num_ragmaxretrieve_ValueChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.MaxRAGEntries = (int)num_ragmaxretrieve.Value;
+            LLMSystem.Settings.RAGMaxEntries = (int)num_ragmaxretrieve.Value;
         }
 
         private void ck_ragenabled_CheckedChanged(object sender, EventArgs e)
@@ -2687,12 +2687,12 @@ namespace WaifuAI
 
         private void ck_disablethink_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.DisableThinkingPrompt = ck_disablethink.Checked;
+            LLMSystem.Settings.DisableThinking = ck_disablethink.Checked;
         }
 
         private void ck_ragtothink_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.PutRAGInThinkingPrompt = ck_ragtothink.Checked;
+            LLMSystem.Settings.RAGMoveToThinkBlock = ck_ragtothink.Checked;
         }
 
         private void ck_alwayswebsearch_CheckedChanged(object sender, EventArgs e)
@@ -2702,7 +2702,7 @@ namespace WaifuAI
 
         private void ck_sysrag_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.ForceRAGInSysPrompt = ck_sysrag.Checked;
+            LLMSystem.Settings.RAGMoveToSysPrompt = ck_sysrag.Checked;
         }
     }
 }
