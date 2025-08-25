@@ -766,7 +766,7 @@ namespace WaifuAI
             var sv = _isinitloading;
             _isinitloading = true;
             ed_wentryname.Text = worldEntry.Name;
-            ed_wentrymem.Text = worldEntry.Message.ToWinFormat();
+            ed_wentrymem.Text = worldEntry.Content.ToWinFormat();
             // Convert worldEntry's keywords to a comma separated string to show in ed_wentrykw1.Text
             ed_wentrykw1.Text = string.Join(",", worldEntry.KeyWordsMain);
             ed_wentrykw2.Text = string.Join(",", worldEntry.KeyWordsSecondary);
@@ -784,7 +784,9 @@ namespace WaifuAI
         private void SaveWorldEntry()
         {
             SelectedWorldEntryEditor.Name = ed_wentryname.Text;
-            SelectedWorldEntryEditor.Message = ed_wentrymem.Text.ToLinuxFormat();
+            SelectedWorldEntryEditor.Category = AIToolkit.Memory.MemoryType.WorldInfo;
+            SelectedWorldEntryEditor.Insertion = AIToolkit.Memory.MemoryInsertion.Trigger;
+            SelectedWorldEntryEditor.Content = ed_wentrymem.Text.ToLinuxFormat();
             if (!string.IsNullOrWhiteSpace(ed_wentrykw1.Text))
             {
                 SelectedWorldEntryEditor.KeyWordsMain = ed_wentrykw1.Text.Split(',')?.ToList() ?? [];

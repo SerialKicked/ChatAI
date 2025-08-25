@@ -144,7 +144,7 @@ namespace WaifuAI
                         CaseSensitive = false,
                         Duration = item.sticky,
                         Enabled = !item.disable,
-                        Message = item.content,
+                        Content = item.content,
                         Name = item.comment,
                         Priority = item.order,
                         PositionIndex = item.depth,

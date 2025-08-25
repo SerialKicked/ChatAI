@@ -25,7 +25,7 @@ namespace WaifuAI.Plugins
 
         public bool IsLocationSet => currentLocation != null;
         public string CurrentLocationName => currentLocation?.Name ?? string.Empty;
-        public string CurrentLocationDesc => currentLocation?.Message ?? string.Empty;
+        public string CurrentLocationDesc => currentLocation?.Content ?? string.Empty;
         public bool KeywordDetection { get; set; } = true;
         public bool ModelDetection { get; set; } = true;
 
@@ -47,7 +47,7 @@ namespace WaifuAI.Plugins
             }
             var str = new StringBuilder();
             str.AppendLinuxLine(LLMSystem.NewLine + LLMSystem.SystemPrompt.CategorySeparator+ " Current Location: " + currentLocation.Name);
-            str.Append("{{user}} and {{char}} are currently at this location: ").AppendLinuxLine(currentLocation.Message);
+            str.Append("{{user}} and {{char}} are currently at this location: ").AppendLinuxLine(currentLocation.Content);
             response = str.ToString();
             return true;
         }
