@@ -1446,8 +1446,6 @@ namespace WaifuAI
                 default:
                     break;
             }
-            ck_ragsummaries.Checked = Program.Settings.RAGUseSummaries;
-            ck_ragtitles.Checked = Program.Settings.RAGUseTitles;
             num_ragcutoff.Value = (decimal)Program.Settings.RAGDistanceCutOff;
             num_ragmaxretrieve.Value = Program.Settings.RAGMaxEntries;
             num_ragindex.Value = Program.Settings.RAGIndex;
@@ -1573,8 +1571,6 @@ namespace WaifuAI
 
         private void ApplyRAGSettings(object sender, EventArgs e)
         {
-            LLMSystem.Settings.RAGUseSummaries = ck_ragsummaries.Checked;
-            LLMSystem.Settings.RAGUseTitles = ck_ragtitles.Checked;
             LLMSystem.Settings.RAGDistanceCutOff = (float)num_ragcutoff.Value;
             LLMSystem.Settings.RAGMaxEntries = (int)num_ragmaxretrieve.Value;
             LLMSystem.Settings.RAGIndex = (int)num_ragindex.Value;
