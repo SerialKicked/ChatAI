@@ -79,6 +79,7 @@
             bt_importworld = new Button();
             bt_ImportSTChat = new Button();
             groupBox1 = new GroupBox();
+            ck_sysrag = new CheckBox();
             ck_alwayswebsearch = new CheckBox();
             checkBox1 = new CheckBox();
             ck_ragdocs = new CheckBox();
@@ -287,7 +288,7 @@
             label8 = new Label();
             bt_connect = new Button();
             tabMain = new TabControl();
-            ck_sysrag = new CheckBox();
+            ck_agentmode = new CheckBox();
             statusbar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
             tabConsole.SuspendLayout();
@@ -929,6 +930,18 @@
             groupBox1.TabIndex = 23;
             groupBox1.TabStop = false;
             groupBox1.Text = "RAG System";
+            // 
+            // ck_sysrag
+            // 
+            ck_sysrag.AutoSize = true;
+            ck_sysrag.Font = new Font("Segoe UI", 9F);
+            ck_sysrag.Location = new Point(195, 147);
+            ck_sysrag.Name = "ck_sysrag";
+            ck_sysrag.Size = new Size(196, 19);
+            ck_sysrag.TabIndex = 36;
+            ck_sysrag.Text = "Force All RAG to System Prompt";
+            ck_sysrag.UseVisualStyleBackColor = true;
+            ck_sysrag.CheckedChanged += ck_sysrag_CheckedChanged;
             // 
             // ck_alwayswebsearch
             // 
@@ -2766,6 +2779,7 @@
             // groupBox23
             // 
             groupBox23.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox23.Controls.Add(ck_agentmode);
             groupBox23.Controls.Add(ck_ragtothink);
             groupBox23.Controls.Add(ck_disablethink);
             groupBox23.Controls.Add(bt_clearimg);
@@ -3244,17 +3258,17 @@
             tabMain.Size = new Size(1004, 918);
             tabMain.TabIndex = 1;
             // 
-            // ck_sysrag
+            // ck_agentmode
             // 
-            ck_sysrag.AutoSize = true;
-            ck_sysrag.Font = new Font("Segoe UI", 9F);
-            ck_sysrag.Location = new Point(195, 147);
-            ck_sysrag.Name = "ck_sysrag";
-            ck_sysrag.Size = new Size(196, 19);
-            ck_sysrag.TabIndex = 36;
-            ck_sysrag.Text = "Force All RAG to System Prompt";
-            ck_sysrag.UseVisualStyleBackColor = true;
-            ck_sysrag.CheckedChanged += ck_sysrag_CheckedChanged;
+            ck_agentmode.AutoSize = true;
+            ck_agentmode.Font = new Font("Segoe UI", 9F);
+            ck_agentmode.Location = new Point(6, 245);
+            ck_agentmode.Name = "ck_agentmode";
+            ck_agentmode.Size = new Size(159, 19);
+            ck_agentmode.TabIndex = 37;
+            ck_agentmode.Text = "Background Agent Mode";
+            ck_agentmode.UseVisualStyleBackColor = true;
+            ck_agentmode.CheckedChanged += ck_agentmode_CheckedChanged;
             // 
             // MainForm
             // 
@@ -3642,5 +3656,6 @@
         private CheckBox ck_ragtothink;
         private CheckBox ck_hist_isrp;
         private CheckBox ck_sysrag;
+        private CheckBox ck_agentmode;
     }
 }

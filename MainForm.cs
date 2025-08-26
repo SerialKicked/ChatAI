@@ -1474,6 +1474,7 @@ namespace WaifuAI
             ed_sloplist.Text = Program.Settings.AntiSlopList.Length > 0 ? string.Join(",", Program.Settings.AntiSlopList) : string.Empty;
             ck_disablethink.Checked = Program.Settings.DisableThinking;
             ck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
+            ck_agentmode.Checked = Program.Settings.AgentEnabled;
 
 
             if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
@@ -1520,6 +1521,7 @@ namespace WaifuAI
                 Program.Settings.StopGenerationOnFirstParagraph = ck_oneparagraph.Checked;
                 Program.Settings.WebsitePluginUseKeywords = ck_webkeyword.Checked;
                 Program.Settings.WebsitePluginGrammar = ck_webgrammar.Checked;
+                Program.Settings.AgentEnabled = ck_agentmode.Checked;
 
                 var str = JsonConvert.SerializeObject(Program.Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
@@ -2705,6 +2707,11 @@ namespace WaifuAI
         private void ck_sysrag_CheckedChanged(object sender, EventArgs e)
         {
             LLMSystem.Settings.RAGMoveToSysPrompt = ck_sysrag.Checked;
+        }
+
+        private void ck_agentmode_CheckedChanged(object sender, EventArgs e)
+        {
+            LLMSystem.Settings.AgentEnabled = ck_agentmode.Checked;
         }
     }
 }
