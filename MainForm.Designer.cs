@@ -250,6 +250,7 @@
             ed_input = new TextBox();
             panel1 = new Panel();
             groupBox23 = new GroupBox();
+            ck_agentmode = new CheckBox();
             ck_ragtothink = new CheckBox();
             ck_disablethink = new CheckBox();
             bt_clearimg = new Button();
@@ -288,7 +289,9 @@
             label8 = new Label();
             bt_connect = new Button();
             tabMain = new TabControl();
-            ck_agentmode = new CheckBox();
+            tabSearch = new TabPage();
+            txtSearchRes = new TextBox();
+            textBox1 = new TextBox();
             statusbar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
             tabConsole.SuspendLayout();
@@ -374,6 +377,7 @@
             ((System.ComponentModel.ISupportInitialize)num_maxresponse).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_maxcontext).BeginInit();
             tabMain.SuspendLayout();
+            tabSearch.SuspendLayout();
             SuspendLayout();
             // 
             // openFileDialog1
@@ -2800,6 +2804,18 @@
             groupBox23.TabStop = false;
             groupBox23.Text = "Quick Settings";
             // 
+            // ck_agentmode
+            // 
+            ck_agentmode.AutoSize = true;
+            ck_agentmode.Font = new Font("Segoe UI", 9F);
+            ck_agentmode.Location = new Point(6, 245);
+            ck_agentmode.Name = "ck_agentmode";
+            ck_agentmode.Size = new Size(159, 19);
+            ck_agentmode.TabIndex = 37;
+            ck_agentmode.Text = "Background Agent Mode";
+            ck_agentmode.UseVisualStyleBackColor = true;
+            ck_agentmode.CheckedChanged += ck_agentmode_CheckedChanged;
+            // 
             // ck_ragtothink
             // 
             ck_ragtothink.AutoSize = true;
@@ -3252,23 +3268,42 @@
             tabMain.Controls.Add(tabSamplers);
             tabMain.Controls.Add(tabSettings);
             tabMain.Controls.Add(tabConsole);
+            tabMain.Controls.Add(tabSearch);
             tabMain.Location = new Point(0, 0);
             tabMain.Name = "tabMain";
             tabMain.SelectedIndex = 0;
             tabMain.Size = new Size(1004, 918);
             tabMain.TabIndex = 1;
             // 
-            // ck_agentmode
+            // tabSearch
             // 
-            ck_agentmode.AutoSize = true;
-            ck_agentmode.Font = new Font("Segoe UI", 9F);
-            ck_agentmode.Location = new Point(6, 245);
-            ck_agentmode.Name = "ck_agentmode";
-            ck_agentmode.Size = new Size(159, 19);
-            ck_agentmode.TabIndex = 37;
-            ck_agentmode.Text = "Background Agent Mode";
-            ck_agentmode.UseVisualStyleBackColor = true;
-            ck_agentmode.CheckedChanged += ck_agentmode_CheckedChanged;
+            tabSearch.Controls.Add(txtSearchRes);
+            tabSearch.Controls.Add(textBox1);
+            tabSearch.Location = new Point(4, 27);
+            tabSearch.Name = "tabSearch";
+            tabSearch.Padding = new Padding(3);
+            tabSearch.Size = new Size(996, 887);
+            tabSearch.TabIndex = 10;
+            tabSearch.Text = "tabPage1";
+            tabSearch.UseVisualStyleBackColor = true;
+            // 
+            // txtSearchRes
+            // 
+            txtSearchRes.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            txtSearchRes.Location = new Point(8, 35);
+            txtSearchRes.Multiline = true;
+            txtSearchRes.Name = "txtSearchRes";
+            txtSearchRes.Size = new Size(980, 846);
+            txtSearchRes.TabIndex = 1;
+            // 
+            // textBox1
+            // 
+            textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            textBox1.Location = new Point(8, 6);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(980, 23);
+            textBox1.TabIndex = 0;
+            textBox1.KeyPress += textBox1_KeyPress;
             // 
             // MainForm
             // 
@@ -3393,6 +3428,8 @@
             ((System.ComponentModel.ISupportInitialize)num_maxresponse).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_maxcontext).EndInit();
             tabMain.ResumeLayout(false);
+            tabSearch.ResumeLayout(false);
+            tabSearch.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -3657,5 +3694,8 @@
         private CheckBox ck_hist_isrp;
         private CheckBox ck_sysrag;
         private CheckBox ck_agentmode;
+        private TabPage tabSearch;
+        private TextBox txtSearchRes;
+        private TextBox textBox1;
     }
 }

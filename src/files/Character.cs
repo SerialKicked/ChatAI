@@ -19,6 +19,9 @@ namespace WaifuAI.Files
         /// </summary>
         public bool CanInitiateChat { get; set; } = false;
 
+        /// <summary> Icon to be displayed in chat </summary>
+        public string Icon { get; set; } = string.Empty;
+
         /// <summary>
         /// A list of prefered inference settings for this character. When enabled in the UI, the bot will cycle between these settings at random with each new message. This ensure a more diverse set of responses.
         /// </summary>

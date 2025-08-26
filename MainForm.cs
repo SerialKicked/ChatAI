@@ -2,6 +2,7 @@ using AIToolkit;
 using AIToolkit.Agent;
 using AIToolkit.Files;
 using AIToolkit.LLM;
+using AIToolkit.Memory;
 using AIToolkit.SearchAPI;
 using AngleSharp.Text;
 using Markdig;
@@ -1334,10 +1335,10 @@ namespace WaifuAI
             switch (singleMessage.Role)
             {
                 case AuthorRole.User:
-                    img = LLMSystem.User.Icon;
+                    img = User?.Icon ?? "gears.png";
                     break;
                 case AuthorRole.Assistant:
-                    img = LLMSystem.Bot.Icon;
+                    img = Bot?.Icon ?? "gears.png";
                     break;
             }
             var text = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + singleMessage.Message, CustomMarkDownPipeline);
@@ -2187,10 +2188,10 @@ namespace WaifuAI
             switch (singleMessage.Role)
             {
                 case AuthorRole.User:
-                    img = singleMessage.User.Icon;
+                    img = (singleMessage.User as Character)!.Icon;
                     break;
                 case AuthorRole.Assistant:
-                    img = singleMessage.Bot.Icon;
+                    img = (singleMessage.Bot as Character)!.Icon;
                     break;
             }
             var html = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + singleMessage.Message, CustomMarkDownPipeline);
@@ -2629,8 +2630,6 @@ namespace WaifuAI
 
         private void button2_Click(object sender, EventArgs e)
         {
-            SearchUsageExample.ExampleUsage();
-
             // female: "Tina", "super chariot of death", "super chariot in death"
             // matel: "Lor_ Merciless", "kobo", "chatty"
             //    var ttsinput = new AIToolkit.API.TextToSpeechInput()
@@ -2712,6 +2711,42 @@ namespace WaifuAI
         private void ck_agentmode_CheckedChanged(object sender, EventArgs e)
         {
             LLMSystem.Settings.AgentEnabled = ck_agentmode.Checked;
+        }
+
+        private async void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)13)
+            {
+                e.Handled = true;
+                var searchstr = textBox1.Text;
+                txtSearchRes.Clear();
+                if (!string.IsNullOrWhiteSpace(searchstr))
+                {
+                    var found = await RAGSystem.Search(searchstr, 100, 1.2f);
+                    var res = new StringBuilder();
+                    foreach (var item in found)
+                    {
+                        var title = "[unknown]";
+                        var content = "[unknown]";
+                        var distance = item.distance.ToString("0.0000");
+                        var cat = item.category.ToString();
+                        if (item.session is MemoryUnit unit)
+                        {
+                            title = unit.Name;
+                            content = unit.Content;
+                        }
+                        else if (item.session is ChatSession sess)
+                        {
+                            title = sess.Title;
+                            content = sess.Summary;
+                        }
+                        res.AppendLine(cat + " (dist: " + distance + "): " + title);
+                        res.AppendLine(content);
+                        res.AppendLine();
+                    }
+                    txtSearchRes.Text = res.ToString();
+                }
+            }
         }
     }
 }
