@@ -92,8 +92,6 @@
             label12 = new Label();
             cb_ragheuristic = new ComboBox();
             button1 = new Button();
-            ck_ragsummaries = new CheckBox();
-            ck_ragtitles = new CheckBox();
             tabSamplers = new TabPage();
             bt_savesampler = new Button();
             label1 = new Label();
@@ -833,9 +831,9 @@
             groupBox9.Controls.Add(ck_webgrammar);
             groupBox9.Controls.Add(ck_webkeyword);
             groupBox9.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox9.Location = new Point(8, 235);
+            groupBox9.Location = new Point(8, 213);
             groupBox9.Name = "groupBox9";
-            groupBox9.Size = new Size(402, 73);
+            groupBox9.Size = new Size(402, 95);
             groupBox9.TabIndex = 25;
             groupBox9.TabStop = false;
             groupBox9.Text = "Website Browsing Plugin";
@@ -925,12 +923,10 @@
             groupBox1.Controls.Add(label12);
             groupBox1.Controls.Add(cb_ragheuristic);
             groupBox1.Controls.Add(button1);
-            groupBox1.Controls.Add(ck_ragsummaries);
-            groupBox1.Controls.Add(ck_ragtitles);
             groupBox1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox1.Location = new Point(8, 6);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(402, 223);
+            groupBox1.Size = new Size(402, 201);
             groupBox1.TabIndex = 23;
             groupBox1.TabStop = false;
             groupBox1.Text = "RAG System";
@@ -939,7 +935,7 @@
             // 
             ck_sysrag.AutoSize = true;
             ck_sysrag.Font = new Font("Segoe UI", 9F);
-            ck_sysrag.Location = new Point(195, 147);
+            ck_sysrag.Location = new Point(195, 47);
             ck_sysrag.Name = "ck_sysrag";
             ck_sysrag.Size = new Size(196, 19);
             ck_sysrag.TabIndex = 36;
@@ -951,7 +947,7 @@
             // 
             ck_alwayswebsearch.AutoSize = true;
             ck_alwayswebsearch.Font = new Font("Segoe UI", 9F);
-            ck_alwayswebsearch.Location = new Point(195, 122);
+            ck_alwayswebsearch.Location = new Point(195, 22);
             ck_alwayswebsearch.Name = "ck_alwayswebsearch";
             ck_alwayswebsearch.Size = new Size(170, 19);
             ck_alwayswebsearch.TabIndex = 35;
@@ -1074,39 +1070,13 @@
             // 
             // button1
             // 
-            button1.Location = new Point(182, 194);
+            button1.Location = new Point(177, 167);
             button1.Name = "button1";
             button1.Size = new Size(214, 23);
             button1.TabIndex = 2;
             button1.Text = "Apply RAG Settings";
             button1.UseVisualStyleBackColor = true;
             button1.Click += ApplyRAGSettings;
-            // 
-            // ck_ragsummaries
-            // 
-            ck_ragsummaries.AutoSize = true;
-            ck_ragsummaries.Checked = true;
-            ck_ragsummaries.CheckState = CheckState.Checked;
-            ck_ragsummaries.Font = new Font("Segoe UI", 9F);
-            ck_ragsummaries.Location = new Point(195, 47);
-            ck_ragsummaries.Name = "ck_ragsummaries";
-            ck_ragsummaries.Size = new Size(123, 19);
-            ck_ragsummaries.TabIndex = 1;
-            ck_ragsummaries.Text = "Search Summaries";
-            ck_ragsummaries.UseVisualStyleBackColor = true;
-            // 
-            // ck_ragtitles
-            // 
-            ck_ragtitles.AutoSize = true;
-            ck_ragtitles.Checked = true;
-            ck_ragtitles.CheckState = CheckState.Checked;
-            ck_ragtitles.Font = new Font("Segoe UI", 9F);
-            ck_ragtitles.Location = new Point(195, 22);
-            ck_ragtitles.Name = "ck_ragtitles";
-            ck_ragtitles.Size = new Size(92, 19);
-            ck_ragtitles.TabIndex = 0;
-            ck_ragtitles.Text = "Search Titles";
-            ck_ragtitles.UseVisualStyleBackColor = true;
             // 
             // tabSamplers
             // 
@@ -3494,8 +3464,6 @@
         private Label label12;
         private ComboBox cb_ragheuristic;
         private Button button1;
-        private CheckBox ck_ragsummaries;
-        private CheckBox ck_ragtitles;
         private TabPage tabSamplers;
         private Button bt_savesampler;
         private Label label1;
