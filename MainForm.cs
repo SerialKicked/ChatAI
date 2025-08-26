@@ -2718,8 +2718,14 @@ namespace WaifuAI
                 txtSearchRes.Clear();
                 if (!string.IsNullOrWhiteSpace(searchstr))
                 {
-                    var found = await RAGSystem.Search(searchstr, 100, 1.2f);
+
                     var res = new StringBuilder();
+                    res.AppendLine($"Base string: {searchstr}");
+                    searchstr = searchstr.ConvertToThirdPerson();
+                    res.AppendLine($"Converted to 3rd person: {searchstr}");
+                    res.AppendLine();
+                    res.AppendLine("Search Results:");
+                    var found = await RAGSystem.Search(searchstr, 100, 1.2f);
                     foreach (var item in found)
                     {
                         var title = "[unknown]";
