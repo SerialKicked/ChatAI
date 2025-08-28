@@ -84,6 +84,7 @@
             groupBox6 = new GroupBox();
             ckl_plugins = new CheckedListBox();
             label9 = new Label();
+            ck_irldates = new CheckBox();
             groupBox3.SuspendLayout();
             tabControl1.SuspendLayout();
             tabBio.SuspendLayout();
@@ -617,6 +618,7 @@
             // 
             // groupBox7
             // 
+            groupBox7.Controls.Add(ck_irldates);
             groupBox7.Controls.Add(label10);
             groupBox7.Controls.Add(ck_senseoftime);
             groupBox7.Controls.Add(ck_caninitchat);
@@ -704,6 +706,17 @@
             label9.Size = new Size(419, 15);
             label9.TabIndex = 0;
             label9.Text = "Plugins this character has access to. Some can be toggled on/off in main chat.";
+            // 
+            // ck_irldates
+            // 
+            ck_irldates.AutoSize = true;
+            ck_irldates.Font = new Font("Segoe UI", 9F);
+            ck_irldates.Location = new Point(6, 122);
+            ck_irldates.Name = "ck_irldates";
+            ck_irldates.Size = new Size(230, 19);
+            ck_irldates.TabIndex = 5;
+            ck_irldates.Text = "Include IRL dates in session summaries";
+            ck_irldates.UseVisualStyleBackColor = true;
             // 
             // CharEditForm
             // 
@@ -808,5 +821,6 @@
         private Label label14;
         private NumericUpDown num_ptvalue;
         private Button btRegenBio;
+        private CheckBox ck_irldates;
     }
 }

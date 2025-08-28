@@ -394,7 +394,7 @@ namespace WaifuAI
                 {
                     statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                 });
-                if (Program.Settings.UseTTS && !string.IsNullOrEmpty(Bot?.TTSVoice))
+                if (Program.Settings.UseTTS && !string.IsNullOrEmpty(Bot?.TTSVoice) && LLMSystem.Client?.SupportsTTS == true)
                 {
                     await OutputTTS(stringfix);
                 }
