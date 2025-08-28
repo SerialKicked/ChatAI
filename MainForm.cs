@@ -2023,6 +2023,8 @@ namespace WaifuAI
                 (LLMSystem.Bot as Character)?.SaveChatHistory(true);
                 loadingForm.SetMessage("Loading Updated Vector Database...");
                 RAGSystem.VectorizeChatBot(LLMSystem.Bot);
+                loadingForm.SetMessage("Brain Embedding...");
+                await LLMSystem.Bot.Brain.RegenEmbeds();
             }
             finally
             {
