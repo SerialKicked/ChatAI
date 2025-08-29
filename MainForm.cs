@@ -1434,7 +1434,6 @@ namespace WaifuAI
             num_maxresponse.Value = Program.Settings.MaxReplyLength;
             num_temperature.Value = (decimal)Program.Settings.Temperature;
             num_memtokens.Value = Program.Settings.ReservedSessionTokens;
-            ck_markdown.Checked = Program.Settings.MarkdownMemoryFormating;
             switch (LLMSystem.Settings.RAGHeuristic)
             {
                 case HNSW.Net.NeighbourSelectionHeuristic.SelectSimple:
@@ -2559,11 +2558,6 @@ namespace WaifuAI
             LLMSystem.Settings.ReservedSessionTokens = (int)num_memtokens.Value;
         }
 
-        private void ck_markdown_CheckedChanged(object sender, EventArgs e)
-        {
-            LLMSystem.Settings.MarkdownMemoryFormating = ck_markdown.Checked;
-        }
-
         private async void bt_deleteAllHistory_Click(object sender, EventArgs e)
         {
             // Confirm before deleting
@@ -2751,6 +2745,11 @@ namespace WaifuAI
                     txtSearchRes.Text = res.ToString();
                 }
             }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

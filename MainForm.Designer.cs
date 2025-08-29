@@ -61,7 +61,6 @@
             groupBox11 = new GroupBox();
             label65 = new Label();
             cb_pastsession = new ComboBox();
-            ck_markdown = new CheckBox();
             num_memtokens = new NumericUpDown();
             label32 = new Label();
             groupBox10 = new GroupBox();
@@ -81,7 +80,6 @@
             groupBox1 = new GroupBox();
             ck_sysrag = new CheckBox();
             ck_alwayswebsearch = new CheckBox();
-            checkBox1 = new CheckBox();
             ck_ragdocs = new CheckBox();
             label15 = new Label();
             num_ragindex = new NumericUpDown();
@@ -678,7 +676,6 @@
             // 
             groupBox11.Controls.Add(label65);
             groupBox11.Controls.Add(cb_pastsession);
-            groupBox11.Controls.Add(ck_markdown);
             groupBox11.Controls.Add(num_memtokens);
             groupBox11.Controls.Add(label32);
             groupBox11.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
@@ -709,18 +706,6 @@
             cb_pastsession.Size = new Size(373, 23);
             cb_pastsession.TabIndex = 33;
             cb_pastsession.SelectedIndexChanged += cb_pastsession_SelectedIndexChanged;
-            // 
-            // ck_markdown
-            // 
-            ck_markdown.AutoSize = true;
-            ck_markdown.Font = new Font("Segoe UI", 9F);
-            ck_markdown.Location = new Point(137, 41);
-            ck_markdown.Name = "ck_markdown";
-            ck_markdown.Size = new Size(167, 19);
-            ck_markdown.TabIndex = 32;
-            ck_markdown.Text = "Use Markdown Formatting";
-            ck_markdown.UseVisualStyleBackColor = true;
-            ck_markdown.CheckedChanged += ck_markdown_CheckedChanged;
             // 
             // num_memtokens
             // 
@@ -912,7 +897,6 @@
             // 
             groupBox1.Controls.Add(ck_sysrag);
             groupBox1.Controls.Add(ck_alwayswebsearch);
-            groupBox1.Controls.Add(checkBox1);
             groupBox1.Controls.Add(ck_ragdocs);
             groupBox1.Controls.Add(label15);
             groupBox1.Controls.Add(num_ragindex);
@@ -954,18 +938,6 @@
             ck_alwayswebsearch.Text = "No keyword for online RAG";
             ck_alwayswebsearch.UseVisualStyleBackColor = true;
             ck_alwayswebsearch.CheckedChanged += ck_alwayswebsearch_CheckedChanged;
-            // 
-            // checkBox1
-            // 
-            checkBox1.AutoSize = true;
-            checkBox1.Enabled = false;
-            checkBox1.Font = new Font("Segoe UI", 9F);
-            checkBox1.Location = new Point(195, 97);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(122, 19);
-            checkBox1.TabIndex = 30;
-            checkBox1.Text = "Include with dates";
-            checkBox1.UseVisualStyleBackColor = true;
             // 
             // ck_ragdocs
             // 
@@ -3434,7 +3406,6 @@
         private CheckBox ck_antislop;
         private CheckBox ck_fixasterix;
         private GroupBox groupBox11;
-        private CheckBox ck_markdown;
         private NumericUpDown num_memtokens;
         private Label label32;
         private GroupBox groupBox10;
@@ -3453,7 +3424,6 @@
         private Button bt_ImportSTChat;
         private GroupBox groupBox1;
         private CheckBox ck_alwayswebsearch;
-        private CheckBox checkBox1;
         private CheckBox ck_ragdocs;
         private Label label15;
         private NumericUpDown num_ragindex;
