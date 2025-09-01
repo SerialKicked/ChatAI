@@ -1295,7 +1295,7 @@ namespace WaifuAI
                     {
                         loadingForm.AddProgress(20);
                     };
-                    await Chatlog.UpdateSession(LLMSystem.History.CurrentSession);
+                    await LLMSystem.History.CurrentSession.UpdateSession();
                     LLMSystem.RemoveQuickInferenceEventHandler();
                 }
                 loadingForm.SetMessage("Loading current session.");
@@ -1949,7 +1949,7 @@ namespace WaifuAI
                         }
                     }
                 }
-                _selectedSession = await Chatlog.UpdateSession(_selectedSession);
+                await _selectedSession.UpdateSession();
                 loadingForm.SetMessage("Finalizing.");
                 loadingForm.SetProgress(95);
                 DisplaySessionDetails(_selectedSession);
@@ -2745,11 +2745,6 @@ namespace WaifuAI
                     txtSearchRes.Text = res.ToString();
                 }
             }
-        }
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }
