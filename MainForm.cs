@@ -2358,11 +2358,7 @@ namespace WaifuAI
             if (LLMSystem.Status == SystemStatus.Busy || messageIndex < 0 || messageIndex >= LLMSystem.History.CurrentSession.Messages.Count)
                 return;
             var realid = messageIndex;
-            //if (realid < 0)
-            //    realid = 0;
-            //realid += messageIndex - 1;
-            //if (realid >= LLMSystem.History.CurrentSession.Messages.Count)
-            //    return;
+
             this.Enabled = false;
             using var _editMessage = new EditMessageForm(LLMSystem.History.CurrentSession.Messages[realid].Guid)
             {
