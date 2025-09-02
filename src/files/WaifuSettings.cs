@@ -32,10 +32,6 @@ namespace WaifuAI.Files
         public bool WebsitePluginUseKeywords { get; set; } = false;
         public bool WebsitePluginGrammar { get; set; } = false;
         public bool RemoveCutSentence { get; set; } = false;
-        // Search API
-        public string BraveAPIKey { get; set; } = string.Empty;
-        public BackendSearchAPI SearchAPI { get; set; } = BackendSearchAPI.DuckDuckGo;
-        public bool SearchDetailedResults { get; set; } = true;
         public StringFix RoleplayFormatting { get; set; } = new StringFix(false, false, false, false, false, 1, 50);
     }
 }

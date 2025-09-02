@@ -1416,9 +1416,6 @@ namespace WaifuAI
             _isinitloading = true;
             LLMSystem.MaxContextLength = Program.Settings.MaxTotalTokens;
 
-            WebSearchAPI.SearchAPI = Program.Settings.SearchAPI;
-            WebSearchAPI.SearchDetailedResults = Program.Settings.SearchDetailedResults;
-            WebSearchAPI.BraveAPIKey = Program.Settings.BraveAPIKey;
             // set cb_user to the Program.Settings.UserFile value if it's in the list, otherwise set index to 0.
             cb_user.SelectedIndex = cb_user.Items.Contains(Program.Settings.UserFile) ? cb_user.Items.IndexOf(Program.Settings.UserFile) : 0;
             // set cb_infer to the Program.Settings.InferenceFile value if it's in the list, otherwise set index to 0.
@@ -1467,7 +1464,7 @@ namespace WaifuAI
             num_italicratio.Value = (decimal)Program.Settings.RoleplayFormatting.RemoveItalicRatio;
             num_removeitalicmaxword.Value = Program.Settings.RoleplayFormatting.RemoveItalicMaxWords;
             cb_pastsession.SelectedIndex = (int)Program.Settings.SessionHandling;
-            ck_sysrag.Checked = Program.Settings.RAGMoveToSysPrompt;
+            ck_sysrag.Checked = Program.Settings.MoveAllInsertsToSysPrompt;
             ck_remlastsentence.Checked = Program.Settings.RemoveCutSentence;
             ck_oneparagraph.Checked = Program.Settings.StopGenerationOnFirstParagraph;
             ed_sloplist.Text = Program.Settings.AntiSlopList.Length > 0 ? string.Join(",", Program.Settings.AntiSlopList) : string.Empty;
@@ -1575,7 +1572,7 @@ namespace WaifuAI
             LLMSystem.Settings.RAGDistanceCutOff = (float)num_ragcutoff.Value;
             LLMSystem.Settings.RAGMaxEntries = (int)num_ragmaxretrieve.Value;
             LLMSystem.Settings.RAGIndex = (int)num_ragindex.Value;
-            LLMSystem.Settings.RAGMoveToSysPrompt = ck_sysrag.Checked;
+            LLMSystem.Settings.MoveAllInsertsToSysPrompt = ck_sysrag.Checked;
             if (cb_ragheuristic.SelectedIndex == 0)
                 LLMSystem.Settings.RAGHeuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
             else if (cb_ragheuristic.SelectedIndex == 1)
@@ -2698,7 +2695,7 @@ namespace WaifuAI
 
         private void ck_sysrag_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.RAGMoveToSysPrompt = ck_sysrag.Checked;
+            LLMSystem.Settings.MoveAllInsertsToSysPrompt = ck_sysrag.Checked;
         }
 
         private void ck_agentmode_CheckedChanged(object sender, EventArgs e)
