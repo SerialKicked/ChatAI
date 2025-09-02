@@ -380,8 +380,10 @@ namespace WaifuAI
                 stringfix = stringfix.FixRoleplayString(Program.Settings.RoleplayFormatting, false);
 
                 var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
-                await WebEditLastMessage(MsgPrefix + stringfix);
+
                 var msg = LLMSystem.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMSystem.User, LLMSystem.Bot);
+                await Task.Delay(50);
+                await WebEditLastMessage(MsgPrefix + stringfix, msg.Guid);
                 PrepareResponse();
                 if (_forcereload || Program.Settings.MaxMessagesOnScreen <= LLMSystem.History.CurrentSession.Messages.Count)
                 {
@@ -1373,7 +1375,7 @@ namespace WaifuAI
             }
 
             coremsg = coremsg.SanitizeForJS();
-            var script = $"addHtmlAfterLastChatMessage(\"{coremsg}\", {index});";
+            var script = $"addHtmlAfterLastChatMessage(\"{coremsg}\", \"{singleMessage.Guid}\");";
             await web_chat.CoreWebView2.ExecuteScriptAsync(script);
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
@@ -2127,13 +2129,13 @@ namespace WaifuAI
                         console.error('Index out of bounds');
                     }
                 }
-                function addHtmlAfterLastChatMessage(htmlContent, index) {
+                function addHtmlAfterLastChatMessage(htmlContent, messageGuid) {
                     const chatMessages = document.querySelectorAll('.chat-message');
                     if (chatMessages.length > 0) {
                         const lastChatMessage = chatMessages[chatMessages.length - 1];
                         const newDiv = document.createElement('div');
                         newDiv.className = 'chat-message';
-                        newDiv.setAttribute('data-message-index', index);
+                        newDiv.setAttribute('data-message-guid', messageGuid);
                         newDiv.innerHTML = htmlContent;
                         lastChatMessage.insertAdjacentElement('afterend', newDiv);
                     } else {
@@ -2152,8 +2154,8 @@ namespace WaifuAI
                         }
                         if (targetElement && targetElement.classList.contains('chat-message')) 
                         {
-                            const messageIndex = parseInt(targetElement.getAttribute('data-message-index'));
-                            window.chrome.webview.postMessage({ type: 'EditMessage', index: messageIndex });
+                            const messageGuid = targetElement.getAttribute('data-message-guid');
+                            window.chrome.webview.postMessage({ type: 'EditMessage', guid: messageGuid });
                         }
                     });
                 });         
@@ -2161,12 +2163,12 @@ namespace WaifuAI
             return $"<html><head>{css}</head><body>{scripts}<div id='chatContainer'>{htmlContent}<br/></div></body></html>";
         }
 
-        private static string InjectDialogHtml(string imgPath, string dialog, int index)
+        private static string InjectDialogHtml(string imgPath, string dialog, Guid messageGuid)
         {
             // Replace thinking tags with collapsible div structure, using the instruction format's tags
             var processedDialog = dialog;
             return $@"
-                <div class='chat-message' data-message-index='{index}'>
+                <div class='chat-message' data-message-guid='{messageGuid}'>
                     <div class='portrait'>
                         <img src='https://appassets.test/img/{imgPath}' alt='Portrait' width='60'>
                     </div>
@@ -2178,7 +2180,7 @@ namespace WaifuAI
                 </div>";
         }
 
-        private static string AddHtmlMessage(SingleMessage singleMessage, int index)
+        private static string AddHtmlMessage(SingleMessage singleMessage)
         {
             string img = "gears.png";
             switch (singleMessage.Role)
@@ -2191,7 +2193,7 @@ namespace WaifuAI
                     break;
             }
             var html = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + singleMessage.Message, CustomMarkDownPipeline);
-            return InjectDialogHtml(img, html, index);
+            return InjectDialogHtml(img, html, singleMessage.Guid);
         }
 
         private async Task WebRemoveLastMessage()
@@ -2205,11 +2207,11 @@ namespace WaifuAI
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
 
-        private async Task WebEditLastMessage(string newMessage)
+        private async Task WebEditLastMessage(string newMessage, Guid? messageGuid = null)
         {
             if (InvokeRequired)
             {
-                await InvokeAsync(new Func<Task>(async () => await WebEditLastMessage(newMessage)));
+                await InvokeAsync(new Func<Task>(async () => await WebEditLastMessage(newMessage, messageGuid)));
                 return;
             }
 
@@ -2225,7 +2227,7 @@ namespace WaifuAI
                     var text = Markdown.ToHtml(worktext, CustomMarkDownPipeline);
                     text = text.SanitizeForJS();
                     var script = $"updateMessageAtIndex(\"{text}\", document.getElementsByClassName('message-content').length - 1, true);";
-                    var result = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+                    await web_chat.CoreWebView2.ExecuteScriptAsync(script);
                 }
                 else
                 {
@@ -2234,12 +2236,12 @@ namespace WaifuAI
                     var thinkingText = parts[0].Replace(LLMSystem.Instruct.ThinkingStart, string.Empty);
                     thinkingText = Markdown.ToHtml(thinkingText, CustomMarkDownPipeline).SanitizeForJS();
                     var script = $"updateMessageAtIndex(\"{thinkingText}\", document.getElementsByClassName('message-content').length - 1, true);";
-                    var result = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+                    await web_chat.CoreWebView2.ExecuteScriptAsync(script);
 
                     var msgoutput = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + parts[1].TrimStart().TrimStart('\n').TrimStart();
                     var messageText = Markdown.ToHtml(msgoutput, CustomMarkDownPipeline).SanitizeForJS();
                     script = $"updateMessageAtIndex(\"{messageText}\", document.getElementsByClassName('message-content').length - 1, false);";
-                    result = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+                    await web_chat.CoreWebView2.ExecuteScriptAsync(script);
                 }
             }
             else
@@ -2247,8 +2249,25 @@ namespace WaifuAI
                 var text = Markdown.ToHtml(newMessage, CustomMarkDownPipeline);
                 text = text.SanitizeForJS();
                 var script = $"updateMessageAtIndex(\"{text}\", document.getElementsByClassName('message-content').length - 1, false);";
-                var result = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+                await web_chat.CoreWebView2.ExecuteScriptAsync(script);
             }
+
+            // Update the data-message-guid attribute if a GUID is provided
+            if (messageGuid.HasValue)
+            {
+                var updateGuidScript = $@"
+                    const chatMessages = document.querySelectorAll('.chat-message');
+                    if (chatMessages.length > 0) {{
+                        const lastMessage = chatMessages[chatMessages.length - 1];
+                        lastMessage.setAttribute('data-message-guid', '{messageGuid.Value}');
+                        console.log('Updated GUID for last message to: {messageGuid.Value}');
+                    }} else {{
+                        console.error('No chat messages found to update GUID');
+                    }}";
+                await web_chat.CoreWebView2.ExecuteScriptAsync(updateGuidScript);
+            }
+
+
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
 
@@ -2278,7 +2297,7 @@ namespace WaifuAI
             for (int i = start; i < LLMSystem.History.CurrentSession.Messages.Count; i++)
             {
                 if (!LLMSystem.History.CurrentSession.Messages[i].Hidden)
-                    html += AddHtmlMessage(LLMSystem.History.CurrentSession.Messages[i], i);
+                    html += AddHtmlMessage(LLMSystem.History.CurrentSession.Messages[i]);
             }
             html = InjectDialogCSS(html);
             web_chat.NavigateToString(html);
@@ -2327,9 +2346,11 @@ namespace WaifuAI
                 var json = JsonConvert.DeserializeObject<Dictionary<string, object>>(message);
                 if (json == null || !json.TryGetValue("type", out object? value) || value.ToString() != "EditMessage")
                     return;
-                if (!json.TryGetValue("index", out object? indexObj))
+                if (!json.TryGetValue("guid", out object? guidObj))
                     return;
-                int divNumber = Convert.ToInt32(indexObj);
+
+                if (!Guid.TryParse(guidObj.ToString(), out Guid messageGuid))
+                    return;
 
                 // Use BeginInvoke instead of Invoke to avoid potential deadlocks
                 BeginInvoke(new Action(() =>
@@ -2338,12 +2359,12 @@ namespace WaifuAI
                     {
                         if (!IsDisposed && IsHandleCreated)
                         {
-                            EditMessage(divNumber);
+                            EditMessage(messageGuid);
                         }
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine($"Error in EditMessageSimple: {ex}");
+                        Debug.WriteLine($"Error in EditMessage: {ex}");
                     }
                 }));
             }
@@ -2353,14 +2374,13 @@ namespace WaifuAI
             }
         }
 
-        private void EditMessage(int messageIndex)
+        private void EditMessage(Guid messageGuid)
         {
-            if (LLMSystem.Status == SystemStatus.Busy || messageIndex < 0 || messageIndex >= LLMSystem.History.CurrentSession.Messages.Count)
+            if (LLMSystem.Status == SystemStatus.Busy)
                 return;
-            var realid = messageIndex;
 
             this.Enabled = false;
-            using var _editMessage = new EditMessageForm(LLMSystem.History.CurrentSession.Messages[realid].Guid)
+            using var _editMessage = new EditMessageForm(messageGuid)
             {
                 TopMost = true,
                 StartPosition = FormStartPosition.CenterParent
