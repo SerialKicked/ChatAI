@@ -78,7 +78,6 @@ namespace WaifuAI.src.forms
             mychar.ExampleDialogs = [.. ed_writingstyle.Lines];
             mychar.CanInitiateChat = ck_caninitchat.Checked;
             mychar.SenseOfTime = ck_senseoftime.Checked;
-            mychar.SessionMemorySystem = ck_sessionmemory.Checked;
             mychar.SelfEditTokens = (int)num_selfedittokens.Value;
             mychar.SelfEditField = ed_selfedit.Text.ToLinuxFormat();
             mychar.Icon = cb_icon.Text;
@@ -105,7 +104,6 @@ namespace WaifuAI.src.forms
             ed_writingstyle.Lines = [.. selectedCharacter.ExampleDialogs];
             ck_caninitchat.Checked = selectedCharacter.CanInitiateChat;
             ck_senseoftime.Checked = selectedCharacter.SenseOfTime;
-            ck_sessionmemory.Checked = selectedCharacter.SessionMemorySystem;
             num_selfedittokens.Value = selectedCharacter.SelfEditTokens;
             ed_selfedit.Text = selectedCharacter.SelfEditField.ToWinFormat();
             num_ptvalue.Value = selectedCharacter.PointValue;

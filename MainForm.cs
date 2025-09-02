@@ -1433,7 +1433,8 @@ namespace WaifuAI
             num_maxcontext.Value = Program.Settings.MaxTotalTokens;
             num_maxresponse.Value = Program.Settings.MaxReplyLength;
             num_temperature.Value = (decimal)Program.Settings.Temperature;
-            num_memtokens.Value = Program.Settings.ReservedSessionTokens;
+            num_memtokens.Value = Program.Settings.SessionReservedTokens;
+            ck_sessionmemory.Checked = LLMSystem.Settings.SessionMemorySystem;
             switch (LLMSystem.Settings.RAGHeuristic)
             {
                 case HNSW.Net.NeighbourSelectionHeuristic.SelectSimple:
@@ -1520,6 +1521,7 @@ namespace WaifuAI
                 Program.Settings.WebsitePluginUseKeywords = ck_webkeyword.Checked;
                 Program.Settings.WebsitePluginGrammar = ck_webgrammar.Checked;
                 Program.Settings.AgentEnabled = ck_agentmode.Checked;
+                Program.Settings.SessionMemorySystem = ck_sessionmemory.Checked;
 
                 var str = JsonConvert.SerializeObject(Program.Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
@@ -2399,7 +2401,6 @@ namespace WaifuAI
                 await LoadHistoryToUI();
                 LoadChatHistoryTab();
                 ck_senseoftime.Checked = LLMSystem.Bot.SenseOfTime;
-                ck_sessionmemory.Checked = LLMSystem.Bot.SessionMemorySystem;
                 ck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
                 var searchplug = LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch");
                 if (searchplug != null)
@@ -2489,7 +2490,7 @@ namespace WaifuAI
 
         private void ck_sessionmemory_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.Bot.SessionMemorySystem = ck_sessionmemory.Checked;
+            LLMSystem.Settings.SessionMemorySystem = ck_sessionmemory.Checked;
         }
 
         private void bt_scenario_Click(object sender, EventArgs e)
@@ -2555,7 +2556,7 @@ namespace WaifuAI
 
         private void num_memtokens_ValueChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.ReservedSessionTokens = (int)num_memtokens.Value;
+            LLMSystem.Settings.SessionReservedTokens = (int)num_memtokens.Value;
         }
 
         private async void bt_deleteAllHistory_Click(object sender, EventArgs e)

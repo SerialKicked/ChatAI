@@ -77,14 +77,13 @@
             ed_outetts = new TextBox();
             label11 = new Label();
             groupBox7 = new GroupBox();
+            ck_irldates = new CheckBox();
             label10 = new Label();
             ck_senseoftime = new CheckBox();
             ck_caninitchat = new CheckBox();
-            ck_sessionmemory = new CheckBox();
             groupBox6 = new GroupBox();
             ckl_plugins = new CheckedListBox();
             label9 = new Label();
-            ck_irldates = new CheckBox();
             groupBox3.SuspendLayout();
             tabControl1.SuspendLayout();
             tabBio.SuspendLayout();
@@ -622,7 +621,6 @@
             groupBox7.Controls.Add(label10);
             groupBox7.Controls.Add(ck_senseoftime);
             groupBox7.Controls.Add(ck_caninitchat);
-            groupBox7.Controls.Add(ck_sessionmemory);
             groupBox7.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox7.Location = new Point(482, 8);
             groupBox7.Name = "groupBox7";
@@ -630,6 +628,17 @@
             groupBox7.TabIndex = 10;
             groupBox7.TabStop = false;
             groupBox7.Text = "Default Character Settings";
+            // 
+            // ck_irldates
+            // 
+            ck_irldates.AutoSize = true;
+            ck_irldates.Font = new Font("Segoe UI", 9F);
+            ck_irldates.Location = new Point(6, 90);
+            ck_irldates.Name = "ck_irldates";
+            ck_irldates.Size = new Size(230, 19);
+            ck_irldates.TabIndex = 5;
+            ck_irldates.Text = "Include IRL dates in session summaries";
+            ck_irldates.UseVisualStyleBackColor = true;
             // 
             // label10
             // 
@@ -645,7 +654,7 @@
             // 
             ck_senseoftime.AutoSize = true;
             ck_senseoftime.Font = new Font("Segoe UI", 9F);
-            ck_senseoftime.Location = new Point(6, 97);
+            ck_senseoftime.Location = new Point(6, 65);
             ck_senseoftime.Name = "ck_senseoftime";
             ck_senseoftime.Size = new Size(290, 19);
             ck_senseoftime.TabIndex = 3;
@@ -656,23 +665,12 @@
             // 
             ck_caninitchat.AutoSize = true;
             ck_caninitchat.Font = new Font("Segoe UI", 9F);
-            ck_caninitchat.Location = new Point(6, 72);
+            ck_caninitchat.Location = new Point(6, 40);
             ck_caninitchat.Name = "ck_caninitchat";
             ck_caninitchat.Size = new Size(279, 19);
             ck_caninitchat.TabIndex = 2;
             ck_caninitchat.Text = "Character can initiate chat (when the user is afk)";
             ck_caninitchat.UseVisualStyleBackColor = true;
-            // 
-            // ck_sessionmemory
-            // 
-            ck_sessionmemory.AutoSize = true;
-            ck_sessionmemory.Font = new Font("Segoe UI", 9F);
-            ck_sessionmemory.Location = new Point(6, 47);
-            ck_sessionmemory.Name = "ck_sessionmemory";
-            ck_sessionmemory.Size = new Size(355, 19);
-            ck_sessionmemory.TabIndex = 1;
-            ck_sessionmemory.Text = "Session Memory (insert summaries of past sessions in prompt)";
-            ck_sessionmemory.UseVisualStyleBackColor = true;
             // 
             // groupBox6
             // 
@@ -706,17 +704,6 @@
             label9.Size = new Size(419, 15);
             label9.TabIndex = 0;
             label9.Text = "Plugins this character has access to. Some can be toggled on/off in main chat.";
-            // 
-            // ck_irldates
-            // 
-            ck_irldates.AutoSize = true;
-            ck_irldates.Font = new Font("Segoe UI", 9F);
-            ck_irldates.Location = new Point(6, 122);
-            ck_irldates.Name = "ck_irldates";
-            ck_irldates.Size = new Size(230, 19);
-            ck_irldates.TabIndex = 5;
-            ck_irldates.Text = "Include IRL dates in session summaries";
-            ck_irldates.UseVisualStyleBackColor = true;
             // 
             // CharEditForm
             // 
@@ -803,7 +790,6 @@
         private GroupBox groupBox7;
         private CheckBox ck_senseoftime;
         private CheckBox ck_caninitchat;
-        private CheckBox ck_sessionmemory;
         private Label label10;
         private GroupBox groupBox8;
         private TextBox ed_outetts;
