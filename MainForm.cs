@@ -1321,9 +1321,25 @@ namespace WaifuAI
             _impersonatemode = false;
             if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.CurrentSession.Messages.Count == 0)
                 return;
-            LLMSystem.History.RemoveLast();
+
+            var msgs = LLMSystem.History.CurrentSession.Messages;
+
+            // Remove any trailing hidden messages (not shown in UI)
+            while (msgs.Count > 0 && msgs[msgs.Count - 1].Hidden)
+                LLMSystem.History.RemoveLast();
+
+            // Now remove the last visible message (shown in UI), if any remain
+            var removedVisible = false;
+            if (msgs.Count > 0)
+            {
+                LLMSystem.History.RemoveLast();
+                removedVisible = true;
+            }
+
             LLMSystem.InvalidatePromptCache();
-            await WebRemoveLastMessage();
+
+            if (removedVisible)
+                await WebRemoveLastMessage();
         }
 
         private async Task LoadHistoryToUI()
@@ -2043,123 +2059,123 @@ namespace WaifuAI
         private string InjectDialogCSS(string htmlContent)
         {
             string css = $@"
-            <style>
-                body {{ 
-                    max-height: 100%;
-                    overflow-y: auto;
-                    overflow-x: hidden;
-                    padding: 16px;
-                    font-size: {Program.Settings.FontSize}px;
-                    width: 100%;
-                    box-sizing: border-box;
-                    background-image: url('https://appassets.test/background/{Program.Settings.BackgroundFile}');
-                    background-size: cover; /* Ensures the image covers the entire background */
-                    background-attachment: fixed; /* Keeps the background image fixed in place */
-                    background-position: center; /* Centers the background image */
-                    background-repeat: no-repeat; /* Prevents the background image from repeating */
-                }}
-                em {{ color: yellow; }}
-                strong {{ color: Tomato }}
-                a {{ color: gold }}
-                h1 {{ font-size: 1.3em; }}
-                h2 {{ font-size: 1.25em; }}
-                h3 {{ font-size: 1.2em; }}
-                h4 {{ font-size: 1.15em; }}
-                h5 {{ font-size: 1.1em; }}
+    <style>
+        body {{ 
+            max-height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 16px;
+            font-size: {Program.Settings.FontSize}px;
+            width: 100%;
+            box-sizing: border-box;
+            background-image: url('https://appassets.test/background/{Program.Settings.BackgroundFile}');
+            background-size: cover; /* Ensures the image covers the entire background */
+            background-attachment: fixed; /* Keeps the background image fixed in place */
+            background-position: center; /* Centers the background image */
+            background-repeat: no-repeat; /* Prevents the background image from repeating */
+        }}
+        em {{ color: yellow; }}
+        strong {{ color: Tomato }}
+        a {{ color: gold }}
+        h1 {{ font-size: 1.3em; }}
+        h2 {{ font-size: 1.25em; }}
+        h3 {{ font-size: 1.2em; }}
+        h4 {{ font-size: 1.15em; }}
+        h5 {{ font-size: 1.1em; }}
 
-                .chat-message {{
-                    display: flex;
-                    align-items: flex-start;
-                    margin-bottom: 10px;
-                    border: 1px solid gray;
-                    background-color: rgba(0, 0, 0, 0.75);
-                    color: rgb(200, 200, 200);
-                }}
-                .chatContainer {{
-                }}
+        .chat-message {{
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            border: 1px solid gray;
+            background-color: rgba(0, 0, 0, 0.75);
+            color: rgb(200, 200, 200);
+        }}
+        .chatContainer {{
+        }}
 
-                .portrait {{
-                    flex: 0 0 70px;
-                    padding: 10px;
-                    margin-right: 0px;
-                }}
+        .portrait {{
+            flex: 0 0 70px;
+            padding: 10px;
+            margin-right: 0px;
+        }}
 
-                .thinking-box {{margin: 5px 0;
-                    border: 1px solid #444;
-                    border-radius: 4px;
-                    overflow: hidden;
-                }}
+        .thinking-box {{margin: 5px 0;
+            border: 1px solid #444;
+            border-radius: 4px;
+            overflow: hidden;
+        }}
 
-                .thinking-header {{padding: 5px 10px;
-                    background-color: rgba(80, 80, 80, 0.5);
-                    cursor: pointer;
-                    user-select: none;
-                }}
+        .thinking-header {{padding: 5px 10px;
+            background-color: rgba(80, 80, 80, 0.5);
+            cursor: pointer;
+            user-select: none;
+        }}
 
-                .thinking-content {{display: none;
-                    padding: 10px;
-                    background-color: rgba(40, 40, 40, 0.5);
-                }}
+        .thinking-content {{display: none;
+            padding: 10px;
+            background-color: rgba(40, 40, 40, 0.5);
+        }}
 
-                .thinking-box.expanded .thinking-content {{display: block;
-                }}
+        .thinking-box.expanded .thinking-content {{display: block;
+        }}
 
-                .message-content {{
-                    flex: 1;
-                    word-wrap: break-word;
-                    padding-right: 10px;
-                }}
-            </style>";
+        .message-content {{
+            flex: 1;
+            word-wrap: break-word;
+            padding-right: 10px;
+        }}
+    </style>";
             string scripts = @"
-            <script>
-                function updateMessageAtIndex(text, index, isthink) {
-                    const messageContents = document.getElementsByClassName('message-content');
-                    if (index >= 0 && index < messageContents.length) {
-                        const messageContent = messageContents[index];
-                        const target = isthink ? 
-                            messageContent.querySelector('.thinking-content') : 
-                            messageContent.querySelector('.message-raw');
-            
-                        if (target) {
-                            target.innerHTML = text;
-                        } else {
-                            console.error('Target element not found');
-                        }
-                    } else {
-                        console.error('Index out of bounds');
-                    }
+    <script>
+        function updateMessageAtIndex(text, index, isthink) {
+            const messageContents = document.getElementsByClassName('message-content');
+            if (index >= 0 && index < messageContents.length) {
+                const messageContent = messageContents[index];
+                const target = isthink ? 
+                    messageContent.querySelector('.thinking-content') : 
+                    messageContent.querySelector('.message-raw');
+
+                if (target) {
+                    target.innerHTML = text;
+                } else {
+                    console.error('Target element not found');
                 }
-                function addHtmlAfterLastChatMessage(htmlContent, messageGuid) {
-                    const chatMessages = document.querySelectorAll('.chat-message');
+            } else {
+                console.error('Index out of bounds');
+            }
+        }
+        function addHtmlAfterLastChatMessage(htmlContent, messageGuid) {
+            const chatMessages = document.querySelectorAll('.chat-message');
                     if (chatMessages.length > 0) {
                         const lastChatMessage = chatMessages[chatMessages.length - 1];
-                        const newDiv = document.createElement('div');
-                        newDiv.className = 'chat-message';
-                        newDiv.setAttribute('data-message-guid', messageGuid);
-                        newDiv.innerHTML = htmlContent;
-                        lastChatMessage.insertAdjacentElement('afterend', newDiv);
-                    } else {
+            const newDiv = document.createElement('div');
+            newDiv.className = 'chat-message';
+            newDiv.setAttribute('data-message-guid', messageGuid);
+            newDiv.innerHTML = htmlContent;
+                lastChatMessage.insertAdjacentElement('afterend', newDiv);
+            } else {
                         console.warn('No chat messages found.');
-                    }
                 }
-                document.addEventListener('DOMContentLoaded', (event) => 
+            }
+        document.addEventListener('DOMContentLoaded', (event) => 
+        {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.addEventListener('dblclick', (event) => 
+            {
+                let targetElement = event.target;
+                while (targetElement && !targetElement.classList.contains('chat-message')) 
                 {
-                    const chatContainer = document.getElementById('chatContainer');
-                    chatContainer.addEventListener('dblclick', (event) => 
-                    {
-                        let targetElement = event.target;
-                        while (targetElement && !targetElement.classList.contains('chat-message')) 
-                        {
-                            targetElement = targetElement.parentElement;
-                        }
-                        if (targetElement && targetElement.classList.contains('chat-message')) 
-                        {
-                            const messageGuid = targetElement.getAttribute('data-message-guid');
-                            window.chrome.webview.postMessage({ type: 'EditMessage', guid: messageGuid });
-                        }
-                    });
-                });         
-            </script>";
+                    targetElement = targetElement.parentElement;
+                }
+                if (targetElement && targetElement.classList.contains('chat-message')) 
+                {
+                    const messageGuid = targetElement.getAttribute('data-message-guid');
+                    window.chrome.webview.postMessage({ type: 'EditMessage', guid: messageGuid });
+                }
+            });
+        });         
+    </script>";
             return $"<html><head>{css}</head><body>{scripts}<div id='chatContainer'>{htmlContent}<br/></div></body></html>";
         }
 
@@ -2203,7 +2219,11 @@ namespace WaifuAI
                 await InvokeAsync(new Func<Task>(WebRemoveLastMessage));
                 return;
             }
-            await web_chat.CoreWebView2.ExecuteScriptAsync("document.getElementsByClassName('chat-message')[document.getElementsByClassName('chat-message').length - 1].remove();");
+            await web_chat.CoreWebView2.ExecuteScriptAsync(@"
+                (function(){
+                    const msgs = document.getElementsByClassName('chat-message');
+                    if (msgs.length > 0) { msgs[msgs.length - 1].remove(); }
+                })();");
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
 
