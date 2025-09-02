@@ -92,7 +92,6 @@ namespace WaifuAI
             bt_chattosessions.Click += ConvertChatToSessionList!;
             // Load editors and chat menu
             SetupSamplerEditor();
-            SetupInstructEditor();
             SetupWorldEditor();
             SetupPromptEditor();
             SetupListSessionContextMenu();
@@ -685,33 +684,6 @@ namespace WaifuAI
 
         #region *** Other Editor Related Functions ***
 
-        /// <summary>
-        /// Initialize the instruction format editor panel
-        /// </summary>
-        /// <param name="Forceid"></param>
-        private void SetupInstructEditor(string Forceid = "")
-        {
-            cb_instructlist.Items.Clear();
-            foreach (var item in DataFiles.Instruct)
-            {
-                cb_instructlist.Items.Add(item.Value.UniqueName);
-            }
-            var idwant = 0;
-            if (Forceid != "")
-                idwant = cb_instructlist.Items.IndexOf(Forceid);
-            if (cb_instructlist.Items.Count > 0)
-            {
-                cb_instructlist.SelectedIndex = idwant;
-                SelectedInstructEditor = DataFiles.Instruct[cb_instructlist.SelectedItem!.ToString()!].Copy<InstructFormat>()!;
-            }
-            cb_instructlist.SelectedIndexChanged += (sender, e) =>
-            {
-                SelectedInstructEditor = DataFiles.Instruct[cb_instructlist.SelectedItem!.ToString()!].Copy<InstructFormat>()!;
-                CreateInstructControls(pan_instruct, SelectedInstructEditor);
-            };
-            CreateInstructControls(pan_instruct, SelectedInstructEditor);
-        }
-
         private void SetupWorldEditor(string ForceID = "", int forceEntry = 0)
         {
             cb_worlds.Items.Clear();
@@ -847,103 +819,6 @@ namespace WaifuAI
             if (_isinitloading)
                 return;
             SaveWorldEntry();
-        }
-
-        /// <summary>
-        /// Create the editor for the instruction format Program.Settings
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="instructsetting"></param>
-        private static void CreateInstructControls(Control target, InstructFormat instructsetting)
-        {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8605 // Converting null literal or possible null value to non-nullable type.
-            target.Controls.Clear();
-            int yPos = 10;
-            Type type = typeof(InstructFormat);
-            PropertyInfo[] properties = type.GetProperties();
-            string[] ignore = ["UniqueName"];
-
-            var lst = new List<PropertyInfo>(properties);
-            // sort lst to match the order in InstructFormat.Properties
-
-            foreach (var propertyName in InstructFormat.Properties)
-            {
-                if (ignore.Contains(propertyName))
-                    continue;
-                var property = lst.Find(p => p.Name == propertyName);
-                if (property == null)
-                    continue;
-                Label label = new() { Text = property.Name + ":", Location = new Point(10, yPos), Width = 240 };
-                Control? control = null;
-                if (property.PropertyType == typeof(int))
-                {
-                    control = new NumericUpDown { Minimum = -1, Maximum = int.MaxValue, Value = (int)property.GetValue(instructsetting), Location = new System.Drawing.Point(150, yPos), Width = 100 };
-                    ((NumericUpDown)control).ValueChanged += (sender, e) => property.SetValue(instructsetting, (int)((NumericUpDown)control).Value);
-                }
-                else if (property.PropertyType == typeof(double))
-                {
-                    control = new NumericUpDown { Value = (decimal)(double)property.GetValue(instructsetting), Location = new Point(150, yPos), Width = 100, DecimalPlaces = 2, Increment = 0.01M };
-                    ((NumericUpDown)control).ValueChanged += (sender, e) => property.SetValue(instructsetting, (double)((NumericUpDown)control).Value);
-                }
-                else if (property.PropertyType == typeof(string))
-                {
-                    control = new TextBox { Text = ((string)property.GetValue(instructsetting)!).Replace("\n", "\\n"), Location = new Point(150, yPos), Width = 400 };
-                    ((TextBox)control).TextChanged += (sender, e) => property.SetValue(instructsetting, ((TextBox)control).Text.Replace("\\n", "\n"));
-                }
-                else if (property.PropertyType == typeof(bool))
-                {
-                    control = new CheckBox { Checked = (bool)property.GetValue(instructsetting), Location = new Point(150, yPos) };
-                    ((CheckBox)control).CheckedChanged += (sender, e) => property.SetValue(instructsetting, ((CheckBox)control).Checked);
-                }
-                else if (property.PropertyType == typeof(ICollection<int>))
-                {
-                    control = new TextBox { Text = string.Join(",", (ICollection<int>)property.GetValue(instructsetting)!), Location = new Point(150, yPos), Width = 400 };
-                    ((TextBox)control).TextChanged += (sender, e) => property.SetValue(instructsetting, ((TextBox)control).Text.Split(',').Select(int.Parse).ToList());
-                }
-                else if (property.PropertyType == typeof(List<string>))
-                {
-                    control = new TextBox { Text = string.Join(",", (List<string>)property.GetValue(instructsetting) ?? []), Location = new Point(150, yPos), Width = 400 };
-                    ((TextBox)control).TextChanged += (sender, e) => property.SetValue(instructsetting, ((TextBox)control).Text.Split(',').ToList());
-                }
-
-                if (control != null)
-                {
-                    label.Location = new Point(10, yPos);
-                    control.Location = new Point(250, yPos);
-                    target.Controls.Add(label);
-                    target.Controls.Add(control);
-                    yPos += 30;
-                }
-            }
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning restore CS8605 // Converting null literal or possible null value to non-nullable type.
-        }
-
-        private void bt_instructsave_Click(object sender, EventArgs e)
-        {
-            var NewName = cb_instructlist.Text;
-            if (string.IsNullOrWhiteSpace(NewName))
-            {
-                MessageBox.Show("Please select a valide name for the new instruction format.");
-                return;
-            }
-            // If name already exists ask for confirmation
-            if (DataFiles.Instruct.ContainsKey(NewName) && (MessageBox.Show("This instruction format already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
-                return;
-            SelectedInstructEditor.UniqueName = NewName;
-            DataFiles.Instruct[NewName] = SelectedInstructEditor;
-            (SelectedInstructEditor as IFile).SaveToFile("data/instruct/" + NewName + ".json");
-            SetupInstructEditor(NewName);
-            // Update the prompt list in the chat menu
-            var currselection = cb_instruct.Text;
-            cb_instruct.Items.Clear();
-            foreach (var item in DataFiles.Instruct)
-            {
-                cb_instruct.Items.Add(item.Value.UniqueName);
-            }
-            var newidx = cb_instruct.Items.IndexOf(currselection);
-            cb_instruct.SelectedIndex = newidx == -1 ? 0 : newidx;
         }
 
         #endregion
@@ -1325,7 +1200,7 @@ namespace WaifuAI
             var msgs = LLMSystem.History.CurrentSession.Messages;
 
             // Remove any trailing hidden messages (not shown in UI)
-            while (msgs.Count > 0 && msgs[msgs.Count - 1].Hidden)
+            while (msgs.Count > 0 && msgs[^1].Hidden)
                 LLMSystem.History.RemoveLast();
 
             // Now remove the last visible message (shown in UI), if any remain
@@ -1794,7 +1669,6 @@ namespace WaifuAI
             await WebChatLoad();
             LoadChatHistoryTab();
         }
-
 
         private async Task RefreshRPInfo()
         {
@@ -2779,6 +2653,24 @@ namespace WaifuAI
                     txtSearchRes.Text = res.ToString();
                 }
             }
+        }
+
+        private void btInstructEdit_Click(object sender, EventArgs e)
+        {
+            var editForm = new InstructForm();
+            editForm.SetupInstructEditor(LLMSystem.Instruct.UniqueName ?? string.Empty);
+            editForm.ShowDialog();
+            editForm.Dispose();
+            LLMSystem.InvalidatePromptCache();
+            // Update the prompt list in the chat menu
+            var currselection = LLMSystem.Instruct.UniqueName;
+            cb_instruct.Items.Clear();
+            foreach (var item in DataFiles.Instruct)
+            {
+                cb_instruct.Items.Add(item.Value.UniqueName);
+            }
+            var newidx = cb_instruct.Items.IndexOf(currselection);
+            cb_instruct.SelectedIndex = newidx == -1 ? 0 : newidx;
         }
     }
 }

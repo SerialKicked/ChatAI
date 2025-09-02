@@ -164,11 +164,6 @@
             label52 = new Label();
             groupBox21 = new GroupBox();
             ed_editsys_prompt = new TextBox();
-            tabInstruct = new TabPage();
-            bt_instructsave = new Button();
-            label2 = new Label();
-            cb_instructlist = new ComboBox();
-            pan_instruct = new Panel();
             tabWorldInfo = new TabPage();
             panel3 = new Panel();
             groupBox8 = new GroupBox();
@@ -270,6 +265,7 @@
             label11 = new Label();
             cb_sysprompt = new ComboBox();
             groupBox4 = new GroupBox();
+            btInstructEdit = new Button();
             ck_charsampler = new CheckBox();
             ck_forceNames = new CheckBox();
             label5 = new Label();
@@ -341,7 +337,6 @@
             pan_prompt.SuspendLayout();
             groupBox22.SuspendLayout();
             groupBox21.SuspendLayout();
-            tabInstruct.SuspendLayout();
             tabWorldInfo.SuspendLayout();
             panel3.SuspendLayout();
             groupBox8.SuspendLayout();
@@ -1821,59 +1816,6 @@
             ed_editsys_prompt.Size = new Size(595, 644);
             ed_editsys_prompt.TabIndex = 0;
             // 
-            // tabInstruct
-            // 
-            tabInstruct.Controls.Add(bt_instructsave);
-            tabInstruct.Controls.Add(label2);
-            tabInstruct.Controls.Add(cb_instructlist);
-            tabInstruct.Controls.Add(pan_instruct);
-            tabInstruct.Location = new Point(4, 27);
-            tabInstruct.Name = "tabInstruct";
-            tabInstruct.Padding = new Padding(3);
-            tabInstruct.Size = new Size(996, 887);
-            tabInstruct.TabIndex = 2;
-            tabInstruct.Text = "Instruction Format";
-            tabInstruct.UseVisualStyleBackColor = true;
-            // 
-            // bt_instructsave
-            // 
-            bt_instructsave.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_instructsave.Location = new Point(602, 8);
-            bt_instructsave.Name = "bt_instructsave";
-            bt_instructsave.Size = new Size(75, 23);
-            bt_instructsave.TabIndex = 9;
-            bt_instructsave.Text = "Save";
-            bt_instructsave.UseVisualStyleBackColor = true;
-            bt_instructsave.Click += bt_instructsave_Click;
-            // 
-            // label2
-            // 
-            label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label2.Location = new Point(8, 8);
-            label2.Name = "label2";
-            label2.Size = new Size(104, 23);
-            label2.TabIndex = 8;
-            label2.Text = "Instruct Format";
-            label2.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // cb_instructlist
-            // 
-            cb_instructlist.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            cb_instructlist.FormattingEnabled = true;
-            cb_instructlist.Location = new Point(118, 8);
-            cb_instructlist.Name = "cb_instructlist";
-            cb_instructlist.Size = new Size(478, 23);
-            cb_instructlist.TabIndex = 7;
-            // 
-            // pan_instruct
-            // 
-            pan_instruct.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            pan_instruct.AutoScroll = true;
-            pan_instruct.Location = new Point(8, 38);
-            pan_instruct.Name = "pan_instruct";
-            pan_instruct.Size = new Size(977, 611);
-            pan_instruct.TabIndex = 6;
-            // 
             // tabWorldInfo
             // 
             tabWorldInfo.Controls.Add(panel3);
@@ -3023,6 +2965,7 @@
             // groupBox4
             // 
             groupBox4.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox4.Controls.Add(btInstructEdit);
             groupBox4.Controls.Add(ck_charsampler);
             groupBox4.Controls.Add(ck_forceNames);
             groupBox4.Controls.Add(label5);
@@ -3038,6 +2981,17 @@
             groupBox4.TabIndex = 24;
             groupBox4.TabStop = false;
             groupBox4.Text = "Inference Settings";
+            // 
+            // btInstructEdit
+            // 
+            btInstructEdit.Font = new Font("Segoe UI", 9F);
+            btInstructEdit.Location = new Point(146, 11);
+            btInstructEdit.Name = "btInstructEdit";
+            btInstructEdit.Size = new Size(35, 20);
+            btInstructEdit.TabIndex = 28;
+            btInstructEdit.Text = "...";
+            btInstructEdit.UseVisualStyleBackColor = true;
+            btInstructEdit.Click += btInstructEdit_Click;
             // 
             // ck_charsampler
             // 
@@ -3098,7 +3052,7 @@
             cb_infer.Font = new Font("Segoe UI", 9F);
             cb_infer.Location = new Point(4, 106);
             cb_infer.Name = "cb_infer";
-            cb_infer.Size = new Size(175, 23);
+            cb_infer.Size = new Size(177, 23);
             cb_infer.TabIndex = 7;
             cb_infer.SelectedIndexChanged += cb_infer_SelectedIndexChanged;
             // 
@@ -3120,7 +3074,7 @@
             num_temperature.Location = new Point(4, 175);
             num_temperature.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
             num_temperature.Name = "num_temperature";
-            num_temperature.Size = new Size(175, 23);
+            num_temperature.Size = new Size(177, 23);
             num_temperature.TabIndex = 17;
             num_temperature.ThousandsSeparator = true;
             num_temperature.Value = new decimal(new int[] { 7, 0, 0, 65536 });
@@ -3205,7 +3159,6 @@
             tabMain.Controls.Add(tabChat);
             tabMain.Controls.Add(tabHistory);
             tabMain.Controls.Add(tabWorldInfo);
-            tabMain.Controls.Add(tabInstruct);
             tabMain.Controls.Add(tabSysPrompt);
             tabMain.Controls.Add(tabSamplers);
             tabMain.Controls.Add(tabSettings);
@@ -3328,7 +3281,6 @@
             groupBox22.PerformLayout();
             groupBox21.ResumeLayout(false);
             groupBox21.PerformLayout();
-            tabInstruct.ResumeLayout(false);
             tabWorldInfo.ResumeLayout(false);
             panel3.ResumeLayout(false);
             groupBox8.ResumeLayout(false);
@@ -3508,11 +3460,6 @@
         private Label label52;
         private GroupBox groupBox21;
         private TextBox ed_editsys_prompt;
-        private TabPage tabInstruct;
-        private Button bt_instructsave;
-        private Label label2;
-        private ComboBox cb_instructlist;
-        private Panel pan_instruct;
         private TabPage tabWorldInfo;
         private Panel panel3;
         private GroupBox groupBox8;
@@ -3635,5 +3582,6 @@
         private TabPage tabSearch;
         private TextBox txtSearchRes;
         private TextBox textBox1;
+        private Button btInstructEdit;
     }
 }
