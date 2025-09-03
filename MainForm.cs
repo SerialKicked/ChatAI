@@ -40,7 +40,7 @@ namespace WaifuAI
         public WorldInfo SelectedWorldEditor { get; set; } = new WorldInfo();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public WorldEntry SelectedWorldEntryEditor { get; set; } = new WorldEntry();
+        public MemoryUnit SelectedWorldEntryEditor { get; set; } = new MemoryUnit();
 
         private string? _currentgeneration = null;
         private int _currentgenerationtokencount = 0;
@@ -736,7 +736,7 @@ namespace WaifuAI
             LoadWorldEntry(SelectedWorldEntryEditor);
         }
 
-        private void LoadWorldEntry(WorldEntry worldEntry)
+        private void LoadWorldEntry(MemoryUnit worldEntry)
         {
             var sv = _isinitloading;
             _isinitloading = true;
@@ -1714,7 +1714,7 @@ namespace WaifuAI
                 return;
             foreach (var session in LLMSystem.History.Sessions)
             {
-                var item = new ListViewItem([session.Title, session.StartTime.ToString("g")])
+                var item = new ListViewItem([session.Name, session.StartTime.ToString("g")])
                 {
                     Tag = session
                 };
@@ -1743,8 +1743,8 @@ namespace WaifuAI
         {
             var sv = _isinitloading;
             _isinitloading = true;
-            ed_sessiontitle.Text = session.Title;
-            ed_sessioninfo.Text = session.Summary.ToWinFormat();
+            ed_sessiontitle.Text = session.Name;
+            ed_sessioninfo.Text = session.Content.ToWinFormat();
             lbl_sessiondata.Text = session.StartTime.ToString("g") + " - " + session.EndTime.ToString("g") + " - " + session.Messages.Count + " messages";
 
             ed_hist_kw1.Text = string.Join(",", session.KeyWordsMain);
@@ -1763,8 +1763,8 @@ namespace WaifuAI
             var dialogs = session.GetRawDialogs(int.MaxValue, false).Replace("\n", "\n\n");
 
             var res = new StringBuilder();
-            res.AppendLinuxLine($"# {session.Title}").AppendLinuxLine();
-            res.AppendLinuxLine("## Summary:").AppendLinuxLine().AppendLinuxLine(session.Summary).AppendLinuxLine();
+            res.AppendLinuxLine($"# {session.Name}").AppendLinuxLine();
+            res.AppendLinuxLine("## Summary:").AppendLinuxLine().AppendLinuxLine(session.Content).AppendLinuxLine();
             res.AppendLinuxLine("## Keywords: ");
             foreach (var item in session.MetaData.Keywords)
             {
@@ -1874,7 +1874,7 @@ namespace WaifuAI
         {
             if (_selectedSession == null)
                 return;
-            await _selectedSession.GenerateEmbeds();
+            await _selectedSession.EmbedText();
             DisplaySessionDetails(_selectedSession);
             LoadChatHistoryTab();
             (LLMSystem.Bot as Character)?.SaveChatHistory();
@@ -2439,7 +2439,7 @@ namespace WaifuAI
 
         private void bt_addwentry_Click(object sender, EventArgs e)
         {
-            SelectedWorldEntryEditor = new WorldEntry() { Name = "New Entry" };
+            SelectedWorldEntryEditor = new MemoryUnit() { Name = "New Entry" };
             SelectedWorldEditor.Entries.Add(SelectedWorldEntryEditor);
             lb_worldentries.Items.Add(SelectedWorldEntryEditor.Name);
             lb_worldentries.SelectedIndex = lb_worldentries.Items.Count - 1;
@@ -2643,8 +2643,8 @@ namespace WaifuAI
                         }
                         else if (item.session is ChatSession sess)
                         {
-                            title = sess.Title;
-                            content = sess.Summary;
+                            title = sess.Name;
+                            content = sess.Content;
                         }
                         res.AppendLine(cat + " (dist: " + distance + "): " + title);
                         res.AppendLine(content);

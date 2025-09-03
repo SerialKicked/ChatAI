@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AIToolkit;
+using AIToolkit.Files;
+using AIToolkit.LLM;
+using AIToolkit.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -7,9 +11,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using WaifuAI.Files;
-using AIToolkit.Files;
-using AIToolkit.LLM;
-using AIToolkit;
 
 namespace WaifuAI.Plugins
 
@@ -21,7 +22,7 @@ namespace WaifuAI.Plugins
 
         private readonly string[] kwEnter = [ "go to ", "move to ", "get to " ];
         private readonly WorldInfo locations = !string.IsNullOrEmpty(world) && DataFiles.WorldInfos.TryGetValue(world, out var info) ? info : new();
-        private WorldEntry? currentLocation = null;
+        private MemoryUnit? currentLocation = null;
 
         public bool IsLocationSet => currentLocation != null;
         public string CurrentLocationName => currentLocation?.Name ?? string.Empty;
@@ -113,7 +114,7 @@ namespace WaifuAI.Plugins
 
         #endregion
 
-        private static void AddMovingInfSystemMessage(Chatlog log, WorldEntry newLoc)
+        private static void AddMovingInfSystemMessage(Chatlog log, MemoryUnit newLoc)
         {
             var prompt = string.Format("{0} and {1} are moving to a new location: {2}. React accordingly.", LLMSystem.User.Name, LLMSystem.Bot.Name, newLoc.Name);
             //var msg = new SingleMessage(AuthorRole.System, DateTime.Now, prompt, LLMChatManager.Bot.Name, LLMChatManager.User.Name, false);

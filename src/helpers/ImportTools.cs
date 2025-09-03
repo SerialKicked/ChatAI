@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using AIToolkit.Files;
 using AIToolkit.LLM;
+using AIToolkit.Memory;
 using Newtonsoft.Json;
 
 namespace WaifuAI
@@ -137,7 +138,7 @@ namespace WaifuAI
                 };
                 foreach (var (key, item) in importST.entries)
                 {
-                    var entry = new WorldEntry
+                    var entry = new MemoryUnit
                     {
                         KeyWordsMain = [.. item.key],
                         KeyWordsSecondary = [.. item.keysecondary],
@@ -145,6 +146,8 @@ namespace WaifuAI
                         Duration = item.sticky,
                         Enabled = !item.disable,
                         Content = item.content,
+                        Category = AIToolkit.Memory.MemoryType.WorldInfo,
+                        Insertion = AIToolkit.Memory.MemoryInsertion.Trigger,
                         Name = item.comment,
                         Priority = item.order,
                         PositionIndex = item.depth,
