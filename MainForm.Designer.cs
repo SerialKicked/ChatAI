@@ -168,7 +168,7 @@
             statusbar.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, toolStripStatusLabel2 });
             statusbar.Location = new Point(0, 931);
             statusbar.Name = "statusbar";
-            statusbar.Size = new Size(1004, 22);
+            statusbar.Size = new Size(1063, 22);
             statusbar.TabIndex = 2;
             statusbar.Text = "statusStrip1";
             // 
@@ -222,7 +222,7 @@
             tabHistory.Controls.Add(panel4);
             tabHistory.Location = new Point(4, 27);
             tabHistory.Name = "tabHistory";
-            tabHistory.Size = new Size(996, 897);
+            tabHistory.Size = new Size(1055, 897);
             tabHistory.TabIndex = 6;
             tabHistory.Text = "Chat History";
             tabHistory.UseVisualStyleBackColor = true;
@@ -234,7 +234,7 @@
             panel6.Dock = DockStyle.Fill;
             panel6.Location = new Point(376, 0);
             panel6.Name = "panel6";
-            panel6.Size = new Size(620, 897);
+            panel6.Size = new Size(679, 897);
             panel6.TabIndex = 2;
             // 
             // web_sessioncontent
@@ -245,7 +245,7 @@
             web_sessioncontent.Dock = DockStyle.Fill;
             web_sessioncontent.Location = new Point(0, 308);
             web_sessioncontent.Name = "web_sessioncontent";
-            web_sessioncontent.Size = new Size(620, 589);
+            web_sessioncontent.Size = new Size(679, 589);
             web_sessioncontent.TabIndex = 4;
             web_sessioncontent.ZoomFactor = 1D;
             // 
@@ -256,7 +256,7 @@
             panel7.Dock = DockStyle.Top;
             panel7.Location = new Point(0, 0);
             panel7.Name = "panel7";
-            panel7.Size = new Size(620, 308);
+            panel7.Size = new Size(679, 308);
             panel7.TabIndex = 3;
             // 
             // groupBox25
@@ -274,7 +274,7 @@
             groupBox25.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox25.Location = new Point(6, 200);
             groupBox25.Name = "groupBox25";
-            groupBox25.Size = new Size(606, 101);
+            groupBox25.Size = new Size(665, 101);
             groupBox25.TabIndex = 1;
             groupBox25.TabStop = false;
             groupBox25.Text = "Keyword Activation";
@@ -388,7 +388,7 @@
             groupBox12.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox12.Location = new Point(6, 3);
             groupBox12.Name = "groupBox12";
-            groupBox12.Size = new Size(606, 191);
+            groupBox12.Size = new Size(665, 191);
             groupBox12.TabIndex = 0;
             groupBox12.TabStop = false;
             groupBox12.Text = "Session Information";
@@ -434,7 +434,7 @@
             ed_sessioninfo.Name = "ed_sessioninfo";
             ed_sessioninfo.PlaceholderText = "Select a session from the left panel to show information about it.";
             ed_sessioninfo.ScrollBars = ScrollBars.Vertical;
-            ed_sessioninfo.Size = new Size(594, 104);
+            ed_sessioninfo.Size = new Size(653, 104);
             ed_sessioninfo.TabIndex = 2;
             ed_sessioninfo.TextChanged += ed_sessioninfo_TextChanged;
             // 
@@ -455,14 +455,14 @@
             ed_sessiontitle.Location = new Point(6, 37);
             ed_sessiontitle.Name = "ed_sessiontitle";
             ed_sessiontitle.PlaceholderText = "No Session Selected";
-            ed_sessiontitle.Size = new Size(594, 23);
+            ed_sessiontitle.Size = new Size(653, 23);
             ed_sessiontitle.TabIndex = 0;
             ed_sessiontitle.TextChanged += ed_sessiontitle_TextChanged;
             // 
             // bt_sessionrefresh
             // 
             bt_sessionrefresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_sessionrefresh.Location = new Point(449, 11);
+            bt_sessionrefresh.Location = new Point(508, 11);
             bt_sessionrefresh.Name = "bt_sessionrefresh";
             bt_sessionrefresh.Size = new Size(151, 23);
             bt_sessionrefresh.TabIndex = 2;
@@ -1189,7 +1189,7 @@
             tabMain.Location = new Point(0, 0);
             tabMain.Name = "tabMain";
             tabMain.SelectedIndex = 0;
-            tabMain.Size = new Size(1004, 928);
+            tabMain.Size = new Size(1063, 928);
             tabMain.TabIndex = 1;
             // 
             // tabSearch
@@ -1226,7 +1226,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1004, 953);
+            ClientSize = new Size(1063, 953);
             Controls.Add(statusbar);
             Controls.Add(tabMain);
             Icon = (Icon)resources.GetObject("$this.Icon");
