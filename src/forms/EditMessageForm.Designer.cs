@@ -35,31 +35,37 @@ namespace WaifuAI.src.forms
         /// </summary>
         private void InitializeComponent()
         {
-            ed_message = new TextBox();
+            ed_message = new WaifuAI.Controls.SpellCheckedTextBox();
             bt_save = new Button();
             SuspendLayout();
             // 
             // ed_message
             // 
+            ed_message.AllowDrop = true;
             ed_message.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            ed_message.BackColor = Color.FromArgb(32, 70, 130, 180);
+            ed_message.Font = new Font("Segoe UI", 16F);
             ed_message.Location = new Point(12, 12);
             ed_message.Multiline = true;
             ed_message.Name = "ed_message";
             ed_message.ScrollBars = ScrollBars.Vertical;
             ed_message.Size = new Size(498, 263);
+            ed_message.SpellCheckLanguage = "en-US";
             ed_message.TabIndex = 0;
             ed_message.KeyPress += EditMessageForm_KeyPress;
             // 
             // bt_save
             // 
             bt_save.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            bt_save.BackColor = Color.PaleGreen;
+            bt_save.FlatStyle = FlatStyle.Flat;
             bt_save.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_save.Location = new Point(12, 281);
             bt_save.Name = "bt_save";
             bt_save.Size = new Size(498, 23);
             bt_save.TabIndex = 1;
             bt_save.Text = "Save Message";
-            bt_save.UseVisualStyleBackColor = true;
+            bt_save.UseVisualStyleBackColor = false;
             bt_save.Click += bt_save_Click;
             // 
             // EditMessageForm
@@ -80,12 +86,11 @@ namespace WaifuAI.src.forms
             TopMost = true;
             KeyPress += EditMessageForm_KeyPress;
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
-        private TextBox ed_message;
+        private WaifuAI.Controls.SpellCheckedTextBox ed_message;
         private Button bt_save;
     }
 }

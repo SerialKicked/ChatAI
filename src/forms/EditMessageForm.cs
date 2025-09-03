@@ -25,6 +25,7 @@ namespace WaifuAI.src.forms
         public EditMessageForm()
         {
             InitializeComponent();
+            ed_message.SpellCheckLanguage = "en-US";
         }
 
         private void bt_save_Click(object sender, EventArgs e)

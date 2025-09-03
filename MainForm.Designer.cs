@@ -629,8 +629,8 @@
             // 
             ed_input.AllowDrop = true;
             ed_input.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            ed_input.BackColor = Color.FromArgb(224, 224, 224);
-            ed_input.Font = new Font("Segoe UI", 14F);
+            ed_input.BackColor = Color.FromArgb(32, 70, 130, 180);
+            ed_input.Font = new Font("Segoe UI", 16F);
             ed_input.Location = new Point(212, 805);
             ed_input.Multiline = true;
             ed_input.Name = "ed_input";
