@@ -7,7 +7,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>w(AI)fu.ico</ApplicationIcon>
-    <UseWPF>false</UseWPF>
+    <UseWPF>true</UseWPF>
     <NoWarn>MSB3277</NoWarn>
   </PropertyGroup>
 

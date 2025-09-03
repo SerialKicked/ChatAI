@@ -4,6 +4,7 @@ using WaifuAI.Plugins;
 using AIToolkit.Files;
 using AIToolkit.LLM;
 using Microsoft.VisualBasic;
+using System.IO;
 
 namespace WaifuAI.Files
 {

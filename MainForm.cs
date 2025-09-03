@@ -10,6 +10,7 @@ using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Media;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -54,6 +55,7 @@ namespace WaifuAI
         {
             InitializeComponent();
 
+            ed_input.SpellCheckLanguage = "en-US";
 
             HelptoolTip.SetToolTip(ck_ragenabled, "Use RAG functionalities to insert summaries of relevant previous sessions based on the user's input." + Environment.NewLine + "Configurable in the Program.Settings tab.");
             HelptoolTip.SetToolTip(ck_senseoftime, "Insert day and time information to prompt when relevant to give the bot a better understanding of time.");
@@ -2035,6 +2037,11 @@ namespace WaifuAI
             worldForm.ShowDialog();
             worldForm.Dispose();
             LLMSystem.InvalidatePromptCache();
+        }
+
+        private void tabChat_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -75,7 +75,7 @@
             bt_delete = new Button();
             bt_reroll = new Button();
             bt_send = new Button();
-            ed_input = new TextBox();
+            ed_input = new WaifuAI.Controls.SpellCheckedTextBox();
             panel1 = new Panel();
             groupBox23 = new GroupBox();
             btWorldEditor = new Button();
@@ -198,7 +198,7 @@
             tabConsole.Location = new Point(4, 27);
             tabConsole.Name = "tabConsole";
             tabConsole.Padding = new Padding(3);
-            tabConsole.Size = new Size(996, 897);
+            tabConsole.Size = new Size(1055, 897);
             tabConsole.TabIndex = 9;
             tabConsole.Text = "Raw Prompt";
             tabConsole.UseVisualStyleBackColor = true;
@@ -213,7 +213,7 @@
             ed_log.Multiline = true;
             ed_log.Name = "ed_log";
             ed_log.ScrollBars = ScrollBars.Vertical;
-            ed_log.Size = new Size(990, 891);
+            ed_log.Size = new Size(1049, 891);
             ed_log.TabIndex = 3;
             // 
             // tabHistory
@@ -552,7 +552,7 @@
             tabChat.Location = new Point(4, 27);
             tabChat.Name = "tabChat";
             tabChat.Padding = new Padding(3);
-            tabChat.Size = new Size(996, 897);
+            tabChat.Size = new Size(1055, 897);
             tabChat.TabIndex = 1;
             tabChat.Text = "Chat";
             tabChat.UseVisualStyleBackColor = true;
@@ -563,7 +563,7 @@
             bt_impersonate.BackColor = Color.Turquoise;
             bt_impersonate.FlatStyle = FlatStyle.Flat;
             bt_impersonate.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_impersonate.Location = new Point(928, 808);
+            bt_impersonate.Location = new Point(987, 805);
             bt_impersonate.Name = "bt_impersonate";
             bt_impersonate.Size = new Size(60, 25);
             bt_impersonate.TabIndex = 7;
@@ -579,7 +579,7 @@
             web_chat.DefaultBackgroundColor = Color.White;
             web_chat.Location = new Point(212, 3);
             web_chat.Name = "web_chat";
-            web_chat.Size = new Size(778, 798);
+            web_chat.Size = new Size(835, 798);
             web_chat.TabIndex = 6;
             web_chat.ZoomFactor = 1D;
             // 
@@ -589,7 +589,7 @@
             bt_delete.BackColor = Color.LightCoral;
             bt_delete.FlatStyle = FlatStyle.Flat;
             bt_delete.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_delete.Location = new Point(928, 869);
+            bt_delete.Location = new Point(987, 866);
             bt_delete.Name = "bt_delete";
             bt_delete.Size = new Size(60, 25);
             bt_delete.TabIndex = 5;
@@ -603,7 +603,7 @@
             bt_reroll.BackColor = Color.PaleGoldenrod;
             bt_reroll.FlatStyle = FlatStyle.Flat;
             bt_reroll.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_reroll.Location = new Point(928, 839);
+            bt_reroll.Location = new Point(987, 836);
             bt_reroll.Name = "bt_reroll";
             bt_reroll.Size = new Size(60, 25);
             bt_reroll.TabIndex = 4;
@@ -617,7 +617,7 @@
             bt_send.BackColor = Color.PaleGreen;
             bt_send.FlatStyle = FlatStyle.Flat;
             bt_send.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_send.Location = new Point(864, 808);
+            bt_send.Location = new Point(923, 805);
             bt_send.Name = "bt_send";
             bt_send.Size = new Size(60, 86);
             bt_send.TabIndex = 3;
@@ -627,15 +627,15 @@
             // 
             // ed_input
             // 
+            ed_input.AllowDrop = true;
             ed_input.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            ed_input.BackColor = Color.WhiteSmoke;
-            ed_input.BorderStyle = BorderStyle.FixedSingle;
+            ed_input.BackColor = Color.FromArgb(32, 70, 130, 180);
             ed_input.Font = new Font("Segoe UI", 11F);
-            ed_input.Location = new Point(212, 806);
+            ed_input.Location = new Point(212, 805);
             ed_input.Multiline = true;
             ed_input.Name = "ed_input";
             ed_input.ScrollBars = ScrollBars.Vertical;
-            ed_input.Size = new Size(646, 87);
+            ed_input.Size = new Size(705, 86);
             ed_input.TabIndex = 2;
             ed_input.KeyPress += ed_input_KeyPress;
             // 
@@ -1199,7 +1199,7 @@
             tabSearch.Location = new Point(4, 27);
             tabSearch.Name = "tabSearch";
             tabSearch.Padding = new Padding(3);
-            tabSearch.Size = new Size(996, 897);
+            tabSearch.Size = new Size(1055, 897);
             tabSearch.TabIndex = 10;
             tabSearch.Text = "RAG Search";
             tabSearch.UseVisualStyleBackColor = true;
@@ -1249,7 +1249,6 @@
             panel4.ResumeLayout(false);
             panel5.ResumeLayout(false);
             tabChat.ResumeLayout(false);
-            tabChat.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).EndInit();
             panel1.ResumeLayout(false);
             groupBox23.ResumeLayout(false);
@@ -1311,7 +1310,7 @@
         private Button bt_delete;
         private Button bt_reroll;
         private Button bt_send;
-        private TextBox ed_input;
+        private WaifuAI.Controls.SpellCheckedTextBox ed_input;
         private Panel panel1;
         private GroupBox groupBox23;
         private Button bt_clearimg;

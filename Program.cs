@@ -1,5 +1,6 @@
 using AIToolkit.LLM;
 using Newtonsoft.Json;
+using System.IO;
 using WaifuAI.Files;
 
 namespace WaifuAI
