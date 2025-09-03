@@ -1137,7 +1137,7 @@ namespace WaifuAI
         {
             RAGSystem.Enabled = ck_ragenabled.Checked;
         }
-        
+
 
         #endregion
 
@@ -2159,12 +2159,7 @@ namespace WaifuAI
                         if (item.session is MemoryUnit unit)
                         {
                             title = unit.Name;
-                            content = unit.Content;
-                        }
-                        else if (item.session is ChatSession sess)
-                        {
-                            title = sess.Name;
-                            content = sess.Content;
+                            content = LLMSystem.ReplaceMacros(unit.Content);
                         }
                         res.AppendLine(cat + " (dist: " + distance + "): " + title);
                         res.AppendLine(content);
@@ -2236,6 +2231,11 @@ namespace WaifuAI
             settingsForm.ShowDialog();
             settingsForm.Dispose();
             await WebChatLoad();
+        }
+
+        private void label9_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
