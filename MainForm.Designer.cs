@@ -90,80 +90,6 @@
             label12 = new Label();
             cb_ragheuristic = new ComboBox();
             button1 = new Button();
-            tabSamplers = new TabPage();
-            bt_savesampler = new Button();
-            label1 = new Label();
-            cb_samplerlist = new ComboBox();
-            pan_samplers = new Panel();
-            groupBox20 = new GroupBox();
-            ck_trimstop = new CheckBox();
-            ck_renderspecial = new CheckBox();
-            ck_ignoreeos = new CheckBox();
-            groupBox19 = new GroupBox();
-            num_xtcthres = new NumericUpDown();
-            label50 = new Label();
-            num_xtcprob = new NumericUpDown();
-            label51 = new Label();
-            groupBox18 = new GroupBox();
-            num_drymul = new NumericUpDown();
-            label46 = new Label();
-            num_drybase = new NumericUpDown();
-            label48 = new Label();
-            num_dryrange = new NumericUpDown();
-            label49 = new Label();
-            groupBox17 = new GroupBox();
-            num_smoothfac = new NumericUpDown();
-            label59 = new Label();
-            num_dynexpo = new NumericUpDown();
-            label45 = new Label();
-            num_dynrange = new NumericUpDown();
-            label47 = new Label();
-            groupBox16 = new GroupBox();
-            num_meta = new NumericUpDown();
-            label42 = new Label();
-            num_mtau = new NumericUpDown();
-            label44 = new Label();
-            cb_miro = new ComboBox();
-            label43 = new Label();
-            groupBox15 = new GroupBox();
-            num_reppenrange = new NumericUpDown();
-            label41 = new Label();
-            num_reppen = new NumericUpDown();
-            label40 = new Label();
-            groupBox14 = new GroupBox();
-            num_seed = new NumericUpDown();
-            label39 = new Label();
-            num_temp = new NumericUpDown();
-            label38 = new Label();
-            groupBox13 = new GroupBox();
-            num_tfs = new NumericUpDown();
-            label37 = new Label();
-            num_typical = new NumericUpDown();
-            label36 = new Label();
-            num_minp = new NumericUpDown();
-            label35 = new Label();
-            num_topp = new NumericUpDown();
-            label34 = new Label();
-            num_topa = new NumericUpDown();
-            label33 = new Label();
-            num_topk = new NumericUpDown();
-            label31 = new Label();
-            tabSysPrompt = new TabPage();
-            bt_promptsave = new Button();
-            label10 = new Label();
-            cb_promptlist = new ComboBox();
-            pan_prompt = new Panel();
-            groupBox22 = new GroupBox();
-            ed_editsys_prefix = new TextBox();
-            label55 = new Label();
-            ed_editsys_worldinfo = new TextBox();
-            label54 = new Label();
-            ed_editsys_dialogs = new TextBox();
-            label53 = new Label();
-            ed_editsys_scenario = new TextBox();
-            label52 = new Label();
-            groupBox21 = new GroupBox();
-            ed_editsys_prompt = new TextBox();
             tabWorldInfo = new TabPage();
             panel3 = new Panel();
             groupBox8 = new GroupBox();
@@ -255,6 +181,7 @@
             ck_sessionmemory = new CheckBox();
             ck_senseoftime = new CheckBox();
             groupBox5 = new GroupBox();
+            btSysPrompt = new Button();
             bt_editchar = new Button();
             bt_scenario = new Button();
             label3 = new Label();
@@ -265,6 +192,7 @@
             label11 = new Label();
             cb_sysprompt = new ComboBox();
             groupBox4 = new GroupBox();
+            btSampleEditor = new Button();
             btInstructEdit = new Button();
             ck_charsampler = new CheckBox();
             ck_forceNames = new CheckBox();
@@ -303,40 +231,6 @@
             ((System.ComponentModel.ISupportInitialize)num_ragindex).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_ragmaxretrieve).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_ragcutoff).BeginInit();
-            tabSamplers.SuspendLayout();
-            pan_samplers.SuspendLayout();
-            groupBox20.SuspendLayout();
-            groupBox19.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)num_xtcthres).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_xtcprob).BeginInit();
-            groupBox18.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)num_drymul).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_drybase).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_dryrange).BeginInit();
-            groupBox17.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)num_smoothfac).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_dynexpo).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_dynrange).BeginInit();
-            groupBox16.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)num_meta).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_mtau).BeginInit();
-            groupBox15.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)num_reppenrange).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_reppen).BeginInit();
-            groupBox14.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)num_seed).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_temp).BeginInit();
-            groupBox13.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)num_tfs).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_typical).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_minp).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_topp).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_topa).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_topk).BeginInit();
-            tabSysPrompt.SuspendLayout();
-            pan_prompt.SuspendLayout();
-            groupBox22.SuspendLayout();
-            groupBox21.SuspendLayout();
             tabWorldInfo.SuspendLayout();
             panel3.SuspendLayout();
             groupBox8.SuspendLayout();
@@ -1044,777 +938,6 @@
             button1.Text = "Apply RAG Settings";
             button1.UseVisualStyleBackColor = true;
             button1.Click += ApplyRAGSettings;
-            // 
-            // tabSamplers
-            // 
-            tabSamplers.Controls.Add(bt_savesampler);
-            tabSamplers.Controls.Add(label1);
-            tabSamplers.Controls.Add(cb_samplerlist);
-            tabSamplers.Controls.Add(pan_samplers);
-            tabSamplers.Location = new Point(4, 27);
-            tabSamplers.Name = "tabSamplers";
-            tabSamplers.Padding = new Padding(3);
-            tabSamplers.Size = new Size(996, 887);
-            tabSamplers.TabIndex = 3;
-            tabSamplers.Text = "Samplers";
-            tabSamplers.UseVisualStyleBackColor = true;
-            // 
-            // bt_savesampler
-            // 
-            bt_savesampler.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_savesampler.Location = new Point(606, 8);
-            bt_savesampler.Name = "bt_savesampler";
-            bt_savesampler.Size = new Size(75, 23);
-            bt_savesampler.TabIndex = 5;
-            bt_savesampler.Text = "Save";
-            bt_savesampler.UseVisualStyleBackColor = true;
-            bt_savesampler.Click += bt_savesampler_Click;
-            // 
-            // label1
-            // 
-            label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label1.Location = new Point(8, 8);
-            label1.Name = "label1";
-            label1.Size = new Size(68, 23);
-            label1.TabIndex = 2;
-            label1.Text = "Sampler";
-            label1.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // cb_samplerlist
-            // 
-            cb_samplerlist.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            cb_samplerlist.FormattingEnabled = true;
-            cb_samplerlist.Location = new Point(118, 8);
-            cb_samplerlist.Name = "cb_samplerlist";
-            cb_samplerlist.Size = new Size(482, 23);
-            cb_samplerlist.TabIndex = 1;
-            // 
-            // pan_samplers
-            // 
-            pan_samplers.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            pan_samplers.AutoScroll = true;
-            pan_samplers.Controls.Add(groupBox20);
-            pan_samplers.Controls.Add(groupBox19);
-            pan_samplers.Controls.Add(groupBox18);
-            pan_samplers.Controls.Add(groupBox17);
-            pan_samplers.Controls.Add(groupBox16);
-            pan_samplers.Controls.Add(groupBox15);
-            pan_samplers.Controls.Add(groupBox14);
-            pan_samplers.Controls.Add(groupBox13);
-            pan_samplers.Location = new Point(8, 38);
-            pan_samplers.Name = "pan_samplers";
-            pan_samplers.Size = new Size(982, 686);
-            pan_samplers.TabIndex = 0;
-            // 
-            // groupBox20
-            // 
-            groupBox20.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            groupBox20.Controls.Add(ck_trimstop);
-            groupBox20.Controls.Add(ck_renderspecial);
-            groupBox20.Controls.Add(ck_ignoreeos);
-            groupBox20.Location = new Point(736, 71);
-            groupBox20.Name = "groupBox20";
-            groupBox20.Size = new Size(229, 300);
-            groupBox20.TabIndex = 7;
-            groupBox20.TabStop = false;
-            groupBox20.Text = "Misc Settings";
-            // 
-            // ck_trimstop
-            // 
-            ck_trimstop.AutoSize = true;
-            ck_trimstop.Location = new Point(6, 76);
-            ck_trimstop.Name = "ck_trimstop";
-            ck_trimstop.Size = new Size(136, 19);
-            ck_trimstop.TabIndex = 18;
-            ck_trimstop.Text = "Trim Stop Sequences";
-            ck_trimstop.UseVisualStyleBackColor = true;
-            // 
-            // ck_renderspecial
-            // 
-            ck_renderspecial.AutoSize = true;
-            ck_renderspecial.Location = new Point(6, 51);
-            ck_renderspecial.Name = "ck_renderspecial";
-            ck_renderspecial.Size = new Size(143, 19);
-            ck_renderspecial.TabIndex = 17;
-            ck_renderspecial.Text = "Render Special Tokens";
-            ck_renderspecial.UseVisualStyleBackColor = true;
-            // 
-            // ck_ignoreeos
-            // 
-            ck_ignoreeos.AutoSize = true;
-            ck_ignoreeos.Location = new Point(6, 26);
-            ck_ignoreeos.Name = "ck_ignoreeos";
-            ck_ignoreeos.Size = new Size(119, 19);
-            ck_ignoreeos.TabIndex = 16;
-            ck_ignoreeos.Text = "Ignore EOS Token";
-            ck_ignoreeos.UseVisualStyleBackColor = true;
-            // 
-            // groupBox19
-            // 
-            groupBox19.Controls.Add(num_xtcthres);
-            groupBox19.Controls.Add(label50);
-            groupBox19.Controls.Add(num_xtcprob);
-            groupBox19.Controls.Add(label51);
-            groupBox19.Location = new Point(487, 189);
-            groupBox19.Name = "groupBox19";
-            groupBox19.Size = new Size(243, 182);
-            groupBox19.TabIndex = 6;
-            groupBox19.TabStop = false;
-            groupBox19.Text = "Exclude Top Tokens (XTC)";
-            // 
-            // num_xtcthres
-            // 
-            num_xtcthres.DecimalPlaces = 2;
-            num_xtcthres.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_xtcthres.Location = new Point(120, 51);
-            num_xtcthres.Maximum = new decimal(new int[] { 5, 0, 0, 65536 });
-            num_xtcthres.Name = "num_xtcthres";
-            num_xtcthres.Size = new Size(110, 23);
-            num_xtcthres.TabIndex = 15;
-            num_xtcthres.Value = new decimal(new int[] { 15, 0, 0, 131072 });
-            // 
-            // label50
-            // 
-            label50.AutoSize = true;
-            label50.Location = new Point(9, 53);
-            label50.Name = "label50";
-            label50.Size = new Size(60, 15);
-            label50.TabIndex = 14;
-            label50.Text = "Threshold";
-            // 
-            // num_xtcprob
-            // 
-            num_xtcprob.DecimalPlaces = 2;
-            num_xtcprob.Location = new Point(120, 22);
-            num_xtcprob.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
-            num_xtcprob.Name = "num_xtcprob";
-            num_xtcprob.Size = new Size(110, 23);
-            num_xtcprob.TabIndex = 13;
-            // 
-            // label51
-            // 
-            label51.AutoSize = true;
-            label51.Location = new Point(9, 24);
-            label51.Name = "label51";
-            label51.Size = new Size(64, 15);
-            label51.TabIndex = 12;
-            label51.Text = "Probability";
-            // 
-            // groupBox18
-            // 
-            groupBox18.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            groupBox18.Controls.Add(num_drymul);
-            groupBox18.Controls.Add(label46);
-            groupBox18.Controls.Add(num_drybase);
-            groupBox18.Controls.Add(label48);
-            groupBox18.Controls.Add(num_dryrange);
-            groupBox18.Controls.Add(label49);
-            groupBox18.Location = new Point(487, 71);
-            groupBox18.Name = "groupBox18";
-            groupBox18.Size = new Size(269, 112);
-            groupBox18.TabIndex = 5;
-            groupBox18.TabStop = false;
-            groupBox18.Text = "DRY Anti Repetition";
-            // 
-            // num_drymul
-            // 
-            num_drymul.DecimalPlaces = 2;
-            num_drymul.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_drymul.Location = new Point(120, 22);
-            num_drymul.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
-            num_drymul.Name = "num_drymul";
-            num_drymul.Size = new Size(110, 23);
-            num_drymul.TabIndex = 11;
-            // 
-            // label46
-            // 
-            label46.AutoSize = true;
-            label46.Location = new Point(9, 24);
-            label46.Name = "label46";
-            label46.Size = new Size(58, 15);
-            label46.TabIndex = 10;
-            label46.Text = "Multiplier";
-            // 
-            // num_drybase
-            // 
-            num_drybase.DecimalPlaces = 2;
-            num_drybase.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_drybase.Location = new Point(120, 51);
-            num_drybase.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
-            num_drybase.Name = "num_drybase";
-            num_drybase.Size = new Size(110, 23);
-            num_drybase.TabIndex = 9;
-            num_drybase.Value = new decimal(new int[] { 175, 0, 0, 131072 });
-            // 
-            // label48
-            // 
-            label48.AutoSize = true;
-            label48.Location = new Point(9, 53);
-            label48.Name = "label48";
-            label48.Size = new Size(31, 15);
-            label48.TabIndex = 8;
-            label48.Text = "Base";
-            // 
-            // num_dryrange
-            // 
-            num_dryrange.Location = new Point(120, 80);
-            num_dryrange.Maximum = new decimal(new int[] { 128000, 0, 0, 0 });
-            num_dryrange.Name = "num_dryrange";
-            num_dryrange.Size = new Size(110, 23);
-            num_dryrange.TabIndex = 7;
-            // 
-            // label49
-            // 
-            label49.AutoSize = true;
-            label49.Location = new Point(9, 80);
-            label49.Name = "label49";
-            label49.Size = new Size(40, 15);
-            label49.TabIndex = 6;
-            label49.Text = "Range";
-            // 
-            // groupBox17
-            // 
-            groupBox17.Controls.Add(num_smoothfac);
-            groupBox17.Controls.Add(label59);
-            groupBox17.Controls.Add(num_dynexpo);
-            groupBox17.Controls.Add(label45);
-            groupBox17.Controls.Add(num_dynrange);
-            groupBox17.Controls.Add(label47);
-            groupBox17.Location = new Point(245, 189);
-            groupBox17.Name = "groupBox17";
-            groupBox17.Size = new Size(236, 182);
-            groupBox17.TabIndex = 4;
-            groupBox17.TabStop = false;
-            groupBox17.Text = "Dynamic Temperature";
-            // 
-            // num_smoothfac
-            // 
-            num_smoothfac.DecimalPlaces = 2;
-            num_smoothfac.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_smoothfac.Location = new Point(120, 80);
-            num_smoothfac.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
-            num_smoothfac.Name = "num_smoothfac";
-            num_smoothfac.Size = new Size(110, 23);
-            num_smoothfac.TabIndex = 13;
-            // 
-            // label59
-            // 
-            label59.AutoSize = true;
-            label59.Location = new Point(9, 82);
-            label59.Name = "label59";
-            label59.Size = new Size(85, 15);
-            label59.TabIndex = 12;
-            label59.Text = "Smooth Factor";
-            label59.Click += label59_Click;
-            // 
-            // num_dynexpo
-            // 
-            num_dynexpo.DecimalPlaces = 2;
-            num_dynexpo.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_dynexpo.Location = new Point(120, 51);
-            num_dynexpo.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
-            num_dynexpo.Name = "num_dynexpo";
-            num_dynexpo.Size = new Size(110, 23);
-            num_dynexpo.TabIndex = 11;
-            num_dynexpo.Value = new decimal(new int[] { 9, 0, 0, 65536 });
-            // 
-            // label45
-            // 
-            label45.AutoSize = true;
-            label45.Location = new Point(9, 53);
-            label45.Name = "label45";
-            label45.Size = new Size(56, 15);
-            label45.TabIndex = 10;
-            label45.Text = "Exponent";
-            // 
-            // num_dynrange
-            // 
-            num_dynrange.DecimalPlaces = 2;
-            num_dynrange.Location = new Point(120, 22);
-            num_dynrange.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
-            num_dynrange.Name = "num_dynrange";
-            num_dynrange.Size = new Size(110, 23);
-            num_dynrange.TabIndex = 7;
-            // 
-            // label47
-            // 
-            label47.AutoSize = true;
-            label47.Location = new Point(9, 24);
-            label47.Name = "label47";
-            label47.Size = new Size(40, 15);
-            label47.TabIndex = 6;
-            label47.Text = "Range";
-            // 
-            // groupBox16
-            // 
-            groupBox16.Controls.Add(num_meta);
-            groupBox16.Controls.Add(label42);
-            groupBox16.Controls.Add(num_mtau);
-            groupBox16.Controls.Add(label44);
-            groupBox16.Controls.Add(cb_miro);
-            groupBox16.Controls.Add(label43);
-            groupBox16.Location = new Point(245, 71);
-            groupBox16.Name = "groupBox16";
-            groupBox16.Size = new Size(236, 112);
-            groupBox16.TabIndex = 3;
-            groupBox16.TabStop = false;
-            groupBox16.Text = "Mirostat Sampler";
-            // 
-            // num_meta
-            // 
-            num_meta.DecimalPlaces = 2;
-            num_meta.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_meta.Location = new Point(117, 80);
-            num_meta.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
-            num_meta.Name = "num_meta";
-            num_meta.Size = new Size(110, 23);
-            num_meta.TabIndex = 12;
-            num_meta.Value = new decimal(new int[] { 1, 0, 0, 65536 });
-            // 
-            // label42
-            // 
-            label42.AutoSize = true;
-            label42.Location = new Point(6, 82);
-            label42.Name = "label42";
-            label42.Size = new Size(23, 15);
-            label42.TabIndex = 11;
-            label42.Text = "Eta";
-            // 
-            // num_mtau
-            // 
-            num_mtau.DecimalPlaces = 2;
-            num_mtau.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_mtau.Location = new Point(117, 51);
-            num_mtau.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
-            num_mtau.Name = "num_mtau";
-            num_mtau.Size = new Size(110, 23);
-            num_mtau.TabIndex = 10;
-            num_mtau.Value = new decimal(new int[] { 5, 0, 0, 0 });
-            // 
-            // label44
-            // 
-            label44.AutoSize = true;
-            label44.Location = new Point(6, 53);
-            label44.Name = "label44";
-            label44.Size = new Size(26, 15);
-            label44.TabIndex = 9;
-            label44.Text = "Tau";
-            // 
-            // cb_miro
-            // 
-            cb_miro.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_miro.FormattingEnabled = true;
-            cb_miro.Items.AddRange(new object[] { "Disabled", "v1", "v2" });
-            cb_miro.Location = new Point(117, 22);
-            cb_miro.Name = "cb_miro";
-            cb_miro.Size = new Size(110, 23);
-            cb_miro.TabIndex = 8;
-            // 
-            // label43
-            // 
-            label43.AutoSize = true;
-            label43.Location = new Point(6, 24);
-            label43.Name = "label43";
-            label43.Size = new Size(45, 15);
-            label43.TabIndex = 4;
-            label43.Text = "Version";
-            // 
-            // groupBox15
-            // 
-            groupBox15.Controls.Add(num_reppenrange);
-            groupBox15.Controls.Add(label41);
-            groupBox15.Controls.Add(num_reppen);
-            groupBox15.Controls.Add(label40);
-            groupBox15.Location = new Point(3, 283);
-            groupBox15.Name = "groupBox15";
-            groupBox15.Size = new Size(236, 88);
-            groupBox15.TabIndex = 2;
-            groupBox15.TabStop = false;
-            groupBox15.Text = "Repetition Penalty";
-            // 
-            // num_reppenrange
-            // 
-            num_reppenrange.Location = new Point(117, 51);
-            num_reppenrange.Maximum = new decimal(new int[] { 128000, 0, 0, 0 });
-            num_reppenrange.Name = "num_reppenrange";
-            num_reppenrange.Size = new Size(110, 23);
-            num_reppenrange.TabIndex = 7;
-            // 
-            // label41
-            // 
-            label41.AutoSize = true;
-            label41.Location = new Point(6, 53);
-            label41.Name = "label41";
-            label41.Size = new Size(40, 15);
-            label41.TabIndex = 6;
-            label41.Text = "Range";
-            // 
-            // num_reppen
-            // 
-            num_reppen.DecimalPlaces = 2;
-            num_reppen.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_reppen.Location = new Point(117, 22);
-            num_reppen.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
-            num_reppen.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            num_reppen.Name = "num_reppen";
-            num_reppen.Size = new Size(110, 23);
-            num_reppen.TabIndex = 5;
-            num_reppen.Value = new decimal(new int[] { 1, 0, 0, 0 });
-            // 
-            // label40
-            // 
-            label40.AutoSize = true;
-            label40.Location = new Point(6, 24);
-            label40.Name = "label40";
-            label40.Size = new Size(46, 15);
-            label40.TabIndex = 4;
-            label40.Text = "Penalty";
-            // 
-            // groupBox14
-            // 
-            groupBox14.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            groupBox14.Controls.Add(num_seed);
-            groupBox14.Controls.Add(label39);
-            groupBox14.Controls.Add(num_temp);
-            groupBox14.Controls.Add(label38);
-            groupBox14.Location = new Point(3, 3);
-            groupBox14.Name = "groupBox14";
-            groupBox14.Size = new Size(962, 62);
-            groupBox14.TabIndex = 1;
-            groupBox14.TabStop = false;
-            groupBox14.Text = "Core Settings";
-            // 
-            // num_seed
-            // 
-            num_seed.Location = new Point(296, 22);
-            num_seed.Maximum = new decimal(new int[] { 1661992959, 1808227885, 5, 0 });
-            num_seed.Minimum = new decimal(new int[] { 1, 0, 0, int.MinValue });
-            num_seed.Name = "num_seed";
-            num_seed.Size = new Size(110, 23);
-            num_seed.TabIndex = 15;
-            num_seed.Value = new decimal(new int[] { 1, 0, 0, int.MinValue });
-            // 
-            // label39
-            // 
-            label39.AutoSize = true;
-            label39.Location = new Point(258, 24);
-            label39.Name = "label39";
-            label39.Size = new Size(32, 15);
-            label39.TabIndex = 14;
-            label39.Text = "Seed";
-            // 
-            // num_temp
-            // 
-            num_temp.DecimalPlaces = 2;
-            num_temp.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_temp.Location = new Point(117, 22);
-            num_temp.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
-            num_temp.Name = "num_temp";
-            num_temp.Size = new Size(110, 23);
-            num_temp.TabIndex = 13;
-            // 
-            // label38
-            // 
-            label38.AutoSize = true;
-            label38.Location = new Point(6, 24);
-            label38.Name = "label38";
-            label38.Size = new Size(74, 15);
-            label38.TabIndex = 12;
-            label38.Text = "Temperature";
-            // 
-            // groupBox13
-            // 
-            groupBox13.Controls.Add(num_tfs);
-            groupBox13.Controls.Add(label37);
-            groupBox13.Controls.Add(num_typical);
-            groupBox13.Controls.Add(label36);
-            groupBox13.Controls.Add(num_minp);
-            groupBox13.Controls.Add(label35);
-            groupBox13.Controls.Add(num_topp);
-            groupBox13.Controls.Add(label34);
-            groupBox13.Controls.Add(num_topa);
-            groupBox13.Controls.Add(label33);
-            groupBox13.Controls.Add(num_topk);
-            groupBox13.Controls.Add(label31);
-            groupBox13.Location = new Point(3, 71);
-            groupBox13.Name = "groupBox13";
-            groupBox13.Size = new Size(236, 206);
-            groupBox13.TabIndex = 0;
-            groupBox13.TabStop = false;
-            groupBox13.Text = "Main Samplers";
-            // 
-            // num_tfs
-            // 
-            num_tfs.DecimalPlaces = 2;
-            num_tfs.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_tfs.Location = new Point(117, 138);
-            num_tfs.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
-            num_tfs.Name = "num_tfs";
-            num_tfs.Size = new Size(110, 23);
-            num_tfs.TabIndex = 11;
-            // 
-            // label37
-            // 
-            label37.AutoSize = true;
-            label37.Location = new Point(6, 140);
-            label37.Name = "label37";
-            label37.Size = new Size(103, 15);
-            label37.TabIndex = 10;
-            label37.Text = "Tail Free Sampling";
-            // 
-            // num_typical
-            // 
-            num_typical.DecimalPlaces = 2;
-            num_typical.ForeColor = Color.Gray;
-            num_typical.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_typical.Location = new Point(117, 167);
-            num_typical.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
-            num_typical.Name = "num_typical";
-            num_typical.Size = new Size(110, 23);
-            num_typical.TabIndex = 9;
-            num_typical.Value = new decimal(new int[] { 1, 0, 0, 0 });
-            // 
-            // label36
-            // 
-            label36.AutoSize = true;
-            label36.Location = new Point(6, 169);
-            label36.Name = "label36";
-            label36.Size = new Size(44, 15);
-            label36.TabIndex = 8;
-            label36.Text = "Typical";
-            // 
-            // num_minp
-            // 
-            num_minp.DecimalPlaces = 2;
-            num_minp.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_minp.Location = new Point(117, 109);
-            num_minp.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
-            num_minp.Name = "num_minp";
-            num_minp.Size = new Size(110, 23);
-            num_minp.TabIndex = 7;
-            // 
-            // label35
-            // 
-            label35.AutoSize = true;
-            label35.Location = new Point(6, 111);
-            label35.Name = "label35";
-            label35.Size = new Size(38, 15);
-            label35.TabIndex = 6;
-            label35.Text = "Min P";
-            // 
-            // num_topp
-            // 
-            num_topp.DecimalPlaces = 2;
-            num_topp.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_topp.Location = new Point(117, 80);
-            num_topp.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
-            num_topp.Name = "num_topp";
-            num_topp.Size = new Size(110, 23);
-            num_topp.TabIndex = 5;
-            num_topp.Value = new decimal(new int[] { 1, 0, 0, 0 });
-            // 
-            // label34
-            // 
-            label34.AutoSize = true;
-            label34.Location = new Point(6, 82);
-            label34.Name = "label34";
-            label34.Size = new Size(37, 15);
-            label34.TabIndex = 4;
-            label34.Text = "Top P";
-            // 
-            // num_topa
-            // 
-            num_topa.DecimalPlaces = 2;
-            num_topa.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_topa.Location = new Point(117, 51);
-            num_topa.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
-            num_topa.Name = "num_topa";
-            num_topa.Size = new Size(110, 23);
-            num_topa.TabIndex = 3;
-            // 
-            // label33
-            // 
-            label33.AutoSize = true;
-            label33.Location = new Point(6, 53);
-            label33.Name = "label33";
-            label33.Size = new Size(38, 15);
-            label33.TabIndex = 2;
-            label33.Text = "Top A";
-            // 
-            // num_topk
-            // 
-            num_topk.Location = new Point(117, 22);
-            num_topk.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
-            num_topk.Name = "num_topk";
-            num_topk.Size = new Size(110, 23);
-            num_topk.TabIndex = 1;
-            // 
-            // label31
-            // 
-            label31.AutoSize = true;
-            label31.Location = new Point(6, 24);
-            label31.Name = "label31";
-            label31.Size = new Size(37, 15);
-            label31.TabIndex = 0;
-            label31.Text = "Top K";
-            // 
-            // tabSysPrompt
-            // 
-            tabSysPrompt.Controls.Add(bt_promptsave);
-            tabSysPrompt.Controls.Add(label10);
-            tabSysPrompt.Controls.Add(cb_promptlist);
-            tabSysPrompt.Controls.Add(pan_prompt);
-            tabSysPrompt.Location = new Point(4, 27);
-            tabSysPrompt.Name = "tabSysPrompt";
-            tabSysPrompt.Padding = new Padding(3);
-            tabSysPrompt.Size = new Size(996, 887);
-            tabSysPrompt.TabIndex = 5;
-            tabSysPrompt.Text = "System Prompt";
-            tabSysPrompt.UseVisualStyleBackColor = true;
-            // 
-            // bt_promptsave
-            // 
-            bt_promptsave.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            bt_promptsave.Location = new Point(605, 8);
-            bt_promptsave.Name = "bt_promptsave";
-            bt_promptsave.Size = new Size(75, 23);
-            bt_promptsave.TabIndex = 13;
-            bt_promptsave.Text = "Save";
-            bt_promptsave.UseVisualStyleBackColor = true;
-            bt_promptsave.Click += bt_promptsave_Click;
-            // 
-            // label10
-            // 
-            label10.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label10.Location = new Point(8, 8);
-            label10.Name = "label10";
-            label10.Size = new Size(104, 23);
-            label10.TabIndex = 12;
-            label10.Text = "System Prompt";
-            label10.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // cb_promptlist
-            // 
-            cb_promptlist.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            cb_promptlist.FormattingEnabled = true;
-            cb_promptlist.Location = new Point(118, 8);
-            cb_promptlist.Name = "cb_promptlist";
-            cb_promptlist.Size = new Size(481, 23);
-            cb_promptlist.TabIndex = 11;
-            // 
-            // pan_prompt
-            // 
-            pan_prompt.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            pan_prompt.AutoScroll = true;
-            pan_prompt.Controls.Add(groupBox22);
-            pan_prompt.Controls.Add(groupBox21);
-            pan_prompt.Location = new Point(8, 38);
-            pan_prompt.Name = "pan_prompt";
-            pan_prompt.Size = new Size(982, 672);
-            pan_prompt.TabIndex = 10;
-            // 
-            // groupBox22
-            // 
-            groupBox22.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            groupBox22.Controls.Add(ed_editsys_prefix);
-            groupBox22.Controls.Add(label55);
-            groupBox22.Controls.Add(ed_editsys_worldinfo);
-            groupBox22.Controls.Add(label54);
-            groupBox22.Controls.Add(ed_editsys_dialogs);
-            groupBox22.Controls.Add(label53);
-            groupBox22.Controls.Add(ed_editsys_scenario);
-            groupBox22.Controls.Add(label52);
-            groupBox22.Location = new Point(610, 3);
-            groupBox22.Name = "groupBox22";
-            groupBox22.Size = new Size(369, 206);
-            groupBox22.TabIndex = 1;
-            groupBox22.TabStop = false;
-            groupBox22.Text = "Section Titles";
-            // 
-            // ed_editsys_prefix
-            // 
-            ed_editsys_prefix.Location = new Point(6, 171);
-            ed_editsys_prefix.Name = "ed_editsys_prefix";
-            ed_editsys_prefix.Size = new Size(316, 23);
-            ed_editsys_prefix.TabIndex = 7;
-            // 
-            // label55
-            // 
-            label55.AutoSize = true;
-            label55.Location = new Point(6, 153);
-            label55.Name = "label55";
-            label55.Size = new Size(129, 15);
-            label55.TabIndex = 6;
-            label55.Text = "Category Section Prefix";
-            // 
-            // ed_editsys_worldinfo
-            // 
-            ed_editsys_worldinfo.Location = new Point(6, 127);
-            ed_editsys_worldinfo.Name = "ed_editsys_worldinfo";
-            ed_editsys_worldinfo.Size = new Size(316, 23);
-            ed_editsys_worldinfo.TabIndex = 5;
-            // 
-            // label54
-            // 
-            label54.AutoSize = true;
-            label54.Location = new Point(6, 109);
-            label54.Name = "label54";
-            label54.Size = new Size(131, 15);
-            label54.TabIndex = 4;
-            label54.Text = "World Info Section Title";
-            // 
-            // ed_editsys_dialogs
-            // 
-            ed_editsys_dialogs.Location = new Point(6, 83);
-            ed_editsys_dialogs.Name = "ed_editsys_dialogs";
-            ed_editsys_dialogs.Size = new Size(316, 23);
-            ed_editsys_dialogs.TabIndex = 3;
-            // 
-            // label53
-            // 
-            label53.AutoSize = true;
-            label53.Location = new Point(6, 65);
-            label53.Name = "label53";
-            label53.Size = new Size(174, 15);
-            label53.TabIndex = 2;
-            label53.Text = "Example Dialogs Title (optional)";
-            // 
-            // ed_editsys_scenario
-            // 
-            ed_editsys_scenario.Location = new Point(6, 39);
-            ed_editsys_scenario.Name = "ed_editsys_scenario";
-            ed_editsys_scenario.Size = new Size(316, 23);
-            ed_editsys_scenario.TabIndex = 1;
-            // 
-            // label52
-            // 
-            label52.AutoSize = true;
-            label52.Location = new Point(6, 21);
-            label52.Name = "label52";
-            label52.Size = new Size(120, 15);
-            label52.TabIndex = 0;
-            label52.Text = "Scenario Section Title";
-            // 
-            // groupBox21
-            // 
-            groupBox21.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            groupBox21.Controls.Add(ed_editsys_prompt);
-            groupBox21.Location = new Point(3, 3);
-            groupBox21.Name = "groupBox21";
-            groupBox21.Size = new Size(601, 666);
-            groupBox21.TabIndex = 0;
-            groupBox21.TabStop = false;
-            groupBox21.Text = "Main Prompt (intro, char and user bio)";
-            // 
-            // ed_editsys_prompt
-            // 
-            ed_editsys_prompt.BorderStyle = BorderStyle.FixedSingle;
-            ed_editsys_prompt.Dock = DockStyle.Fill;
-            ed_editsys_prompt.Location = new Point(3, 19);
-            ed_editsys_prompt.Multiline = true;
-            ed_editsys_prompt.Name = "ed_editsys_prompt";
-            ed_editsys_prompt.Size = new Size(595, 644);
-            ed_editsys_prompt.TabIndex = 0;
             // 
             // tabWorldInfo
             // 
@@ -2847,6 +1970,7 @@
             // groupBox5
             // 
             groupBox5.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox5.Controls.Add(btSysPrompt);
             groupBox5.Controls.Add(bt_editchar);
             groupBox5.Controls.Add(bt_scenario);
             groupBox5.Controls.Add(label3);
@@ -2864,10 +1988,21 @@
             groupBox5.TabStop = false;
             groupBox5.Text = "Chat Settings";
             // 
+            // btSysPrompt
+            // 
+            btSysPrompt.Font = new Font("Segoe UI", 9F);
+            btSysPrompt.Location = new Point(146, 104);
+            btSysPrompt.Name = "btSysPrompt";
+            btSysPrompt.Size = new Size(35, 20);
+            btSysPrompt.TabIndex = 29;
+            btSysPrompt.Text = "...";
+            btSysPrompt.UseVisualStyleBackColor = true;
+            btSysPrompt.Click += btSysPrompt_Click;
+            // 
             // bt_editchar
             // 
             bt_editchar.Font = new Font("Segoe UI", 9F);
-            bt_editchar.Location = new Point(146, 11);
+            bt_editchar.Location = new Point(146, 16);
             bt_editchar.Name = "bt_editchar";
             bt_editchar.Size = new Size(35, 20);
             bt_editchar.TabIndex = 27;
@@ -2965,6 +2100,7 @@
             // groupBox4
             // 
             groupBox4.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox4.Controls.Add(btSampleEditor);
             groupBox4.Controls.Add(btInstructEdit);
             groupBox4.Controls.Add(ck_charsampler);
             groupBox4.Controls.Add(ck_forceNames);
@@ -2982,10 +2118,21 @@
             groupBox4.TabStop = false;
             groupBox4.Text = "Inference Settings";
             // 
+            // btSampleEditor
+            // 
+            btSampleEditor.Font = new Font("Segoe UI", 9F);
+            btSampleEditor.Location = new Point(146, 83);
+            btSampleEditor.Name = "btSampleEditor";
+            btSampleEditor.Size = new Size(35, 20);
+            btSampleEditor.TabIndex = 30;
+            btSampleEditor.Text = "...";
+            btSampleEditor.UseVisualStyleBackColor = true;
+            btSampleEditor.Click += btSampleEditor_Click;
+            // 
             // btInstructEdit
             // 
             btInstructEdit.Font = new Font("Segoe UI", 9F);
-            btInstructEdit.Location = new Point(146, 11);
+            btInstructEdit.Location = new Point(146, 16);
             btInstructEdit.Name = "btInstructEdit";
             btInstructEdit.Size = new Size(35, 20);
             btInstructEdit.TabIndex = 28;
@@ -3159,8 +2306,6 @@
             tabMain.Controls.Add(tabChat);
             tabMain.Controls.Add(tabHistory);
             tabMain.Controls.Add(tabWorldInfo);
-            tabMain.Controls.Add(tabSysPrompt);
-            tabMain.Controls.Add(tabSamplers);
             tabMain.Controls.Add(tabSettings);
             tabMain.Controls.Add(tabConsole);
             tabMain.Controls.Add(tabSearch);
@@ -3179,7 +2324,7 @@
             tabSearch.Padding = new Padding(3);
             tabSearch.Size = new Size(996, 887);
             tabSearch.TabIndex = 10;
-            tabSearch.Text = "tabPage1";
+            tabSearch.Text = "RAG Search";
             tabSearch.UseVisualStyleBackColor = true;
             // 
             // txtSearchRes
@@ -3237,50 +2382,6 @@
             ((System.ComponentModel.ISupportInitialize)num_ragindex).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_ragmaxretrieve).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_ragcutoff).EndInit();
-            tabSamplers.ResumeLayout(false);
-            pan_samplers.ResumeLayout(false);
-            groupBox20.ResumeLayout(false);
-            groupBox20.PerformLayout();
-            groupBox19.ResumeLayout(false);
-            groupBox19.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)num_xtcthres).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_xtcprob).EndInit();
-            groupBox18.ResumeLayout(false);
-            groupBox18.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)num_drymul).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_drybase).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_dryrange).EndInit();
-            groupBox17.ResumeLayout(false);
-            groupBox17.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)num_smoothfac).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_dynexpo).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_dynrange).EndInit();
-            groupBox16.ResumeLayout(false);
-            groupBox16.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)num_meta).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_mtau).EndInit();
-            groupBox15.ResumeLayout(false);
-            groupBox15.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)num_reppenrange).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_reppen).EndInit();
-            groupBox14.ResumeLayout(false);
-            groupBox14.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)num_seed).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_temp).EndInit();
-            groupBox13.ResumeLayout(false);
-            groupBox13.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)num_tfs).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_typical).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_minp).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_topp).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_topa).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_topk).EndInit();
-            tabSysPrompt.ResumeLayout(false);
-            pan_prompt.ResumeLayout(false);
-            groupBox22.ResumeLayout(false);
-            groupBox22.PerformLayout();
-            groupBox21.ResumeLayout(false);
-            groupBox21.PerformLayout();
             tabWorldInfo.ResumeLayout(false);
             panel3.ResumeLayout(false);
             groupBox8.ResumeLayout(false);
@@ -3386,80 +2487,6 @@
         private Label label12;
         private ComboBox cb_ragheuristic;
         private Button button1;
-        private TabPage tabSamplers;
-        private Button bt_savesampler;
-        private Label label1;
-        private ComboBox cb_samplerlist;
-        private Panel pan_samplers;
-        private GroupBox groupBox20;
-        private CheckBox ck_trimstop;
-        private CheckBox ck_renderspecial;
-        private CheckBox ck_ignoreeos;
-        private GroupBox groupBox19;
-        private NumericUpDown num_xtcthres;
-        private Label label50;
-        private NumericUpDown num_xtcprob;
-        private Label label51;
-        private GroupBox groupBox18;
-        private NumericUpDown num_drymul;
-        private Label label46;
-        private NumericUpDown num_drybase;
-        private Label label48;
-        private NumericUpDown num_dryrange;
-        private Label label49;
-        private GroupBox groupBox17;
-        private NumericUpDown num_smoothfac;
-        private Label label59;
-        private NumericUpDown num_dynexpo;
-        private Label label45;
-        private NumericUpDown num_dynrange;
-        private Label label47;
-        private GroupBox groupBox16;
-        private NumericUpDown num_meta;
-        private Label label42;
-        private NumericUpDown num_mtau;
-        private Label label44;
-        private ComboBox cb_miro;
-        private Label label43;
-        private GroupBox groupBox15;
-        private NumericUpDown num_reppenrange;
-        private Label label41;
-        private NumericUpDown num_reppen;
-        private Label label40;
-        private GroupBox groupBox14;
-        private NumericUpDown num_seed;
-        private Label label39;
-        private NumericUpDown num_temp;
-        private Label label38;
-        private GroupBox groupBox13;
-        private NumericUpDown num_tfs;
-        private Label label37;
-        private NumericUpDown num_typical;
-        private Label label36;
-        private NumericUpDown num_minp;
-        private Label label35;
-        private NumericUpDown num_topp;
-        private Label label34;
-        private NumericUpDown num_topa;
-        private Label label33;
-        private NumericUpDown num_topk;
-        private Label label31;
-        private TabPage tabSysPrompt;
-        private Button bt_promptsave;
-        private Label label10;
-        private ComboBox cb_promptlist;
-        private Panel pan_prompt;
-        private GroupBox groupBox22;
-        private TextBox ed_editsys_prefix;
-        private Label label55;
-        private TextBox ed_editsys_worldinfo;
-        private Label label54;
-        private TextBox ed_editsys_dialogs;
-        private Label label53;
-        private TextBox ed_editsys_scenario;
-        private Label label52;
-        private GroupBox groupBox21;
-        private TextBox ed_editsys_prompt;
         private TabPage tabWorldInfo;
         private Panel panel3;
         private GroupBox groupBox8;
@@ -3583,5 +2610,7 @@
         private TextBox txtSearchRes;
         private TextBox textBox1;
         private Button btInstructEdit;
+        private Button btSysPrompt;
+        private Button btSampleEditor;
     }
 }

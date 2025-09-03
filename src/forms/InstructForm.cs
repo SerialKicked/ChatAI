@@ -33,7 +33,7 @@ namespace WaifuAI.src.forms
             var idwant = 0;
             if (Forceid != "")
                 idwant = listInstruct.Items.IndexOf(Forceid);
-            if (listInstruct.Items.Count > 0)
+            if (listInstruct.Items.Count > 0 && idwant != -1)
             {
                 listInstruct.SelectedIndex = idwant;
                 SelectedInstructEditor = DataFiles.Instruct[listInstruct.SelectedItem!.ToString()!].Copy<InstructFormat>()!;

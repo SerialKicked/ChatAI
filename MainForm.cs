@@ -25,18 +25,6 @@ namespace WaifuAI
     public partial class MainForm : Form
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public WebScraper WebScraper { get; set; } = new WebScraper();
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public SamplerSettings SelectedSamplerEditor { get; set; } = new SamplerSettings();
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public InstructFormat SelectedInstructEditor { get; set; } = new InstructFormat();
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public SystemPrompt SelectedPromptEditor { get; set; } = new SystemPrompt();
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WorldInfo SelectedWorldEditor { get; set; } = new WorldInfo();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -90,10 +78,7 @@ namespace WaifuAI
 
             // Chat related events
             bt_chattosessions.Click += ConvertChatToSessionList!;
-            // Load editors and chat menu
-            SetupSamplerEditor();
             SetupWorldEditor();
-            SetupPromptEditor();
             SetupListSessionContextMenu();
             SetupChatMenu();
             _isinitloading = false;
@@ -126,7 +111,7 @@ namespace WaifuAI
                 var msg = new SingleMessage(AuthorRole.Assistant, DateTime.Now, response, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
                 Bot.History.LogMessage(msg);
                 _afkmessagecount++;
-                await SendMessageToUI(msg, Bot.History.CurrentSession.Messages.Count - 1);
+                await SendMessageToUI(msg);
                 // play a notification sound
                 System.Media.SystemSounds.Question.Play();
             }
@@ -472,217 +457,8 @@ namespace WaifuAI
             return tcs.Task;
         }
 
-        #region *** Sampler Editor ***
 
-        /// <summary>
-        /// Initialize the inference Program.Settings editor panel
-        /// </summary>
-        /// <param name="Forceid"></param>
-        private void SetupSamplerEditor(string Forceid = "", bool addEvents = true)
-        {
-            cb_samplerlist.Items.Clear();
-            foreach (var item in DataFiles.Inference)
-            {
-                cb_samplerlist.Items.Add(item.Value.UniqueName);
-            }
-            var idwant = 0;
-            if (Forceid != "")
-                idwant = cb_samplerlist.Items.IndexOf(Forceid);
-            if (cb_samplerlist.Items.Count > 0)
-            {
-                cb_samplerlist.SelectedIndex = idwant;
-                SelectedSamplerEditor = DataFiles.Inference[cb_samplerlist.SelectedItem!.ToString()!].GetCopy();
-            }
-            if (addEvents)
-            {
-                cb_samplerlist.SelectedIndexChanged += (sender, e) =>
-                {
-                    SelectedSamplerEditor = DataFiles.Inference[cb_samplerlist.SelectedItem!.ToString()!].GetCopy();
-                    LoadSamplerSettings(SelectedSamplerEditor);
-                };
-            }
-            LoadSamplerSettings(SelectedSamplerEditor);
-        }
-
-        private void LoadSamplerSettings(SamplerSettings selected)
-        {
-            num_temp.Value = (decimal)selected.Temperature;
-            num_seed.Value = selected.Sampler_seed;
-            num_topk.Value = selected.Top_k;
-            num_topp.Value = (decimal)selected.Top_p;
-            num_typical.Value = (decimal)selected.Typical;
-            num_minp.Value = (decimal)selected.Min_p;
-            num_topa.Value = (decimal)selected.Top_a;
-            num_tfs.Value = (decimal)selected.Tfs;
-            num_reppen.Value = (decimal)selected.Rep_pen;
-            num_reppenrange.Value = selected.Rep_pen_range;
-            cb_miro.SelectedIndex = (int)selected.Mirostat;
-            num_meta.Value = (decimal)selected.Mirostat_eta;
-            num_mtau.Value = (decimal)selected.Mirostat_tau;
-            num_xtcthres.Value = (decimal)selected.Xtc_threshold;
-            num_xtcprob.Value = (decimal)selected.Xtc_probability;
-            num_drybase.Value = (decimal)selected.Dry_base;
-            num_drymul.Value = (decimal)selected.Dry_multiplier;
-            num_dryrange.Value = selected.Dry_allowed_length;
-            num_dynexpo.Value = (decimal)selected.Dynatemp_exponent;
-            num_dynrange.Value = (decimal)selected.Dynatemp_range;
-            num_smoothfac.Value = (decimal)selected.Smoothing_factor;
-            ck_ignoreeos.Checked = selected.Bypass_eos;
-            ck_renderspecial.Checked = selected.Render_special;
-            ck_trimstop.Checked = selected.Trim_stop;
-        }
-
-        private SamplerSettings SaveSamplerUIToSettiongs()
-        {
-            return new SamplerSettings()
-            {
-                Temperature = (double)num_temp.Value,
-                Sampler_seed = (int)num_seed.Value,
-                Top_k = (int)num_topk.Value,
-                Top_p = (double)num_topp.Value,
-                Typical = (double)num_typical.Value,
-                Min_p = (double)num_minp.Value,
-                Top_a = (double)num_topa.Value,
-                Tfs = (double)num_tfs.Value,
-                Rep_pen = (double)num_reppen.Value,
-                Rep_pen_range = (int)num_reppenrange.Value,
-                Mirostat = (double)cb_miro.SelectedIndex,
-                Mirostat_eta = (double)num_meta.Value,
-                Mirostat_tau = (int)num_mtau.Value,
-                Xtc_threshold = (double)num_xtcthres.Value,
-                Xtc_probability = (double)num_xtcprob.Value,
-                Dry_base = (double)num_drybase.Value,
-                Dry_multiplier = (double)num_drymul.Value,
-                Dry_allowed_length = (int)num_dryrange.Value,
-                Dynatemp_exponent = (double)num_dynexpo.Value,
-                Dynatemp_range = (double)num_dynrange.Value,
-                Smoothing_factor = (double)num_smoothfac.Value,
-                Bypass_eos = ck_ignoreeos.Checked,
-                Render_special = ck_renderspecial.Checked,
-                Trim_stop = ck_trimstop.Checked,
-                Sampler_order = [6, 0, 1, 3, 4, 2, 5],
-                Dry_sequence_breakers = ["\n", ":", "\"", "*", "<|im_end|>", "<|im_start|>"],
-                Max_context_length = 8192,
-                Max_length = 512,
-                Prompt = "",
-                Memory = "",
-                Images = []
-            };
-        }
-
-        private void bt_savesampler_Click(object sender, EventArgs e)
-        {
-            var NewName = cb_samplerlist.Text;
-            if (string.IsNullOrWhiteSpace(NewName))
-            {
-                MessageBox.Show("Please select a valide name for the new sampler");
-                return;
-            }
-            // If name already exists ask for confirmation
-            if (DataFiles.Inference.ContainsKey(NewName) && (MessageBox.Show("This sampler already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
-                return;
-            SelectedSamplerEditor = SaveSamplerUIToSettiongs();
-            SelectedSamplerEditor.UniqueName = NewName;
-            DataFiles.Inference[NewName] = SelectedSamplerEditor;
-            (SelectedSamplerEditor as IFile).SaveToFile("data/params/" + NewName + ".json");
-            SetupSamplerEditor(NewName, false);
-
-            // Update the sampler list in the chat menu
-            var currselection = cb_infer.SelectedItem?.ToString() ?? "";
-            cb_infer.Items.Clear();
-            foreach (var item in DataFiles.Inference)
-            {
-                cb_infer.Items.Add(item.Value.UniqueName);
-            }
-            var newidx = cb_infer.Items.IndexOf(currselection);
-            cb_infer.SelectedIndex = newidx == -1 ? 0 : newidx;
-        }
-
-        #endregion
-
-        #region *** System Prompt Editor ***
-
-        /// <summary>
-        /// Initialize the instruction format editor panel
-        /// </summary>
-        /// <param name="Forceid"></param>
-        private void SetupPromptEditor(string Forceid = "", bool addEvents = true)
-        {
-            cb_promptlist.Items.Clear();
-            foreach (var item in DataFiles.SysPrompts)
-            {
-                cb_promptlist.Items.Add(item.Value.UniqueName);
-            }
-            var idwant = 0;
-            if (Forceid != "")
-                idwant = cb_promptlist.Items.IndexOf(Forceid);
-            if (cb_promptlist.Items.Count > 0)
-            {
-                cb_promptlist.SelectedIndex = idwant;
-                SelectedPromptEditor = DataFiles.SysPrompts[cb_promptlist.SelectedItem!.ToString()!].Copy<SystemPrompt>()!;
-            }
-            if (addEvents)
-            {
-                cb_promptlist.SelectedIndexChanged += (sender, e) =>
-                {
-                    SelectedPromptEditor = DataFiles.SysPrompts[cb_promptlist.SelectedItem!.ToString()!].Copy<SystemPrompt>()!;
-                    LoadSysPromptSettings(SelectedPromptEditor);
-                };
-            }
-            LoadSysPromptSettings(SelectedPromptEditor);
-        }
-
-        private void LoadSysPromptSettings(SystemPrompt selected)
-        {
-            ed_editsys_prompt.Text = selected.Prompt.ToWinFormat();
-            ed_editsys_worldinfo.Text = selected.WorldInfoTitle.Replace("\n", "\\n");
-            ed_editsys_scenario.Text = selected.ScenarioTitle.Replace("\n", "\\n");
-            ed_editsys_dialogs.Text = selected.DialogsTitle.Replace("\n", "\\n");
-            ed_editsys_prefix.Text = selected.CategorySeparator.Replace("\n", "\\n");
-        }
-
-        private SystemPrompt SaveSysPromptUIToSettings()
-        {
-            return new SystemPrompt()
-            {
-                Prompt = ed_editsys_prompt.Text.ToLinuxFormat(),
-                WorldInfoTitle = ed_editsys_worldinfo.Text.Replace("\\n", "\n"),
-                ScenarioTitle = ed_editsys_scenario.Text.Replace("\\n", "\n"),
-                DialogsTitle = ed_editsys_dialogs.Text.Replace("\\n", "\n"),
-                CategorySeparator = ed_editsys_prefix.Text.Replace("\\n", "\n")
-            };
-        }
-
-        private void bt_promptsave_Click(object sender, EventArgs e)
-        {
-            var NewName = cb_promptlist.Text;
-            if (string.IsNullOrWhiteSpace(NewName))
-            {
-                MessageBox.Show("Please select a valide name for the new system prompt format.");
-                return;
-            }
-            // If name already exists ask for confirmation
-            if (DataFiles.SysPrompts.ContainsKey(NewName) && (MessageBox.Show("This prompt format already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
-                return;
-            SelectedPromptEditor = SaveSysPromptUIToSettings();
-            SelectedPromptEditor.UniqueName = NewName;
-            DataFiles.SysPrompts[NewName] = SelectedPromptEditor;
-            (SelectedPromptEditor as IFile).SaveToFile("data/sysprompts/" + NewName + ".json");
-            SetupPromptEditor(NewName, false);
-            // Update the prompt list in the chat menu
-            var currselection = cb_sysprompt.SelectedItem?.ToString() ?? "";
-            cb_sysprompt.Items.Clear();
-            foreach (var item in DataFiles.SysPrompts)
-            {
-                cb_sysprompt.Items.Add(item.Value.UniqueName);
-            }
-            var newidx = cb_sysprompt.Items.IndexOf(currselection);
-            cb_sysprompt.SelectedIndex = newidx == -1 ? 0 : newidx;
-        }
-
-        #endregion
-
-        #region *** Other Editor Related Functions ***
+        #region *** World Info Editor ***
 
         private void SetupWorldEditor(string ForceID = "", int forceEntry = 0)
         {
@@ -912,11 +688,11 @@ namespace WaifuAI
                     msg.Role = AuthorRole.System;
                     // remove the /sys prefix
                     msg.Message = msg.Message[5..].Trim();
-                    await SendMessageToUI(msg, Bot!.History.CurrentSession.Messages.Count);
+                    await SendMessageToUI(msg);
                     // ready a new message for the bot's response
                     PrepareResponse();
                     await SendMessageToUI(
-                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), Bot.History.CurrentSession.Messages.Count + 1);
+                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
                     ed_input.Text = string.Empty;
                     await LLMSystem.SendMessageToBot(msg);
                 }
@@ -950,11 +726,11 @@ namespace WaifuAI
                     {
                         msg.Message = gameinfo.ShowFullScreen();
                     }
-                    await SendMessageToUI(msg, Bot!.History.CurrentSession.Messages.Count);
+                    await SendMessageToUI(msg);
                     // ready a new message for the bot's response
                     PrepareResponse();
                     await SendMessageToUI(
-                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), Bot.History.CurrentSession.Messages.Count + 1);
+                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
                     ed_input.Text = string.Empty;
                     await LLMSystem.SendMessageToBot(msg);
                 }
@@ -967,11 +743,11 @@ namespace WaifuAI
                     msg.Role = AuthorRole.System;
                     // remove the /sys prefix
                     msg.Message = gameinfo;
-                    await SendMessageToUI(msg, Bot!.History.CurrentSession.Messages.Count);
+                    await SendMessageToUI(msg);
                     // ready a new message for the bot's response
                     PrepareResponse();
                     await SendMessageToUI(
-                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), Bot.History.CurrentSession.Messages.Count + 1);
+                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
                     ed_input.Text = string.Empty;
                     await LLMSystem.SendMessageToBot(msg);
                 }
@@ -981,11 +757,11 @@ namespace WaifuAI
                     msg.Role = AuthorRole.System;
                     // remove the /sys prefix
                     msg.Message = gameinfo.ShowDialogs();
-                    await SendMessageToUI(msg, Bot!.History.CurrentSession.Messages.Count);
+                    await SendMessageToUI(msg);
                     // ready a new message for the bot's response
                     PrepareResponse();
                     await SendMessageToUI(
-                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), Bot.History.CurrentSession.Messages.Count + 1);
+                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
                     ed_input.Text = string.Empty;
                     await LLMSystem.SendMessageToBot(msg);
                 }
@@ -997,7 +773,7 @@ namespace WaifuAI
                         if (usercmdonly)
                         {
                             LLMSystem.History.LogMessage(response);
-                            await SendMessageToUI(response, LLMSystem.History.CurrentSession.Messages.Count - 1);
+                            await SendMessageToUI(response);
                             ed_input.Text = string.Empty;
                             statusbar.Items[1].Text = "Ready!";
                             return;
@@ -1005,22 +781,22 @@ namespace WaifuAI
                         else
                         {
                             LLMSystem.History.LogMessage(msg);
-                            await SendMessageToUI(msg, LLMSystem.History.CurrentSession.Messages.Count - 1);
-                            await SendMessageToUI(response, LLMSystem.History.CurrentSession.Messages.Count);
+                            await SendMessageToUI(msg);
+                            await SendMessageToUI(response);
                             PrepareResponse();
                             await SendMessageToUI(
-                                new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count + 1);
+                                new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
                             ed_input.Text = string.Empty;
                             await LLMSystem.SendMessageToBot(response);
                         }
                     }
                     else
                     {
-                        await SendMessageToUI(msg, LLMSystem.History.CurrentSession.Messages.Count);
+                        await SendMessageToUI(msg);
                         // ready a new message for the bot's response
                         PrepareResponse();
                         await SendMessageToUI(
-                            new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count + 1);
+                            new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
                         ed_input.Text = string.Empty;
                         await LLMSystem.SendMessageToBot(msg);
                     }
@@ -1031,7 +807,7 @@ namespace WaifuAI
                 // ready a new message for the bot's response
                 PrepareResponse();
                 await SendMessageToUI(
-                    new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count);
+                    new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
                 ed_input.Text = string.Empty;
                 await LLMSystem.AddBotMessage();
             }
@@ -1072,7 +848,7 @@ namespace WaifuAI
             UseCharacterDefinedSampler();
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await WebRemoveLastMessage();
-            await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), LLMSystem.History.CurrentSession.Messages.Count - 1);
+            await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
             PrepareResponse();
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await LLMSystem.RerollLastMessage();
@@ -1222,7 +998,7 @@ namespace WaifuAI
             await WebChatLoad();
         }
 
-        private async Task SendMessageToUI(SingleMessage singleMessage, int index = -1)
+        private async Task SendMessageToUI(SingleMessage singleMessage)
         {
             string img = "gears.png";
             switch (singleMessage.Role)
@@ -2671,6 +2447,41 @@ namespace WaifuAI
             }
             var newidx = cb_instruct.Items.IndexOf(currselection);
             cb_instruct.SelectedIndex = newidx == -1 ? 0 : newidx;
+        }
+
+        private void btSysPrompt_Click(object sender, EventArgs e)
+        {
+            var editForm = new SysPromptForm();
+            editForm.SetupPromptEditor(LLMSystem.SystemPrompt.UniqueName ?? string.Empty);
+            editForm.ShowDialog();
+            editForm.Dispose();
+            LLMSystem.InvalidatePromptCache();
+            var currselection = cb_sysprompt.SelectedItem?.ToString() ?? "";
+            cb_sysprompt.Items.Clear();
+            foreach (var item in DataFiles.SysPrompts)
+            {
+                cb_sysprompt.Items.Add(item.Value.UniqueName);
+            }
+            var newidx = cb_sysprompt.Items.IndexOf(currselection);
+            cb_sysprompt.SelectedIndex = newidx == -1 ? 0 : newidx;
+        }
+
+        private void btSampleEditor_Click(object sender, EventArgs e)
+        {
+            var editForm = new SamplerForm();
+            editForm.SetupSamplerEditor(LLMSystem.Sampler.UniqueName ?? string.Empty);
+            editForm.ShowDialog();
+            editForm.Dispose();
+            LLMSystem.InvalidatePromptCache();
+            // Update the sampler list in the chat menu
+            var currselection = cb_infer.SelectedItem?.ToString() ?? "";
+            cb_infer.Items.Clear();
+            foreach (var item in DataFiles.Inference)
+            {
+                cb_infer.Items.Add(item.Value.UniqueName);
+            }
+            var newidx = cb_infer.Items.IndexOf(currselection);
+            cb_infer.SelectedIndex = newidx == -1 ? 0 : newidx;
         }
     }
 }
