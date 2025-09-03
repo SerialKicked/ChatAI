@@ -9,6 +9,7 @@ using AIToolkit.Files;
 using WaifuAI.Files;
 using WaifuAI.Web;
 using AIToolkit.LLM;
+using AIToolkit.Memory;
 
 namespace WaifuAI
 {
