@@ -40,45 +40,6 @@
             AutoTalkTimer = new System.Windows.Forms.Timer(components);
             tabConsole = new TabPage();
             ed_log = new TextBox();
-            tabWorldInfo = new TabPage();
-            panel3 = new Panel();
-            groupBox8 = new GroupBox();
-            label60 = new Label();
-            numWItriggerchance = new NumericUpDown();
-            label27 = new Label();
-            num_wentrypriority = new NumericUpDown();
-            label26 = new Label();
-            num_wentryduration = new NumericUpDown();
-            ck_wentrycasesensitive = new CheckBox();
-            label25 = new Label();
-            num_wentryposition = new NumericUpDown();
-            label24 = new Label();
-            cb_wentrylocation = new ComboBox();
-            label23 = new Label();
-            cb_wentrykwlink = new ComboBox();
-            ed_wentrykw2 = new TextBox();
-            label22 = new Label();
-            ed_wentrykw1 = new TextBox();
-            label21 = new Label();
-            ck_wentryenabled = new CheckBox();
-            groupBox7 = new GroupBox();
-            label20 = new Label();
-            ed_wentrymem = new TextBox();
-            ed_wentryname = new TextBox();
-            label19 = new Label();
-            groupBox6 = new GroupBox();
-            ck_wiembed = new CheckBox();
-            bt_delwentry = new Button();
-            bt_addwentry = new Button();
-            label18 = new Label();
-            lb_worldentries = new ListBox();
-            label17 = new Label();
-            label16 = new Label();
-            num_scandepth = new NumericUpDown();
-            ed_worlddesc = new TextBox();
-            groupBox3 = new GroupBox();
-            bt_worldsave = new Button();
-            cb_worlds = new ComboBox();
             tabHistory = new TabPage();
             panel6 = new Panel();
             web_sessioncontent = new Microsoft.Web.WebView2.WinForms.WebView2();
@@ -117,11 +78,11 @@
             ed_input = new TextBox();
             panel1 = new Panel();
             groupBox23 = new GroupBox();
+            btWorldEditor = new Button();
             btMainSettings = new Button();
             ck_agentmode = new CheckBox();
             bt_clearimg = new Button();
             pictEmbed = new PictureBox();
-            bt_test = new Button();
             ck_onlinerag = new CheckBox();
             ck_worldinfo = new CheckBox();
             ck_ragenabled = new CheckBox();
@@ -166,17 +127,6 @@
             statusbar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
             tabConsole.SuspendLayout();
-            tabWorldInfo.SuspendLayout();
-            panel3.SuspendLayout();
-            groupBox8.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numWItriggerchance).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_wentrypriority).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_wentryduration).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_wentryposition).BeginInit();
-            groupBox7.SuspendLayout();
-            groupBox6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)num_scandepth).BeginInit();
-            groupBox3.SuspendLayout();
             tabHistory.SuspendLayout();
             panel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_sessioncontent).BeginInit();
@@ -248,7 +198,7 @@
             tabConsole.Location = new Point(4, 27);
             tabConsole.Name = "tabConsole";
             tabConsole.Padding = new Padding(3);
-            tabConsole.Size = new Size(996, 887);
+            tabConsole.Size = new Size(996, 897);
             tabConsole.TabIndex = 9;
             tabConsole.Text = "Raw Prompt";
             tabConsole.UseVisualStyleBackColor = true;
@@ -263,420 +213,8 @@
             ed_log.Multiline = true;
             ed_log.Name = "ed_log";
             ed_log.ScrollBars = ScrollBars.Vertical;
-            ed_log.Size = new Size(990, 881);
+            ed_log.Size = new Size(990, 891);
             ed_log.TabIndex = 3;
-            // 
-            // tabWorldInfo
-            // 
-            tabWorldInfo.Controls.Add(panel3);
-            tabWorldInfo.Controls.Add(groupBox6);
-            tabWorldInfo.Controls.Add(groupBox3);
-            tabWorldInfo.Location = new Point(4, 27);
-            tabWorldInfo.Name = "tabWorldInfo";
-            tabWorldInfo.Size = new Size(996, 887);
-            tabWorldInfo.TabIndex = 8;
-            tabWorldInfo.Text = "World Info";
-            tabWorldInfo.UseVisualStyleBackColor = true;
-            // 
-            // panel3
-            // 
-            panel3.Controls.Add(groupBox8);
-            panel3.Controls.Add(groupBox7);
-            panel3.Dock = DockStyle.Fill;
-            panel3.Location = new Point(241, 57);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(755, 830);
-            panel3.TabIndex = 4;
-            // 
-            // groupBox8
-            // 
-            groupBox8.Controls.Add(label60);
-            groupBox8.Controls.Add(numWItriggerchance);
-            groupBox8.Controls.Add(label27);
-            groupBox8.Controls.Add(num_wentrypriority);
-            groupBox8.Controls.Add(label26);
-            groupBox8.Controls.Add(num_wentryduration);
-            groupBox8.Controls.Add(ck_wentrycasesensitive);
-            groupBox8.Controls.Add(label25);
-            groupBox8.Controls.Add(num_wentryposition);
-            groupBox8.Controls.Add(label24);
-            groupBox8.Controls.Add(cb_wentrylocation);
-            groupBox8.Controls.Add(label23);
-            groupBox8.Controls.Add(cb_wentrykwlink);
-            groupBox8.Controls.Add(ed_wentrykw2);
-            groupBox8.Controls.Add(label22);
-            groupBox8.Controls.Add(ed_wentrykw1);
-            groupBox8.Controls.Add(label21);
-            groupBox8.Controls.Add(ck_wentryenabled);
-            groupBox8.Dock = DockStyle.Fill;
-            groupBox8.Location = new Point(0, 246);
-            groupBox8.Name = "groupBox8";
-            groupBox8.Size = new Size(755, 584);
-            groupBox8.TabIndex = 1;
-            groupBox8.TabStop = false;
-            groupBox8.Text = "Entry Settings";
-            // 
-            // label60
-            // 
-            label60.AutoSize = true;
-            label60.Location = new Point(542, 129);
-            label60.Name = "label60";
-            label60.Size = new Size(87, 15);
-            label60.TabIndex = 17;
-            label60.Text = "Trigger Chance";
-            // 
-            // numWItriggerchance
-            // 
-            numWItriggerchance.DecimalPlaces = 2;
-            numWItriggerchance.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            numWItriggerchance.Location = new Point(542, 147);
-            numWItriggerchance.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
-            numWItriggerchance.Name = "numWItriggerchance";
-            numWItriggerchance.Size = new Size(110, 23);
-            numWItriggerchance.TabIndex = 16;
-            numWItriggerchance.Value = new decimal(new int[] { 1, 0, 0, 0 });
-            numWItriggerchance.ValueChanged += UpdateWorldEntryEvent;
-            // 
-            // label27
-            // 
-            label27.AutoSize = true;
-            label27.Location = new Point(426, 129);
-            label27.Name = "label27";
-            label27.Size = new Size(45, 15);
-            label27.TabIndex = 15;
-            label27.Text = "Priority";
-            // 
-            // num_wentrypriority
-            // 
-            num_wentrypriority.Location = new Point(426, 147);
-            num_wentrypriority.Name = "num_wentrypriority";
-            num_wentrypriority.Size = new Size(110, 23);
-            num_wentrypriority.TabIndex = 14;
-            num_wentrypriority.ValueChanged += UpdateWorldEntryEvent;
-            // 
-            // label26
-            // 
-            label26.AutoSize = true;
-            label26.Location = new Point(310, 129);
-            label26.Name = "label26";
-            label26.Size = new Size(53, 15);
-            label26.TabIndex = 13;
-            label26.Text = "Duration";
-            // 
-            // num_wentryduration
-            // 
-            num_wentryduration.Location = new Point(310, 147);
-            num_wentryduration.Name = "num_wentryduration";
-            num_wentryduration.Size = new Size(110, 23);
-            num_wentryduration.TabIndex = 12;
-            num_wentryduration.ValueChanged += UpdateWorldEntryEvent;
-            // 
-            // ck_wentrycasesensitive
-            // 
-            ck_wentrycasesensitive.AutoSize = true;
-            ck_wentrycasesensitive.Location = new Point(6, 103);
-            ck_wentrycasesensitive.Name = "ck_wentrycasesensitive";
-            ck_wentrycasesensitive.Size = new Size(100, 19);
-            ck_wentrycasesensitive.TabIndex = 11;
-            ck_wentrycasesensitive.Text = "Case Sensitive";
-            ck_wentrycasesensitive.UseVisualStyleBackColor = true;
-            ck_wentrycasesensitive.CheckedChanged += UpdateWorldEntryEvent;
-            // 
-            // label25
-            // 
-            label25.AutoSize = true;
-            label25.Location = new Point(194, 129);
-            label25.Name = "label25";
-            label25.Size = new Size(35, 15);
-            label25.TabIndex = 10;
-            label25.Text = "Index";
-            // 
-            // num_wentryposition
-            // 
-            num_wentryposition.Location = new Point(194, 147);
-            num_wentryposition.Name = "num_wentryposition";
-            num_wentryposition.Size = new Size(110, 23);
-            num_wentryposition.TabIndex = 9;
-            num_wentryposition.ValueChanged += UpdateWorldEntryEvent;
-            // 
-            // label24
-            // 
-            label24.AutoSize = true;
-            label24.Location = new Point(6, 129);
-            label24.Name = "label24";
-            label24.Size = new Size(67, 15);
-            label24.TabIndex = 8;
-            label24.Text = "Positioning";
-            // 
-            // cb_wentrylocation
-            // 
-            cb_wentrylocation.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_wentrylocation.FormattingEnabled = true;
-            cb_wentrylocation.Items.AddRange(new object[] { "System Prompt", "Chat" });
-            cb_wentrylocation.Location = new Point(6, 147);
-            cb_wentrylocation.Name = "cb_wentrylocation";
-            cb_wentrylocation.Size = new Size(182, 23);
-            cb_wentrylocation.TabIndex = 7;
-            cb_wentrylocation.SelectedIndexChanged += UpdateWorldEntryEvent;
-            // 
-            // label23
-            // 
-            label23.AutoSize = true;
-            label23.Location = new Point(311, 56);
-            label23.Name = "label23";
-            label23.Size = new Size(78, 15);
-            label23.TabIndex = 6;
-            label23.Text = "Keyword Link";
-            // 
-            // cb_wentrykwlink
-            // 
-            cb_wentrykwlink.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_wentrykwlink.FormattingEnabled = true;
-            cb_wentrykwlink.Items.AddRange(new object[] { "And", "Or", "Not" });
-            cb_wentrykwlink.Location = new Point(311, 74);
-            cb_wentrykwlink.Name = "cb_wentrykwlink";
-            cb_wentrykwlink.Size = new Size(130, 23);
-            cb_wentrykwlink.TabIndex = 5;
-            cb_wentrykwlink.SelectedIndexChanged += UpdateWorldEntryEvent;
-            // 
-            // ed_wentrykw2
-            // 
-            ed_wentrykw2.Location = new Point(447, 74);
-            ed_wentrykw2.Name = "ed_wentrykw2";
-            ed_wentrykw2.Size = new Size(253, 23);
-            ed_wentrykw2.TabIndex = 4;
-            ed_wentrykw2.TextChanged += UpdateWorldEntryEvent;
-            // 
-            // label22
-            // 
-            label22.AutoSize = true;
-            label22.Location = new Point(447, 56);
-            label22.Name = "label22";
-            label22.Size = new Size(67, 15);
-            label22.TabIndex = 3;
-            label22.Text = "Keywords 2";
-            // 
-            // ed_wentrykw1
-            // 
-            ed_wentrykw1.Location = new Point(6, 74);
-            ed_wentrykw1.Name = "ed_wentrykw1";
-            ed_wentrykw1.Size = new Size(299, 23);
-            ed_wentrykw1.TabIndex = 2;
-            ed_wentrykw1.TextChanged += UpdateWorldEntryEvent;
-            // 
-            // label21
-            // 
-            label21.AutoSize = true;
-            label21.Location = new Point(6, 56);
-            label21.Name = "label21";
-            label21.Size = new Size(67, 15);
-            label21.TabIndex = 1;
-            label21.Text = "Keywords 1";
-            // 
-            // ck_wentryenabled
-            // 
-            ck_wentryenabled.AutoSize = true;
-            ck_wentryenabled.Location = new Point(6, 22);
-            ck_wentryenabled.Name = "ck_wentryenabled";
-            ck_wentryenabled.Size = new Size(68, 19);
-            ck_wentryenabled.TabIndex = 0;
-            ck_wentryenabled.Text = "Enabled";
-            ck_wentryenabled.UseVisualStyleBackColor = true;
-            ck_wentryenabled.CheckedChanged += UpdateWorldEntryEvent;
-            // 
-            // groupBox7
-            // 
-            groupBox7.Controls.Add(label20);
-            groupBox7.Controls.Add(ed_wentrymem);
-            groupBox7.Controls.Add(ed_wentryname);
-            groupBox7.Controls.Add(label19);
-            groupBox7.Dock = DockStyle.Top;
-            groupBox7.Location = new Point(0, 0);
-            groupBox7.Name = "groupBox7";
-            groupBox7.Size = new Size(755, 246);
-            groupBox7.TabIndex = 0;
-            groupBox7.TabStop = false;
-            groupBox7.Text = "Entry Info";
-            // 
-            // label20
-            // 
-            label20.AutoSize = true;
-            label20.Location = new Point(6, 63);
-            label20.Name = "label20";
-            label20.Size = new Size(52, 15);
-            label20.TabIndex = 3;
-            label20.Text = "Memory";
-            // 
-            // ed_wentrymem
-            // 
-            ed_wentrymem.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            ed_wentrymem.Location = new Point(6, 81);
-            ed_wentrymem.Multiline = true;
-            ed_wentrymem.Name = "ed_wentrymem";
-            ed_wentrymem.ScrollBars = ScrollBars.Vertical;
-            ed_wentrymem.Size = new Size(741, 159);
-            ed_wentrymem.TabIndex = 2;
-            ed_wentrymem.TextChanged += UpdateWorldEntryEvent;
-            // 
-            // ed_wentryname
-            // 
-            ed_wentryname.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            ed_wentryname.Location = new Point(6, 37);
-            ed_wentryname.Name = "ed_wentryname";
-            ed_wentryname.Size = new Size(741, 23);
-            ed_wentryname.TabIndex = 1;
-            ed_wentryname.TextChanged += UpdateWorldEntryEvent;
-            // 
-            // label19
-            // 
-            label19.AutoSize = true;
-            label19.Location = new Point(6, 19);
-            label19.Name = "label19";
-            label19.Size = new Size(39, 15);
-            label19.TabIndex = 0;
-            label19.Text = "Name";
-            // 
-            // groupBox6
-            // 
-            groupBox6.Controls.Add(ck_wiembed);
-            groupBox6.Controls.Add(bt_delwentry);
-            groupBox6.Controls.Add(bt_addwentry);
-            groupBox6.Controls.Add(label18);
-            groupBox6.Controls.Add(lb_worldentries);
-            groupBox6.Controls.Add(label17);
-            groupBox6.Controls.Add(label16);
-            groupBox6.Controls.Add(num_scandepth);
-            groupBox6.Controls.Add(ed_worlddesc);
-            groupBox6.Dock = DockStyle.Left;
-            groupBox6.Location = new Point(0, 57);
-            groupBox6.Name = "groupBox6";
-            groupBox6.Size = new Size(241, 830);
-            groupBox6.TabIndex = 3;
-            groupBox6.TabStop = false;
-            groupBox6.Text = "World Settings";
-            // 
-            // ck_wiembed
-            // 
-            ck_wiembed.AutoSize = true;
-            ck_wiembed.Location = new Point(8, 163);
-            ck_wiembed.Name = "ck_wiembed";
-            ck_wiembed.Size = new Size(150, 19);
-            ck_wiembed.TabIndex = 8;
-            ck_wiembed.Text = "Use Vector Embeddings";
-            ck_wiembed.UseVisualStyleBackColor = true;
-            ck_wiembed.CheckedChanged += ck_wiembed_CheckedChanged;
-            // 
-            // bt_delwentry
-            // 
-            bt_delwentry.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            bt_delwentry.Location = new Point(145, 802);
-            bt_delwentry.Name = "bt_delwentry";
-            bt_delwentry.Size = new Size(90, 23);
-            bt_delwentry.TabIndex = 7;
-            bt_delwentry.Text = "Delete";
-            bt_delwentry.UseVisualStyleBackColor = true;
-            bt_delwentry.Click += bt_delwentry_Click;
-            // 
-            // bt_addwentry
-            // 
-            bt_addwentry.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            bt_addwentry.Location = new Point(3, 802);
-            bt_addwentry.Name = "bt_addwentry";
-            bt_addwentry.Size = new Size(90, 23);
-            bt_addwentry.TabIndex = 6;
-            bt_addwentry.Text = "Add New";
-            bt_addwentry.UseVisualStyleBackColor = true;
-            bt_addwentry.Click += bt_addwentry_Click;
-            // 
-            // label18
-            // 
-            label18.AutoSize = true;
-            label18.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label18.Location = new Point(3, 197);
-            label18.Name = "label18";
-            label18.Size = new Size(71, 15);
-            label18.TabIndex = 5;
-            label18.Text = "Scan Depth";
-            // 
-            // lb_worldentries
-            // 
-            lb_worldentries.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            lb_worldentries.FormattingEnabled = true;
-            lb_worldentries.Location = new Point(3, 215);
-            lb_worldentries.Name = "lb_worldentries";
-            lb_worldentries.Size = new Size(232, 574);
-            lb_worldentries.TabIndex = 4;
-            lb_worldentries.SelectedIndexChanged += lb_worldentries_SelectedIndexChanged;
-            // 
-            // label17
-            // 
-            label17.AutoSize = true;
-            label17.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label17.Location = new Point(3, 116);
-            label17.Name = "label17";
-            label17.Size = new Size(71, 15);
-            label17.TabIndex = 3;
-            label17.Text = "Scan Depth";
-            // 
-            // label16
-            // 
-            label16.AutoSize = true;
-            label16.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label16.Location = new Point(3, 19);
-            label16.Name = "label16";
-            label16.Size = new Size(71, 15);
-            label16.TabIndex = 2;
-            label16.Text = "Description";
-            // 
-            // num_scandepth
-            // 
-            num_scandepth.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            num_scandepth.Location = new Point(3, 134);
-            num_scandepth.Name = "num_scandepth";
-            num_scandepth.Size = new Size(232, 23);
-            num_scandepth.TabIndex = 1;
-            num_scandepth.ValueChanged += num_scandepth_ValueChanged;
-            // 
-            // ed_worlddesc
-            // 
-            ed_worlddesc.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            ed_worlddesc.Location = new Point(3, 37);
-            ed_worlddesc.Multiline = true;
-            ed_worlddesc.Name = "ed_worlddesc";
-            ed_worlddesc.ScrollBars = ScrollBars.Vertical;
-            ed_worlddesc.Size = new Size(232, 76);
-            ed_worlddesc.TabIndex = 0;
-            ed_worlddesc.KeyPress += ed_worlddesc_KeyPress;
-            // 
-            // groupBox3
-            // 
-            groupBox3.Controls.Add(bt_worldsave);
-            groupBox3.Controls.Add(cb_worlds);
-            groupBox3.Dock = DockStyle.Top;
-            groupBox3.Location = new Point(0, 0);
-            groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(996, 57);
-            groupBox3.TabIndex = 0;
-            groupBox3.TabStop = false;
-            groupBox3.Text = "File Selection";
-            // 
-            // bt_worldsave
-            // 
-            bt_worldsave.Location = new Point(551, 22);
-            bt_worldsave.Name = "bt_worldsave";
-            bt_worldsave.Size = new Size(110, 23);
-            bt_worldsave.TabIndex = 1;
-            bt_worldsave.Text = "Save";
-            bt_worldsave.UseVisualStyleBackColor = true;
-            bt_worldsave.Click += bt_worldsave_Click;
-            // 
-            // cb_worlds
-            // 
-            cb_worlds.FormattingEnabled = true;
-            cb_worlds.Location = new Point(8, 22);
-            cb_worlds.Name = "cb_worlds";
-            cb_worlds.Size = new Size(537, 23);
-            cb_worlds.TabIndex = 0;
             // 
             // tabHistory
             // 
@@ -684,7 +222,7 @@
             tabHistory.Controls.Add(panel4);
             tabHistory.Location = new Point(4, 27);
             tabHistory.Name = "tabHistory";
-            tabHistory.Size = new Size(996, 887);
+            tabHistory.Size = new Size(996, 897);
             tabHistory.TabIndex = 6;
             tabHistory.Text = "Chat History";
             tabHistory.UseVisualStyleBackColor = true;
@@ -696,7 +234,7 @@
             panel6.Dock = DockStyle.Fill;
             panel6.Location = new Point(376, 0);
             panel6.Name = "panel6";
-            panel6.Size = new Size(620, 887);
+            panel6.Size = new Size(620, 897);
             panel6.TabIndex = 2;
             // 
             // web_sessioncontent
@@ -707,7 +245,7 @@
             web_sessioncontent.Dock = DockStyle.Fill;
             web_sessioncontent.Location = new Point(0, 308);
             web_sessioncontent.Name = "web_sessioncontent";
-            web_sessioncontent.Size = new Size(620, 579);
+            web_sessioncontent.Size = new Size(620, 589);
             web_sessioncontent.TabIndex = 4;
             web_sessioncontent.ZoomFactor = 1D;
             // 
@@ -939,7 +477,7 @@
             panel4.Dock = DockStyle.Left;
             panel4.Location = new Point(0, 0);
             panel4.Name = "panel4";
-            panel4.Size = new Size(376, 887);
+            panel4.Size = new Size(376, 897);
             panel4.TabIndex = 0;
             // 
             // listSession
@@ -949,7 +487,7 @@
             listSession.FullRowSelect = true;
             listSession.Location = new Point(0, 0);
             listSession.Name = "listSession";
-            listSession.Size = new Size(376, 821);
+            listSession.Size = new Size(376, 831);
             listSession.TabIndex = 2;
             listSession.UseCompatibleStateImageBehavior = false;
             listSession.View = View.Details;
@@ -970,7 +508,7 @@
             panel5.Controls.Add(btEmbedAll);
             panel5.Controls.Add(bt_deleteAllHistory);
             panel5.Dock = DockStyle.Bottom;
-            panel5.Location = new Point(0, 821);
+            panel5.Location = new Point(0, 831);
             panel5.Name = "panel5";
             panel5.Size = new Size(376, 66);
             panel5.TabIndex = 1;
@@ -1117,11 +655,11 @@
             // groupBox23
             // 
             groupBox23.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox23.Controls.Add(btWorldEditor);
             groupBox23.Controls.Add(btMainSettings);
             groupBox23.Controls.Add(ck_agentmode);
             groupBox23.Controls.Add(bt_clearimg);
             groupBox23.Controls.Add(pictEmbed);
-            groupBox23.Controls.Add(bt_test);
             groupBox23.Controls.Add(ck_onlinerag);
             groupBox23.Controls.Add(ck_worldinfo);
             groupBox23.Controls.Add(ck_ragenabled);
@@ -1133,6 +671,18 @@
             groupBox23.TabIndex = 26;
             groupBox23.TabStop = false;
             groupBox23.Text = "Quick Settings";
+            // 
+            // btWorldEditor
+            // 
+            btWorldEditor.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btWorldEditor.Font = new Font("Segoe UI", 9F);
+            btWorldEditor.Location = new Point(6, 169);
+            btWorldEditor.Name = "btWorldEditor";
+            btWorldEditor.Size = new Size(175, 23);
+            btWorldEditor.TabIndex = 39;
+            btWorldEditor.Text = "WorldInfo Editor";
+            btWorldEditor.UseVisualStyleBackColor = true;
+            btWorldEditor.Click += btWorldEditor_Click;
             // 
             // btMainSettings
             // 
@@ -1162,7 +712,7 @@
             // 
             bt_clearimg.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             bt_clearimg.Font = new Font("Segoe UI", 9F);
-            bt_clearimg.Location = new Point(66, 169);
+            bt_clearimg.Location = new Point(127, 140);
             bt_clearimg.Name = "bt_clearimg";
             bt_clearimg.Size = new Size(54, 23);
             bt_clearimg.TabIndex = 34;
@@ -1174,24 +724,12 @@
             // 
             pictEmbed.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             pictEmbed.BorderStyle = BorderStyle.FixedSingle;
-            pictEmbed.Location = new Point(6, 152);
+            pictEmbed.Location = new Point(6, 123);
             pictEmbed.Name = "pictEmbed";
             pictEmbed.Size = new Size(54, 40);
             pictEmbed.SizeMode = PictureBoxSizeMode.StretchImage;
             pictEmbed.TabIndex = 33;
             pictEmbed.TabStop = false;
-            // 
-            // bt_test
-            // 
-            bt_test.Font = new Font("Segoe UI", 9F);
-            bt_test.ForeColor = SystemColors.MenuHighlight;
-            bt_test.Location = new Point(106, 18);
-            bt_test.Name = "bt_test";
-            bt_test.Size = new Size(75, 23);
-            bt_test.TabIndex = 30;
-            bt_test.Text = "Test Stuff";
-            bt_test.UseVisualStyleBackColor = true;
-            bt_test.Click += button2_Click;
             // 
             // ck_onlinerag
             // 
@@ -1553,7 +1091,6 @@
             label9.Size = new Size(122, 15);
             label9.TabIndex = 16;
             label9.Text = "Temperature Override";
-            label9.Click += label9_Click;
             // 
             // num_temperature
             // 
@@ -1647,7 +1184,6 @@
             tabMain.Appearance = TabAppearance.FlatButtons;
             tabMain.Controls.Add(tabChat);
             tabMain.Controls.Add(tabHistory);
-            tabMain.Controls.Add(tabWorldInfo);
             tabMain.Controls.Add(tabConsole);
             tabMain.Controls.Add(tabSearch);
             tabMain.Location = new Point(0, 0);
@@ -1663,7 +1199,7 @@
             tabSearch.Location = new Point(4, 27);
             tabSearch.Name = "tabSearch";
             tabSearch.Padding = new Padding(3);
-            tabSearch.Size = new Size(996, 887);
+            tabSearch.Size = new Size(996, 897);
             tabSearch.TabIndex = 10;
             tabSearch.Text = "RAG Search";
             tabSearch.UseVisualStyleBackColor = true;
@@ -1702,20 +1238,6 @@
             ((System.ComponentModel.ISupportInitialize)bindingSource1).EndInit();
             tabConsole.ResumeLayout(false);
             tabConsole.PerformLayout();
-            tabWorldInfo.ResumeLayout(false);
-            panel3.ResumeLayout(false);
-            groupBox8.ResumeLayout(false);
-            groupBox8.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)numWItriggerchance).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_wentrypriority).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_wentryduration).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_wentryposition).EndInit();
-            groupBox7.ResumeLayout(false);
-            groupBox7.PerformLayout();
-            groupBox6.ResumeLayout(false);
-            groupBox6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)num_scandepth).EndInit();
-            groupBox3.ResumeLayout(false);
             tabHistory.ResumeLayout(false);
             panel6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)web_sessioncontent).EndInit();
@@ -1760,45 +1282,6 @@
         internal System.Windows.Forms.Timer AutoTalkTimer;
         private TabPage tabConsole;
         private TextBox ed_log;
-        private TabPage tabWorldInfo;
-        private Panel panel3;
-        private GroupBox groupBox8;
-        private Label label60;
-        private NumericUpDown numWItriggerchance;
-        private Label label27;
-        private NumericUpDown num_wentrypriority;
-        private Label label26;
-        private NumericUpDown num_wentryduration;
-        private CheckBox ck_wentrycasesensitive;
-        private Label label25;
-        private NumericUpDown num_wentryposition;
-        private Label label24;
-        private ComboBox cb_wentrylocation;
-        private Label label23;
-        private ComboBox cb_wentrykwlink;
-        private TextBox ed_wentrykw2;
-        private Label label22;
-        private TextBox ed_wentrykw1;
-        private Label label21;
-        private CheckBox ck_wentryenabled;
-        private GroupBox groupBox7;
-        private Label label20;
-        private TextBox ed_wentrymem;
-        private TextBox ed_wentryname;
-        private Label label19;
-        private GroupBox groupBox6;
-        private CheckBox ck_wiembed;
-        private Button bt_delwentry;
-        private Button bt_addwentry;
-        private Label label18;
-        private ListBox lb_worldentries;
-        private Label label17;
-        private Label label16;
-        private NumericUpDown num_scandepth;
-        private TextBox ed_worlddesc;
-        private GroupBox groupBox3;
-        private Button bt_worldsave;
-        private ComboBox cb_worlds;
         private TabPage tabHistory;
         private Panel panel6;
         private Microsoft.Web.WebView2.WinForms.WebView2 web_sessioncontent;
@@ -1834,7 +1317,6 @@
         private Button bt_clearimg;
         private PictureBox pictEmbed;
         private CheckBox ck_ttstoggle;
-        private Button bt_test;
         private CheckBox ck_onlinerag;
         private CheckBox ck_caninitchat;
         private CheckBox ck_worldinfo;
@@ -1883,5 +1365,6 @@
         private Button btSysPrompt;
         private Button btSampleEditor;
         private Button btMainSettings;
+        private Button btWorldEditor;
     }
 }

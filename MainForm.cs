@@ -25,12 +25,6 @@ namespace WaifuAI
 {
     public partial class MainForm : Form
     {
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public WorldInfo SelectedWorldEditor { get; set; } = new WorldInfo();
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public MemoryUnit SelectedWorldEntryEditor { get; set; } = new MemoryUnit();
-
         private string? _currentgeneration = null;
         private int _currentgenerationtokencount = 0;
         private int _currentgencalls = 0;
@@ -71,7 +65,6 @@ namespace WaifuAI
             HelptoolTip.SetToolTip(btEmbedAll, "If you're using RAG and have manually edited some entries in the history, press this button to update all the embeddings so RAG functionalities are accurate.");
 
             // Chat related events
-            SetupWorldEditor();
             SetupListSessionContextMenu();
             SetupChatMenu();
             _isinitloading = false;
@@ -446,148 +439,6 @@ namespace WaifuAI
             }));
             return tcs.Task;
         }
-
-
-        #region *** World Info Editor ***
-
-        private void SetupWorldEditor(string ForceID = "", int forceEntry = 0)
-        {
-            cb_worlds.Items.Clear();
-            foreach (var item in DataFiles.WorldInfos)
-            {
-                cb_worlds.Items.Add(item.Value.UniqueName);
-            }
-            var idwant = (ForceID != "") ? cb_worlds.Items.IndexOf(ForceID) : 0;
-            if (cb_worlds.Items.Count > 0)
-            {
-                cb_worlds.SelectedIndex = idwant;
-                SelectedWorldEditor = DataFiles.WorldInfos[cb_worlds.SelectedItem!.ToString()!].Copy<WorldInfo>()!;
-                LoadWorldSettings(SelectedWorldEditor, forceEntry);
-            }
-            cb_worlds.SelectedIndexChanged += (sender, e) =>
-            {
-                var wid = cb_worlds.SelectedItem?.ToString();
-                if (DataFiles.WorldInfos.TryGetValue(wid!, out var wi))
-                {
-                    SelectedWorldEditor = wi.Copy<WorldInfo>()!;
-                    LoadWorldSettings(SelectedWorldEditor, forceEntry);
-                }
-            };
-        }
-
-        private void LoadWorldSettings(WorldInfo selectedWorldEditor, int forceEntry = 0)
-        {
-            ed_worlddesc.Text = selectedWorldEditor.Description;
-            num_scandepth.Value = selectedWorldEditor.ScanDepth;
-            ck_wiembed.Checked = selectedWorldEditor.DoEmbeds;
-            lb_worldentries.Items.Clear();
-            foreach (var item in selectedWorldEditor.Entries)
-            {
-                lb_worldentries.Items.Add(item.Name);
-            }
-            if (lb_worldentries.Items.Count > 0)
-            {
-                var selentry = forceEntry < lb_worldentries.Items.Count ? forceEntry : 0;
-                SelectedWorldEntryEditor = selectedWorldEditor.Entries[selentry];
-                lb_worldentries.SelectedIndex = selentry;
-            }
-        }
-
-        private void lb_worldentries_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var id = lb_worldentries.SelectedIndex;
-            if (id < 0 || SelectedWorldEditor.Entries.Count <= id)
-                return;
-            SelectedWorldEntryEditor = SelectedWorldEditor.Entries[id];
-            LoadWorldEntry(SelectedWorldEntryEditor);
-        }
-
-        private void LoadWorldEntry(MemoryUnit worldEntry)
-        {
-            var sv = _isinitloading;
-            _isinitloading = true;
-            ed_wentryname.Text = worldEntry.Name;
-            ed_wentrymem.Text = worldEntry.Content.ToWinFormat();
-            // Convert worldEntry's keywords to a comma separated string to show in ed_wentrykw1.Text
-            ed_wentrykw1.Text = string.Join(",", worldEntry.KeyWordsMain);
-            ed_wentrykw2.Text = string.Join(",", worldEntry.KeyWordsSecondary);
-            num_wentryduration.Value = worldEntry.Duration;
-            num_wentryposition.Value = worldEntry.PositionIndex;
-            num_wentrypriority.Value = worldEntry.Priority;
-            cb_wentrykwlink.SelectedIndex = (int)worldEntry.WordLink;
-            cb_wentrylocation.SelectedIndex = (int)worldEntry.Position;
-            ck_wentrycasesensitive.Checked = worldEntry.CaseSensitive;
-            ck_wentryenabled.Checked = worldEntry.Enabled;
-            numWItriggerchance.Value = (decimal)worldEntry.TriggerChance;
-            _isinitloading = sv;
-        }
-
-        private void SaveWorldEntry()
-        {
-            SelectedWorldEntryEditor.Name = ed_wentryname.Text;
-            SelectedWorldEntryEditor.Category = AIToolkit.Memory.MemoryType.WorldInfo;
-            SelectedWorldEntryEditor.Insertion = AIToolkit.Memory.MemoryInsertion.Trigger;
-            SelectedWorldEntryEditor.Content = ed_wentrymem.Text.ToLinuxFormat();
-            if (!string.IsNullOrWhiteSpace(ed_wentrykw1.Text))
-            {
-                SelectedWorldEntryEditor.KeyWordsMain = ed_wentrykw1.Text.Split(',')?.ToList() ?? [];
-            }
-            else
-            {
-                SelectedWorldEntryEditor.KeyWordsMain = [];
-            }
-            if (!string.IsNullOrWhiteSpace(ed_wentrykw2.Text))
-            {
-                SelectedWorldEntryEditor.KeyWordsSecondary = ed_wentrykw2.Text.Split(',')?.ToList() ?? [];
-            }
-            else
-            {
-                SelectedWorldEntryEditor.KeyWordsSecondary = [];
-            }
-            SelectedWorldEntryEditor.Duration = (int)num_wentryduration.Value;
-            SelectedWorldEntryEditor.PositionIndex = (int)num_wentryposition.Value;
-            SelectedWorldEntryEditor.Priority = (int)num_wentrypriority.Value;
-            SelectedWorldEntryEditor.WordLink = (KeyWordLink)cb_wentrykwlink.SelectedIndex;
-            SelectedWorldEntryEditor.Position = (WEPosition)cb_wentrylocation.SelectedIndex;
-            SelectedWorldEntryEditor.CaseSensitive = ck_wentrycasesensitive.Checked;
-            SelectedWorldEntryEditor.Enabled = ck_wentryenabled.Checked;
-            SelectedWorldEntryEditor.TriggerChance = (float)numWItriggerchance.Value;
-
-            var idx = SelectedWorldEditor.Entries.IndexOf(SelectedWorldEntryEditor);
-            if (idx >= 0 && idx < lb_worldentries.Items.Count)
-                lb_worldentries.Items[idx] = SelectedWorldEntryEditor.Name;
-        }
-
-        private async Task<bool> SaveWorldInfo()
-        {
-            SelectedWorldEditor.Description = ed_worlddesc.Text;
-            SelectedWorldEditor.ScanDepth = (int)num_scandepth.Value;
-            SelectedWorldEditor.DoEmbeds = ck_wiembed.Checked;
-            var NewName = cb_worlds.Text;
-            if (string.IsNullOrWhiteSpace(NewName))
-            {
-                MessageBox.Show("Please select a valide name for the new sampler");
-                return false;
-            }
-            // If name already exists ask for confirmation
-            if (DataFiles.Inference.ContainsKey(NewName) && (MessageBox.Show("This sampler already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
-                return false;
-            await SelectedWorldEditor.EmbedText();
-            SelectedWorldEditor.UniqueName = NewName;
-            DataFiles.WorldInfos[NewName] = SelectedWorldEditor;
-
-            (SelectedWorldEditor as IFile).SaveToFile("data/worlds/" + NewName + ".json");
-            return true;
-        }
-
-        private void UpdateWorldEntryEvent(object sender, EventArgs e)
-        {
-            if (_isinitloading)
-                return;
-            SaveWorldEntry();
-        }
-
-        #endregion
 
         #region *** Main Chat Functions ***
 
@@ -1958,42 +1809,6 @@ namespace WaifuAI
             LLMSystem.InvalidatePromptCache();
         }
 
-        private void num_scandepth_ValueChanged(object sender, EventArgs e)
-        {
-            SelectedWorldEditor.ScanDepth = (int)num_scandepth.Value;
-        }
-
-        private void ed_worlddesc_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            SelectedWorldEditor.Description = ed_worlddesc.Text;
-        }
-
-        private async void bt_worldsave_Click(object sender, EventArgs e)
-        {
-            var saved = await SaveWorldInfo();
-            if (saved)
-                MessageBox.Show("World Info Saved!");
-        }
-
-        private void bt_delwentry_Click(object sender, EventArgs e)
-        {
-            if (SelectedWorldEditor?.Entries.Count > 0 && lb_worldentries.Items.Count > 0 && lb_worldentries.SelectedIndex >= 0)
-            {
-                var idx = lb_worldentries.SelectedIndex;
-                SelectedWorldEditor.Entries.RemoveAt(idx);
-                lb_worldentries.Items.RemoveAt(idx);
-                LoadWorldSettings(SelectedWorldEditor);
-            }
-        }
-
-        private void bt_addwentry_Click(object sender, EventArgs e)
-        {
-            SelectedWorldEntryEditor = new MemoryUnit() { Name = "New Entry" };
-            SelectedWorldEditor.Entries.Add(SelectedWorldEntryEditor);
-            lb_worldentries.Items.Add(SelectedWorldEntryEditor.Name);
-            lb_worldentries.SelectedIndex = lb_worldentries.Items.Count - 1;
-        }
-
         private void ck_forceNames_CheckedChanged(object sender, EventArgs e)
         {
             LLMSystem.Instruct.AddNamesToPrompt = ck_forceNames.Checked;
@@ -2052,11 +1867,6 @@ namespace WaifuAI
             }
         }
 
-        private void ck_wiembed_CheckedChanged(object sender, EventArgs e)
-        {
-            SelectedWorldEditor.DoEmbeds = ck_wiembed.Checked;
-        }
-
         private static Task PlayAudioAsync(byte[] audioData)
         {
             return Task.Run(() =>
@@ -2065,21 +1875,6 @@ namespace WaifuAI
                 using var player = new SoundPlayer(audioStream);
                 player.PlaySync(); // Plays the sound and waits until it completes
             });
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            // female: "Tina", "super chariot of death", "super chariot in death"
-            // matel: "Lor_ Merciless", "kobo", "chatty"
-            //    var ttsinput = new AIToolkit.API.TextToSpeechInput()
-            //    {
-            //        Input = ed_input.Text,
-            //        Voice = "super chariot in death",
-            //    };
-
-            //    var audioData = await LLMSystem.GenerateTTS(ttsinput.Input, ttsinput.Voice);
-            //    PlayAudio(audioData);
-            //
         }
 
         private void ck_ttstoggle_CheckedChanged(object sender, EventArgs e)
@@ -2126,7 +1921,6 @@ namespace WaifuAI
         {
             LLMSystem.Settings.RAGMoveToThinkBlock = ck_ragtothink.Checked;
         }
-
 
         private void ck_agentmode_CheckedChanged(object sender, EventArgs e)
         {
@@ -2230,12 +2024,17 @@ namespace WaifuAI
             settingsForm.StartPosition = FormStartPosition.CenterParent;
             settingsForm.ShowDialog();
             settingsForm.Dispose();
+            LLMSystem.InvalidatePromptCache();
             await WebChatLoad();
         }
 
-        private void label9_Click(object sender, EventArgs e)
+        private void btWorldEditor_Click(object sender, EventArgs e)
         {
-
+            using var worldForm = new WorldEditForm();
+            worldForm.StartPosition = FormStartPosition.CenterParent;
+            worldForm.ShowDialog();
+            worldForm.Dispose();
+            LLMSystem.InvalidatePromptCache();
         }
     }
 }
