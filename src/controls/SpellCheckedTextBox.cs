@@ -109,24 +109,13 @@ namespace WaifuAI.Controls
             }
             else
             {
-                if (Child == null) Child = _border;
+                Child ??= _border;
                 _tb.IsHitTestVisible = true;
                 _tb.IsEnabled = true;
                 _tb.IsReadOnly = _readOnly;
                 Cursor = Cursors.IBeam;
             }
         }
-
-        //protected override void OnMouseDown(MouseEventArgs e)
-        //{
-        //    base.OnMouseDown(e);
-        //    if (InDesigner)
-        //    {
-        //        // Essential: Make click select the control in designer
-        //        Select();
-        //        Focus();
-        //    }
-        //}
 
         protected override void OnPaintBackground(PaintEventArgs pevent)
         {
@@ -145,16 +134,16 @@ namespace WaifuAI.Controls
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            //if (InDesigner)
-            //{
-            //    // Draw placeholder frame and label
-            //    var r = ClientRectangle;
-            //    r.Width -= 1; r.Height -= 1;
-            //    using var pen = new Pen(Color.SteelBlue) { DashStyle = DashStyle.Dash };
-            //    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            //    e.Graphics.DrawRectangle(pen, r);
-            //    TextRenderer.DrawText(e.Graphics, "SpellCheckedTextBox", Font, new System.Drawing.Point(6, 6), Color.SteelBlue);
-            //}
+            if (InDesigner)
+            {
+                // Draw placeholder frame and label
+                var r = ClientRectangle;
+                r.Width -= 1; r.Height -= 1;
+                using var pen = new Pen(Color.SteelBlue) { DashStyle = DashStyle.Dash };
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                e.Graphics.DrawRectangle(pen, r);
+                TextRenderer.DrawText(e.Graphics, "SpellCheckedTextBox", Font, new System.Drawing.Point(6, 6), Color.SteelBlue);
+            }
         }
 
         // Essential: Provide visual feedback for selection
@@ -169,11 +158,13 @@ namespace WaifuAI.Controls
         }
 
         // Fix the nullability warning
+ #pragma warning disable CS8765
         public override string Text
         {
             get => _tb.Text ?? string.Empty;
             set => _tb.Text = value ?? string.Empty;
         }
+#pragma warning restore CS8765
 
         // Expose SelectionStart (used by Shift+Enter logic in MainForm)
         [Browsable(false)]
@@ -341,44 +332,5 @@ namespace WaifuAI.Controls
         }
 
         private Media.Brush? _caretBrush;
-
-        //protected override void OnGotFocus(EventArgs e)
-        //{
-        //    base.OnGotFocus(e);
-        //    if (InDesigner) return; // don't steal focus in designer
-        //    _tb.Focus();
-        //    _tb.CaretIndex = _tb.Text?.Length ?? 0;
-        //}
-
-        //protected override void OnEnter(EventArgs e)
-        //{
-        //    base.OnEnter(e);
-        //    if (InDesigner)
-        //    {
-        //        Invalidate(); // Refresh visual state
-        //    }
-        //}
-
-        //protected override void OnLeave(EventArgs e)
-        //{
-        //    base.OnLeave(e);
-        //    if (InDesigner)
-        //    {
-        //        Invalidate(); // Refresh visual state
-        //    }
-        //}
-
-        //protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        //{
-        //    if (InDesigner)
-        //    {
-        //        // Handle common designer keys
-        //        if (keyData == Keys.Delete || keyData == Keys.Tab)
-        //        {
-        //            return false; // Let designer handle these
-        //        }
-        //    }
-        //    return base.ProcessCmdKey(ref msg, keyData);
-        //}
     }
 }
