@@ -1,0 +1,385 @@
+using AIToolkit;
+using AIToolkit.Files;
+using AIToolkit.LLM;
+using AIToolkit.Memory;
+using Markdig;
+using Microsoft.Web.WebView2.Core;
+using Newtonsoft.Json;
+using System.Diagnostics;
+using System.Text;
+using WaifuAI.Files;
+using WaifuAI.src.forms;
+
+namespace WaifuAI.src.forms
+{
+    public partial class ChatHistoryForm : Form
+    {
+        private ChatSession? _selectedSession = null;
+        private bool _isinitloading = true;
+
+        public static Character? Bot => LLMSystem.Bot as Character;
+        public static Character? User => LLMSystem.User as Character;
+
+        public static MarkdownPipeline CustomMarkDownPipeline { get; } = new MarkdownPipelineBuilder()
+            .UseSoftlineBreakAsHardlineBreak().UseAdvancedExtensions()
+            .UseEmojiAndSmiley()
+            .UseAutoLinks()
+            .Use(new QuoteColorExtension())
+            .Build();
+
+        public ChatHistoryForm()
+        {
+            InitializeComponent();
+            SetupListSessionContextMenu();
+            _isinitloading = false;
+        }
+
+        private void SetupListSessionContextMenu()
+        {
+            // Create context menu
+            ContextMenuStrip contextMenu = new();
+
+            // Add menu items
+            ToolStripMenuItem switchSessionItem = new("Set Session As Active");
+            switchSessionItem.Click += (sender, e) => SwitchToSelectedSession();
+
+            ToolStripMenuItem insertSessionItem = new("Insert New Session Below");
+            insertSessionItem.Click += async (sender, e) => await InsertSessionAfterSelected();
+
+            ToolStripMenuItem deleteSessionItem = new("Delete Selected Session");
+            deleteSessionItem.Click += (sender, e) => DeleteSelectedSession();
+
+            ToolStripMenuItem CheckRPItem = new("Recheck if RP");
+            CheckRPItem.Click += async (sender, e) => await RefreshRPInfo();
+
+            // Add items to menu
+            contextMenu.Items.Add(switchSessionItem);
+            contextMenu.Items.Add(insertSessionItem);
+            contextMenu.Items.Add(deleteSessionItem);
+            contextMenu.Items.Add(CheckRPItem);
+
+            // Attach opening event to control items' visibility based on selection
+            contextMenu.Opening += (sender, e) =>
+            {
+                bool hasSelection = listSession.SelectedItems.Count > 0;
+                switchSessionItem.Enabled = hasSelection;
+                insertSessionItem.Enabled = hasSelection;
+                deleteSessionItem.Enabled = hasSelection;
+                CheckRPItem.Enabled = hasSelection;
+
+                // Cancel opening if no items selected
+                if (!hasSelection)
+                    e.Cancel = true;
+            };
+
+            // Assign menu to ListView
+            listSession.ContextMenuStrip = contextMenu;
+        }
+
+        private void SwitchToSelectedSession()
+        {
+            if (_selectedSession == null)
+                return;
+
+            LLMSystem.Bot.History.CurrentSessionID = LLMSystem.Bot.History.Sessions.IndexOf(_selectedSession);
+            LoadChatHistoryTab();
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+
+        private async Task InsertSessionAfterSelected()
+        {
+            if (_selectedSession == null)
+                return;
+
+            LLMSystem.Bot.History.CurrentSessionID = LLMSystem.Bot.History.Sessions.IndexOf(_selectedSession);
+            var id = LLMSystem.Bot.History.CurrentSessionID;
+            if (id == LLMSystem.Bot.History.Sessions.Count - 1)
+            {
+                LLMSystem.Bot.History.Sessions.Add(new ChatSession());
+            }
+            else
+            {
+                LLMSystem.Bot.History.Sessions.Insert(id + 1, new ChatSession());
+            }
+            LLMSystem.Bot.History.CurrentSessionID++;
+            _selectedSession = LLMSystem.History.CurrentSession;
+            await LLMSystem.History.StartNewChatSession(true);
+            LoadChatHistoryTab();
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+
+        private async Task RefreshRPInfo()
+        {
+            if (_selectedSession == null)
+                return;
+            _selectedSession.MetaData.IsRoleplaySession = await _selectedSession.IsRoleplay();
+            DisplaySessionDetails(_selectedSession);
+        }
+
+        private void DeleteSelectedSession()
+        {
+            if (_selectedSession == null)
+                return;
+
+            if (LLMSystem.History.Sessions.Count <= 1)
+            {
+                bt_deleteAllHistory_Click(this, EventArgs.Empty);
+                return;
+            }
+
+            if (MessageBox.Show("This will delete the selected session permanently. Are you sure?",
+                              "Delete Session?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                var needchangesession = LLMSystem.History.CurrentSession == _selectedSession;
+                LLMSystem.History.Sessions.Remove(_selectedSession);
+                if (needchangesession)
+                {
+                    LLMSystem.History.CurrentSessionID = LLMSystem.History.Sessions.Count - 1;
+                }
+            }
+
+            _selectedSession = LLMSystem.History.CurrentSession;
+            DisplaySessionDetails(_selectedSession);
+            LoadChatHistoryTab();
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+
+        public void LoadChatHistoryTab()
+        {
+            listSession.Items.Clear();
+            if (LLMSystem.History.Sessions.Count == 0)
+                return;
+            foreach (var session in LLMSystem.History.Sessions)
+            {
+                var item = new ListViewItem([session.Name, session.StartTime.ToString("g")])
+                {
+                    Tag = session
+                };
+                if (LLMSystem.History.Sessions.IndexOf(session) == LLMSystem.History.CurrentSessionID)
+                {
+                    item.Font = new Font(item.Font, FontStyle.Bold);
+                }
+                if (session.Sticky)
+                {
+                    item.ForeColor = Color.Red;
+                }
+                listSession.Items.Add(item);
+            }
+        }
+
+        private void listSession_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listSession.SelectedItems.Count <= 0)
+                return;
+            var selectedItem = listSession.SelectedItems[0];
+            _selectedSession = (ChatSession)selectedItem.Tag!;
+            DisplaySessionDetails(_selectedSession);
+        }
+
+        private async void DisplaySessionDetails(ChatSession session)
+        {
+            var sv = _isinitloading;
+            _isinitloading = true;
+            ed_sessiontitle.Text = session.Name;
+            ed_sessioninfo.Text = session.Content.ToWinFormat();
+            lbl_sessiondata.Text = session.StartTime.ToString("g") + " - " + session.EndTime.ToString("g") + " - " + session.Messages.Count + " messages";
+
+            ed_hist_kw1.Text = string.Join(",", session.KeyWordsMain);
+            ed_hist_kw2.Text = string.Join(",", session.KeyWordsSecondary);
+            cb_hist_kwlink.SelectedIndex = (int)session.WordLink;
+            ck_hist_casesensitive.Checked = session.CaseSensitive;
+            ck_hist_kw.Checked = session.Enabled;
+            ck_hist_sticky.Checked = session.Sticky;
+            ck_hist_isrp.Checked = session.MetaData.IsRoleplaySession;
+            _isinitloading = sv;
+
+            if (web_sessioncontent.CoreWebView2 == null)
+            {
+                await web_sessioncontent.EnsureCoreWebView2Async();
+            }
+            var dialogs = session.GetRawDialogs(int.MaxValue, false).Replace("\n", "\n\n");
+
+            var res = new StringBuilder();
+            res.AppendLinuxLine($"# {session.Name}").AppendLinuxLine();
+            res.AppendLinuxLine("## Summary:").AppendLinuxLine().AppendLinuxLine(session.Content).AppendLinuxLine();
+            res.AppendLinuxLine("## Keywords: ");
+            foreach (var item in session.MetaData.Keywords)
+            {
+                res.Append(item + ", ");
+            }
+            res.AppendLinuxLine();
+            res.AppendLinuxLine("## Goals: ");
+            foreach (var item in session.MetaData.FutureGoals)
+            {
+                res.AppendLinuxLine("- " + item);
+            }
+            res.AppendLinuxLine("## Relevance: " + session.MetaData.Relevance.ToString());
+            res.AppendLinuxLine().AppendLinuxLine();
+            res.AppendLinuxLine("## Dialogs:").AppendLinuxLine().AppendLinuxLine(dialogs);
+            web_sessioncontent.NavigateToString(Markdown.ToHtml(res.ToString(), CustomMarkDownPipeline));
+        }
+
+        private void UpdateHistoryEntryEvent(object sender, EventArgs e)
+        {
+            if (_isinitloading || _selectedSession == null)
+                return;
+            if (!string.IsNullOrWhiteSpace(ed_hist_kw1.Text))
+            {
+                _selectedSession.KeyWordsMain = ed_hist_kw1.Text.Split(',')?.ToList() ?? [];
+            }
+            else
+            {
+                _selectedSession.KeyWordsMain = [];
+            }
+            if (!string.IsNullOrWhiteSpace(ed_hist_kw2.Text))
+            {
+                _selectedSession.KeyWordsSecondary = ed_hist_kw2.Text.Split(',')?.ToList() ?? [];
+            }
+            else
+            {
+                _selectedSession.KeyWordsSecondary = [];
+            }
+            _selectedSession.WordLink = (KeyWordLink)cb_hist_kwlink.SelectedIndex;
+            _selectedSession.CaseSensitive = ck_hist_casesensitive.Checked;
+            _selectedSession.Enabled = ck_hist_kw.Checked;
+            _selectedSession.Sticky = ck_hist_sticky.Checked;
+            _selectedSession.MetaData.IsRoleplaySession = ck_hist_isrp.Checked;
+        }
+
+        private async void bt_sessionrefresh_Click(object sender, EventArgs e)
+        {
+            if (_selectedSession == null)
+                return;
+            this.Enabled = false;
+            using var loadingForm = new LoadingForm() { Owner = this, StartPosition = FormStartPosition.Manual };
+            loadingForm.CenterToParent();
+            loadingForm.Show();
+            loadingForm.BringToFront();
+            loadingForm.Refresh();
+            try
+            {
+                loadingForm.SetMessage("Updating session summary and meta-data. Depending on your computer, the model, and the context window, it might take a while.");
+                loadingForm.SetProgress(5);
+                LLMSystem.OnQuickInferenceEnded += (s, e) =>
+                {
+                    loadingForm.AddProgress(20);
+                };
+                _selectedSession.StartTime = _selectedSession.Messages.First().Date;
+                // if the first message has a default date, try to find a message with a valid date
+                if (_selectedSession.StartTime == default)
+                {
+                    foreach (var item in _selectedSession.Messages)
+                    {
+                        if (item.Date != default)
+                        {
+                            _selectedSession.StartTime = item.Date;
+                            break;
+                        }
+                    }
+                }
+                await _selectedSession.UpdateSession();
+                loadingForm.SetMessage("Finalizing.");
+                loadingForm.SetProgress(95);
+                DisplaySessionDetails(_selectedSession);
+                LoadChatHistoryTab();
+                (LLMSystem.Bot as Character)?.SaveChatHistory();
+            }
+            finally
+            {
+                LLMSystem.RemoveQuickInferenceEventHandler();
+                loadingForm.Close();
+                this.Enabled = true;
+            }
+        }
+
+        private void ed_sessiontitle_TextChanged(object sender, EventArgs e)
+        {
+            if (_isinitloading || _selectedSession == null)
+                return;
+            _selectedSession.MetaData.Title = ed_sessiontitle.Text;
+        }
+
+        private void ed_sessioninfo_TextChanged(object sender, EventArgs e)
+        {
+            if (_isinitloading || _selectedSession == null)
+                return;
+            _selectedSession.MetaData.Summary = ed_sessioninfo.Text.ToLinuxFormat();
+        }
+
+        private async void bt_historyupdate_Click(object sender, EventArgs e)
+        {
+            if (_selectedSession == null)
+                return;
+            await _selectedSession.EmbedText();
+            DisplaySessionDetails(_selectedSession);
+            LoadChatHistoryTab();
+            (LLMSystem.Bot as Character)?.SaveChatHistory();
+        }
+
+        private async void btEmbedAll_Click(object sender, EventArgs e)
+        {
+            if (!RAGSystem.Enabled)
+            {
+                MessageBox.Show("The RAG System is not enabled. Operation cancelled.");
+                return;
+            }
+            this.Enabled = false;
+
+            using var loadingForm = new LoadingForm() { Owner = this };
+
+            // Set the position in a way that doesn't affect the internal layout
+            loadingForm.StartPosition = FormStartPosition.Manual;
+            loadingForm.CenterToParent();
+            loadingForm.Show();
+            loadingForm.BringToFront();
+            loadingForm.Refresh();
+
+            try
+            {
+                loadingForm.SetMessage("Embedding all chat sessions. This might take a moment.");
+                loadingForm.SetProgress(0);
+                loadingForm.SetMax(LLMSystem.History.Sessions.Count);
+                RAGSystem.OnEmbedSession += (s, e) =>
+                {
+                    loadingForm.AddProgress(1);
+                };
+                await RAGSystem.EmbedChatSessions(LLMSystem.History);
+                loadingForm.SetMessage("Saving history...");
+                (LLMSystem.Bot as Character)?.SaveChatHistory(true);
+                loadingForm.SetMessage("Loading Updated Vector Database...");
+                RAGSystem.VectorizeChatBot(LLMSystem.Bot);
+                loadingForm.SetMessage("Brain Embedding...");
+                await LLMSystem.Bot.Brain.RegenEmbeds();
+            }
+            finally
+            {
+                RAGSystem.RemoveEmbedEventHandler();
+                loadingForm.Close();
+                this.Enabled = true;
+                MessageBox.Show("All sessions have been embedded successfully.");
+            }
+        }
+
+        private void bt_deleteAllHistory_Click(object sender, EventArgs e)
+        {
+            // Confirm before deleting
+            if (MessageBox.Show("This will delete all chat history with this character permanently. Are you sure?", "Delete All History?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                LLMSystem.History.DeleteAll(true);
+                var message = new SingleMessage(AuthorRole.Assistant, DateTime.Now, LLMSystem.Bot.GetWelcomeLine(LLMSystem.User.Name), LLMSystem.Bot.UniqueName, LLMSystem.Bot.UniqueName);
+                LLMSystem.History.LogMessage(message);
+                LoadChatHistoryTab();
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+        }
+
+        private void ChatHistoryForm_Load(object sender, EventArgs e)
+        {
+            LoadChatHistoryTab();
+        }
+    }
+}

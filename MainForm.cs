@@ -29,7 +29,6 @@ namespace WaifuAI
         private string? _currentgeneration = null;
         private int _currentgenerationtokencount = 0;
         private int _currentgencalls = 0;
-        private ChatSession? _selectedSession = null;
         private bool _impersonatemode = false;
         private bool _forcereload = false;
         private bool _isinitloading = true;
@@ -40,6 +39,7 @@ namespace WaifuAI
         private EditMessageForm? _editMessageForm;
         private readonly Random RNG = new();
         private RenPyDialogHandler? _renpyDialogHandler;
+        private string ed_log;
 
         public static Character? Bot => LLMSystem.Bot as Character;
         public static Character? User => LLMSystem.User as Character;
@@ -64,10 +64,8 @@ namespace WaifuAI
 
             HelptoolTip.SetToolTip(ck_charsampler, "If checked, and when using a bot persona containing a list of compatible inference Program.Settings, the inference Program.Settings will be picked at random from that list each time the bot write a new message." + Environment.NewLine + Environment.NewLine + "Will lead to a more creative and less repetitive interaction, but also less consistent.");
             HelptoolTip.SetToolTip(ck_onlinerag, "If checked, the bot may perform a web search (using DuckDuckGo) to improve its responses when asked to.");
-            HelptoolTip.SetToolTip(btEmbedAll, "If you're using RAG and have manually edited some entries in the history, press this button to update all the embeddings so RAG functionalities are accurate.");
 
             // Chat related events
-            SetupListSessionContextMenu();
             SetupChatMenu();
             _isinitloading = false;
             _activityTimer.OnTrigger += OnBotInitiateConversation;
@@ -264,9 +262,8 @@ namespace WaifuAI
         {
             Invoke((System.Windows.Forms.MethodInvoker)delegate
             {
-                ed_log.Clear();
                 var text = "====== New Generation ======\n\n" + e + "\n\n";
-                ed_log.Text = text.ToWinFormat();
+                ed_log = text.ToWinFormat();
             });
         }
 
@@ -715,6 +712,7 @@ namespace WaifuAI
             grp_model.Text = LLMSystem.CurrentModel;
             ck_ttstoggle.Enabled = LLMSystem.SupportsTTS;
             ck_onlinerag.Enabled = LLMSystem.SupportsWebSearch;
+            boxVLM.Enabled = LLMSystem.SupportsVision;
         }
 
         private async void StartNewSession(object sender, EventArgs e)
@@ -765,7 +763,6 @@ namespace WaifuAI
                 loadingForm.SetProgress(100);
                 LLMSystem.RemoveQuickInferenceEventHandler();
                 await WebChatLoad();
-                LoadChatHistoryTab();
                 _afkmessagecount = 0;
                 _activityTimer?.Reset();
             }
@@ -809,7 +806,6 @@ namespace WaifuAI
                 LLMSystem.History.CurrentSessionID = -1;
                 (LLMSystem.Bot as Character)?.SaveChatHistory();
                 await WebChatLoad();
-                LoadChatHistoryTab();
                 _afkmessagecount = 0;
                 _activityTimer?.Reset();
             }
@@ -1001,344 +997,8 @@ namespace WaifuAI
             RAGSystem.Enabled = ck_ragenabled.Checked;
         }
 
-
         #endregion
 
-        #region *** Chat History Tab Functions ***
-
-        private void SetupListSessionContextMenu()
-        {
-            // Create context menu
-            ContextMenuStrip contextMenu = new();
-
-            // Add menu items
-            ToolStripMenuItem switchSessionItem = new("Set Session As Active");
-            switchSessionItem.Click += async (sender, e) => await SwitchToSelectedSession();
-
-            ToolStripMenuItem insertSessionItem = new("Insert New Session Below");
-            insertSessionItem.Click += async (sender, e) => await InsertSessionAfterSelected();
-
-            ToolStripMenuItem deleteSessionItem = new("Delete Selected Session");
-            deleteSessionItem.Click += async (sender, e) => await DeleteSelectedSession();
-
-            ToolStripMenuItem CheckRPItem = new("Recheck if RP");
-            CheckRPItem.Click += async (sender, e) => await RefreshRPInfo();
-
-            // Add items to menu
-            contextMenu.Items.Add(switchSessionItem);
-            contextMenu.Items.Add(insertSessionItem);
-            contextMenu.Items.Add(deleteSessionItem);
-            contextMenu.Items.Add(CheckRPItem);
-
-            // Attach opening event to control items' visibility based on selection
-            contextMenu.Opening += (sender, e) =>
-            {
-                bool hasSelection = listSession.SelectedItems.Count > 0;
-                switchSessionItem.Enabled = hasSelection;
-                insertSessionItem.Enabled = hasSelection;
-                deleteSessionItem.Enabled = hasSelection;
-                CheckRPItem.Enabled = hasSelection;
-
-                // Cancel opening if no items selected
-                if (!hasSelection)
-                    e.Cancel = true;
-            };
-
-            // Assign menu to ListView
-            listSession.ContextMenuStrip = contextMenu;
-        }
-
-        private async Task SwitchToSelectedSession()
-        {
-            if (_selectedSession == null)
-                return;
-
-            LLMSystem.Bot.History.CurrentSessionID = LLMSystem.Bot.History.Sessions.IndexOf(_selectedSession);
-            _activityTimer?.Reset();
-            LoadChatHistoryTab();
-            await WebChatLoad();
-        }
-
-        private async Task InsertSessionAfterSelected()
-        {
-            if (_selectedSession == null)
-                return;
-
-            LLMSystem.Bot.History.CurrentSessionID = LLMSystem.Bot.History.Sessions.IndexOf(_selectedSession);
-            var id = LLMSystem.Bot.History.CurrentSessionID;
-            if (id == LLMSystem.Bot.History.Sessions.Count - 1)
-            {
-                LLMSystem.Bot.History.Sessions.Add(new ChatSession());
-            }
-            else
-            {
-                LLMSystem.Bot.History.Sessions.Insert(id + 1, new ChatSession());
-            }
-            LLMSystem.Bot.History.CurrentSessionID++;
-            _activityTimer?.Reset();
-            _selectedSession = LLMSystem.History.CurrentSession;
-            await LLMSystem.History.StartNewChatSession(true);
-            await WebChatLoad();
-            LoadChatHistoryTab();
-        }
-
-        private async Task RefreshRPInfo()
-        {
-            if (_selectedSession == null)
-                return;
-            _selectedSession.MetaData.IsRoleplaySession = await _selectedSession.IsRoleplay();
-            DisplaySessionDetails(_selectedSession);
-        }
-
-        private async Task DeleteSelectedSession()
-        {
-            if (_selectedSession == null)
-                return;
-
-            if (LLMSystem.History.Sessions.Count <= 1)
-            {
-                bt_deleteAllHistory_Click(this, EventArgs.Empty);
-                return;
-            }
-
-            if (MessageBox.Show("This will delete the selected session permanently. Are you sure?",
-                              "Delete Session?", MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                var needchangesession = LLMSystem.History.CurrentSession == _selectedSession;
-                LLMSystem.History.Sessions.Remove(_selectedSession);
-                if (needchangesession)
-                {
-                    LLMSystem.History.CurrentSessionID = LLMSystem.History.Sessions.Count - 1;
-                }
-            }
-
-            _activityTimer?.Reset();
-            _selectedSession = LLMSystem.History.CurrentSession;
-            DisplaySessionDetails(_selectedSession);
-            LoadChatHistoryTab();
-            await WebChatLoad();
-        }
-
-        public void LoadChatHistoryTab()
-        {
-            listSession.Items.Clear();
-            if (LLMSystem.History.Sessions.Count == 0)
-                return;
-            foreach (var session in LLMSystem.History.Sessions)
-            {
-                var item = new ListViewItem([session.Name, session.StartTime.ToString("g")])
-                {
-                    Tag = session
-                };
-                if (LLMSystem.History.Sessions.IndexOf(session) == LLMSystem.History.CurrentSessionID)
-                {
-                    item.Font = new Font(item.Font, FontStyle.Bold);
-                }
-                if (session.Sticky)
-                {
-                    item.ForeColor = Color.Red;
-                }
-                listSession.Items.Add(item);
-            }
-        }
-
-        private void listSession_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (listSession.SelectedItems.Count <= 0)
-                return;
-            var selectedItem = listSession.SelectedItems[0];
-            _selectedSession = (ChatSession)selectedItem.Tag!;
-            DisplaySessionDetails(_selectedSession);
-        }
-
-        private async void DisplaySessionDetails(ChatSession session)
-        {
-            var sv = _isinitloading;
-            _isinitloading = true;
-            ed_sessiontitle.Text = session.Name;
-            ed_sessioninfo.Text = session.Content.ToWinFormat();
-            lbl_sessiondata.Text = session.StartTime.ToString("g") + " - " + session.EndTime.ToString("g") + " - " + session.Messages.Count + " messages";
-
-            ed_hist_kw1.Text = string.Join(",", session.KeyWordsMain);
-            ed_hist_kw2.Text = string.Join(",", session.KeyWordsSecondary);
-            cb_hist_kwlink.SelectedIndex = (int)session.WordLink;
-            ck_hist_casesensitive.Checked = session.CaseSensitive;
-            ck_hist_kw.Checked = session.Enabled;
-            ck_hist_sticky.Checked = session.Sticky;
-            ck_hist_isrp.Checked = session.MetaData.IsRoleplaySession;
-            _isinitloading = sv;
-
-            if (web_sessioncontent.CoreWebView2 == null)
-            {
-                await web_sessioncontent.EnsureCoreWebView2Async();
-            }
-            var dialogs = session.GetRawDialogs(int.MaxValue, false).Replace("\n", "\n\n");
-
-            var res = new StringBuilder();
-            res.AppendLinuxLine($"# {session.Name}").AppendLinuxLine();
-            res.AppendLinuxLine("## Summary:").AppendLinuxLine().AppendLinuxLine(session.Content).AppendLinuxLine();
-            res.AppendLinuxLine("## Keywords: ");
-            foreach (var item in session.MetaData.Keywords)
-            {
-                res.Append(item + ", ");
-            }
-            res.AppendLinuxLine();
-            res.AppendLinuxLine("## Goals: ");
-            foreach (var item in session.MetaData.FutureGoals)
-            {
-                res.AppendLinuxLine("- " + item);
-            }
-            res.AppendLinuxLine("## Relevance: " + session.MetaData.Relevance.ToString());
-            res.AppendLinuxLine().AppendLinuxLine();
-            res.AppendLinuxLine("## Dialogs:").AppendLinuxLine().AppendLinuxLine(dialogs);
-            web_sessioncontent.NavigateToString(Markdown.ToHtml(res.ToString(), CustomMarkDownPipeline));
-        }
-
-        private void UpdateHistoryEntryEvent(object sender, EventArgs e)
-        {
-            if (_isinitloading || _selectedSession == null)
-                return;
-            if (!string.IsNullOrWhiteSpace(ed_hist_kw1.Text))
-            {
-                _selectedSession.KeyWordsMain = ed_hist_kw1.Text.Split(',')?.ToList() ?? [];
-            }
-            else
-            {
-                _selectedSession.KeyWordsMain = [];
-            }
-            if (!string.IsNullOrWhiteSpace(ed_hist_kw2.Text))
-            {
-                _selectedSession.KeyWordsSecondary = ed_hist_kw2.Text.Split(',')?.ToList() ?? [];
-            }
-            else
-            {
-                _selectedSession.KeyWordsSecondary = [];
-            }
-            _selectedSession.WordLink = (KeyWordLink)cb_hist_kwlink.SelectedIndex;
-            _selectedSession.CaseSensitive = ck_hist_casesensitive.Checked;
-            _selectedSession.Enabled = ck_hist_kw.Checked;
-            _selectedSession.Sticky = ck_hist_sticky.Checked;
-            _selectedSession.MetaData.IsRoleplaySession = ck_hist_isrp.Checked;
-        }
-
-        private async void bt_sessionrefresh_Click(object sender, EventArgs e)
-        {
-            if (_selectedSession == null)
-                return;
-            this.Enabled = false;
-            using var loadingForm = new LoadingForm() { Owner = this, StartPosition = FormStartPosition.Manual };
-            loadingForm.CenterToParent();
-            loadingForm.Show();
-            loadingForm.BringToFront();
-            loadingForm.Refresh();
-            try
-            {
-                loadingForm.SetMessage("Updating session summary and meta-data. Depending on your computer, the model, and the context window, it might take a while.");
-                loadingForm.SetProgress(5);
-                LLMSystem.OnQuickInferenceEnded += (s, e) =>
-                {
-                    loadingForm.AddProgress(20);
-                };
-                _selectedSession.StartTime = _selectedSession.Messages.First().Date;
-                // if the first message has a default date, try to find a message with a valid date
-                if (_selectedSession.StartTime == default)
-                {
-                    foreach (var item in _selectedSession.Messages)
-                    {
-                        if (item.Date != default)
-                        {
-                            _selectedSession.StartTime = item.Date;
-                            break;
-                        }
-                    }
-                }
-                await _selectedSession.UpdateSession();
-                loadingForm.SetMessage("Finalizing.");
-                loadingForm.SetProgress(95);
-                DisplaySessionDetails(_selectedSession);
-                LoadChatHistoryTab();
-                (LLMSystem.Bot as Character)?.SaveChatHistory();
-            }
-            finally
-            {
-                LLMSystem.RemoveQuickInferenceEventHandler();
-                loadingForm.Close();
-                this.Enabled = true;
-            }
-        }
-
-        private void ed_sessiontitle_TextChanged(object sender, EventArgs e)
-        {
-            if (_isinitloading || _selectedSession == null)
-                return;
-            _selectedSession.MetaData.Title = ed_sessiontitle.Text;
-        }
-
-        private void ed_sessioninfo_TextChanged(object sender, EventArgs e)
-        {
-            if (_isinitloading || _selectedSession == null)
-                return;
-            _selectedSession.MetaData.Summary = ed_sessioninfo.Text.ToLinuxFormat();
-
-        }
-
-        private async void bt_historyupdate_Click(object sender, EventArgs e)
-        {
-            if (_selectedSession == null)
-                return;
-            await _selectedSession.EmbedText();
-            DisplaySessionDetails(_selectedSession);
-            LoadChatHistoryTab();
-            (LLMSystem.Bot as Character)?.SaveChatHistory();
-
-        }
-
-        private async void btEmbedAll_Click(object sender, EventArgs e)
-        {
-            if (!RAGSystem.Enabled)
-            {
-                MessageBox.Show("The RAG System is not enabled. Operation cancelled.");
-                return;
-            }
-            this.Enabled = false;
-
-            using var loadingForm = new LoadingForm() { Owner = this };
-
-            // Set the position in a way that doesn't affect the internal layout
-            loadingForm.StartPosition = FormStartPosition.Manual;
-            loadingForm.CenterToParent();
-            loadingForm.Show();
-            loadingForm.BringToFront();
-            loadingForm.Refresh();
-
-            try
-            {
-                loadingForm.SetMessage("Embedding all chat sessions. This might take a moment.");
-                loadingForm.SetProgress(0);
-                loadingForm.SetMax(LLMSystem.History.Sessions.Count);
-                RAGSystem.OnEmbedSession += (s, e) =>
-                {
-                    loadingForm.AddProgress(1);
-                };
-                await RAGSystem.EmbedChatSessions(LLMSystem.History);
-                loadingForm.SetMessage("Saving history...");
-                (LLMSystem.Bot as Character)?.SaveChatHistory(true);
-                loadingForm.SetMessage("Loading Updated Vector Database...");
-                RAGSystem.VectorizeChatBot(LLMSystem.Bot);
-                loadingForm.SetMessage("Brain Embedding...");
-                await LLMSystem.Bot.Brain.RegenEmbeds();
-            }
-            finally
-            {
-                RAGSystem.RemoveEmbedEventHandler();
-                loadingForm.Close();
-                this.Enabled = true;
-                MessageBox.Show("All sessions have been embedded successfully.");
-            }
-
-        }
-
-        #endregion
 
         #region *** WebView2 Handling ***
 
@@ -1715,10 +1375,8 @@ namespace WaifuAI
         {
             if (cb_bot.SelectedItem is string key && !string.IsNullOrEmpty(key))
             {
-                _selectedSession = null;
                 LLMSystem.Bot = DataFiles.Characters[key];
                 await LoadHistoryToUI();
-                LoadChatHistoryTab();
                 ck_senseoftime.Checked = LLMSystem.Bot.SenseOfTime;
                 ck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
                 var searchplug = LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch");
@@ -1814,9 +1472,8 @@ namespace WaifuAI
 
         private void bt_scenario_Click(object sender, EventArgs e)
         {
-            var editForm = new ScenarioEditForm();
+            using var editForm = new ScenarioEditForm();
             editForm.ShowDialog();
-            editForm.Dispose();
             bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.Settings.ScenarioOverride) ? Color.Black : Color.DarkGreen;
             LLMSystem.InvalidatePromptCache();
         }
@@ -1827,22 +1484,9 @@ namespace WaifuAI
             LLMSystem.InvalidatePromptCache();
         }
 
-        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        private void ck_worldinfo_CheckedChanged(object sender, EventArgs e)
         {
             LLMSystem.Settings.AllowWorldInfo = ck_worldinfo.Checked;
-        }
-
-        private async void bt_deleteAllHistory_Click(object sender, EventArgs e)
-        {
-            // Confirm before deleting
-            if (MessageBox.Show("This will delete all chat history with this character permanently. Are you sure?", "Delete All History?", MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                LLMSystem.History.DeleteAll(true);
-                var message = new SingleMessage(AuthorRole.Assistant, DateTime.Now, LLMSystem.Bot.GetWelcomeLine(LLMSystem.User.Name), LLMSystem.Bot.UniqueName, LLMSystem.Bot.UniqueName);
-                LLMSystem.History.LogMessage(message);
-                LoadChatHistoryTab();
-                await WebChatLoad();
-            }
         }
 
         private void cb_sysprompt_SelectionIndexChanged(object sender, EventArgs e)
@@ -1896,10 +1540,9 @@ namespace WaifuAI
 
         private void bt_editchar_Click(object sender, EventArgs e)
         {
-            var editForm = new CharEditForm();
+            using var editForm = new CharEditForm();
             editForm.SetupCharacterEditor(Bot?.UniqueName ?? string.Empty);
             editForm.ShowDialog();
-            editForm.Dispose();
             LLMSystem.InvalidatePromptCache();
             var currbselection = cb_bot.Text;
             var curruselection = cb_user.Text;
@@ -1939,49 +1582,11 @@ namespace WaifuAI
             LLMSystem.Settings.AgentEnabled = ck_agentmode.Checked;
         }
 
-        private async void textBox1_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)13)
-            {
-                e.Handled = true;
-                var searchstr = textBox1.Text;
-                txtSearchRes.Clear();
-                if (!string.IsNullOrWhiteSpace(searchstr))
-                {
-
-                    var res = new StringBuilder();
-                    res.AppendLine($"Base string: {searchstr}");
-                    searchstr = searchstr.ConvertToThirdPerson();
-                    res.AppendLine($"Converted to 3rd person: {searchstr}");
-                    res.AppendLine();
-                    res.AppendLine("Search Results:");
-                    var found = await RAGSystem.Search(searchstr, 100, 1.2f);
-                    foreach (var item in found)
-                    {
-                        var title = "[unknown]";
-                        var content = "[unknown]";
-                        var distance = item.distance.ToString("0.0000");
-                        var cat = item.category.ToString();
-                        if (item.session is MemoryUnit unit)
-                        {
-                            title = unit.Name;
-                            content = LLMSystem.ReplaceMacros(unit.Content);
-                        }
-                        res.AppendLine(cat + " (dist: " + distance + "): " + title);
-                        res.AppendLine(content);
-                        res.AppendLine();
-                    }
-                    txtSearchRes.Text = res.ToString();
-                }
-            }
-        }
-
         private void btInstructEdit_Click(object sender, EventArgs e)
         {
-            var editForm = new InstructForm();
+            using var editForm = new InstructForm();
             editForm.SetupInstructEditor(LLMSystem.Instruct.UniqueName ?? string.Empty);
             editForm.ShowDialog();
-            editForm.Dispose();
             LLMSystem.InvalidatePromptCache();
             // Update the prompt list in the chat menu
             var currselection = LLMSystem.Instruct.UniqueName;
@@ -1996,10 +1601,9 @@ namespace WaifuAI
 
         private void btSysPrompt_Click(object sender, EventArgs e)
         {
-            var editForm = new SysPromptForm();
+            using var editForm = new SysPromptForm();
             editForm.SetupPromptEditor(LLMSystem.SystemPrompt.UniqueName ?? string.Empty);
             editForm.ShowDialog();
-            editForm.Dispose();
             LLMSystem.InvalidatePromptCache();
             var currselection = cb_sysprompt.SelectedItem?.ToString() ?? "";
             cb_sysprompt.Items.Clear();
@@ -2013,10 +1617,9 @@ namespace WaifuAI
 
         private void btSampleEditor_Click(object sender, EventArgs e)
         {
-            var editForm = new SamplerForm();
+            using var editForm = new SamplerForm();
             editForm.SetupSamplerEditor(LLMSystem.Sampler.UniqueName ?? string.Empty);
             editForm.ShowDialog();
-            editForm.Dispose();
             LLMSystem.InvalidatePromptCache();
             // Update the sampler list in the chat menu
             var currselection = cb_infer.SelectedItem?.ToString() ?? "";
@@ -2035,7 +1638,6 @@ namespace WaifuAI
             using var settingsForm = new SettingsForm();
             settingsForm.StartPosition = FormStartPosition.CenterParent;
             settingsForm.ShowDialog();
-            settingsForm.Dispose();
             LLMSystem.InvalidatePromptCache();
             await WebChatLoad();
         }
@@ -2045,13 +1647,23 @@ namespace WaifuAI
             using var worldForm = new WorldEditForm();
             worldForm.StartPosition = FormStartPosition.CenterParent;
             worldForm.ShowDialog();
-            worldForm.Dispose();
             LLMSystem.InvalidatePromptCache();
         }
 
-        private void tabChat_Click(object sender, EventArgs e)
+        private async void btChatHistory_Click(object sender, EventArgs e)
         {
+            using var worldForm = new ChatHistoryForm();
+            worldForm.StartPosition = FormStartPosition.CenterParent;
+            worldForm.ShowDialog();
+            LLMSystem.InvalidatePromptCache();
+            await WebChatLoad();
+        }
 
+        private void btVectorSearch_Click(object sender, EventArgs e)
+        {
+            using var ragForm = new RAGSearchForm();
+            ragForm.StartPosition = FormStartPosition.CenterParent;
+            ragForm.ShowDialog();
         }
     }
 }
