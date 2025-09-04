@@ -39,7 +39,7 @@ namespace WaifuAI
         private EditMessageForm? _editMessageForm;
         private readonly Random RNG = new();
         private RenPyDialogHandler? _renpyDialogHandler;
-        private string ed_log;
+        private string ed_log = string.Empty;
 
         public static Character? Bot => LLMSystem.Bot as Character;
         public static Character? User => LLMSystem.User as Character;
@@ -1664,6 +1664,15 @@ namespace WaifuAI
             using var ragForm = new RAGSearchForm();
             ragForm.StartPosition = FormStartPosition.CenterParent;
             ragForm.ShowDialog();
+        }
+
+        private void btRawLog_Click(object sender, EventArgs e)
+        {
+            // Show a basic window with the ed_log content in a textbox and a close button
+            using var logForm = new RawLogForm();
+            logForm.SetText(ed_log);
+            logForm.StartPosition = FormStartPosition.CenterParent;
+            logForm.ShowDialog();
         }
     }
 }

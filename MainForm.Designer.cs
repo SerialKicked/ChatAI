@@ -37,7 +37,6 @@ namespace WaifuAI
             toolStripStatusLabel1 = new ToolStripStatusLabel();
             toolStripStatusLabel2 = new ToolStripStatusLabel();
             AutoTalkTimer = new System.Windows.Forms.Timer(components);
-            tabChat = new TabPage();
             panRight = new Panel();
             groupBox5 = new GroupBox();
             btVectorSearch = new Button();
@@ -93,9 +92,8 @@ namespace WaifuAI
             num_maxcontext = new NumericUpDown();
             label8 = new Label();
             bt_connect = new Button();
-            tabMain = new TabControl();
+            btRawLog = new Button();
             statusbar.SuspendLayout();
-            tabChat.SuspendLayout();
             panRight.SuspendLayout();
             groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
@@ -108,7 +106,6 @@ namespace WaifuAI
             grp_model.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_maxresponse).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_maxcontext).BeginInit();
-            tabMain.SuspendLayout();
             SuspendLayout();
             // 
             // HelptoolTip
@@ -149,31 +146,13 @@ namespace WaifuAI
             AutoTalkTimer.Interval = 1000;
             AutoTalkTimer.Tick += AutoTalkTimer_Tick;
             // 
-            // tabChat
-            // 
-            tabChat.Controls.Add(panRight);
-            tabChat.Controls.Add(bt_impersonate);
-            tabChat.Controls.Add(web_chat);
-            tabChat.Controls.Add(bt_delete);
-            tabChat.Controls.Add(bt_reroll);
-            tabChat.Controls.Add(bt_send);
-            tabChat.Controls.Add(ed_input);
-            tabChat.Controls.Add(panLeft);
-            tabChat.Location = new Point(4, 27);
-            tabChat.Name = "tabChat";
-            tabChat.Padding = new Padding(3);
-            tabChat.Size = new Size(1253, 747);
-            tabChat.TabIndex = 1;
-            tabChat.Text = "Chat";
-            tabChat.UseVisualStyleBackColor = true;
-            // 
             // panRight
             // 
             panRight.Controls.Add(groupBox5);
             panRight.Dock = DockStyle.Right;
-            panRight.Location = new Point(1047, 3);
+            panRight.Location = new Point(1058, 0);
             panRight.Name = "panRight";
-            panRight.Size = new Size(203, 741);
+            panRight.Size = new Size(203, 781);
             panRight.TabIndex = 8;
             // 
             // groupBox5
@@ -377,7 +356,7 @@ namespace WaifuAI
             bt_impersonate.BackColor = Color.Turquoise;
             bt_impersonate.FlatStyle = FlatStyle.Flat;
             bt_impersonate.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_impersonate.Location = new Point(983, 655);
+            bt_impersonate.Location = new Point(992, 692);
             bt_impersonate.Name = "bt_impersonate";
             bt_impersonate.Size = new Size(60, 25);
             bt_impersonate.TabIndex = 7;
@@ -391,9 +370,9 @@ namespace WaifuAI
             web_chat.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             web_chat.CreationProperties = null;
             web_chat.DefaultBackgroundColor = Color.White;
-            web_chat.Location = new Point(212, 3);
+            web_chat.Location = new Point(209, 3);
             web_chat.Name = "web_chat";
-            web_chat.Size = new Size(831, 648);
+            web_chat.Size = new Size(843, 683);
             web_chat.TabIndex = 6;
             web_chat.ZoomFactor = 1D;
             // 
@@ -403,7 +382,7 @@ namespace WaifuAI
             bt_delete.BackColor = Color.LightCoral;
             bt_delete.FlatStyle = FlatStyle.Flat;
             bt_delete.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_delete.Location = new Point(983, 716);
+            bt_delete.Location = new Point(992, 753);
             bt_delete.Name = "bt_delete";
             bt_delete.Size = new Size(60, 25);
             bt_delete.TabIndex = 5;
@@ -417,7 +396,7 @@ namespace WaifuAI
             bt_reroll.BackColor = Color.PaleGoldenrod;
             bt_reroll.FlatStyle = FlatStyle.Flat;
             bt_reroll.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_reroll.Location = new Point(983, 686);
+            bt_reroll.Location = new Point(992, 723);
             bt_reroll.Name = "bt_reroll";
             bt_reroll.Size = new Size(60, 25);
             bt_reroll.TabIndex = 4;
@@ -431,7 +410,7 @@ namespace WaifuAI
             bt_send.BackColor = Color.PaleGreen;
             bt_send.FlatStyle = FlatStyle.Flat;
             bt_send.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_send.Location = new Point(919, 655);
+            bt_send.Location = new Point(926, 692);
             bt_send.Name = "bt_send";
             bt_send.Size = new Size(60, 86);
             bt_send.TabIndex = 3;
@@ -445,11 +424,11 @@ namespace WaifuAI
             ed_input.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             ed_input.BackColor = Color.FromArgb(32, 70, 130, 180);
             ed_input.Font = new Font("Segoe UI", 16F);
-            ed_input.Location = new Point(212, 655);
+            ed_input.Location = new Point(209, 692);
             ed_input.Multiline = true;
             ed_input.Name = "ed_input";
             ed_input.ScrollBars = ScrollBars.Vertical;
-            ed_input.Size = new Size(701, 86);
+            ed_input.Size = new Size(711, 86);
             ed_input.TabIndex = 2;
             ed_input.KeyPress += ed_input_KeyPress;
             // 
@@ -461,9 +440,9 @@ namespace WaifuAI
             panLeft.Controls.Add(groupBox4);
             panLeft.Controls.Add(grp_model);
             panLeft.Dock = DockStyle.Left;
-            panLeft.Location = new Point(3, 3);
+            panLeft.Location = new Point(0, 0);
             panLeft.Name = "panLeft";
-            panLeft.Size = new Size(203, 741);
+            panLeft.Size = new Size(203, 781);
             panLeft.TabIndex = 0;
             // 
             // boxVLM
@@ -473,7 +452,7 @@ namespace WaifuAI
             boxVLM.Controls.Add(pictEmbed);
             boxVLM.Controls.Add(bt_clearimg);
             boxVLM.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            boxVLM.Location = new Point(6, 599);
+            boxVLM.Location = new Point(6, 639);
             boxVLM.Name = "boxVLM";
             boxVLM.Size = new Size(187, 139);
             boxVLM.TabIndex = 27;
@@ -514,6 +493,7 @@ namespace WaifuAI
             // groupBox23
             // 
             groupBox23.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox23.Controls.Add(btRawLog);
             groupBox23.Controls.Add(btWorldEditor);
             groupBox23.Controls.Add(btMainSettings);
             groupBox23.Controls.Add(ck_agentmode);
@@ -524,7 +504,7 @@ namespace WaifuAI
             groupBox23.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox23.Location = new Point(6, 370);
             groupBox23.Name = "groupBox23";
-            groupBox23.Size = new Size(187, 223);
+            groupBox23.Size = new Size(187, 263);
             groupBox23.TabIndex = 26;
             groupBox23.TabStop = false;
             groupBox23.Text = "Quick Settings";
@@ -533,7 +513,7 @@ namespace WaifuAI
             // 
             btWorldEditor.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             btWorldEditor.Font = new Font("Segoe UI", 9F);
-            btWorldEditor.Location = new Point(6, 165);
+            btWorldEditor.Location = new Point(6, 205);
             btWorldEditor.Name = "btWorldEditor";
             btWorldEditor.Size = new Size(175, 23);
             btWorldEditor.TabIndex = 39;
@@ -545,7 +525,7 @@ namespace WaifuAI
             // 
             btMainSettings.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             btMainSettings.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btMainSettings.Location = new Point(6, 194);
+            btMainSettings.Location = new Point(6, 234);
             btMainSettings.Name = "btMainSettings";
             btMainSettings.Size = new Size(175, 23);
             btMainSettings.TabIndex = 38;
@@ -843,31 +823,38 @@ namespace WaifuAI
             bt_connect.UseVisualStyleBackColor = true;
             bt_connect.Click += Connect;
             // 
-            // tabMain
+            // btRawLog
             // 
-            tabMain.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            tabMain.Appearance = TabAppearance.FlatButtons;
-            tabMain.Controls.Add(tabChat);
-            tabMain.Location = new Point(0, 0);
-            tabMain.Name = "tabMain";
-            tabMain.SelectedIndex = 0;
-            tabMain.Size = new Size(1261, 778);
-            tabMain.TabIndex = 1;
+            btRawLog.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btRawLog.Font = new Font("Segoe UI", 9F);
+            btRawLog.Location = new Point(6, 176);
+            btRawLog.Name = "btRawLog";
+            btRawLog.Size = new Size(175, 23);
+            btRawLog.TabIndex = 40;
+            btRawLog.Text = "View Raw Log";
+            btRawLog.UseVisualStyleBackColor = true;
+            btRawLog.Click += btRawLog_Click;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1261, 803);
+            Controls.Add(panRight);
+            Controls.Add(bt_impersonate);
+            Controls.Add(web_chat);
+            Controls.Add(bt_delete);
+            Controls.Add(bt_reroll);
+            Controls.Add(bt_send);
+            Controls.Add(ed_input);
+            Controls.Add(panLeft);
             Controls.Add(statusbar);
-            Controls.Add(tabMain);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
             Text = "w(AI)fu";
             FormClosing += MainForm_FormClosing;
             statusbar.ResumeLayout(false);
             statusbar.PerformLayout();
-            tabChat.ResumeLayout(false);
             panRight.ResumeLayout(false);
             groupBox5.ResumeLayout(false);
             groupBox5.PerformLayout();
@@ -885,7 +872,6 @@ namespace WaifuAI
             grp_model.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)num_maxresponse).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_maxcontext).EndInit();
-            tabMain.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -896,7 +882,6 @@ namespace WaifuAI
         private ToolStripStatusLabel toolStripStatusLabel1;
         private ToolStripStatusLabel toolStripStatusLabel2;
         internal System.Windows.Forms.Timer AutoTalkTimer;
-        private TabPage tabChat;
         private Button bt_impersonate;
         private Microsoft.Web.WebView2.WinForms.WebView2 web_chat;
         private Button bt_delete;
@@ -939,7 +924,6 @@ namespace WaifuAI
         private NumericUpDown num_maxcontext;
         private Label label8;
         private Button bt_connect;
-        private TabControl tabMain;
         private CheckBox ck_disablethink;
         private CheckBox ck_ragtothink;
         private CheckBox ck_agentmode;
@@ -953,5 +937,6 @@ namespace WaifuAI
         private Label label1;
         private Button btChatHistory;
         private Button btVectorSearch;
+        private Button btRawLog;
     }
 }
