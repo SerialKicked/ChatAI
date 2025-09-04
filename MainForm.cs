@@ -523,8 +523,18 @@ namespace WaifuAI
             UseCharacterDefinedSampler();
             if (!string.IsNullOrEmpty(ed_input.Text))
             {
-                var messagetext = LLMSystem.ReplaceMacros(LLMSystem.GetAwayString() + ed_input.Text.ToLinuxFormat(), LLMSystem.User, LLMSystem.Bot);
-                var msg = new SingleMessage(AuthorRole.User, DateTime.Now, messagetext, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
+                var msgtxt = ed_input.Text.ToLinuxFormat();
+                // = this is handled by the brain through hidden messages now =
+                //if (LLMSystem.Bot.SenseOfTime == true)
+                //{
+                //    var away = LLMSystem.GetAwayString();
+                //    if (!string.IsNullOrWhiteSpace(away))
+                //    {
+                //        msgtxt = "*" + away + "*" + LLMSystem.NewLine + LLMSystem.NewLine + ed_input.Text.ToLinuxFormat();
+                //    }
+                //}
+                msgtxt = LLMSystem.ReplaceMacros(msgtxt, LLMSystem.User, LLMSystem.Bot);
+                var msg = new SingleMessage(AuthorRole.User, DateTime.Now, msgtxt, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
 
                 if (ed_input.Text.StartsWith("/sys "))
                 {
@@ -610,7 +620,7 @@ namespace WaifuAI
                 }
                 else
                 {
-                    var (response, usercmdonly) = ProcessSlashCommands(messagetext);
+                    var (response, usercmdonly) = ProcessSlashCommands(msgtxt);
                     if (response != null)
                     {
                         if (usercmdonly)
