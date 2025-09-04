@@ -84,6 +84,7 @@ namespace WaifuAI.src.forms
             panel1 = new Panel();
             bt_Close = new Button();
             HelptoolTip = new ToolTip(components);
+            ckShowHidden = new CheckBox();
             groupBox24.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_removeitalicmaxword).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_italicratio).BeginInit();
@@ -393,6 +394,7 @@ namespace WaifuAI.src.forms
             // 
             // groupBox10
             // 
+            groupBox10.Controls.Add(ckShowHidden);
             groupBox10.Controls.Add(num_msgcount);
             groupBox10.Controls.Add(label30);
             groupBox10.Controls.Add(num_fontsize);
@@ -402,7 +404,7 @@ namespace WaifuAI.src.forms
             groupBox10.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox10.Location = new Point(8, 409);
             groupBox10.Name = "groupBox10";
-            groupBox10.Size = new Size(402, 67);
+            groupBox10.Size = new Size(402, 95);
             groupBox10.TabIndex = 26;
             groupBox10.TabStop = false;
             groupBox10.Text = "User Interface";
@@ -716,7 +718,7 @@ namespace WaifuAI.src.forms
             // 
             panel1.Controls.Add(bt_Close);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 480);
+            panel1.Location = new Point(0, 510);
             panel1.Name = "panel1";
             panel1.Size = new Size(824, 50);
             panel1.TabIndex = 31;
@@ -735,11 +737,22 @@ namespace WaifuAI.src.forms
             bt_Close.UseVisualStyleBackColor = false;
             bt_Close.Click += bt_Close_Click;
             // 
+            // ckShowHidden
+            // 
+            ckShowHidden.AutoSize = true;
+            ckShowHidden.Font = new Font("Segoe UI", 9F);
+            ckShowHidden.Location = new Point(6, 66);
+            ckShowHidden.Name = "ckShowHidden";
+            ckShowHidden.Size = new Size(189, 19);
+            ckShowHidden.TabIndex = 31;
+            ckShowHidden.Text = "Show hidden system messages";
+            ckShowHidden.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(824, 530);
+            ClientSize = new Size(824, 560);
             Controls.Add(panel1);
             Controls.Add(groupBox24);
             Controls.Add(groupBox11);
@@ -834,5 +847,6 @@ namespace WaifuAI.src.forms
         private Panel panel1;
         private Button bt_Close;
         private ToolTip HelptoolTip;
+        private CheckBox ckShowHidden;
     }
 }

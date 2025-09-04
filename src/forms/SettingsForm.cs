@@ -91,7 +91,7 @@ namespace WaifuAI.src.forms
             ck_remlastsentence.Checked = Program.Settings.RemoveCutSentence;
             ck_oneparagraph.Checked = Program.Settings.StopGenerationOnFirstParagraph;
             ed_sloplist.Text = Program.Settings.AntiSlopList.Length > 0 ? string.Join(",", Program.Settings.AntiSlopList) : string.Empty;
-
+            ckShowHidden.Checked = Program.Settings.ShowHiddenMessages;
 
             if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
             {
@@ -136,6 +136,7 @@ namespace WaifuAI.src.forms
                 Program.Settings.RAGMaxEntries = (int)num_ragmaxretrieve.Value;
                 Program.Settings.RAGIndex = (int)num_ragindex.Value;
                 Program.Settings.MoveAllInsertsToSysPrompt = ck_sysrag.Checked;
+                Program.Settings.ShowHiddenMessages = ckShowHidden.Checked;
 
                 if (cb_ragheuristic.SelectedIndex == 0)
                     Program.Settings.RAGHeuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;

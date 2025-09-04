@@ -1602,7 +1602,7 @@ namespace WaifuAI
                 start = 0;
             for (int i = start; i < LLMSystem.History.CurrentSession.Messages.Count; i++)
             {
-                if (!LLMSystem.History.CurrentSession.Messages[i].Hidden)
+                if (!LLMSystem.History.CurrentSession.Messages[i].Hidden || Program.Settings.ShowHiddenMessages)
                     html += AddHtmlMessage(LLMSystem.History.CurrentSession.Messages[i]);
             }
             html = InjectDialogCSS(html);
