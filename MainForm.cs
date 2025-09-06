@@ -165,18 +165,6 @@ namespace WaifuAI
                 LLMSystem.VLM_AddB64Image(basestr);
                 DisplayImage(basestr);
             }, 1024);
-
-            // Agent Stuff
-            AgentRuntime.Instance.Start();
-            EventBus.Subscribe<StagedMessageReadyEvent>(e =>
-            {
-                BeginInvoke(new Action(() =>
-                {
-                    statusbar.Items[1].Text = "Background suggestion ready.";
-                    // (Later) open a panel listing e.Message.Draft & allow accept/discard.
-                }));
-            });
-
         }
 
         private void DisplayImage(string base64String)
@@ -1457,7 +1445,6 @@ namespace WaifuAI
             LLMSystem.Bot.EndChat(backup: true);
             if (!string.IsNullOrEmpty(LLMSystem.Bot.UniqueName))
                 (LLMSystem.Bot as IFile).SaveToFile("data/chars/" + LLMSystem.Bot.UniqueName + ".json");
-            AgentRuntime.Instance.Stop();
         }
 
         private void ck_senseoftime_CheckedChanged(object sender, EventArgs e)
@@ -1673,6 +1660,11 @@ namespace WaifuAI
             logForm.SetText(ed_log);
             logForm.StartPosition = FormStartPosition.CenterParent;
             logForm.ShowDialog();
+        }
+
+        private async void button1_Click(object sender, EventArgs e)
+        {
+            var res = await SentimentAnalysis.Analyze("I am very happy today!");
         }
     }
 }

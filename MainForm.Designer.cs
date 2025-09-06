@@ -66,6 +66,7 @@ namespace WaifuAI
             pictEmbed = new PictureBox();
             bt_clearimg = new Button();
             groupBox23 = new GroupBox();
+            btRawLog = new Button();
             btWorldEditor = new Button();
             btMainSettings = new Button();
             ck_agentmode = new CheckBox();
@@ -92,7 +93,7 @@ namespace WaifuAI
             num_maxcontext = new NumericUpDown();
             label8 = new Label();
             bt_connect = new Button();
-            btRawLog = new Button();
+            button1 = new Button();
             statusbar.SuspendLayout();
             panRight.SuspendLayout();
             groupBox5.SuspendLayout();
@@ -148,6 +149,7 @@ namespace WaifuAI
             // 
             // panRight
             // 
+            panRight.Controls.Add(button1);
             panRight.Controls.Add(groupBox5);
             panRight.Dock = DockStyle.Right;
             panRight.Location = new Point(1058, 0);
@@ -509,6 +511,18 @@ namespace WaifuAI
             groupBox23.TabStop = false;
             groupBox23.Text = "Quick Settings";
             // 
+            // btRawLog
+            // 
+            btRawLog.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btRawLog.Font = new Font("Segoe UI", 9F);
+            btRawLog.Location = new Point(6, 176);
+            btRawLog.Name = "btRawLog";
+            btRawLog.Size = new Size(175, 23);
+            btRawLog.TabIndex = 40;
+            btRawLog.Text = "View Raw Log";
+            btRawLog.UseVisualStyleBackColor = true;
+            btRawLog.Click += btRawLog_Click;
+            // 
             // btWorldEditor
             // 
             btWorldEditor.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
@@ -823,17 +837,15 @@ namespace WaifuAI
             bt_connect.UseVisualStyleBackColor = true;
             bt_connect.Click += Connect;
             // 
-            // btRawLog
+            // button1
             // 
-            btRawLog.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            btRawLog.Font = new Font("Segoe UI", 9F);
-            btRawLog.Location = new Point(6, 176);
-            btRawLog.Name = "btRawLog";
-            btRawLog.Size = new Size(175, 23);
-            btRawLog.TabIndex = 40;
-            btRawLog.Text = "View Raw Log";
-            btRawLog.UseVisualStyleBackColor = true;
-            btRawLog.Click += btRawLog_Click;
+            button1.Location = new Point(44, 404);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 26;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // MainForm
             // 
@@ -938,5 +950,6 @@ namespace WaifuAI
         private Button btChatHistory;
         private Button btVectorSearch;
         private Button btRawLog;
+        private Button button1;
     }
 }
