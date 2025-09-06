@@ -69,8 +69,31 @@ namespace WaifuAI
             SetupChatMenu();
             _isinitloading = false;
             _activityTimer.OnTrigger += OnBotInitiateConversation;
+            
+            Application.AddMessageFilter(new ActivityMessageFilter());
 
         }
+
+        public class ActivityMessageFilter : IMessageFilter
+        {
+            public bool PreFilterMessage(ref Message m)
+            {
+                // Check for input messages globally
+                if (LLMSystem.Bot?.AgentSystem is not null && IsInputMessage(m.Msg))
+                {
+                    // Signal user activity
+                    LLMSystem.Bot?.AgentSystem.NotifyUserActivity();
+                }
+                return false; // Don't consume the message
+            }
+
+            private bool IsInputMessage(int msg)
+            {
+                return msg >= 0x0100 && msg <= 0x0108 || // Keyboard messages
+                       msg >= 0x0201 && msg <= 0x020E;   // Mouse messages
+            }
+        }
+
 
         private async void OnBotInitiateConversation(object? sender, EventArgs e)
         {
@@ -494,6 +517,7 @@ namespace WaifuAI
 
         private async void SendMessage(object sender, EventArgs e)
         {
+            LLMSystem.Bot.AgentSystem?.NotifyUserActivity();
             ForceCloseEditMenu();
             _activityTimer?.Reset();
             _afkmessagecount = 0;
@@ -509,15 +533,6 @@ namespace WaifuAI
             if (!string.IsNullOrEmpty(ed_input.Text))
             {
                 var msgtxt = ed_input.Text.ToLinuxFormat();
-                // = this is handled by the brain through hidden messages now =
-                //if (LLMSystem.Bot.SenseOfTime == true)
-                //{
-                //    var away = LLMSystem.GetAwayString();
-                //    if (!string.IsNullOrWhiteSpace(away))
-                //    {
-                //        msgtxt = "*" + away + "*" + LLMSystem.NewLine + LLMSystem.NewLine + ed_input.Text.ToLinuxFormat();
-                //    }
-                //}
                 msgtxt = LLMSystem.ReplaceMacros(msgtxt, LLMSystem.User, LLMSystem.Bot);
                 var msg = new SingleMessage(AuthorRole.User, DateTime.Now, msgtxt, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
 
@@ -701,6 +716,7 @@ namespace WaifuAI
             ck_ttstoggle.Enabled = LLMSystem.SupportsTTS;
             ck_onlinerag.Enabled = LLMSystem.SupportsWebSearch;
             boxVLM.Enabled = LLMSystem.SupportsVision;
+            LLMSystem.Bot.AgentSystem?.NotifyUserActivity();
         }
 
         private async void StartNewSession(object sender, EventArgs e)
@@ -940,7 +956,7 @@ namespace WaifuAI
             ck_ttstoggle.Checked = Program.Settings.UseTTS;
             ck_disablethink.Checked = Program.Settings.DisableThinking;
             ck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
-            ck_agentmode.Checked = Program.Settings.AgentEnabled;
+            ck_agentmode.Checked = LLMSystem.Bot.AgentMode;
 
             if (LLMSystem.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
             {
@@ -961,7 +977,7 @@ namespace WaifuAI
                 Program.Settings.PromptFile = cb_sysprompt.SelectedItem?.ToString() ?? string.Empty;
                 Program.Settings.Temperature = (double)num_temperature.Value;
                 Program.Settings.UseTTS = ck_ttstoggle.Checked;
-                Program.Settings.AgentEnabled = ck_agentmode.Checked;
+                LLMSystem.Bot.AgentMode = ck_agentmode.Checked;
                 Program.Settings.SessionMemorySystem = ck_sessionmemory.Checked;
 
                 if (LLMSystem.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
@@ -1490,6 +1506,8 @@ namespace WaifuAI
 
         private void AutoTalkTimer_Tick(object sender, EventArgs e)
         {
+            if (!string.IsNullOrEmpty(ed_input.Text))
+                LLMSystem.Bot.AgentSystem?.NotifyUserActivity();
             if (LLMSystem.Status != SystemStatus.Ready || !string.IsNullOrEmpty(ed_input.Text) || Bot?.CanInitiateChat != true)
                 return;
             _activityTimer?.IsTimeout();
@@ -1566,7 +1584,7 @@ namespace WaifuAI
 
         private void ck_agentmode_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.AgentEnabled = ck_agentmode.Checked;
+            LLMSystem.Bot.AgentMode = ck_agentmode.Checked;
         }
 
         private void btInstructEdit_Click(object sender, EventArgs e)

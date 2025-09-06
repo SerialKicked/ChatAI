@@ -9,7 +9,6 @@ namespace WaifuAI
     internal class ActivityTimer
     {
         public event EventHandler? OnTrigger;
-        private void RaiseOnTrigger() => OnTrigger?.Invoke(null, new EventArgs());
 
         public TimeSpan MinTime = new(0, 15, 0);
         public TimeSpan MaxTime = new(0, 45, 0);
@@ -35,7 +34,7 @@ namespace WaifuAI
         {
             if ((DateTime.Now - _lastActivity) >= _setActivityTime)
             {
-                RaiseOnTrigger();
+                OnTrigger?.Invoke(this, new EventArgs());
                 TriggerCount++;
                 Reset();
                 return true;
