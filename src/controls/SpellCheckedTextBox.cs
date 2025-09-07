@@ -56,9 +56,13 @@ namespace WaifuAI.Controls
             {
                 if (e.Key == WpfInput.Key.Enter)
                 {
-                    e.Handled = true;
-                    base.OnKeyPress(new KeyPressEventArgs((char)13));
-                    base.OnKeyDown(new KeyEventArgs(Keys.Enter));
+                    if (!_tb.AcceptsReturn)  // Only handle Enter when NOT in multiline mode
+                    {
+                        e.Handled = true;
+                        base.OnKeyPress(new KeyPressEventArgs((char)13));
+                        base.OnKeyDown(new KeyEventArgs(Keys.Enter));
+                    }
+                    // If AcceptsReturn is true (multiline mode), let the WPF TextBox handle it naturally
                 }
             };
 
