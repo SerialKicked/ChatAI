@@ -1682,7 +1682,38 @@ namespace WaifuAI
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            var res = await SentimentAnalysis.Analyze("I am very happy today!");
+            LLMSystem.NamesInPromptOverride = false;
+            var sense = LLMSystem.Bot.DatesInSessionSummaries;
+            LLMSystem.Bot.DatesInSessionSummaries = false;
+            //var res = await SentimentAnalysis.Analyze("I am very happy today!");
+            var availtokens = LLMSystem.MaxContextLength - 1024;
+            var requestedtask = "Based on the information provided in the system prompt, write a list of goals for {{char}}. Things she would want to convince {{user}} to do, or even things she'd like to think or do for herself. Keep the list realistic.";
+
+            var promptbuild = LLMSystem.Client!.GetPromptBuilder();
+            var sysprompt = "You are {{char}}, and you're looking for things you'd want to convince {{user}} to do or become, but seems reluctant to try." + LLMSystem.NewLine +
+                LLMSystem.NewLine +
+                "## Name: {{char}}" + LLMSystem.NewLine + LLMSystem.NewLine +
+                "{{charbio}}" + LLMSystem.NewLine + LLMSystem.NewLine +
+                "## Name: {{user}}" + LLMSystem.NewLine + LLMSystem.NewLine +
+                "{{userbio}}" + LLMSystem.NewLine + LLMSystem.NewLine +
+                "## Chronological chat session summaries:" + LLMSystem.NewLine + LLMSystem.NewLine;
+
+            availtokens -= promptbuild.GetTokenCount(AuthorRole.SysPrompt, sysprompt);
+            availtokens -= promptbuild.GetTokenCount(AuthorRole.User, requestedtask);
+
+            var summaries = LLMSystem.History.GetPreviousSummaries(availtokens, allowRP: true);
+            sysprompt += summaries;
+            promptbuild.AddMessage(AuthorRole.SysPrompt, sysprompt);
+            promptbuild.AddMessage(AuthorRole.User, requestedtask);
+
+            var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMSystem.Sampler.Temperature > 0.75) ? 0.75 : LLMSystem.Sampler.Temperature, 1000);
+            var finalstr = await LLMSystem.SimpleQuery(ct);
+            if (!string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingStart))
+            {
+                finalstr = finalstr.RemoveThinkingBlocks(LLMSystem.Instruct.ThinkingStart, LLMSystem.Instruct.ThinkingEnd);
+            }
+            LLMSystem.Bot.DatesInSessionSummaries = sense;
+            LLMSystem.NamesInPromptOverride = null;
         }
     }
 }
