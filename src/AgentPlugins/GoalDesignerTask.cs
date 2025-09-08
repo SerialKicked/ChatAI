@@ -2,15 +2,11 @@
 using AIToolkit.Agent;
 using AIToolkit.API;
 using AIToolkit.Files;
-using AIToolkit.GBNF;
 using AIToolkit.LLM;
 using AIToolkit.Memory;
-using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
 using Newtonsoft.Json;
 using System.Text;
 using WaifuAI.GBNF;
-using static AIToolkit.SearchAPI.WebSearchAPI;
 
 namespace WaifuAI.AgentPlugins
 {

@@ -67,6 +67,7 @@ namespace WaifuAI
             HelptoolTip.SetToolTip(ck_onlinerag, "If checked, the bot may perform a web search (using DuckDuckGo) to improve its responses when asked to.");
 
             AgentRuntime.RegisterPlugin("GoalDesignerTask", new GoalDesignerTask());
+            AgentRuntime.RegisterPlugin("ActiveResearchTask", new ActiveResearchTask());
 
             // Chat related events
             SetupChatMenu();
