@@ -23,7 +23,7 @@ namespace WaifuAI.AgentPlugins
         public async Task<bool> Observe(BasePersona owner, AgentTaskSetting cfg, CancellationToken ct)
         {
             // Just a small delay so i don't have to remove async and do Task.ResultFrom everywhere. It's not like we're on a timer anyway.
-            await Task.Delay(10, ct);
+            await Task.Delay(10, ct).ConfigureAwait(false);
 
             if (LLMSystem.Status != SystemStatus.Ready || LLMSystem.Client?.SupportsSchema != true || LLMSystem.MaxContextLength < 8000)
                 return false;
@@ -64,12 +64,12 @@ namespace WaifuAI.AgentPlugins
             var goaldetails = new List<GoalRecord>();
 
             var req = "Based on the information provided in the system prompt, write a list of personal goals you want to set for yourself as {{char}}. These can be actions or topics you want to search on the internet. Keep the list realistic and order it from most to least important.";
-            var goallist = await GetGoalList(owner, mainPrompt, req);
+            var goallist = await GetGoalList(owner, mainPrompt, req).ConfigureAwait(false);
             if (goallist?.Goals.Count > 0)
             {
                 foreach (var item in goallist.Goals)
                 {
-                    var rec = await GetGoalDetail(owner, mainPrompt, item);
+                    var rec = await GetGoalDetail(owner, mainPrompt, item).ConfigureAwait(false);
                     goaldetails.Add(rec);
                     // Cancellation requested?
                     if (ct.IsCancellationRequested)
@@ -92,7 +92,7 @@ namespace WaifuAI.AgentPlugins
                     Priority = Math.Clamp(3 - i, 0, 3)
                 };
                 if (RAGSystem.Enabled)
-                    await memunit.EmbedText();
+                    await memunit.EmbedText().ConfigureAwait(false);
                 owner.Brain.Memories.Add(memunit);
             }
 
@@ -101,12 +101,12 @@ namespace WaifuAI.AgentPlugins
                 return;
             goaldetails.Clear();
             req = "Based on the information provided in the system prompt, write a list of things that you want {{user}} to do or become for you. This can also include topics where you want to question or challenge {{user}}'s perspective. Order the list from most to least important.";
-            goallist = await GetGoalList(owner, mainPrompt, req);
+            goallist = await GetGoalList(owner, mainPrompt, req).ConfigureAwait(false);
             if (goallist?.Goals.Count > 0)
             {
                 foreach (var item in goallist.Goals)
                 {
-                    var rec = await GetGoalDetail(owner, mainPrompt, item);
+                    var rec = await GetGoalDetail(owner, mainPrompt, item).ConfigureAwait(false);
                     goaldetails.Add(rec);
                     // Cancellation requested?
                     if (ct.IsCancellationRequested)
@@ -142,7 +142,7 @@ namespace WaifuAI.AgentPlugins
         private async Task<GoalRecord> GetGoalDetail(BasePersona owner, string systemprompt, string goalinfo)
         {
             var goalrecord = new GoalRecord();
-            var grammar = await goalrecord.GetGrammar();
+            var grammar = await goalrecord.GetGrammar().ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(grammar))
             {
                 throw new Exception("Something went wrong when building goal list grammar and json format.");
@@ -168,7 +168,7 @@ namespace WaifuAI.AgentPlugins
             {
                 input.Grammar = grammar;
             }
-            var finalstr = await LLMSystem.SimpleQuery(ct);
+            var finalstr = await LLMSystem.SimpleQuery(ct).ConfigureAwait(false);
             goalrecord = JsonConvert.DeserializeObject<GoalRecord>(finalstr);
             LLMSystem.NamesInPromptOverride = null;
             LLMSystem.Instruct.PrefillThinking = prefill;
@@ -178,7 +178,7 @@ namespace WaifuAI.AgentPlugins
         private async Task<GoalList> GetGoalList(BasePersona owner, string systemprompt, string query)
         {
             var goallist = new GoalList();
-            var grammar = await goallist.GetGrammar();
+            var grammar = await goallist.GetGrammar().ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(grammar))
             {
                 throw new Exception("Something went wrong when building goal list grammar and json format.");
@@ -203,7 +203,7 @@ namespace WaifuAI.AgentPlugins
             {
                 input.Grammar = grammar;
             }
-            var finalstr = await LLMSystem.SimpleQuery(ct);
+            var finalstr = await LLMSystem.SimpleQuery(ct).ConfigureAwait(false);
             goallist = JsonConvert.DeserializeObject<GoalList>(finalstr);
             LLMSystem.NamesInPromptOverride = null;
             LLMSystem.Instruct.PrefillThinking = prefill;

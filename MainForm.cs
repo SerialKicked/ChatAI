@@ -114,7 +114,7 @@ namespace WaifuAI
                 return false; // Don't consume the message
             }
 
-            private bool IsInputMessage(int msg)
+            private static bool IsInputMessage(int msg)
             {
                 return msg >= 0x0100 && msg <= 0x0108 || // Keyboard messages
                        msg >= 0x0201 && msg <= 0x020E;   // Mouse messages
@@ -1697,16 +1697,6 @@ namespace WaifuAI
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            var point = new AgentTaskSetting();
-            point.PluginId = "Goal List Test";
-            point.SetSetting<Guid>("id", Guid.NewGuid());
-
-            var x = point.GetSetting<Guid>("id", Guid.Empty);
-
-            var content = JsonConvert.SerializeObject(point, new JsonSerializerSettings { Formatting = Formatting.Indented });
-            var cfg = JsonConvert.DeserializeObject<AgentTaskSetting>(content);
-            x = cfg.GetSetting<Guid>("id", Guid.Empty);
-
             LLMSystem.NamesInPromptOverride = false;
             var sense = LLMSystem.Bot.DatesInSessionSummaries;
             LLMSystem.Bot.DatesInSessionSummaries = false;

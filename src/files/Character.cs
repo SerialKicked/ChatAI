@@ -64,9 +64,9 @@ namespace WaifuAI.Files
                 item.Reset();
         }
 
-        public override async Task EndChat(bool backup = false)
+        public override void EndChat(bool backup = false)
         {
-            await base.EndChat(backup);
+            base.EndChat(backup);
             PointValue = MyPoints.PointCount;
             SaveChatHistory(backup);
         }

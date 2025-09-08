@@ -207,7 +207,7 @@ namespace WaifuAI.Web
 
             if (link.Category == PageType.ListingPage)
             {
-                CurrentListing = await scraper.ParseWebListing(link.URL, this, link.InnerScan);
+                CurrentListing = await scraper.ParseWebListing(link.URL, this, link.InnerScan).ConfigureAwait(false);
                 str.AppendLinuxLine("## Available Links");
                 var x = 1;
                 foreach (var entry in CurrentListing.Entries)
@@ -233,7 +233,7 @@ namespace WaifuAI.Web
             }
             else if(link.Category == PageType.ArticlePage)
             {
-                var content = await scraper.GetPageContent(link.URL, this);
+                var content = await scraper.GetPageContent(link.URL, this).ConfigureAwait(false);
                 str.AppendLinuxLine(content);
             }
             else if (link.Category == PageType.MetaPage)
@@ -319,7 +319,7 @@ namespace WaifuAI.Web
             }
             else
             {
-                document = await context.OpenAsync(address);
+                document = await context.OpenAsync(address).ConfigureAwait(false);
                 if (document != null)
                     Cache[address] = document;
             }
@@ -351,7 +351,7 @@ namespace WaifuAI.Web
             }
             else
             {
-                document = await context.OpenAsync(page);
+                document = await context.OpenAsync(page).ConfigureAwait(false);
                 if (document != null)
                     Cache[page] = document;
             }
@@ -394,7 +394,7 @@ namespace WaifuAI.Web
                 entry.Date = !string.IsNullOrEmpty(dateinfo) ? StringToDate(dateinfo, web.ListingDateFormat) : DateTime.Now;
                 if (innerscan)
                 {
-                    var content = await GetPageContent(entry.Link, web);
+                    var content = await GetPageContent(entry.Link, web).ConfigureAwait(false);
                     entry.Article = content;
                 }
                 entries.Add(entry);
@@ -427,7 +427,7 @@ namespace WaifuAI.Web
             }
             else
             {
-                document = await context.OpenAsync(page);
+                document = await context.OpenAsync(page).ConfigureAwait(false);
                 if (document != null)
                     Cache[page] = document;
             }
