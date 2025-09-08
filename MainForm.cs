@@ -16,6 +16,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using WaifuAI.AgentPlugins;
 using WaifuAI.Files;
 using WaifuAI.Game;
 using WaifuAI.Plugins;
@@ -65,10 +66,14 @@ namespace WaifuAI
             HelptoolTip.SetToolTip(ck_charsampler, "If checked, and when using a bot persona containing a list of compatible inference Program.Settings, the inference Program.Settings will be picked at random from that list each time the bot write a new message." + Environment.NewLine + Environment.NewLine + "Will lead to a more creative and less repetitive interaction, but also less consistent.");
             HelptoolTip.SetToolTip(ck_onlinerag, "If checked, the bot may perform a web search (using DuckDuckGo) to improve its responses when asked to.");
 
+            AgentLoop.RegisterPlugin("GoalDesignerTask", new GoalDesignerTask());
+
             // Chat related events
             SetupChatMenu();
             _isinitloading = false;
             _activityTimer.OnTrigger += OnBotInitiateConversation;
+
+
             
             Application.AddMessageFilter(new ActivityMessageFilter());
 
@@ -829,8 +834,9 @@ namespace WaifuAI
             var msgs = LLMSystem.History.CurrentSession.Messages;
 
             // Remove any trailing hidden messages (not shown in UI)
-            while (msgs.Count > 0 && msgs[^1].Hidden)
-                LLMSystem.History.RemoveLast();
+            if (!Program.Settings.ShowHiddenMessages)
+                while (msgs.Count > 0 && msgs[^1].Hidden)
+                    LLMSystem.History.RemoveLast();
 
             // Now remove the last visible message (shown in UI), if any remain
             var removedVisible = false;
@@ -839,6 +845,11 @@ namespace WaifuAI
                 LLMSystem.History.RemoveLast();
                 removedVisible = true;
             }
+
+            // Now remove any trailing hidden messages again
+            if (!Program.Settings.ShowHiddenMessages)
+                while (msgs.Count > 0 && msgs[^1].Hidden)
+                    LLMSystem.History.RemoveLast();
 
             LLMSystem.InvalidatePromptCache();
 
@@ -1682,6 +1693,16 @@ namespace WaifuAI
 
         private async void button1_Click(object sender, EventArgs e)
         {
+            var point = new AgentTaskSetting();
+            point.PluginId = "Goal List Test";
+            point.SetSetting<Guid>("id", Guid.NewGuid());
+
+            var x = point.GetSetting<Guid>("id", Guid.Empty);
+
+            var content = JsonConvert.SerializeObject(point, new JsonSerializerSettings { Formatting = Formatting.Indented });
+            var cfg = JsonConvert.DeserializeObject<AgentTaskSetting>(content);
+            x = cfg.GetSetting<Guid>("id", Guid.Empty);
+
             LLMSystem.NamesInPromptOverride = false;
             var sense = LLMSystem.Bot.DatesInSessionSummaries;
             LLMSystem.Bot.DatesInSessionSummaries = false;

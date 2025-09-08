@@ -1,4 +1,4 @@
-﻿using AIToolkit.Agent;
+﻿using AIToolkit;
 using AIToolkit.LLM;
 using Newtonsoft.Json;
 using System;
@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AIToolkit.GBNF
+namespace WaifuAI.GBNF
 {
 
     public class UserRecord : LLMExtractableBase<UserRecord>
