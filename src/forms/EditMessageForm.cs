@@ -26,6 +26,14 @@ namespace WaifuAI.src.forms
         {
             InitializeComponent();
             ed_message.SpellCheckLanguage = "en-US";
+            ed_message.KeyUp += (s, e) =>
+            {
+                if (e.KeyCode == Keys.Escape)
+                {
+                    DialogResult = DialogResult.Cancel;
+                    Close();
+                }
+            };
         }
 
         private void bt_save_Click(object sender, EventArgs e)
@@ -46,6 +54,15 @@ namespace WaifuAI.src.forms
         public EditMessageForm(Guid messageID)
         {
             InitializeComponent();
+            ed_message.SpellCheckLanguage = "en-US";
+            ed_message.KeyUp += (s, e) =>
+            {
+                if (e.KeyCode == Keys.Escape)
+                {
+                    DialogResult = DialogResult.Cancel;
+                    Close();
+                }
+            };
             Message = LLMSystem.History.GetMessageByID(messageID);
             if (Message == null)
             {
@@ -77,17 +94,10 @@ namespace WaifuAI.src.forms
 
         private void EditMessageForm_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (InvokeRequired)
+            if (e.KeyChar == (char)Keys.Escape)
             {
-                Invoke(new Action(() => EditMessageForm_KeyPress(sender, e)));
-            }
-            else
-            {
-                if (e.KeyChar == (char)Keys.Escape)
-                {
-                    DialogResult = DialogResult.Cancel;
-                    Close();
-                }
+                DialogResult = DialogResult.Cancel;
+                Close();
             }
         }
     }

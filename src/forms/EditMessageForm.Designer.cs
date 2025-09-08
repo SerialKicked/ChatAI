@@ -52,7 +52,6 @@ namespace WaifuAI.src.forms
             ed_message.Size = new Size(498, 263);
             ed_message.SpellCheckLanguage = "en-US";
             ed_message.TabIndex = 0;
-            ed_message.KeyPress += EditMessageForm_KeyPress;
             // 
             // bt_save
             // 

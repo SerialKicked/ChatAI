@@ -4,9 +4,9 @@ using System.Drawing;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Forms.Design;
 using System.Windows.Forms.Integration;
 using System.Windows.Markup;
-using System.Windows.Forms.Design;
 using System.Drawing.Drawing2D;
 using Wpf = System.Windows.Controls;
 using WpfInput = System.Windows.Input;
@@ -20,6 +20,12 @@ namespace WaifuAI.Controls
     {
         private readonly Wpf.TextBox _tb;
         private readonly Wpf.Border _border;
+
+        // Explicit WinForms event surface so "ed_input.KeyPress/KeyUp += ..." compiles and fires
+        public new event KeyPressEventHandler? KeyPress;
+        public new event KeyEventHandler? KeyDown;
+        public new event KeyEventHandler? KeyUp;
+        public new event PreviewKeyDownEventHandler? PreviewKeyDown;
 
         private bool InDesigner =>
             LicenseManager.UsageMode == LicenseUsageMode.Designtime ||
@@ -50,25 +56,109 @@ namespace WaifuAI.Controls
 
             Child = _border;
 
-            // Bridge common behaviors/events
-            _tb.TextChanged += (_, __) => base.OnTextChanged(EventArgs.Empty);
-            _tb.PreviewKeyDown += (_, e) =>
-            {
-                if (e.Key == WpfInput.Key.Enter)
-                {
-                    if (!_tb.AcceptsReturn)  // Only handle Enter when NOT in multiline mode
-                    {
-                        e.Handled = true;
-                        base.OnKeyPress(new KeyPressEventArgs((char)13));
-                        base.OnKeyDown(new KeyEventArgs(Keys.Enter));
-                    }
-                    // If AcceptsReturn is true (multiline mode), let the WPF TextBox handle it naturally
-                }
-            };
+            // TextChanged bridge
+            _tb.TextChanged += (_, __) => OnTextChanged(EventArgs.Empty);
 
-            // Make design-time selection practical right away
+            // Keyboard bridges (listen even if WPF marks handled)
+            _tb.AddHandler(WpfInput.Keyboard.PreviewKeyDownEvent, new WpfInput.KeyEventHandler(OnWpfPreviewKeyDown), true);
+            _tb.AddHandler(WpfInput.Keyboard.KeyUpEvent, new WpfInput.KeyEventHandler(OnWpfKeyUp), true);
+            _tb.AddHandler(WpfInput.TextCompositionManager.TextInputEvent, new WpfInput.TextCompositionEventHandler(OnWpfTextInput), true);
+
             ApplyDesignTimeMode();
             Size = new System.Drawing.Size(200, 23);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _tb.RemoveHandler(WpfInput.Keyboard.PreviewKeyDownEvent, new WpfInput.KeyEventHandler(OnWpfPreviewKeyDown));
+                _tb.RemoveHandler(WpfInput.Keyboard.KeyUpEvent, new WpfInput.KeyEventHandler(OnWpfKeyUp));
+                _tb.RemoveHandler(WpfInput.TextCompositionManager.TextInputEvent, new WpfInput.TextCompositionEventHandler(OnWpfTextInput));
+                _tb.TextChanged -= (_, __) => OnTextChanged(EventArgs.Empty); // harmless if not removed
+            }
+            base.Dispose(disposing);
+        }
+
+        private static WpfInput.Key EffectiveKey(WpfInput.KeyEventArgs e)
+            => e.Key == WpfInput.Key.System ? e.SystemKey : e.Key;
+
+        private static Keys ToWinFormsKeys(WpfInput.Key key)
+        {
+            var vk = WpfInput.KeyInterop.VirtualKeyFromKey(key);
+            var result = (Keys)vk;
+            var mods = WpfInput.Keyboard.Modifiers;
+            if ((mods & WpfInput.ModifierKeys.Shift) != 0) result |= Keys.Shift;
+            if ((mods & WpfInput.ModifierKeys.Control) != 0) result |= Keys.Control;
+            if ((mods & WpfInput.ModifierKeys.Alt) != 0) result |= Keys.Alt;
+            return result;
+        }
+
+        private void OnWpfPreviewKeyDown(object? sender, WpfInput.KeyEventArgs e)
+        {
+            var key = EffectiveKey(e);
+            var keyData = ToWinFormsKeys(key);
+
+            // Raise WinForms PreviewKeyDown then KeyDown
+            OnPreviewKeyDown(new PreviewKeyDownEventArgs(keyData));
+            OnKeyDown(new KeyEventArgs(keyData));
+
+            // Always emit KeyPress for these keys so handlers see them
+            if (key == WpfInput.Key.Enter)
+            {
+                // Do NOT mark handled here; let KeyUp still occur.
+                OnKeyPress(new KeyPressEventArgs('\r'));
+            }
+            else if (key == WpfInput.Key.Back)
+            {
+                OnKeyPress(new KeyPressEventArgs('\b'));
+            }
+            else if (key == WpfInput.Key.Tab && _tb.AcceptsTab)
+            {
+                OnKeyPress(new KeyPressEventArgs('\t'));
+            }
+        }
+
+        private void OnWpfKeyUp(object? sender, WpfInput.KeyEventArgs e)
+        {
+            var key = EffectiveKey(e);
+            var keyData = ToWinFormsKeys(key);
+            OnKeyUp(new KeyEventArgs(keyData));
+        }
+
+        private void OnWpfTextInput(object? sender, WpfInput.TextCompositionEventArgs e)
+        {
+            // Raise WinForms KeyPress for typed characters (supports IME/multi-char)
+            if (!string.IsNullOrEmpty(e.Text))
+            {
+                foreach (var ch in e.Text)
+                    OnKeyPress(new KeyPressEventArgs(ch));
+            }
+        }
+
+        // Fire WinForms events for subscribers
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            KeyDown?.Invoke(this, e);
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+            KeyUp?.Invoke(this, e);
+        }
+
+        protected override void OnKeyPress(KeyPressEventArgs e)
+        {
+            base.OnKeyPress(e);
+            KeyPress?.Invoke(this, e);
+        }
+
+        protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
+        {
+            base.OnPreviewKeyDown(e);
+            PreviewKeyDown?.Invoke(this, e);
         }
 
         public override ISite? Site
@@ -87,28 +177,30 @@ namespace WaifuAI.Controls
             ApplyDesignTimeMode();
         }
 
+        protected override void OnEnter(EventArgs e)
+        {
+            base.OnEnter(e);
+            _tb.Focus();
+            WpfInput.Keyboard.Focus(_tb);
+        }
+
         private void ApplyDesignTimeMode()
         {
             if (InDesigner)
             {
-                // Completely remove WPF content in designer
                 Child = null;
-
-                // Disable WPF-related behaviors that might interfere
                 _tb.IsHitTestVisible = false;
                 _tb.IsEnabled = false;
 
-                // Essential: Force WinForms-style behavior for designer
                 SetStyle(ControlStyles.AllPaintingInWmPaint |
                          ControlStyles.OptimizedDoubleBuffer |
                          ControlStyles.UserPaint |
                          ControlStyles.Selectable |
                          ControlStyles.StandardClick, true);
 
-                // Essential: Make it selectable in designer
                 BackColor = Color.FromArgb(32, Color.SteelBlue);
                 TabStop = true;
-                Cursor = Cursors.Default; // Changed from Hand to Default
+                Cursor = Cursors.Default;
                 Invalidate();
             }
             else
@@ -140,7 +232,6 @@ namespace WaifuAI.Controls
             base.OnPaint(e);
             if (InDesigner)
             {
-                // Draw placeholder frame and label
                 var r = ClientRectangle;
                 r.Width -= 1; r.Height -= 1;
                 using var pen = new Pen(Color.SteelBlue) { DashStyle = DashStyle.Dash };
@@ -150,7 +241,6 @@ namespace WaifuAI.Controls
             }
         }
 
-        // Essential: Provide visual feedback for selection
         protected override void OnClick(EventArgs e)
         {
             base.OnClick(e);
@@ -161,8 +251,7 @@ namespace WaifuAI.Controls
             }
         }
 
-        // Fix the nullability warning
- #pragma warning disable CS8765
+#pragma warning disable CS8765
         public override string Text
         {
             get => _tb.Text ?? string.Empty;
@@ -170,7 +259,6 @@ namespace WaifuAI.Controls
         }
 #pragma warning restore CS8765
 
-        // Expose SelectionStart (used by Shift+Enter logic in MainForm)
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SelectionStart
@@ -183,7 +271,6 @@ namespace WaifuAI.Controls
             }
         }
 
-        // Multiline enables wrapping and vertical scrollbars (Auto) by default
         [DefaultValue(false)]
         public bool Multiline
         {
@@ -200,7 +287,14 @@ namespace WaifuAI.Controls
             }
         }
 
-        // ReadOnly (backed so runtime value is restored after design-time)
+        [DefaultValue(false)]
+        public bool AcceptsTab
+        {
+            get => _tb.AcceptsTab;
+            set => _tb.AcceptsTab = value;
+        }
+
+        // ReadOnly (restore after design-time)
         private bool _readOnly;
 
         [DefaultValue(false)]
@@ -214,7 +308,6 @@ namespace WaifuAI.Controls
             }
         }
 
-        // ScrollBars mapping (keeps your designer line: ed_input.ScrollBars = ScrollBars.Vertical)
         private ScrollBars _scrollBars = ScrollBars.None;
 
         [DefaultValue(ScrollBars.None)]
@@ -225,13 +318,11 @@ namespace WaifuAI.Controls
             {
                 _scrollBars = value;
 
-                // Vertical
                 _tb.VerticalScrollBarVisibility =
                     (value & ScrollBars.Vertical) != 0
                         ? Wpf.ScrollBarVisibility.Auto
                         : Wpf.ScrollBarVisibility.Disabled;
 
-                // Horizontal (if requested, disable wrapping)
                 var enableHorizontal = (value & ScrollBars.Horizontal) != 0;
                 _tb.HorizontalScrollBarVisibility = enableHorizontal
                     ? Wpf.ScrollBarVisibility.Auto
@@ -244,7 +335,6 @@ namespace WaifuAI.Controls
             }
         }
 
-        // Emulate WinForms BorderStyle so the designer line compiles
         private BorderStyle _borderStyle = BorderStyle.FixedSingle;
 
         [DefaultValue(BorderStyle.FixedSingle)]
@@ -271,7 +361,6 @@ namespace WaifuAI.Controls
             }
         }
 
-        // Spell check language (BCP-47 tag, e.g., "en-US", "en-GB", "fr-FR")
         private string? _spellLang;
 
         [Category("Behavior")]
@@ -292,7 +381,6 @@ namespace WaifuAI.Controls
                     try { _tb.Language = XmlLanguage.GetLanguage(_spellLang); } catch { /* ignore invalid */ }
                 }
 
-                // Refresh underlines after language change
                 var wasOn = _tb.SpellCheck.IsEnabled;
                 if (wasOn) { _tb.SpellCheck.IsEnabled = false; _tb.SpellCheck.IsEnabled = true; }
             }
@@ -306,7 +394,6 @@ namespace WaifuAI.Controls
             set => SpellCheckLanguage = value?.Name;
         }
 
-        // Map WinForms Font to WPF Font
         protected override void OnFontChanged(EventArgs e)
         {
             base.OnFontChanged(e);

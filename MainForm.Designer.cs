@@ -442,7 +442,6 @@ namespace WaifuAI
             ed_input.ScrollBars = ScrollBars.Vertical;
             ed_input.Size = new Size(711, 86);
             ed_input.TabIndex = 2;
-            ed_input.KeyPress += ed_input_KeyPress;
             // 
             // panLeft
             // 

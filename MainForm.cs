@@ -76,8 +76,30 @@ namespace WaifuAI
 
             
             Application.AddMessageFilter(new ActivityMessageFilter());
+            ed_input.KeyPress += Ed_input_KeyPress!;
 
         }
+
+        private void Ed_input_KeyPress(object sender, KeyPressEventArgs e)
+        {
+           // never triggered on Enter
+           if (e.KeyChar == (char)13)
+            {
+                // never called
+                e.Handled = true;
+                if (ModifierKeys == Keys.Shift)
+                {
+                    int caretPosition = ed_input.SelectionStart;
+                    ed_input.Text = ed_input.Text.Insert(caretPosition, Environment.NewLine);
+                    ed_input.SelectionStart = caretPosition + Environment.NewLine.Length;
+                    //ed_input.Text += Environment.NewLine;
+                }
+                else
+                    SendMessage(sender, e);
+            }
+        }
+
+        
 
         public class ActivityMessageFilter : IMessageFilter
         {
@@ -1440,24 +1462,6 @@ namespace WaifuAI
             if (cb_infer.SelectedItem is string key && !string.IsNullOrEmpty(key))
                 LLMSystem.Sampler = DataFiles.Inference[key];
             num_temperature.Value = (decimal)LLMSystem.Sampler.Temperature;
-        }
-
-        private void ed_input_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            // if user pressed Shift + Enter send message
-            if (e.KeyChar == (char)13)
-            {
-                e.Handled = true;
-                if (ModifierKeys == Keys.Shift)
-                {
-                    int caretPosition = ed_input.SelectionStart;
-                    ed_input.Text = ed_input.Text.Insert(caretPosition, Environment.NewLine);
-                    ed_input.SelectionStart = caretPosition + Environment.NewLine.Length;
-                    //ed_input.Text += Environment.NewLine;
-                }
-                else
-                    SendMessage(sender, e);
-            }
         }
 
         private void num_temperature_ValueChanged(object sender, EventArgs e)
