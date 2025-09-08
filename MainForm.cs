@@ -66,7 +66,7 @@ namespace WaifuAI
             HelptoolTip.SetToolTip(ck_charsampler, "If checked, and when using a bot persona containing a list of compatible inference Program.Settings, the inference Program.Settings will be picked at random from that list each time the bot write a new message." + Environment.NewLine + Environment.NewLine + "Will lead to a more creative and less repetitive interaction, but also less consistent.");
             HelptoolTip.SetToolTip(ck_onlinerag, "If checked, the bot may perform a web search (using DuckDuckGo) to improve its responses when asked to.");
 
-            AgentLoop.RegisterPlugin("GoalDesignerTask", new GoalDesignerTask());
+            AgentRuntime.RegisterPlugin("GoalDesignerTask", new GoalDesignerTask());
 
             // Chat related events
             SetupChatMenu();
