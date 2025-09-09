@@ -21,7 +21,7 @@ namespace WaifuAI.AgentPlugins
             // Just a small delay so i don't have to remove async and do Task.ResultFrom everywhere. It's not like we're on a timer anyway.
             await Task.Delay(10, ct).ConfigureAwait(false);
 
-            if (LLMEngine.Status != SystemStatus.Ready || LLMEngine.Client?.SupportsSchema != true || LLMEngine.MaxContextLength < 8000)
+            if (LLMEngine.Status != SystemStatus.Ready || LLMEngine.SupportsGrammar != true || LLMEngine.MaxContextLength < 8000)
                 return false;
 
             var MinTimeInterval = cfg.GetSetting<TimeSpan>("MinTimeInterval");

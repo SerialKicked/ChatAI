@@ -22,7 +22,7 @@ namespace WaifuAI.AgentPlugins
             await Task.Delay(10, ct).ConfigureAwait(false);
 
             // can't do what we need? that's a bummer.
-            if (LLMEngine.Client?.SupportsSchema == false || LLMEngine.Status != SystemStatus.Ready || !LLMEngine.SupportsWebSearch)
+            if (LLMEngine.SupportsGrammar == false || LLMEngine.Status != SystemStatus.Ready || !LLMEngine.SupportsWebSearch)
                 return false;
 
             var delay = cfg.GetSetting<TimeSpan>("Delay");
