@@ -36,7 +36,7 @@ namespace WaifuAI.src.forms
                     res.AppendLine($"Converted to 3rd person: {searchstr}");
                     res.AppendLine();
                     res.AppendLine("Search Results:");
-                    var found = await RAGSystem.Search(searchstr, 100, 1.2f);
+                    var found = await RAGEngine.Search(searchstr, 100, 1.2f);
                     foreach (var item in found)
                     {
                         var title = "[unknown]";
@@ -46,7 +46,7 @@ namespace WaifuAI.src.forms
                         if (item.session is MemoryUnit unit)
                         {
                             title = unit.Name;
-                            content = LLMSystem.ReplaceMacros(unit.Content);
+                            content = LLMEngine.ReplaceMacros(unit.Content);
                         }
                         res.AppendLine(cat + " (dist: " + distance + "): " + title);
                         res.AppendLine(content);

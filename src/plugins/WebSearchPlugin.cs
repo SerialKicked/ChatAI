@@ -88,13 +88,13 @@ namespace WaifuAI.Plugins
             if (string.IsNullOrEmpty(response))
                 return new PluginResponse { IsHandled = false, Response = null };
             // run web search
-            Program.BigForm!.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am searching the web for '{response}'...*");
-            lastresponse = await LLMSystem.WebSearch(response);
+            Program.BigForm!.ForceUpdateLastMessage($"**{LLMEngine.Bot.Name}:** *I am searching the web for '{response}'...*");
+            lastresponse = await LLMEngine.WebSearch(response);
             if (lastresponse == null || lastresponse.Count == 0)
                 return new PluginResponse { IsHandled = false, Response = null };
             responseAppendNeeded = true;
 
-            Program.BigForm!.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am processing web info about '{response}'...*");
+            Program.BigForm!.ForceUpdateLastMessage($"**{LLMEngine.Bot.Name}:** *I am processing web info about '{response}'...*");
             var mergedResponse = await MergeResults(response, lastresponse);
             if (string.IsNullOrWhiteSpace(mergedResponse))
                 return new PluginResponse { IsHandled = false, Response = null };
@@ -126,7 +126,7 @@ namespace WaifuAI.Plugins
             {
                 prompt.AppendLinuxLine($"# {item.Title}");
                 prompt.AppendLinuxLine($"{item.Description}").AppendLinuxLine();
-                if (item.ContentExtracted && LLMSystem.GetTokenCount(item.FullContent) <= 3000)
+                if (item.ContentExtracted && LLMEngine.GetTokenCount(item.FullContent) <= 3000)
                     cnt++;
             }
             prompt.AppendLinuxLine();
@@ -136,18 +136,18 @@ namespace WaifuAI.Plugins
                 for (var i = 0; i < webresults.Count; i++)
                 {
                     var item = webresults[i];
-                    if (item.ContentExtracted && LLMSystem.GetTokenCount(item.FullContent) <= 3000)
+                    if (item.ContentExtracted && LLMEngine.GetTokenCount(item.FullContent) <= 3000)
                     {
                         prompt.AppendLinuxLine($"# {item.Title} (Full Content)");
                         prompt.AppendLinuxLine($"{item.FullContent.CleanupAndTrim()}").AppendLinuxLine().AppendLinuxLine();
                     }
                 }
             }
-            var sysprompt = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, LLMSystem.User, LLMSystem.Bot, prompt.ToString());
-            var msg = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.User, LLMSystem.User, LLMSystem.Bot, $"Merge the information available in the system prompt regarding '{userinput}' to offer a detailed explanation on about this topic.");
-            LLMSystem.NamesInPromptOverride = false;
-            msg += LLMSystem.Instruct.GetResponseStart(LLMSystem.Bot);
-            LLMSystem.NamesInPromptOverride = null;
+            var sysprompt = LLMEngine.Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, LLMEngine.User, LLMEngine.Bot, prompt.ToString());
+            var msg = LLMEngine.Instruct.FormatSinglePrompt(AuthorRole.User, LLMEngine.User, LLMEngine.Bot, $"Merge the information available in the system prompt regarding '{userinput}' to offer a detailed explanation on about this topic.");
+            LLMEngine.NamesInPromptOverride = false;
+            msg += LLMEngine.Instruct.GetResponseStart(LLMEngine.Bot);
+            LLMEngine.NamesInPromptOverride = null;
             return sysprompt + msg;
         }
 
@@ -166,11 +166,11 @@ namespace WaifuAI.Plugins
             prompt.AppendLinuxLine("- The query is illegal or dangerous");
             prompt.AppendLinuxLine();
             prompt.AppendLinuxLine("If the user directly asks you to search the internet, or if you think a web search would be beneficial, respond with the exact query you want to search the web for (and ONLY that query). Otherwise, just say No.");
-            var sysprompt = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, LLMSystem.User, LLMSystem.Bot, prompt.ToString());
-            var msg = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.User, LLMSystem.User, LLMSystem.Bot, userinput);
-            LLMSystem.NamesInPromptOverride = false;
-            msg += LLMSystem.Instruct.GetResponseStart(LLMSystem.Bot);
-            LLMSystem.NamesInPromptOverride = null;
+            var sysprompt = LLMEngine.Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, LLMEngine.User, LLMEngine.Bot, prompt.ToString());
+            var msg = LLMEngine.Instruct.FormatSinglePrompt(AuthorRole.User, LLMEngine.User, LLMEngine.Bot, userinput);
+            LLMEngine.NamesInPromptOverride = false;
+            msg += LLMEngine.Instruct.GetResponseStart(LLMEngine.Bot);
+            LLMEngine.NamesInPromptOverride = null;
             return sysprompt + msg;
         }
 
@@ -183,32 +183,32 @@ namespace WaifuAI.Plugins
         private static async Task<string> QueryLLM(string inputText)
         {
             var savedKV = false;
-            if (LLMSystem.Client!.SupportsStateSave)
+            if (LLMEngine.Client!.SupportsStateSave)
             {
-                savedKV = await LLMSystem.Client.SaveKVState(0);
+                savedKV = await LLMEngine.Client.SaveKVState(0);
                 await Task.Delay(100);
             }
-            LLMSystem.NamesInPromptOverride = false;
+            LLMEngine.NamesInPromptOverride = false;
             var fullprompt = BuildCheckPrompt(inputText);
-            var llmparams = LLMSystem.Sampler.GetCopy();
+            var llmparams = LLMEngine.Sampler.GetCopy();
             if (llmparams.Temperature > 0.5)
                 llmparams.Temperature = 0.5;
-            llmparams.Max_context_length = LLMSystem.MaxContextLength;
-            llmparams.Max_length = LLMSystem.Settings.MaxReplyLength;
+            llmparams.Max_context_length = LLMEngine.MaxContextLength;
+            llmparams.Max_length = LLMEngine.Settings.MaxReplyLength;
             llmparams.Prompt = fullprompt;
-            var response = await LLMSystem.SimpleQuery(llmparams);
-            if (!string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingStart))
+            var response = await LLMEngine.SimpleQuery(llmparams);
+            if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart))
             {
-                response = response.RemoveThinkingBlocks(LLMSystem.Instruct.ThinkingStart, LLMSystem.Instruct.ThinkingEnd);
+                response = response.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd);
             }
-            LLMSystem.Logger?.LogInformation("WebSearch Plugin Result: {output}", response);
-            LLMSystem.NamesInPromptOverride = null;
-            if (LLMSystem.Client!.SupportsStateSave && savedKV)
+            LLMEngine.Logger?.LogInformation("WebSearch Plugin Result: {output}", response);
+            LLMEngine.NamesInPromptOverride = null;
+            if (LLMEngine.Client!.SupportsStateSave && savedKV)
             {
-                var doneKV = await LLMSystem.Client.LoadKVState(0);
+                var doneKV = await LLMEngine.Client.LoadKVState(0);
                 if (doneKV)
                 {
-                    await LLMSystem.Client.ClearKVStates();
+                    await LLMEngine.Client.ClearKVStates();
                 }
                 await Task.Delay(100);
             }
@@ -221,21 +221,21 @@ namespace WaifuAI.Plugins
 
         private static async Task<string> MergeResults(string topic, List<EnrichedSearchResult> webresults)
         {
-            LLMSystem.NamesInPromptOverride = false;
+            LLMEngine.NamesInPromptOverride = false;
             var fullprompt = BuildMergedPrompt(topic, webresults);
-            var llmparams = LLMSystem.Sampler.GetCopy();
+            var llmparams = LLMEngine.Sampler.GetCopy();
             if (llmparams.Temperature > 0.75)
                 llmparams.Temperature = 0.75;
-            llmparams.Max_context_length = LLMSystem.MaxContextLength;
-            llmparams.Max_length = LLMSystem.Settings.MaxReplyLength;
+            llmparams.Max_context_length = LLMEngine.MaxContextLength;
+            llmparams.Max_length = LLMEngine.Settings.MaxReplyLength;
             llmparams.Prompt = fullprompt;
-            var response = await LLMSystem.SimpleQuery(llmparams);
-            if (!string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingStart))
+            var response = await LLMEngine.SimpleQuery(llmparams);
+            if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart))
             {
-                response = response.RemoveThinkingBlocks(LLMSystem.Instruct.ThinkingStart, LLMSystem.Instruct.ThinkingEnd);
+                response = response.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd);
             }
-            LLMSystem.Logger?.LogInformation("WebSearch Plugin Result: {output}", response);
-            LLMSystem.NamesInPromptOverride = null;
+            LLMEngine.Logger?.LogInformation("WebSearch Plugin Result: {output}", response);
+            LLMEngine.NamesInPromptOverride = null;
             return response;
         }
     }

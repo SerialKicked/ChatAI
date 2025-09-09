@@ -34,8 +34,8 @@ namespace WaifuAI.src.forms
         private async void btCheck_Click(object sender, EventArgs e)
         {
             this.Enabled = false;
-            LLMSystem.Setup(edUrl.Text, (BackendAPI)cbAPI.SelectedIndex, !string.IsNullOrEmpty(edKey.Text) ? edKey.Text : null);
-            var res = await LLMSystem.CheckBackend();
+            LLMEngine.Setup(edUrl.Text, (BackendAPI)cbAPI.SelectedIndex, !string.IsNullOrEmpty(edKey.Text) ? edKey.Text : null);
+            var res = await LLMEngine.CheckBackend();
             if (res)
             {
                 MessageBox.Show("Connection Successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -50,15 +50,15 @@ namespace WaifuAI.src.forms
         private async void btConnect_Click(object sender, EventArgs e)
         {
             this.Enabled = false;
-            LLMSystem.Setup(edUrl.Text, (BackendAPI)cbAPI.SelectedIndex, !string.IsNullOrEmpty(edKey.Text) ? edKey.Text : null);
-            var res = await LLMSystem.CheckBackend();
+            LLMEngine.Setup(edUrl.Text, (BackendAPI)cbAPI.SelectedIndex, !string.IsNullOrEmpty(edKey.Text) ? edKey.Text : null);
+            var res = await LLMEngine.CheckBackend();
             if (res)
             {
                 Program.Settings.BackendUrl = edUrl.Text;
                 Program.Settings.BackendAPI = (BackendAPI)cbAPI.SelectedIndex;
                 if (!string.IsNullOrEmpty(edKey.Text))
                     Program.Settings.OpenAIKey = edKey.Text;
-                await LLMSystem.Connect();
+                await LLMEngine.Connect();
                 this.Enabled = true;
                 Close();
             }

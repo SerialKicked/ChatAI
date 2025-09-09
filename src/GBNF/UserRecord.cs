@@ -50,7 +50,7 @@ namespace WaifuAI.GBNF
             }
             // requestedTask += "\n\nOnly include information that is not already provide in the provided biography.";
 
-            requestedTask = LLMSystem.ReplaceMacros(requestedTask);
+            requestedTask = LLMEngine.ReplaceMacros(requestedTask);
             return requestedTask;
         }
     }

@@ -17,8 +17,8 @@ namespace WaifuAI.src.forms
         private ChatSession? _selectedSession = null;
         private bool _isinitloading = true;
 
-        public static Character? Bot => LLMSystem.Bot as Character;
-        public static Character? User => LLMSystem.User as Character;
+        public static Character? Bot => LLMEngine.Bot as Character;
+        public static Character? User => LLMEngine.User as Character;
 
         public static MarkdownPipeline CustomMarkDownPipeline { get; } = new MarkdownPipelineBuilder()
             .UseSoftlineBreakAsHardlineBreak().UseAdvancedExtensions()
@@ -81,7 +81,7 @@ namespace WaifuAI.src.forms
             if (_selectedSession == null)
                 return;
 
-            LLMSystem.Bot.History.CurrentSessionID = LLMSystem.Bot.History.Sessions.IndexOf(_selectedSession);
+            LLMEngine.Bot.History.CurrentSessionID = LLMEngine.Bot.History.Sessions.IndexOf(_selectedSession);
             LoadChatHistoryTab();
             DialogResult = DialogResult.OK;
             Close();
@@ -92,19 +92,19 @@ namespace WaifuAI.src.forms
             if (_selectedSession == null)
                 return;
 
-            LLMSystem.Bot.History.CurrentSessionID = LLMSystem.Bot.History.Sessions.IndexOf(_selectedSession);
-            var id = LLMSystem.Bot.History.CurrentSessionID;
-            if (id == LLMSystem.Bot.History.Sessions.Count - 1)
+            LLMEngine.Bot.History.CurrentSessionID = LLMEngine.Bot.History.Sessions.IndexOf(_selectedSession);
+            var id = LLMEngine.Bot.History.CurrentSessionID;
+            if (id == LLMEngine.Bot.History.Sessions.Count - 1)
             {
-                LLMSystem.Bot.History.Sessions.Add(new ChatSession());
+                LLMEngine.Bot.History.Sessions.Add(new ChatSession());
             }
             else
             {
-                LLMSystem.Bot.History.Sessions.Insert(id + 1, new ChatSession());
+                LLMEngine.Bot.History.Sessions.Insert(id + 1, new ChatSession());
             }
-            LLMSystem.Bot.History.CurrentSessionID++;
-            _selectedSession = LLMSystem.History.CurrentSession;
-            await LLMSystem.History.StartNewChatSession(true);
+            LLMEngine.Bot.History.CurrentSessionID++;
+            _selectedSession = LLMEngine.History.CurrentSession;
+            await LLMEngine.History.StartNewChatSession(true, false);
             LoadChatHistoryTab();
             DialogResult = DialogResult.OK;
             Close();
@@ -123,7 +123,7 @@ namespace WaifuAI.src.forms
             if (_selectedSession == null)
                 return;
 
-            if (LLMSystem.History.Sessions.Count <= 1)
+            if (LLMEngine.History.Sessions.Count <= 1)
             {
                 bt_deleteAllHistory_Click(this, EventArgs.Empty);
                 return;
@@ -132,15 +132,15 @@ namespace WaifuAI.src.forms
             if (MessageBox.Show("This will delete the selected session permanently. Are you sure?",
                               "Delete Session?", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                var needchangesession = LLMSystem.History.CurrentSession == _selectedSession;
-                LLMSystem.History.Sessions.Remove(_selectedSession);
+                var needchangesession = LLMEngine.History.CurrentSession == _selectedSession;
+                LLMEngine.History.Sessions.Remove(_selectedSession);
                 if (needchangesession)
                 {
-                    LLMSystem.History.CurrentSessionID = LLMSystem.History.Sessions.Count - 1;
+                    LLMEngine.History.CurrentSessionID = LLMEngine.History.Sessions.Count - 1;
                 }
             }
 
-            _selectedSession = LLMSystem.History.CurrentSession;
+            _selectedSession = LLMEngine.History.CurrentSession;
             DisplaySessionDetails(_selectedSession);
             LoadChatHistoryTab();
             DialogResult = DialogResult.OK;
@@ -150,15 +150,15 @@ namespace WaifuAI.src.forms
         public void LoadChatHistoryTab()
         {
             listSession.Items.Clear();
-            if (LLMSystem.History.Sessions.Count == 0)
+            if (LLMEngine.History.Sessions.Count == 0)
                 return;
-            foreach (var session in LLMSystem.History.Sessions)
+            foreach (var session in LLMEngine.History.Sessions)
             {
                 var item = new ListViewItem([session.Name, session.StartTime.ToString("g")])
                 {
                     Tag = session
                 };
-                if (LLMSystem.History.Sessions.IndexOf(session) == LLMSystem.History.CurrentSessionID)
+                if (LLMEngine.History.Sessions.IndexOf(session) == LLMEngine.History.CurrentSessionID)
                 {
                     item.Font = new Font(item.Font, FontStyle.Bold);
                 }
@@ -263,7 +263,7 @@ namespace WaifuAI.src.forms
             {
                 loadingForm.SetMessage("Updating session summary and meta-data. Depending on your computer, the model, and the context window, it might take a while.");
                 loadingForm.SetProgress(5);
-                LLMSystem.OnQuickInferenceEnded += (s, e) =>
+                LLMEngine.OnQuickInferenceEnded += (s, e) =>
                 {
                     loadingForm.AddProgress(20);
                 };
@@ -285,11 +285,11 @@ namespace WaifuAI.src.forms
                 loadingForm.SetProgress(95);
                 DisplaySessionDetails(_selectedSession);
                 LoadChatHistoryTab();
-                (LLMSystem.Bot as Character)?.SaveChatHistory();
+                (LLMEngine.Bot as Character)?.SaveChatHistory();
             }
             finally
             {
-                LLMSystem.RemoveQuickInferenceEventHandler();
+                LLMEngine.RemoveQuickInferenceEventHandler();
                 loadingForm.Close();
                 this.Enabled = true;
             }
@@ -316,12 +316,12 @@ namespace WaifuAI.src.forms
             await _selectedSession.EmbedText();
             DisplaySessionDetails(_selectedSession);
             LoadChatHistoryTab();
-            (LLMSystem.Bot as Character)?.SaveChatHistory();
+            (LLMEngine.Bot as Character)?.SaveChatHistory();
         }
 
         private async void btEmbedAll_Click(object sender, EventArgs e)
         {
-            if (!RAGSystem.Enabled)
+            if (!RAGEngine.Enabled)
             {
                 MessageBox.Show("The RAG System is not enabled. Operation cancelled.");
                 return;
@@ -341,22 +341,22 @@ namespace WaifuAI.src.forms
             {
                 loadingForm.SetMessage("Embedding all chat sessions. This might take a moment.");
                 loadingForm.SetProgress(0);
-                loadingForm.SetMax(LLMSystem.History.Sessions.Count);
-                RAGSystem.OnEmbedSession += (s, e) =>
+                loadingForm.SetMax(LLMEngine.History.Sessions.Count);
+                RAGEngine.OnEmbedSession += (s, e) =>
                 {
                     loadingForm.AddProgress(1);
                 };
-                await RAGSystem.EmbedChatSessions(LLMSystem.History);
+                await RAGEngine.EmbedChatSessions(LLMEngine.History);
                 loadingForm.SetMessage("Saving history...");
-                (LLMSystem.Bot as Character)?.SaveChatHistory(true);
+                (LLMEngine.Bot as Character)?.SaveChatHistory(true);
                 loadingForm.SetMessage("Loading Updated Vector Database...");
-                RAGSystem.VectorizeChatBot(LLMSystem.Bot);
+                RAGEngine.VectorizeChatBot(LLMEngine.Bot);
                 loadingForm.SetMessage("Brain Embedding...");
-                await LLMSystem.Bot.Brain.RegenEmbeds();
+                await LLMEngine.Bot.Brain.RegenEmbeds();
             }
             finally
             {
-                RAGSystem.RemoveEmbedEventHandler();
+                RAGEngine.RemoveEmbedEventHandler();
                 loadingForm.Close();
                 this.Enabled = true;
                 MessageBox.Show("All sessions have been embedded successfully.");
@@ -368,9 +368,9 @@ namespace WaifuAI.src.forms
             // Confirm before deleting
             if (MessageBox.Show("This will delete all chat history with this character permanently. Are you sure?", "Delete All History?", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                LLMSystem.History.DeleteAll(true);
-                var message = new SingleMessage(AuthorRole.Assistant, DateTime.Now, LLMSystem.Bot.GetWelcomeLine(LLMSystem.User.Name), LLMSystem.Bot.UniqueName, LLMSystem.Bot.UniqueName);
-                LLMSystem.History.LogMessage(message);
+                LLMEngine.History.DeleteAll(true);
+                var message = new SingleMessage(AuthorRole.Assistant, DateTime.Now, LLMEngine.Bot.GetWelcomeLine(LLMEngine.User.Name), LLMEngine.Bot.UniqueName, LLMEngine.Bot.UniqueName);
+                LLMEngine.History.LogMessage(message);
                 LoadChatHistoryTab();
                 DialogResult = DialogResult.OK;
                 Close();

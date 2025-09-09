@@ -47,7 +47,7 @@ namespace WaifuAI.Plugins
                 return false;
             }
             var str = new StringBuilder();
-            str.AppendLinuxLine(LLMSystem.NewLine + LLMSystem.SystemPrompt.CategorySeparator+ " Current Location: " + currentLocation.Name);
+            str.AppendLinuxLine(LLMEngine.NewLine + LLMEngine.SystemPrompt.CategorySeparator+ " Current Location: " + currentLocation.Name);
             str.Append("{{user}} and {{char}} are currently at this location: ").AppendLinuxLine(currentLocation.Content);
             response = str.ToString();
             return true;
@@ -84,10 +84,10 @@ namespace WaifuAI.Plugins
                     string punctuation = index != -1 ? userinput.Substring(index, 1) : string.Empty;
                     if (string.IsNullOrEmpty(punctuation) || punctuation == ".")
                     {
-                        var loc = locations.FindEntries(LLMSystem.History, userinput).FirstOrDefault();
+                        var loc = locations.FindEntries(LLMEngine.History, userinput).FirstOrDefault();
                         if (loc != null)
                         {
-                            LLMSystem.Logger?.LogInformation("LocationPlugin KW Only: {output}", loc.Name);
+                            LLMEngine.Logger?.LogInformation("LocationPlugin KW Only: {output}", loc.Name);
                             currentLocation = loc;
                             //AddMovingInfSystemMessage(log, loc);
                         }
@@ -103,7 +103,7 @@ namespace WaifuAI.Plugins
             else if (ModelDetection && KeywordDetection)
             {
                 // Check if userinput triggers any entry in locations, if so, run QueryLLM
-                if (locations.FindEntries(LLMSystem.History, userinput)?.Count > 0)
+                if (locations.FindEntries(LLMEngine.History, userinput)?.Count > 0)
                 {
                     await QueryLLM(userinput);
                     // Task.Run(async () => await QueryLLM(userinput, log)).Wait();
@@ -116,9 +116,9 @@ namespace WaifuAI.Plugins
 
         private static void AddMovingInfSystemMessage(Chatlog log, MemoryUnit newLoc)
         {
-            var prompt = string.Format("{0} and {1} are moving to a new location: {2}. React accordingly.", LLMSystem.User.Name, LLMSystem.Bot.Name, newLoc.Name);
+            var prompt = string.Format("{0} and {1} are moving to a new location: {2}. React accordingly.", LLMEngine.User.Name, LLMEngine.Bot.Name, newLoc.Name);
             //var msg = new SingleMessage(AuthorRole.System, DateTime.Now, prompt, LLMChatManager.Bot.Name, LLMChatManager.User.Name, false);
-            log.LogMessage(AuthorRole.System, prompt, LLMSystem.User, LLMSystem.Bot);
+            log.LogMessage(AuthorRole.System, prompt, LLMEngine.User, LLMEngine.Bot);
         }
 
         private string BuildCheckPrompt(string userinput)
@@ -147,11 +147,11 @@ namespace WaifuAI.Plugins
             prompt.AppendLinuxLine("User: I don't want to go to the Red Cinema.");
             prompt.AppendLinuxLine("Response: No").AppendLinuxLine();
 
-            var sysprompt = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, LLMSystem.User, LLMSystem.Bot, prompt.ToString());
-            var msg = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.User, LLMSystem.User, LLMSystem.Bot, userinput);
+            var sysprompt = LLMEngine.Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, LLMEngine.User, LLMEngine.Bot, prompt.ToString());
+            var msg = LLMEngine.Instruct.FormatSinglePrompt(AuthorRole.User, LLMEngine.User, LLMEngine.Bot, userinput);
 
-            if (LLMSystem.Instruct.BotStart != null)
-                msg += LLMSystem.Instruct.BotStart;
+            if (LLMEngine.Instruct.BotStart != null)
+                msg += LLMEngine.Instruct.BotStart;
             return sysprompt + msg;
         }
 
@@ -164,24 +164,24 @@ namespace WaifuAI.Plugins
         private async Task QueryLLM(string inputText)
         {
             var savedKV = false;
-            if (LLMSystem.Client!.SupportsStateSave)
+            if (LLMEngine.Client!.SupportsStateSave)
             {
-                savedKV = await LLMSystem.Client.SaveKVState(0);
+                savedKV = await LLMEngine.Client.SaveKVState(0);
                 await Task.Delay(100);
             }
             var fullprompt = BuildCheckPrompt(inputText);
             var fullresponse = new StringBuilder();
-            var llmparams = LLMSystem.Sampler.GetCopy();
+            var llmparams = LLMEngine.Sampler.GetCopy();
             llmparams.Temperature = 0;
             llmparams.Prompt = fullprompt;
-            var finalstr = await LLMSystem.SimpleQuery(llmparams);
-            LLMSystem.Logger?.LogInformation("LocationPlugin Result: {output}", finalstr);
-            if (LLMSystem.Client!.SupportsStateSave && savedKV)
+            var finalstr = await LLMEngine.SimpleQuery(llmparams);
+            LLMEngine.Logger?.LogInformation("LocationPlugin Result: {output}", finalstr);
+            if (LLMEngine.Client!.SupportsStateSave && savedKV)
             {
-                var doneKV = await LLMSystem.Client.LoadKVState(0);
+                var doneKV = await LLMEngine.Client.LoadKVState(0);
                 if (doneKV)
                 {
-                    await LLMSystem.Client.ClearKVStates();
+                    await LLMEngine.Client.ClearKVStates();
                 }
                 await Task.Delay(100);
             }

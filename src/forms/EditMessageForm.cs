@@ -45,7 +45,7 @@ namespace WaifuAI.src.forms
             }
             else
             {
-                Message.Message = LLMSystem.ReplaceMacros(ed_message.Text.ToLinuxFormat());
+                Message.Message = LLMEngine.ReplaceMacros(ed_message.Text.ToLinuxFormat());
                 DialogResult = DialogResult.OK;
                 Close();
             }
@@ -63,7 +63,7 @@ namespace WaifuAI.src.forms
                     Close();
                 }
             };
-            Message = LLMSystem.History.GetMessageByID(messageID);
+            Message = LLMEngine.History.GetMessageByID(messageID);
             if (Message == null)
             {
                 Close();

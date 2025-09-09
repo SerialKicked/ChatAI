@@ -42,8 +42,8 @@ namespace WaifuAI
         private RenPyDialogHandler? _renpyDialogHandler;
         private string ed_log = string.Empty;
 
-        public static Character? Bot => LLMSystem.Bot as Character;
-        public static Character? User => LLMSystem.User as Character;
+        public static Character? Bot => LLMEngine.Bot as Character;
+        public static Character? User => LLMEngine.User as Character;
 
         public static MarkdownPipeline CustomMarkDownPipeline { get; } = new MarkdownPipelineBuilder()
             .UseSoftlineBreakAsHardlineBreak().UseAdvancedExtensions()
@@ -107,10 +107,10 @@ namespace WaifuAI
             public bool PreFilterMessage(ref Message m)
             {
                 // Check for input messages globally
-                if (LLMSystem.Bot?.AgentSystem is not null && IsInputMessage(m.Msg))
+                if (LLMEngine.Bot?.AgentSystem is not null && IsInputMessage(m.Msg))
                 {
                     // Signal user activity
-                    LLMSystem.Bot?.AgentSystem.NotifyUserActivity();
+                    LLMEngine.Bot?.AgentSystem.NotifyUserActivity();
                 }
                 return false; // Don't consume the message
             }
@@ -125,12 +125,12 @@ namespace WaifuAI
 
         private async void OnBotInitiateConversation(object? sender, EventArgs e)
         {
-            if (LLMSystem.Status != SystemStatus.Ready || Bot?.CanInitiateChat != true || _afkmessagecount > 2)
+            if (LLMEngine.Status != SystemStatus.Ready || Bot?.CanInitiateChat != true || _afkmessagecount > 2)
                 return;
             _activityTimer?.Reset();
             _impersonatemode = false;
             _postdate = DateTime.Now;
-            var lastusermessage = LLMSystem.History.CurrentSession.Messages.LastOrDefault(m => m.Role == AuthorRole.User);
+            var lastusermessage = LLMEngine.History.CurrentSession.Messages.LastOrDefault(m => m.Role == AuthorRole.User);
             if (lastusermessage == null)
                 return;
             var message = "The last message from {{user}} was posted " + AIToolkit.StringExtensions.TimeSpanToHumanString(DateTime.Now - lastusermessage.Date) + " ago. We're {{day}}, the {{date}} at {{time}} now. Would you like to send a message to {{user}} now? Use your best judgement based on the conversation above. In case you don't want to send a message, just respond with No. If you want to send a message, write the message to {{user}} directly while making sure it's contextually relevant. \n\nThis query will repeat every few minutes.";
@@ -138,14 +138,14 @@ namespace WaifuAI
                 message += " You've already sent " + _afkmessagecount + " unanswered messages in a row.";
             else if (_afkmessagecount == 1)
                 message += " You've already sent a message.";
-            message = LLMSystem.ReplaceMacros(message);
+            message = LLMEngine.ReplaceMacros(message);
             statusbar.Items[1].Text = "Analyzing...";
-            var response = await LLMSystem.QuickInferenceForSystemPrompt(message, false);
-            response = response.RemoveThinkingBlocks(LLMSystem.Instruct.ThinkingStart, LLMSystem.Instruct.ThinkingEnd).Trim();
+            var response = await LLMEngine.QuickInferenceForSystemPrompt(message, false);
+            response = response.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd).Trim();
 
             if (!string.IsNullOrEmpty(response) && !response.StartsWith("no", StringComparison.InvariantCultureIgnoreCase))
             {
-                var msg = new SingleMessage(AuthorRole.Assistant, DateTime.Now, response, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
+                var msg = new SingleMessage(AuthorRole.Assistant, DateTime.Now, response, LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName);
                 Bot.History.LogMessage(msg);
                 _afkmessagecount++;
                 await SendMessageToUI(msg);
@@ -158,7 +158,7 @@ namespace WaifuAI
         {
             cb_bot.Items.Clear();
             cb_user.Items.Clear();
-            bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.Settings.ScenarioOverride) ? Color.Black : Color.DarkGreen;
+            bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMEngine.Settings.ScenarioOverride) ? Color.Black : Color.DarkGreen;
             foreach (var item in DataFiles.Characters)
             {
                 if (item.Value.IsUser)
@@ -191,29 +191,29 @@ namespace WaifuAI
                 MessageBox.Show("No connection with backend server. You can use the application, but you cannot chat with the AI.");
             }
 
-            LLMSystem.Init();
-            LLMSystem.ContextPlugins = [];
-            LLMSystem.ContextPlugins.Add(new BrowsePlugin());
-            LLMSystem.ContextPlugins.Add(new LocationPlugin("Locations"));
-            LLMSystem.ContextPlugins.Add(new WebSearchPlugin());
-            RAGSystem.Enabled = true;
-            ck_ragenabled.Checked = RAGSystem.Enabled;
-            ck_worldinfo.Checked = LLMSystem.Settings.AllowWorldInfo;
-            LLMSystem.OnInferenceStreamed += OnStreamMessageReceived;
-            LLMSystem.OnInferenceEnded += OnStreamInferenceEnded;
-            LLMSystem.OnFullPromptReady += OnFullPromptReady;
-            LLMSystem.OnStatusChanged += OnStatusChanged;
+            LLMEngine.Init();
+            LLMEngine.ContextPlugins = [];
+            LLMEngine.ContextPlugins.Add(new BrowsePlugin());
+            LLMEngine.ContextPlugins.Add(new LocationPlugin("Locations"));
+            LLMEngine.ContextPlugins.Add(new WebSearchPlugin());
+            RAGEngine.Enabled = true;
+            ck_ragenabled.Checked = RAGEngine.Enabled;
+            ck_worldinfo.Checked = LLMEngine.Settings.AllowWorldInfo;
+            LLMEngine.OnInferenceStreamed += OnStreamMessageReceived;
+            LLMEngine.OnInferenceEnded += OnStreamInferenceEnded;
+            LLMEngine.OnFullPromptReady += OnFullPromptReady;
+            LLMEngine.OnStatusChanged += OnStatusChanged;
 
             ed_input.EnableImageDragDrop(basestr =>
             {
-                LLMSystem.VLM_ClearImages();
-                LLMSystem.VLM_AddB64Image(basestr);
+                LLMEngine.VLM_ClearImages();
+                LLMEngine.VLM_AddB64Image(basestr);
                 DisplayImage(basestr);
             }, 1024);
             pictEmbed.EnableImageDragDrop(basestr =>
             {
-                LLMSystem.VLM_ClearImages();
-                LLMSystem.VLM_AddB64Image(basestr);
+                LLMEngine.VLM_ClearImages();
+                LLMEngine.VLM_AddB64Image(basestr);
                 DisplayImage(basestr);
             }, 1024);
         }
@@ -245,8 +245,8 @@ namespace WaifuAI
         private void UpdateUIState()
         {
             _activityTimer?.Reset();
-            bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.Settings.ScenarioOverride) ? Color.Black : Color.DarkGreen;
-            if (LLMSystem.Status == SystemStatus.Ready)
+            bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMEngine.Settings.ScenarioOverride) ? Color.Black : Color.DarkGreen;
+            if (LLMEngine.Status == SystemStatus.Ready)
             {
                 bt_delete.Enabled = true;
                 bt_connect.Enabled = true;
@@ -260,7 +260,7 @@ namespace WaifuAI
                 cb_user.Enabled = true;
                 ShowCurrentSessionInfo();
             }
-            else if (LLMSystem.Status == SystemStatus.Busy)
+            else if (LLMEngine.Status == SystemStatus.Busy)
             {
                 bt_delete.Enabled = false;
                 bt_connect.Enabled = false;
@@ -273,7 +273,7 @@ namespace WaifuAI
                 cb_bot.Enabled = false;
                 cb_user.Enabled = false;
             }
-            else if (LLMSystem.Status == SystemStatus.NotInit)
+            else if (LLMEngine.Status == SystemStatus.NotInit)
             {
                 bt_delete.Enabled = false;
                 bt_connect.Enabled = false;
@@ -308,9 +308,9 @@ namespace WaifuAI
 
         private async void OnStreamMessageReceived(object? sender, string e)
         {
-            if (!_impersonatemode && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart) && _currentgencalls == 1)
+            if (!_impersonatemode && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart) && _currentgencalls == 1)
             {
-                var thoughts = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + $"*{LLMSystem.Bot.UniqueName} is thinking...*";
+                var thoughts = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + $"*{LLMEngine.Bot.UniqueName} is thinking...*";
                 await WebEditLastMessage(thoughts);
             }
 
@@ -328,13 +328,13 @@ namespace WaifuAI
                     {
                         statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                     });
-                    if (!string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingStart) && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingEnd))
+                    if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart) && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingEnd))
                     {
                         // Check if we have more than a single ThinkingEnd block, if so, we need to end the generation
-                        var endcount = _currentgeneration.CountSubstring(LLMSystem.Instruct.ThinkingEnd);
+                        var endcount = _currentgeneration.CountSubstring(LLMEngine.Instruct.ThinkingEnd);
                         if (endcount > 1)
                         {
-                            LLMSystem.CancelGeneration();
+                            LLMEngine.CancelGeneration();
                             return;
                         }
 
@@ -367,14 +367,14 @@ namespace WaifuAI
                     ed_input.Text = e.ToWinFormat();
                     statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                 });
-                LLMSystem.InvalidatePromptCache();
+                LLMEngine.InvalidatePromptCache();
             }
             else
             {
                 var stringfix = Program.Settings.AsteriskCheck ? e.FixAsterisks() : e;
-                if (!string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingEnd) && stringfix.CountSubstring(LLMSystem.Instruct.ThinkingEnd) > 1)
+                if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingEnd) && stringfix.CountSubstring(LLMEngine.Instruct.ThinkingEnd) > 1)
                 {
-                    stringfix = stringfix.RemoveEverythingAfterLast(LLMSystem.Instruct.ThinkingEnd);
+                    stringfix = stringfix.RemoveEverythingAfterLast(LLMEngine.Instruct.ThinkingEnd);
                 }
 
                 if (Program.Settings.RemoveCutSentence)
@@ -386,11 +386,11 @@ namespace WaifuAI
 
                 var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
 
-                var msg = LLMSystem.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMSystem.User, LLMSystem.Bot);
+                var msg = LLMEngine.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMEngine.User, LLMEngine.Bot);
                 await Task.Delay(50);
                 await WebEditLastMessage(MsgPrefix + stringfix, msg.Guid);
                 PrepareResponse();
-                if (_forcereload || Program.Settings.MaxMessagesOnScreen <= LLMSystem.History.CurrentSession.Messages.Count)
+                if (_forcereload || Program.Settings.MaxMessagesOnScreen <= LLMEngine.History.CurrentSession.Messages.Count)
                 {
                     Invoke((System.Windows.Forms.MethodInvoker)async delegate
                     {
@@ -401,12 +401,12 @@ namespace WaifuAI
                 {
                     statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                 });
-                if (Program.Settings.UseTTS && !string.IsNullOrEmpty(Bot?.TTSVoice) && LLMSystem.Client?.SupportsTTS == true)
+                if (Program.Settings.UseTTS && !string.IsNullOrEmpty(Bot?.TTSVoice) && LLMEngine.Client?.SupportsTTS == true)
                 {
                     await OutputTTS(stringfix);
                 }
             }
-            (LLMSystem.Bot as Character)?.SaveChatHistory();
+            (LLMEngine.Bot as Character)?.SaveChatHistory();
         }
 
         private async Task OutputTTS(string text)
@@ -420,10 +420,10 @@ namespace WaifuAI
             int index = 0;
 
             // Start generating TTS for the first paragraph
-            var currentWaveTask = LLMSystem.GenerateTTS(paragraphs[index], voiceID);
+            var currentWaveTask = LLMEngine.GenerateTTS(paragraphs[index], voiceID);
             index++;
 
-            while (Program.Settings.UseTTS && LLMSystem.Status != SystemStatus.Busy)
+            while (Program.Settings.UseTTS && LLMEngine.Status != SystemStatus.Busy)
             {
                 // Wait for the current TTS generation to complete
                 var currentWave = await currentWaveTask;
@@ -435,7 +435,7 @@ namespace WaifuAI
                 Task<byte[]>? nextWaveTask = null;
                 if (index < paragraphs.Length)
                 {
-                    nextWaveTask = LLMSystem.GenerateTTS(paragraphs[index], voiceID);
+                    nextWaveTask = LLMEngine.GenerateTTS(paragraphs[index], voiceID);
                     index++;
                 }
 
@@ -455,7 +455,7 @@ namespace WaifuAI
 
         private void ShowCurrentSessionInfo()
         {
-            var (tokens, duration) = LLMSystem.History.GetCurrentChatSessionInfo();
+            var (tokens, duration) = LLMEngine.History.GetCurrentChatSessionInfo();
             statusbar.Items[0].Text = $"Current Session: {duration.TotalDays:F2} days ({tokens} tokens)";
         }
 
@@ -491,14 +491,14 @@ namespace WaifuAI
         {
             ForceCloseEditMenu();
             _activityTimer?.Reset();
-            if (LLMSystem.Status == SystemStatus.Busy)
+            if (LLMEngine.Status == SystemStatus.Busy)
                 return;
             statusbar.Items[1].Text = "Analyzing...";
             _postdate = DateTime.Now;
             _impersonatemode = true;
             PrepareResponse();
             ed_input.Text = string.Empty;
-            await LLMSystem.ImpersonateUser();
+            await LLMEngine.ImpersonateUser();
         }
 
         private (SingleMessage? response, bool usercmdonly) ProcessSlashCommands(string input)
@@ -538,20 +538,20 @@ namespace WaifuAI
 
             if (!string.IsNullOrEmpty(response))
             {
-                return (new SingleMessage(AuthorRole.System, DateTime.Now, LLMSystem.ReplaceMacros(response), LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName), usercmdonly);
+                return (new SingleMessage(AuthorRole.System, DateTime.Now, LLMEngine.ReplaceMacros(response), LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName), usercmdonly);
             }
             return (null, usercmdonly);
         }
 
         private async void SendMessage(object sender, EventArgs e)
         {
-            LLMSystem.Bot.AgentSystem?.NotifyUserActivity();
+            LLMEngine.Bot.AgentSystem?.NotifyUserActivity();
             ForceCloseEditMenu();
             _activityTimer?.Reset();
             _afkmessagecount = 0;
-            if (LLMSystem.Status == SystemStatus.Busy)
+            if (LLMEngine.Status == SystemStatus.Busy)
             {
-                LLMSystem.CancelGeneration();
+                LLMEngine.CancelGeneration();
                 return;
             }
             _impersonatemode = false;
@@ -561,8 +561,8 @@ namespace WaifuAI
             if (!string.IsNullOrEmpty(ed_input.Text))
             {
                 var msgtxt = ed_input.Text.ToLinuxFormat();
-                msgtxt = LLMSystem.ReplaceMacros(msgtxt, LLMSystem.User, LLMSystem.Bot);
-                var msg = new SingleMessage(AuthorRole.User, DateTime.Now, msgtxt, LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName);
+                msgtxt = LLMEngine.ReplaceMacros(msgtxt, LLMEngine.User, LLMEngine.Bot);
+                var msg = new SingleMessage(AuthorRole.User, DateTime.Now, msgtxt, LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName);
 
                 if (ed_input.Text.StartsWith("/sys "))
                 {
@@ -573,18 +573,18 @@ namespace WaifuAI
                     // ready a new message for the bot's response
                     PrepareResponse();
                     await SendMessageToUI(
-                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName));
                     ed_input.Text = string.Empty;
-                    await LLMSystem.SendMessageToBot(msg);
+                    await LLMEngine.SendMessageToBot(msg);
                 }
                 else if (ed_input.Text.StartsWith("/game "))
                 {
                     // remove the /sys prefix
                     var msgpath = msg.Message[6..].Trim();
                     _renpyDialogHandler = new RenPyDialogHandler(msgpath, "Slay The Princess");
-                    var message = new SingleMessage(AuthorRole.System, DateTime.Now, "*Game Loaded: Slay The Princess*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName, false);
+                    var message = new SingleMessage(AuthorRole.System, DateTime.Now, "*Game Loaded: Slay The Princess*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName, false);
                     await SendMessageToUI(message);
-                    LLMSystem.Bot.History.LogMessage(message);
+                    LLMEngine.Bot.History.LogMessage(message);
                     ed_input.Text = string.Empty;
                 }
                 else if (ed_input.Text.StartsWith("/continue") && _renpyDialogHandler != null)
@@ -601,7 +601,7 @@ namespace WaifuAI
                     // remove the /sys prefix
                     if (!string.IsNullOrEmpty(extra))
                     {
-                        msg.Message = $"**{User?.Name ?? "User"}'s Comment**" + LLMSystem.NewLine + extra + LLMSystem.NewLine + LLMSystem.NewLine + gameinfo.ShowFullScreen();
+                        msg.Message = $"**{User?.Name ?? "User"}'s Comment**" + LLMEngine.NewLine + extra + LLMEngine.NewLine + LLMEngine.NewLine + gameinfo.ShowFullScreen();
                     }
                     else
                     {
@@ -611,9 +611,9 @@ namespace WaifuAI
                     // ready a new message for the bot's response
                     PrepareResponse();
                     await SendMessageToUI(
-                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName));
                     ed_input.Text = string.Empty;
-                    await LLMSystem.SendMessageToBot(msg);
+                    await LLMEngine.SendMessageToBot(msg);
                 }
                 else if (ed_input.Text.StartsWith("/pick ") && _renpyDialogHandler != null)
                 {
@@ -628,9 +628,9 @@ namespace WaifuAI
                     // ready a new message for the bot's response
                     PrepareResponse();
                     await SendMessageToUI(
-                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName));
                     ed_input.Text = string.Empty;
-                    await LLMSystem.SendMessageToBot(msg);
+                    await LLMEngine.SendMessageToBot(msg);
                 }
                 else if (ed_input.Text.StartsWith("/dialogs") && _renpyDialogHandler != null)
                 {
@@ -642,9 +642,9 @@ namespace WaifuAI
                     // ready a new message for the bot's response
                     PrepareResponse();
                     await SendMessageToUI(
-                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName));
                     ed_input.Text = string.Empty;
-                    await LLMSystem.SendMessageToBot(msg);
+                    await LLMEngine.SendMessageToBot(msg);
                 }
                 else
                 {
@@ -653,7 +653,7 @@ namespace WaifuAI
                     {
                         if (usercmdonly)
                         {
-                            LLMSystem.History.LogMessage(response);
+                            LLMEngine.History.LogMessage(response);
                             await SendMessageToUI(response);
                             ed_input.Text = string.Empty;
                             statusbar.Items[1].Text = "Ready!";
@@ -661,14 +661,14 @@ namespace WaifuAI
                         }
                         else
                         {
-                            LLMSystem.History.LogMessage(msg);
+                            LLMEngine.History.LogMessage(msg);
                             await SendMessageToUI(msg);
                             await SendMessageToUI(response);
                             PrepareResponse();
                             await SendMessageToUI(
-                                new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                                new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName));
                             ed_input.Text = string.Empty;
-                            await LLMSystem.SendMessageToBot(response);
+                            await LLMEngine.SendMessageToBot(response);
                         }
                     }
                     else
@@ -677,9 +677,9 @@ namespace WaifuAI
                         // ready a new message for the bot's response
                         PrepareResponse();
                         await SendMessageToUI(
-                            new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                            new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName));
                         ed_input.Text = string.Empty;
-                        await LLMSystem.SendMessageToBot(msg);
+                        await LLMEngine.SendMessageToBot(msg);
                     }
                 }
             }
@@ -688,9 +688,9 @@ namespace WaifuAI
                 // ready a new message for the bot's response
                 PrepareResponse();
                 await SendMessageToUI(
-                    new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+                    new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName));
                 ed_input.Text = string.Empty;
-                await LLMSystem.AddBotMessage();
+                await LLMEngine.AddBotMessage();
             }
 
         }
@@ -720,7 +720,7 @@ namespace WaifuAI
         {
             ForceCloseEditMenu();
             _afkmessagecount = 0;
-            if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.CurrentSession.Messages.Count == 0 || LLMSystem.History.LastMessage()?.Role != AuthorRole.Assistant)
+            if (LLMEngine.Status == SystemStatus.Busy || LLMEngine.History.CurrentSession.Messages.Count == 0 || LLMEngine.History.LastMessage()?.Role != AuthorRole.Assistant)
                 return;
             _activityTimer?.Reset();
             _impersonatemode = false;
@@ -729,28 +729,28 @@ namespace WaifuAI
             UseCharacterDefinedSampler();
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await WebRemoveLastMessage();
-            await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMSystem.Bot.UniqueName + " is reading your message...*", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName));
+            await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName));
             PrepareResponse();
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
-            await LLMSystem.RerollLastMessage();
+            await LLMEngine.RerollLastMessage();
         }
 
         private async void Connect(object sender, EventArgs e)
         {
-            await LLMSystem.Connect();
-            num_maxcontext.Maximum = LLMSystem.MaxContextLength;
-            num_maxcontext.Value = LLMSystem.MaxContextLength;
-            grp_model.Text = LLMSystem.CurrentModel;
-            ck_ttstoggle.Enabled = LLMSystem.SupportsTTS;
-            ck_onlinerag.Enabled = LLMSystem.SupportsWebSearch;
-            boxVLM.Enabled = LLMSystem.SupportsVision;
-            LLMSystem.Bot.AgentSystem?.NotifyUserActivity();
+            await LLMEngine.Connect();
+            num_maxcontext.Maximum = LLMEngine.MaxContextLength;
+            num_maxcontext.Value = LLMEngine.MaxContextLength;
+            grp_model.Text = LLMEngine.CurrentModel;
+            ck_ttstoggle.Enabled = LLMEngine.SupportsTTS;
+            ck_onlinerag.Enabled = LLMEngine.SupportsWebSearch;
+            boxVLM.Enabled = LLMEngine.SupportsVision;
+            LLMEngine.Bot.AgentSystem?.NotifyUserActivity();
         }
 
         private async void StartNewSession(object sender, EventArgs e)
         {
             // Check if we're in a past sessions, if so, ask if the user wants to update the archive before going back to the current session
-            if (LLMSystem.History.CurrentSessionID != -1 && LLMSystem.History.CurrentSessionID != LLMSystem.History.Sessions.Count - 1)
+            if (LLMEngine.History.CurrentSessionID != -1 && LLMEngine.History.CurrentSessionID != LLMEngine.History.Sessions.Count - 1)
             {
                 await UpdateOldSession();
             }
@@ -773,12 +773,12 @@ namespace WaifuAI
                 loadingForm.SetMessage("Archiving and summarizing current session. Depending on your computer, the model, and the context size, it might take a while.");
                 loadingForm.SetProgress(5);
 
-                LLMSystem.OnQuickInferenceEnded += (s, e) =>
+                LLMEngine.OnQuickInferenceEnded += (s, e) =>
                 {
                     loadingForm.AddProgress(50);
                 };
-                await LLMSystem.History.StartNewChatSession(true);
-                if (LLMSystem.Bot.SelfEditTokens > 0)
+                await LLMEngine.History.StartNewChatSession(true, false);
+                if (LLMEngine.Bot.SelfEditTokens > 0)
                 {
                     loadingForm.SetMessage("Updating dynamic character (this might take a few minutes).");
                 }
@@ -787,13 +787,13 @@ namespace WaifuAI
                     loadingForm.SetMessage("Saving history.");
                     loadingForm.SetProgress(95);
                 }
-                (LLMSystem.Bot as Character)?.SaveChatHistory();
-                await LLMSystem.Bot.UpdateSelfEditSection();
-                if (!string.IsNullOrEmpty(LLMSystem.Bot.UniqueName))
-                    (LLMSystem.Bot as IFile).SaveToFile("data/chars/" + LLMSystem.Bot.UniqueName + ".json");
+                (LLMEngine.Bot as Character)?.SaveChatHistory();
+                await LLMEngine.Bot.UpdateSelfEditSection();
+                if (!string.IsNullOrEmpty(LLMEngine.Bot.UniqueName))
+                    (LLMEngine.Bot as IFile).SaveToFile("data/chars/" + LLMEngine.Bot.UniqueName + ".json");
                 loadingForm.SetMessage("Loading new session.");
                 loadingForm.SetProgress(100);
-                LLMSystem.RemoveQuickInferenceEventHandler();
+                LLMEngine.RemoveQuickInferenceEventHandler();
                 await WebChatLoad();
                 _afkmessagecount = 0;
                 _activityTimer?.Reset();
@@ -826,17 +826,17 @@ namespace WaifuAI
                 {
                     loadingForm.SetMessage("Archiving and summarizing session. Depending on your computer, the model, and the context size, it might take a while.");
                     loadingForm.SetProgress(5);
-                    LLMSystem.OnQuickInferenceEnded += (s, e) =>
+                    LLMEngine.OnQuickInferenceEnded += (s, e) =>
                     {
                         loadingForm.AddProgress(20);
                     };
-                    await LLMSystem.History.CurrentSession.UpdateSession();
-                    LLMSystem.RemoveQuickInferenceEventHandler();
+                    await LLMEngine.History.CurrentSession.UpdateSession();
+                    LLMEngine.RemoveQuickInferenceEventHandler();
                 }
                 loadingForm.SetMessage("Loading current session.");
                 loadingForm.SetProgress(95);
-                LLMSystem.History.CurrentSessionID = -1;
-                (LLMSystem.Bot as Character)?.SaveChatHistory();
+                LLMEngine.History.CurrentSessionID = -1;
+                (LLMEngine.Bot as Character)?.SaveChatHistory();
                 await WebChatLoad();
                 _afkmessagecount = 0;
                 _activityTimer?.Reset();
@@ -851,30 +851,30 @@ namespace WaifuAI
         private async void DeleteLastMessage(object sender, EventArgs e)
         {
             _impersonatemode = false;
-            if (LLMSystem.Status == SystemStatus.Busy || LLMSystem.History.CurrentSession.Messages.Count == 0)
+            if (LLMEngine.Status == SystemStatus.Busy || LLMEngine.History.CurrentSession.Messages.Count == 0)
                 return;
 
-            var msgs = LLMSystem.History.CurrentSession.Messages;
+            var msgs = LLMEngine.History.CurrentSession.Messages;
 
             // Remove any trailing hidden messages (not shown in UI)
             if (!Program.Settings.ShowHiddenMessages)
                 while (msgs.Count > 0 && msgs[^1].Hidden)
-                    LLMSystem.History.RemoveLast();
+                    LLMEngine.History.RemoveLast();
 
             // Now remove the last visible message (shown in UI), if any remain
             var removedVisible = false;
             if (msgs.Count > 0)
             {
-                LLMSystem.History.RemoveLast();
+                LLMEngine.History.RemoveLast();
                 removedVisible = true;
             }
 
             // Now remove any trailing hidden messages again
             if (!Program.Settings.ShowHiddenMessages)
                 while (msgs.Count > 0 && msgs[^1].Hidden)
-                    LLMSystem.History.RemoveLast();
+                    LLMEngine.History.RemoveLast();
 
-            LLMSystem.InvalidatePromptCache();
+            LLMEngine.InvalidatePromptCache();
 
             if (removedVisible)
                 await WebRemoveLastMessage();
@@ -908,7 +908,7 @@ namespace WaifuAI
                         </div>
                     </div>";
 
-            if (singleMessage.Role == AuthorRole.Assistant && !string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart))
+            if (singleMessage.Role == AuthorRole.Assistant && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart))
             {
                 coremsg = $@"
                     <div class='portrait'>
@@ -917,7 +917,7 @@ namespace WaifuAI
                     <div class='message-content'>
                         <div class='thinking-box'>
                             <div class='thinking-header' onclick='this.parentElement.classList.toggle(""expanded"")'>
-                                {LLMSystem.Bot.Name} is thinking... (click to expand)
+                                {LLMEngine.Bot.Name} is thinking... (click to expand)
                             </div>
                             <div class='thinking-content'> 
                             </div>
@@ -967,10 +967,10 @@ namespace WaifuAI
 
             var str = File.ReadAllText("settings.json");
             Program.Settings = JsonConvert.DeserializeObject<WaifuSettings>(str)!;
-            LLMSystem.Settings = Program.Settings;
+            LLMEngine.Settings = Program.Settings;
             var saveinit = _isinitloading;
             _isinitloading = true;
-            LLMSystem.MaxContextLength = Program.Settings.MaxTotalTokens;
+            LLMEngine.MaxContextLength = Program.Settings.MaxTotalTokens;
 
             // set cb_user to the Program.Settings.UserFile value if it's in the list, otherwise set index to 0.
             cb_user.SelectedIndex = cb_user.Items.Contains(Program.Settings.UserFile) ? cb_user.Items.IndexOf(Program.Settings.UserFile) : 0;
@@ -986,13 +986,13 @@ namespace WaifuAI
             num_maxcontext.Value = Program.Settings.MaxTotalTokens;
             num_maxresponse.Value = Program.Settings.MaxReplyLength;
             num_temperature.Value = (decimal)Program.Settings.Temperature;
-            ck_sessionmemory.Checked = LLMSystem.Settings.SessionMemorySystem;
+            ck_sessionmemory.Checked = LLMEngine.Settings.SessionMemorySystem;
             ck_ttstoggle.Checked = Program.Settings.UseTTS;
             ck_disablethink.Checked = Program.Settings.DisableThinking;
             ck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
-            ck_agentmode.Checked = LLMSystem.Bot.AgentMode;
+            ck_agentmode.Checked = LLMEngine.Bot.AgentMode;
 
-            if (LLMSystem.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
+            if (LLMEngine.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
             {
                 webplug.EnforceCorrectGrammar = Program.Settings.WebsitePluginGrammar;
                 webplug.KeywordDetection = Program.Settings.WebsitePluginUseKeywords;
@@ -1011,10 +1011,10 @@ namespace WaifuAI
                 Program.Settings.PromptFile = cb_sysprompt.SelectedItem?.ToString() ?? string.Empty;
                 Program.Settings.Temperature = (double)num_temperature.Value;
                 Program.Settings.UseTTS = ck_ttstoggle.Checked;
-                LLMSystem.Bot.AgentMode = ck_agentmode.Checked;
+                LLMEngine.Bot.AgentMode = ck_agentmode.Checked;
                 Program.Settings.SessionMemorySystem = ck_sessionmemory.Checked;
 
-                if (LLMSystem.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
+                if (LLMEngine.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
                 {
                     webplug.EnforceCorrectGrammar = Program.Settings.WebsitePluginGrammar;
                     webplug.KeywordDetection = Program.Settings.WebsitePluginUseKeywords;
@@ -1032,7 +1032,7 @@ namespace WaifuAI
 
         private void ck_ragenabled_CheckedChanged(object sender, EventArgs e)
         {
-            RAGSystem.Enabled = ck_ragenabled.Checked;
+            RAGEngine.Enabled = ck_ragenabled.Checked;
         }
 
         #endregion
@@ -1130,18 +1130,22 @@ namespace WaifuAI
             }
         }
         function addHtmlAfterLastChatMessage(htmlContent, messageGuid) {
-            const chatMessages = document.querySelectorAll('.chat-message');
-                    if (chatMessages.length > 0) {
-                        const lastChatMessage = chatMessages[chatMessages.length - 1];
+            const container = document.getElementById('chatContainer') || document.body;
+            const chatMessages = container.querySelectorAll('.chat-message');
+
             const newDiv = document.createElement('div');
             newDiv.className = 'chat-message';
             newDiv.setAttribute('data-message-guid', messageGuid);
             newDiv.innerHTML = htmlContent;
+
+            if (chatMessages.length > 0) {
+                const lastChatMessage = chatMessages[chatMessages.length - 1];
                 lastChatMessage.insertAdjacentElement('afterend', newDiv);
             } else {
-                        console.warn('No chat messages found.');
-                }
+                // No previous messages: append as first message
+                container.appendChild(newDiv);
             }
+        }
         document.addEventListener('DOMContentLoaded', (event) => 
         {
             const chatContainer = document.getElementById('chatContainer');
@@ -1219,15 +1223,15 @@ namespace WaifuAI
                 return;
             }
 
-            if (!string.IsNullOrEmpty(LLMSystem.Instruct.ThinkingStart) &&
+            if (!string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart) &&
                 newMessage.StartsWith(ChatRender.GetMessagePrefix(AuthorRole.Assistant)) &&
-                newMessage.Contains(LLMSystem.Instruct.ThinkingStart))
+                newMessage.Contains(LLMEngine.Instruct.ThinkingStart))
             {
                 // remove prefix from message
                 var worktext = newMessage[ChatRender.GetMessagePrefix(AuthorRole.Assistant).Length..];
-                if (!worktext.Contains(LLMSystem.Instruct.ThinkingEnd))
+                if (!worktext.Contains(LLMEngine.Instruct.ThinkingEnd))
                 {
-                    worktext = worktext.Replace(LLMSystem.Instruct.ThinkingStart, string.Empty);
+                    worktext = worktext.Replace(LLMEngine.Instruct.ThinkingStart, string.Empty);
                     var text = Markdown.ToHtml(worktext, CustomMarkDownPipeline);
                     text = text.SanitizeForJS();
                     var script = $"updateMessageAtIndex(\"{text}\", document.getElementsByClassName('message-content').length - 1, true);";
@@ -1236,8 +1240,8 @@ namespace WaifuAI
                 else
                 {
                     // both tokens are found, so we want two strings now: the first one is the thinking part, the second one is the message part
-                    var parts = worktext.Split([LLMSystem.Instruct.ThinkingEnd], 2, StringSplitOptions.None);
-                    var thinkingText = parts[0].Replace(LLMSystem.Instruct.ThinkingStart, string.Empty);
+                    var parts = worktext.Split([LLMEngine.Instruct.ThinkingEnd], 2, StringSplitOptions.None);
+                    var thinkingText = parts[0].Replace(LLMEngine.Instruct.ThinkingStart, string.Empty);
                     thinkingText = Markdown.ToHtml(thinkingText, CustomMarkDownPipeline).SanitizeForJS();
                     var script = $"updateMessageAtIndex(\"{thinkingText}\", document.getElementsByClassName('message-content').length - 1, true);";
                     await web_chat.CoreWebView2.ExecuteScriptAsync(script);
@@ -1295,13 +1299,13 @@ namespace WaifuAI
             }
             var html = string.Empty;
             _forcereload = false;
-            var start = LLMSystem.History.CurrentSession.Messages.Count - Program.Settings.MaxMessagesOnScreen;
+            var start = LLMEngine.History.CurrentSession.Messages.Count - Program.Settings.MaxMessagesOnScreen;
             if (start < 0)
                 start = 0;
-            for (int i = start; i < LLMSystem.History.CurrentSession.Messages.Count; i++)
+            for (int i = start; i < LLMEngine.History.CurrentSession.Messages.Count; i++)
             {
-                if (!LLMSystem.History.CurrentSession.Messages[i].Hidden || Program.Settings.ShowHiddenMessages)
-                    html += AddHtmlMessage(LLMSystem.History.CurrentSession.Messages[i]);
+                if (!LLMEngine.History.CurrentSession.Messages[i].Hidden || Program.Settings.ShowHiddenMessages)
+                    html += AddHtmlMessage(LLMEngine.History.CurrentSession.Messages[i]);
             }
             html = InjectDialogCSS(html);
             web_chat.NavigateToString(html);
@@ -1380,7 +1384,7 @@ namespace WaifuAI
 
         private void EditMessage(Guid messageGuid)
         {
-            if (LLMSystem.Status == SystemStatus.Busy)
+            if (LLMEngine.Status == SystemStatus.Busy)
                 return;
 
             this.Enabled = false;
@@ -1397,7 +1401,7 @@ namespace WaifuAI
                     Invoke((System.Windows.Forms.MethodInvoker)async delegate
                     {
                         await LoadHistoryToUI();
-                        LLMSystem.InvalidatePromptCache();
+                        LLMEngine.InvalidatePromptCache();
                     });
                 }
             }
@@ -1413,11 +1417,11 @@ namespace WaifuAI
         {
             if (cb_bot.SelectedItem is string key && !string.IsNullOrEmpty(key))
             {
-                LLMSystem.Bot = DataFiles.Characters[key];
+                LLMEngine.Bot = DataFiles.Characters[key];
                 await LoadHistoryToUI();
-                ck_senseoftime.Checked = LLMSystem.Bot.SenseOfTime;
+                ck_senseoftime.Checked = LLMEngine.Bot.SenseOfTime;
                 ck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
-                var searchplug = LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch");
+                var searchplug = LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch");
                 if (searchplug != null)
                 {
                     ck_onlinerag.Checked = searchplug.Enabled;
@@ -1435,83 +1439,83 @@ namespace WaifuAI
 
         private void num_maxcontext_ValueChanged(object sender, EventArgs e)
         {
-            LLMSystem.MaxContextLength = (int)num_maxcontext.Value;
+            LLMEngine.MaxContextLength = (int)num_maxcontext.Value;
         }
 
         private void num_maxresponse_ValueChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.MaxReplyLength = (int)num_maxresponse.Value;
+            LLMEngine.Settings.MaxReplyLength = (int)num_maxresponse.Value;
         }
 
         private void cb_user_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cb_user.SelectedItem is string key && !string.IsNullOrEmpty(key))
-                LLMSystem.User = DataFiles.Characters[key];
+                LLMEngine.User = DataFiles.Characters[key];
         }
 
         private void cb_instruct_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cb_instruct.SelectedItem is string key && !string.IsNullOrEmpty(key))
             {
-                LLMSystem.Instruct = DataFiles.Instruct[key];
-                ck_forceNames.Checked = LLMSystem.Instruct.AddNamesToPrompt;
+                LLMEngine.Instruct = DataFiles.Instruct[key];
+                ck_forceNames.Checked = LLMEngine.Instruct.AddNamesToPrompt;
             }
         }
 
         private void cb_infer_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cb_infer.SelectedItem is string key && !string.IsNullOrEmpty(key))
-                LLMSystem.Sampler = DataFiles.Inference[key];
-            num_temperature.Value = (decimal)LLMSystem.Sampler.Temperature;
+                LLMEngine.Sampler = DataFiles.Inference[key];
+            num_temperature.Value = (decimal)LLMEngine.Sampler.Temperature;
         }
 
         private void num_temperature_ValueChanged(object sender, EventArgs e)
         {
-            LLMSystem.ForceTemperature = ((double)num_temperature.Value);
+            LLMEngine.ForceTemperature = ((double)num_temperature.Value);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             AutoTalkTimer.Stop();
             SaveSettings();
-            LLMSystem.Bot.EndChat(backup: true);
-            if (!string.IsNullOrEmpty(LLMSystem.Bot.UniqueName))
-                (LLMSystem.Bot as IFile).SaveToFile("data/chars/" + LLMSystem.Bot.UniqueName + ".json");
+            LLMEngine.Bot.EndChat(backup: true);
+            if (!string.IsNullOrEmpty(LLMEngine.Bot.UniqueName))
+                (LLMEngine.Bot as IFile).SaveToFile("data/chars/" + LLMEngine.Bot.UniqueName + ".json");
         }
 
         private void ck_senseoftime_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.Bot.SenseOfTime = ck_senseoftime.Checked;
+            LLMEngine.Bot.SenseOfTime = ck_senseoftime.Checked;
         }
 
         private void ck_sessionmemory_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.SessionMemorySystem = ck_sessionmemory.Checked;
+            LLMEngine.Settings.SessionMemorySystem = ck_sessionmemory.Checked;
         }
 
         private void bt_scenario_Click(object sender, EventArgs e)
         {
             using var editForm = new ScenarioEditForm();
             editForm.ShowDialog();
-            bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMSystem.Settings.ScenarioOverride) ? Color.Black : Color.DarkGreen;
-            LLMSystem.InvalidatePromptCache();
+            bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMEngine.Settings.ScenarioOverride) ? Color.Black : Color.DarkGreen;
+            LLMEngine.InvalidatePromptCache();
         }
 
         private void ck_forceNames_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.Instruct.AddNamesToPrompt = ck_forceNames.Checked;
-            LLMSystem.InvalidatePromptCache();
+            LLMEngine.Instruct.AddNamesToPrompt = ck_forceNames.Checked;
+            LLMEngine.InvalidatePromptCache();
         }
 
         private void ck_worldinfo_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.AllowWorldInfo = ck_worldinfo.Checked;
+            LLMEngine.Settings.AllowWorldInfo = ck_worldinfo.Checked;
         }
 
         private void cb_sysprompt_SelectionIndexChanged(object sender, EventArgs e)
         {
             if (cb_sysprompt.SelectedItem is string key && !string.IsNullOrEmpty(key))
-                LLMSystem.SystemPrompt = DataFiles.SysPrompts[key];
+                LLMEngine.SystemPrompt = DataFiles.SysPrompts[key];
         }
 
         private void ck_caninit_CheckedChanged(object sender, EventArgs e)
@@ -1523,15 +1527,15 @@ namespace WaifuAI
         private void AutoTalkTimer_Tick(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(ed_input.Text))
-                LLMSystem.Bot.AgentSystem?.NotifyUserActivity();
-            if (LLMSystem.Status != SystemStatus.Ready || !string.IsNullOrEmpty(ed_input.Text) || Bot?.CanInitiateChat != true)
+                LLMEngine.Bot.AgentSystem?.NotifyUserActivity();
+            if (LLMEngine.Status != SystemStatus.Ready || !string.IsNullOrEmpty(ed_input.Text) || Bot?.CanInitiateChat != true)
                 return;
             _activityTimer?.IsTimeout();
         }
 
         private void ck_onlinerag_CheckedChanged(object sender, EventArgs e)
         {
-            var searchplug = LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch");
+            var searchplug = LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch");
             if (searchplug != null)
             {
                 searchplug.Enabled = ck_onlinerag.Checked;
@@ -1564,7 +1568,7 @@ namespace WaifuAI
             using var editForm = new CharEditForm();
             editForm.SetupCharacterEditor(Bot?.UniqueName ?? string.Empty);
             editForm.ShowDialog();
-            LLMSystem.InvalidatePromptCache();
+            LLMEngine.InvalidatePromptCache();
             var currbselection = cb_bot.Text;
             var curruselection = cb_user.Text;
             cb_bot.Items.Clear();
@@ -1584,33 +1588,33 @@ namespace WaifuAI
 
         private void bt_clearimg_Click(object sender, EventArgs e)
         {
-            LLMSystem.VLM_ClearImages();
+            LLMEngine.VLM_ClearImages();
             pictEmbed.Image = null;
         }
 
         private void ck_disablethink_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.DisableThinking = ck_disablethink.Checked;
+            LLMEngine.Settings.DisableThinking = ck_disablethink.Checked;
         }
 
         private void ck_ragtothink_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.RAGMoveToThinkBlock = ck_ragtothink.Checked;
+            LLMEngine.Settings.RAGMoveToThinkBlock = ck_ragtothink.Checked;
         }
 
         private void ck_agentmode_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.Bot.AgentMode = ck_agentmode.Checked;
+            LLMEngine.Bot.AgentMode = ck_agentmode.Checked;
         }
 
         private void btInstructEdit_Click(object sender, EventArgs e)
         {
             using var editForm = new InstructForm();
-            editForm.SetupInstructEditor(LLMSystem.Instruct.UniqueName ?? string.Empty);
+            editForm.SetupInstructEditor(LLMEngine.Instruct.UniqueName ?? string.Empty);
             editForm.ShowDialog();
-            LLMSystem.InvalidatePromptCache();
+            LLMEngine.InvalidatePromptCache();
             // Update the prompt list in the chat menu
-            var currselection = LLMSystem.Instruct.UniqueName;
+            var currselection = LLMEngine.Instruct.UniqueName;
             cb_instruct.Items.Clear();
             foreach (var item in DataFiles.Instruct)
             {
@@ -1623,9 +1627,9 @@ namespace WaifuAI
         private void btSysPrompt_Click(object sender, EventArgs e)
         {
             using var editForm = new SysPromptForm();
-            editForm.SetupPromptEditor(LLMSystem.SystemPrompt.UniqueName ?? string.Empty);
+            editForm.SetupPromptEditor(LLMEngine.SystemPrompt.UniqueName ?? string.Empty);
             editForm.ShowDialog();
-            LLMSystem.InvalidatePromptCache();
+            LLMEngine.InvalidatePromptCache();
             var currselection = cb_sysprompt.SelectedItem?.ToString() ?? "";
             cb_sysprompt.Items.Clear();
             foreach (var item in DataFiles.SysPrompts)
@@ -1639,9 +1643,9 @@ namespace WaifuAI
         private void btSampleEditor_Click(object sender, EventArgs e)
         {
             using var editForm = new SamplerForm();
-            editForm.SetupSamplerEditor(LLMSystem.Sampler.UniqueName ?? string.Empty);
+            editForm.SetupSamplerEditor(LLMEngine.Sampler.UniqueName ?? string.Empty);
             editForm.ShowDialog();
-            LLMSystem.InvalidatePromptCache();
+            LLMEngine.InvalidatePromptCache();
             // Update the sampler list in the chat menu
             var currselection = cb_infer.SelectedItem?.ToString() ?? "";
             cb_infer.Items.Clear();
@@ -1659,7 +1663,7 @@ namespace WaifuAI
             using var settingsForm = new SettingsForm();
             settingsForm.StartPosition = FormStartPosition.CenterParent;
             settingsForm.ShowDialog();
-            LLMSystem.InvalidatePromptCache();
+            LLMEngine.InvalidatePromptCache();
             await WebChatLoad();
         }
 
@@ -1668,7 +1672,7 @@ namespace WaifuAI
             using var worldForm = new WorldEditForm();
             worldForm.StartPosition = FormStartPosition.CenterParent;
             worldForm.ShowDialog();
-            LLMSystem.InvalidatePromptCache();
+            LLMEngine.InvalidatePromptCache();
         }
 
         private async void btChatHistory_Click(object sender, EventArgs e)
@@ -1676,7 +1680,7 @@ namespace WaifuAI
             using var worldForm = new ChatHistoryForm();
             worldForm.StartPosition = FormStartPosition.CenterParent;
             worldForm.ShowDialog();
-            LLMSystem.InvalidatePromptCache();
+            LLMEngine.InvalidatePromptCache();
             await WebChatLoad();
         }
 
@@ -1698,38 +1702,38 @@ namespace WaifuAI
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            LLMSystem.NamesInPromptOverride = false;
-            var sense = LLMSystem.Bot.DatesInSessionSummaries;
-            LLMSystem.Bot.DatesInSessionSummaries = false;
+            LLMEngine.NamesInPromptOverride = false;
+            var sense = LLMEngine.Bot.DatesInSessionSummaries;
+            LLMEngine.Bot.DatesInSessionSummaries = false;
             //var res = await SentimentAnalysis.Analyze("I am very happy today!");
-            var availtokens = LLMSystem.MaxContextLength - 1024;
+            var availtokens = LLMEngine.MaxContextLength - 1024;
             var requestedtask = "Based on the information provided in the system prompt, write a list of goals for {{char}}. Things she would want to convince {{user}} to do, or even things she'd like to think or do for herself. Keep the list realistic.";
 
-            var promptbuild = LLMSystem.Client!.GetPromptBuilder();
-            var sysprompt = "You are {{char}}, and you're looking for things you'd want to convince {{user}} to do or become, but seems reluctant to try." + LLMSystem.NewLine +
-                LLMSystem.NewLine +
-                "## Name: {{char}}" + LLMSystem.NewLine + LLMSystem.NewLine +
-                "{{charbio}}" + LLMSystem.NewLine + LLMSystem.NewLine +
-                "## Name: {{user}}" + LLMSystem.NewLine + LLMSystem.NewLine +
-                "{{userbio}}" + LLMSystem.NewLine + LLMSystem.NewLine +
-                "## Chronological chat session summaries:" + LLMSystem.NewLine + LLMSystem.NewLine;
+            var promptbuild = LLMEngine.Client!.GetPromptBuilder();
+            var sysprompt = "You are {{char}}, and you're looking for things you'd want to convince {{user}} to do or become, but seems reluctant to try." + LLMEngine.NewLine +
+                LLMEngine.NewLine +
+                "## Name: {{char}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "{{charbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "## Name: {{user}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "{{userbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "## Chronological chat session summaries:" + LLMEngine.NewLine + LLMEngine.NewLine;
 
             availtokens -= promptbuild.GetTokenCount(AuthorRole.SysPrompt, sysprompt);
             availtokens -= promptbuild.GetTokenCount(AuthorRole.User, requestedtask);
 
-            var summaries = LLMSystem.History.GetPreviousSummaries(availtokens, allowRP: true);
+            var summaries = LLMEngine.History.GetPreviousSummaries(availtokens, allowRP: true);
             sysprompt += summaries;
             promptbuild.AddMessage(AuthorRole.SysPrompt, sysprompt);
             promptbuild.AddMessage(AuthorRole.User, requestedtask);
 
-            var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMSystem.Sampler.Temperature > 0.75) ? 0.75 : LLMSystem.Sampler.Temperature, 1000);
-            var finalstr = await LLMSystem.SimpleQuery(ct);
-            if (!string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingStart))
+            var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, 1000);
+            var finalstr = await LLMEngine.SimpleQuery(ct);
+            if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart))
             {
-                finalstr = finalstr.RemoveThinkingBlocks(LLMSystem.Instruct.ThinkingStart, LLMSystem.Instruct.ThinkingEnd);
+                finalstr = finalstr.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd);
             }
-            LLMSystem.Bot.DatesInSessionSummaries = sense;
-            LLMSystem.NamesInPromptOverride = null;
+            LLMEngine.Bot.DatesInSessionSummaries = sense;
+            LLMEngine.NamesInPromptOverride = null;
         }
     }
 }

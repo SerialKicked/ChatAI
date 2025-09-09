@@ -106,18 +106,18 @@ namespace WaifuAI.Plugins
 
             if (!string.IsNullOrEmpty(foundCommand) || (KeywordDetection && kwEnter.Any(kw => userinput.Contains(kw, StringComparison.OrdinalIgnoreCase))))
             {
-                LLMSystem.NamesInPromptOverride = false;
+                LLMEngine.NamesInPromptOverride = false;
                 var x = await QueryLLM(userinput, foundCommand);
                 if (!string.IsNullOrEmpty(x))
                 {
                     if (DataFiles.Websites.TryGetValue(x, out var site))
                     {
                         Website = site;
-                        Program.BigForm!.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am browsing {Website.WebsiteName}...*");
+                        Program.BigForm!.ForceUpdateLastMessage($"**{LLMEngine.Bot.Name}:** *I am browsing {Website.WebsiteName}...*");
                     }
                     else
                     {
-                        LLMSystem.NamesInPromptOverride = null;
+                        LLMEngine.NamesInPromptOverride = null;
                         return new PluginResponse { IsHandled = false, Response = null };
                     }
                     // call the website plugin here
@@ -125,11 +125,11 @@ namespace WaifuAI.Plugins
                     var webresult = await StartWebNavigation(userinput);
                     if (webresult.IsSuccess)
                     {
-                        Program.BigForm!.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am writing a message...*");
+                        Program.BigForm!.ForceUpdateLastMessage($"**{LLMEngine.Bot.Name}:** *I am writing a message...*");
                     }
                     else
                     {
-                        Program.BigForm.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am writing a message (web navigation failed)...*");
+                        Program.BigForm.ForceUpdateLastMessage($"**{LLMEngine.Bot.Name}:** *I am writing a message (web navigation failed)...*");
                     }
 
                     var output = new PluginResponse 
@@ -139,11 +139,11 @@ namespace WaifuAI.Plugins
                         AuthorRole = AuthorRole.System,
                         Replace = false
                     };
-                    LLMSystem.NamesInPromptOverride = null;
+                    LLMEngine.NamesInPromptOverride = null;
                     return output;
                 }
             }
-            LLMSystem.NamesInPromptOverride = null;
+            LLMEngine.NamesInPromptOverride = null;
             return new PluginResponse { IsHandled = false, Response = null }; // call the website plugin
         }
 
@@ -155,21 +155,21 @@ namespace WaifuAI.Plugins
             promptbuilder.AppendLinuxLine("You are a web browsing agent. Your goal is to find the requested information while taking the information presented in the chatlog below into consideration.");
             promptbuilder.AppendLinuxLine();
             promptbuilder.AppendLinuxLine("# Characters:");
-            promptbuilder.AppendLinuxLine($"- **{LLMSystem.User.Name}:** {LLMSystem.User.GetBio(LLMSystem.Bot.Name).RemoveNewLines()}");
-            promptbuilder.AppendLinuxLine($"- **{LLMSystem.Bot.Name}:** {LLMSystem.Bot.GetBio(LLMSystem.User.Name).RemoveNewLines()}");
+            promptbuilder.AppendLinuxLine($"- **{LLMEngine.User.Name}:** {LLMEngine.User.GetBio(LLMEngine.Bot.Name).RemoveNewLines()}");
+            promptbuilder.AppendLinuxLine($"- **{LLMEngine.Bot.Name}:** {LLMEngine.Bot.GetBio(LLMEngine.User.Name).RemoveNewLines()}");
             promptbuilder.AppendLinuxLine();
             promptbuilder.AppendLinuxLine("# Recent Chatlog:");
-            promptbuilder.AppendLinuxLine(LLMSystem.History.CurrentSession.GetRawDialogs(600, true, true));
+            promptbuilder.AppendLinuxLine(LLMEngine.History.CurrentSession.GetRawDialogs(600, true, true));
             return promptbuilder.ToString();
         }
 
         private async Task<string> SendQuery(string prompt)
         {
-            var llmparams = LLMSystem.Sampler.GetCopy();
+            var llmparams = LLMEngine.Sampler.GetCopy();
             if (llmparams.Temperature > 0.5)
                 llmparams.Temperature = 0.5;
-            llmparams.Max_context_length = LLMSystem.MaxContextLength;
-            llmparams.Max_length = LLMSystem.Settings.MaxReplyLength;
+            llmparams.Max_context_length = LLMEngine.MaxContextLength;
+            llmparams.Max_length = LLMEngine.Settings.MaxReplyLength;
             llmparams.Prompt = prompt;
             llmparams.Rep_pen = 1;
             llmparams.Dry_base = 0;
@@ -177,9 +177,9 @@ namespace WaifuAI.Plugins
             if (EnforceCorrectGrammar)
                 llmparams.Grammar = "root ::= ([0-9][0-9]?[0-9]?)";
 
-            var response = await LLMSystem.SimpleQuery(llmparams);
-            if (!EnforceCorrectGrammar && !string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingStart))
-                response = response.RemoveThinkingBlocks(LLMSystem.Instruct.ThinkingStart, LLMSystem.Instruct.ThinkingEnd);
+            var response = await LLMEngine.SimpleQuery(llmparams);
+            if (!EnforceCorrectGrammar && !string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart))
+                response = response.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd);
             // strip anything that is not a number from response
             response = new string([.. response.Where(c => char.IsDigit(c))]);
             return response;
@@ -199,18 +199,18 @@ namespace WaifuAI.Plugins
                 promptbuilder.AppendLinuxLine();
             }
             promptbuilder.AppendLinuxLine(Website.RenderFrontPage(string.Empty));
-            var sysprompt = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, promptbuilder.ToString());
-            LLMSystem.NamesInPromptOverride = false;
-            sysprompt += LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.User, LLMSystem.User, LLMSystem.Bot, $"Complete this request from {LLMSystem.User.Name}: {_basegoal}");
+            var sysprompt = LLMEngine.Instruct.FormatSinglePrompt(AuthorRole.System, LLMEngine.User, LLMEngine.Bot, promptbuilder.ToString());
+            LLMEngine.NamesInPromptOverride = false;
+            sysprompt += LLMEngine.Instruct.FormatSinglePrompt(AuthorRole.User, LLMEngine.User, LLMEngine.Bot, $"Complete this request from {LLMEngine.User.Name}: {_basegoal}");
 
 
             if (!EnforceCorrectGrammar)
-                sysprompt += LLMSystem.Instruct.GetResponseStart(LLMSystem.Bot);
+                sysprompt += LLMEngine.Instruct.GetResponseStart(LLMEngine.Bot);
             else
-                sysprompt += LLMSystem.Instruct.BotStart;
-            LLMSystem.NamesInPromptOverride = null;
+                sysprompt += LLMEngine.Instruct.BotStart;
+            LLMEngine.NamesInPromptOverride = null;
             if (string.IsNullOrWhiteSpace(_currenthistory))
-                sysprompt = LLMSystem.Instruct.BoSToken + sysprompt;
+                sysprompt = LLMEngine.Instruct.BoSToken + sysprompt;
             _currenthistory += sysprompt;
 
             var response = await SendQuery(sysprompt);
@@ -218,7 +218,7 @@ namespace WaifuAI.Plugins
                 return new WebNavigationResult(false, "Failed to navigate the website properly.", null);
             if (int.TryParse(response, out var index) && index <= Website.MainLinks.Count && index > 0)
             {
-                _currenthistory += response + LLMSystem.Instruct.BotEnd;
+                _currenthistory += response + LLMEngine.Instruct.BotEnd;
                 return await DoPage(Website.MainLinks[index-1]);
             }
             else
@@ -230,25 +230,25 @@ namespace WaifuAI.Plugins
         public async Task<WebNavigationResult> DoPage(WLink page)
         {
             _location = page.Category;
-            Program.BigForm!.ForceUpdateLastMessage($"**{LLMSystem.Bot.Name}:** *I am browsing {page.Title}...*");
+            Program.BigForm!.ForceUpdateLastMessage($"**{LLMEngine.Bot.Name}:** *I am browsing {page.Title}...*");
             var websiterender = await Website!.RenderPage(page.ID, string.Empty, crawler);
             var promptbuilder = new StringBuilder();
             promptbuilder.AppendLinuxLine(BuildInitialPrompt());
             promptbuilder.AppendLinuxLine();
             promptbuilder.AppendLinuxLine(websiterender);
-            var sysprompt = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, promptbuilder.ToString());
+            var sysprompt = LLMEngine.Instruct.FormatSinglePrompt(AuthorRole.System, LLMEngine.User, LLMEngine.Bot, promptbuilder.ToString());
 
-            LLMSystem.NamesInPromptOverride = false;
-            sysprompt += LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.User, LLMSystem.User, LLMSystem.Bot, $"Complete this request from {LLMSystem.User.Name}: {_basegoal}");
+            LLMEngine.NamesInPromptOverride = false;
+            sysprompt += LLMEngine.Instruct.FormatSinglePrompt(AuthorRole.User, LLMEngine.User, LLMEngine.Bot, $"Complete this request from {LLMEngine.User.Name}: {_basegoal}");
             if (!EnforceCorrectGrammar)
-                sysprompt += LLMSystem.Instruct.GetResponseStart(LLMSystem.Bot);
+                sysprompt += LLMEngine.Instruct.GetResponseStart(LLMEngine.Bot);
             else
-                sysprompt += LLMSystem.Instruct.BotStart;
-            LLMSystem.NamesInPromptOverride = null;
+                sysprompt += LLMEngine.Instruct.BotStart;
+            LLMEngine.NamesInPromptOverride = null;
             var response = await SendQuery(sysprompt);
             if (string.IsNullOrEmpty(response))
                 return new WebNavigationResult(false, "Null Answer", null);
-            _currenthistory =  sysprompt + response + LLMSystem.Instruct.BotEnd;
+            _currenthistory =  sysprompt + response + LLMEngine.Instruct.BotEnd;
             switch (_location)
             {
                 case PageType.MetaPage:
@@ -321,13 +321,13 @@ namespace WaifuAI.Plugins
             prompt.AppendLinuxLine("# User message to be evaluated:");
             prompt.AppendLinuxLine(userinput);
 
-            var sysprompt = LLMSystem.Instruct.FormatSinglePrompt(AuthorRole.System, LLMSystem.User, LLMSystem.Bot, prompt.ToString());
-            LLMSystem.NamesInPromptOverride = false;
-            sysprompt += LLMSystem.Instruct.GetResponseStart(LLMSystem.Bot);
-            LLMSystem.NamesInPromptOverride = null;
+            var sysprompt = LLMEngine.Instruct.FormatSinglePrompt(AuthorRole.System, LLMEngine.User, LLMEngine.Bot, prompt.ToString());
+            LLMEngine.NamesInPromptOverride = false;
+            sysprompt += LLMEngine.Instruct.GetResponseStart(LLMEngine.Bot);
+            LLMEngine.NamesInPromptOverride = null;
 
-            if (LLMSystem.Instruct.BotStart != null)
-                sysprompt += LLMSystem.Instruct.BotStart;
+            if (LLMEngine.Instruct.BotStart != null)
+                sysprompt += LLMEngine.Instruct.BotStart;
             return sysprompt;
         }
 
@@ -340,15 +340,15 @@ namespace WaifuAI.Plugins
         private async Task<string> QueryLLM(string inputText, string cmd)
         {
             var fullprompt = TaskSelectionPrompt(inputText, cmd);
-            var llmparams = LLMSystem.Sampler.GetCopy();
-            llmparams.Max_context_length = LLMSystem.MaxContextLength;
-            llmparams.Max_length = LLMSystem.Settings.MaxReplyLength;
+            var llmparams = LLMEngine.Sampler.GetCopy();
+            llmparams.Max_context_length = LLMEngine.MaxContextLength;
+            llmparams.Max_length = LLMEngine.Settings.MaxReplyLength;
             if (llmparams.Temperature > 0.4f)
                 llmparams.Temperature = 0.4f;
             llmparams.Prompt = fullprompt;
-            var finalstr = await LLMSystem.SimpleQuery(llmparams);
-            if (!string.IsNullOrWhiteSpace(LLMSystem.Instruct.ThinkingStart))
-                finalstr = finalstr.RemoveThinkingBlocks(LLMSystem.Instruct.ThinkingStart, LLMSystem.Instruct.ThinkingEnd);
+            var finalstr = await LLMEngine.SimpleQuery(llmparams);
+            if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart))
+                finalstr = finalstr.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd);
             if (string.IsNullOrEmpty(finalstr))
                 return string.Empty;
             if (finalstr.Equals("no", StringComparison.InvariantCultureIgnoreCase) || !int.TryParse(finalstr, out var found) || found > websites.Count)

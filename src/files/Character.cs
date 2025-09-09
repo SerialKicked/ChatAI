@@ -47,7 +47,7 @@ namespace WaifuAI.Files
             if (IsUser)
                 return;
             // Location plugin
-            foreach (var item in LLMSystem.ContextPlugins)
+            foreach (var item in LLMEngine.ContextPlugins)
             {
                 item.Enabled = Plugins.Contains(item.PluginID);
             }

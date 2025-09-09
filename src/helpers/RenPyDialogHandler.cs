@@ -128,7 +128,7 @@ namespace WaifuAI.Game
             foreach (var d in _lastTurn.Dialogue)
                 sb.AppendLine(d);
 
-            sb.AppendLine($"{LLMSystem.Bot.Name} chose to: \"{chosen}\"");
+            sb.AppendLine($"{LLMEngine.Bot.Name} chose to: \"{chosen}\"");
 
             return sb.ToString();
         }

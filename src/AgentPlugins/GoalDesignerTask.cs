@@ -21,7 +21,7 @@ namespace WaifuAI.AgentPlugins
             // Just a small delay so i don't have to remove async and do Task.ResultFrom everywhere. It's not like we're on a timer anyway.
             await Task.Delay(10, ct).ConfigureAwait(false);
 
-            if (LLMSystem.Status != SystemStatus.Ready || LLMSystem.Client?.SupportsSchema != true || LLMSystem.MaxContextLength < 8000)
+            if (LLMEngine.Status != SystemStatus.Ready || LLMEngine.Client?.SupportsSchema != true || LLMEngine.MaxContextLength < 8000)
                 return false;
 
             var MinTimeInterval = cfg.GetSetting<TimeSpan>("MinTimeInterval");
@@ -79,7 +79,7 @@ namespace WaifuAI.AgentPlugins
                 var memunit = new MemoryUnit()
                 {
                     Name = item.GoalTitle,
-                    Content = item.GoalDetails + LLMSystem.NewLine + item.PlanOfAction,
+                    Content = item.GoalDetails + LLMEngine.NewLine + item.PlanOfAction,
                     Reason = item.Reason,
                     Category = MemoryType.Goal,
                     Insertion = MemoryInsertion.Natural,
@@ -87,7 +87,7 @@ namespace WaifuAI.AgentPlugins
                     EndTime = DateTime.Now.AddDays(30),
                     Priority = Math.Clamp(3 - i, 0, 3)
                 };
-                if (RAGSystem.Enabled)
+                if (RAGEngine.Enabled)
                     await memunit.EmbedText().ConfigureAwait(false);
                 owner.Brain.Memories.Add(memunit);
             }
@@ -116,7 +116,7 @@ namespace WaifuAI.AgentPlugins
                 var memunit = new MemoryUnit()
                 {
                     Name = item.GoalTitle,
-                    Content = item.GoalDetails + LLMSystem.NewLine + item.PlanOfAction,
+                    Content = item.GoalDetails + LLMEngine.NewLine + item.PlanOfAction,
                     Reason = item.Reason,
                     Category = MemoryType.Goal,
                     Insertion = MemoryInsertion.Natural,
@@ -124,7 +124,7 @@ namespace WaifuAI.AgentPlugins
                     EndTime = DateTime.Now.AddDays(30),
                     Priority = Math.Clamp(3 - i, 0, 3)
                 };
-                if (RAGSystem.Enabled)
+                if (RAGEngine.Enabled)
                     await memunit.EmbedText();
                 owner.Brain.Memories.Add(memunit);
             }
@@ -143,31 +143,31 @@ namespace WaifuAI.AgentPlugins
             {
                 throw new Exception("Something went wrong when building goal list grammar and json format.");
             }
-            LLMSystem.NamesInPromptOverride = false;
-            var prefill = LLMSystem.Instruct.PrefillThinking;
-            LLMSystem.Instruct.PrefillThinking = false;
+            LLMEngine.NamesInPromptOverride = false;
+            var prefill = LLMEngine.Instruct.PrefillThinking;
+            LLMEngine.Instruct.PrefillThinking = false;
 
-            var promptbuild = LLMSystem.Client!.GetPromptBuilder();
+            var promptbuild = LLMEngine.Client!.GetPromptBuilder();
 
-            var requestedTask = "Based on the information provided in the system prompt, {{char}} has set the following goal for themselves: " + goalinfo + LLMSystem.NewLine + "Fill the required information about this specific goal so it can processed. " + goalrecord.GetQuery();
+            var requestedTask = "Based on the information provided in the system prompt, {{char}} has set the following goal for themselves: " + goalinfo + LLMEngine.NewLine + "Fill the required information about this specific goal so it can processed. " + goalrecord.GetQuery();
 
 
-            var availtokens = LLMSystem.MaxContextLength - 20; // leave 2k for response and buffer
+            var availtokens = LLMEngine.MaxContextLength - 20; // leave 2k for response and buffer
             availtokens -= promptbuild.GetTokenCount(AuthorRole.SysPrompt, systemprompt);
             availtokens -= promptbuild.GetTokenCount(AuthorRole.User, requestedTask);
 
             var replyln = (availtokens > 2048) ? 2048 : availtokens;
             promptbuild.AddMessage(AuthorRole.SysPrompt, systemprompt);
             promptbuild.AddMessage(AuthorRole.User, requestedTask);
-            var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMSystem.Sampler.Temperature > 0.75) ? 0.75 : LLMSystem.Sampler.Temperature, replyln);
+            var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, replyln);
             if (ct is GenerationInput input)
             {
                 input.Grammar = grammar;
             }
-            var finalstr = await LLMSystem.SimpleQuery(ct).ConfigureAwait(false);
+            var finalstr = await LLMEngine.SimpleQuery(ct).ConfigureAwait(false);
             goalrecord = JsonConvert.DeserializeObject<GoalRecord>(finalstr);
-            LLMSystem.NamesInPromptOverride = null;
-            LLMSystem.Instruct.PrefillThinking = prefill;
+            LLMEngine.NamesInPromptOverride = null;
+            LLMEngine.Instruct.PrefillThinking = prefill;
             return goalrecord!;
         }
 
@@ -179,49 +179,49 @@ namespace WaifuAI.AgentPlugins
             {
                 throw new Exception("Something went wrong when building goal list grammar and json format.");
             }
-            LLMSystem.NamesInPromptOverride = false;
-            var prefill = LLMSystem.Instruct.PrefillThinking;
-            LLMSystem.Instruct.PrefillThinking = false;
+            LLMEngine.NamesInPromptOverride = false;
+            var prefill = LLMEngine.Instruct.PrefillThinking;
+            LLMEngine.Instruct.PrefillThinking = false;
 
-            var promptbuild = LLMSystem.Client!.GetPromptBuilder();
+            var promptbuild = LLMEngine.Client!.GetPromptBuilder();
 
-            var requestedTask = query + LLMSystem.NewLine + goallist.GetQuery();
+            var requestedTask = query + LLMEngine.NewLine + goallist.GetQuery();
 
-            var availtokens = LLMSystem.MaxContextLength - 20; // leave 2k for response and buffer
+            var availtokens = LLMEngine.MaxContextLength - 20; // leave 2k for response and buffer
             availtokens -= promptbuild.GetTokenCount(AuthorRole.SysPrompt, systemprompt);
             availtokens -= promptbuild.GetTokenCount(AuthorRole.User, requestedTask);
 
             var replyln = (availtokens > 2048) ? 2048 : availtokens;
             promptbuild.AddMessage(AuthorRole.SysPrompt, systemprompt);
             promptbuild.AddMessage(AuthorRole.User, requestedTask);
-            var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMSystem.Sampler.Temperature > 1.0) ? 1 : LLMSystem.Sampler.Temperature, replyln);
+            var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 1.0) ? 1 : LLMEngine.Sampler.Temperature, replyln);
             if (ct is GenerationInput input)
             {
                 input.Grammar = grammar;
             }
-            var finalstr = await LLMSystem.SimpleQuery(ct).ConfigureAwait(false);
+            var finalstr = await LLMEngine.SimpleQuery(ct).ConfigureAwait(false);
             goallist = JsonConvert.DeserializeObject<GoalList>(finalstr);
-            LLMSystem.NamesInPromptOverride = null;
-            LLMSystem.Instruct.PrefillThinking = prefill;
+            LLMEngine.NamesInPromptOverride = null;
+            LLMEngine.Instruct.PrefillThinking = prefill;
             return goallist!;
         }
 
 
         private string GetSystemPromptContent(BasePersona owner, RPHandling rpHandling)
         {
-            var availtokens = LLMSystem.MaxContextLength - 2048 - 20; 
-            var promptbuild = LLMSystem.Client!.GetPromptBuilder();
-            var sysprompt = "You are {{char}}, and you're about to check to design personal goals based on the information provided." + LLMSystem.NewLine +
-                LLMSystem.NewLine +
-                "## Name: {{char}}" + LLMSystem.NewLine + LLMSystem.NewLine +
-                "{{charbio}}" + LLMSystem.NewLine + LLMSystem.NewLine +
-                "## Name: {{user}}" + LLMSystem.NewLine + LLMSystem.NewLine +
-                "{{userbio}}" + LLMSystem.NewLine + LLMSystem.NewLine +
-                "## Chronological chat summaries:" + LLMSystem.NewLine + LLMSystem.NewLine;
+            var availtokens = LLMEngine.MaxContextLength - 2048 - 20; 
+            var promptbuild = LLMEngine.Client!.GetPromptBuilder();
+            var sysprompt = "You are {{char}}, and you're about to check to design personal goals based on the information provided." + LLMEngine.NewLine +
+                LLMEngine.NewLine +
+                "## Name: {{char}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "{{charbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "## Name: {{user}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "{{userbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "## Chronological chat summaries:" + LLMEngine.NewLine + LLMEngine.NewLine;
 
             availtokens -= promptbuild.GetTokenCount(AuthorRole.SysPrompt, sysprompt);
             var AllowRP = rpHandling == RPHandling.Always || (rpHandling == RPHandling.Random && (new Random()).Next(0, 3) == 1);
-            var summaries = LLMSystem.History.GetPreviousSummaries(availtokens, allowRP: AllowRP, maxCount: 25);
+            var summaries = LLMEngine.History.GetPreviousSummaries(availtokens, allowRP: AllowRP, maxCount: 25);
             sysprompt += summaries;
             return sysprompt.CleanupAndTrim();
         }

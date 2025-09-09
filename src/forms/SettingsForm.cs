@@ -39,7 +39,7 @@ namespace WaifuAI.src.forms
 
             var str = File.ReadAllText("settings.json");
             Program.Settings = JsonConvert.DeserializeObject<WaifuSettings>(str)!;
-            LLMSystem.Settings = Program.Settings;
+            LLMEngine.Settings = Program.Settings;
 
             var saveinit = _isinitloading;
             _isinitloading = true;
@@ -57,9 +57,9 @@ namespace WaifuAI.src.forms
             cb_background.SelectedIndex = cb_background.Items.IndexOf(Program.Settings.BackgroundFile);
             
             num_memtokens.Value = Program.Settings.SessionReservedTokens;
-            ck_sessionmemory.Checked = LLMSystem.Settings.SessionMemorySystem;
+            ck_sessionmemory.Checked = LLMEngine.Settings.SessionMemorySystem;
             
-            switch (LLMSystem.Settings.RAGHeuristic)
+            switch (LLMEngine.Settings.RAGHeuristic)
             {
                 case HNSW.Net.NeighbourSelectionHeuristic.SelectSimple:
                     cb_ragheuristic.SelectedIndex = 1;
@@ -93,12 +93,12 @@ namespace WaifuAI.src.forms
             ed_sloplist.Text = Program.Settings.AntiSlopList.Length > 0 ? string.Join(",", Program.Settings.AntiSlopList) : string.Empty;
             ckShowHidden.Checked = Program.Settings.ShowHiddenMessages;
 
-            if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
+            if (LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
             {
                 searchplug.KeywordDetection = !ck_alwayswebsearch.Checked;
             }
 
-            if (LLMSystem.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
+            if (LLMEngine.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
             {
                 webplug.EnforceCorrectGrammar = Program.Settings.WebsitePluginGrammar;
                 webplug.KeywordDetection = Program.Settings.WebsitePluginUseKeywords;
@@ -146,19 +146,19 @@ namespace WaifuAI.src.forms
                 var str = JsonConvert.SerializeObject(Program.Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
                 
-                if (LLMSystem.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
+                if (LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
                 {
                     searchplug.KeywordDetection = !ck_alwayswebsearch.Checked;
                 }
 
-                if (LLMSystem.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
+                if (LLMEngine.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
                 {
                     webplug.EnforceCorrectGrammar = Program.Settings.WebsitePluginGrammar;
                     webplug.KeywordDetection = Program.Settings.WebsitePluginUseKeywords;
                 }
                 
                 // Apply RAG settings
-                RAGSystem.ApplySettings();
+                RAGEngine.ApplySettings();
             }
             catch (Exception ex)
             {
@@ -171,7 +171,7 @@ namespace WaifuAI.src.forms
             // Open a file selection dialog and use Tools.Import to import a chatlog from a jsonl file
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 MessageBox.Show(
-                    ImportTools.ImportChatlog(openFileDialog1.FileName, "exported_chat.json", LLMSystem.Bot.UniqueName, LLMSystem.User.UniqueName) ?
+                    ImportTools.ImportChatlog(openFileDialog1.FileName, "exported_chat.json", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName) ?
                         "Chatlog imported successfully to exported_chat.json in this application's main folder." :
                         "Something went wrong while opening or parsing the file."
                 );
@@ -189,39 +189,39 @@ namespace WaifuAI.src.forms
 
         private void ApplyRAGSettings(object sender, EventArgs e)
         {
-            LLMSystem.Settings.RAGDistanceCutOff = (float)num_ragcutoff.Value;
-            LLMSystem.Settings.RAGMaxEntries = (int)num_ragmaxretrieve.Value;
-            LLMSystem.Settings.RAGIndex = (int)num_ragindex.Value;
-            LLMSystem.Settings.MoveAllInsertsToSysPrompt = ck_sysrag.Checked;
+            LLMEngine.Settings.RAGDistanceCutOff = (float)num_ragcutoff.Value;
+            LLMEngine.Settings.RAGMaxEntries = (int)num_ragmaxretrieve.Value;
+            LLMEngine.Settings.RAGIndex = (int)num_ragindex.Value;
+            LLMEngine.Settings.MoveAllInsertsToSysPrompt = ck_sysrag.Checked;
             if (cb_ragheuristic.SelectedIndex == 0)
-                LLMSystem.Settings.RAGHeuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
+                LLMEngine.Settings.RAGHeuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
             else if (cb_ragheuristic.SelectedIndex == 1)
-                LLMSystem.Settings.RAGHeuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
-            RAGSystem.ApplySettings();
+                LLMEngine.Settings.RAGHeuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
+            RAGEngine.ApplySettings();
             SaveSettings();
         }
 
         private void cb_ragheurisitic_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cb_ragheuristic.SelectedIndex == 0)
-                LLMSystem.Settings.RAGHeuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
+                LLMEngine.Settings.RAGHeuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
             else if (cb_ragheuristic.SelectedIndex == 1)
-                LLMSystem.Settings.RAGHeuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
+                LLMEngine.Settings.RAGHeuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
         }
 
         private void num_ragcutoff_ValueChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.RAGDistanceCutOff = (float)num_ragcutoff.Value;
+            LLMEngine.Settings.RAGDistanceCutOff = (float)num_ragcutoff.Value;
         }
 
         private void num_ragmaxretrieve_ValueChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.RAGMaxEntries = (int)num_ragmaxretrieve.Value;
+            LLMEngine.Settings.RAGMaxEntries = (int)num_ragmaxretrieve.Value;
         }
 
         private void num_ragindex_ValueChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.RAGIndex = (int)num_ragindex.Value;
+            LLMEngine.Settings.RAGIndex = (int)num_ragindex.Value;
         }
 
         private void num_fontsize_ValueChanged(object sender, EventArgs e)
@@ -286,7 +286,7 @@ namespace WaifuAI.src.forms
 
         private void ck_oneparagraph_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.StopGenerationOnFirstParagraph = ck_oneparagraph.Checked;
+            LLMEngine.Settings.StopGenerationOnFirstParagraph = ck_oneparagraph.Checked;
         }
 
         private void ck_remlastsentence_CheckedChanged(object sender, EventArgs e)
@@ -308,7 +308,7 @@ namespace WaifuAI.src.forms
         {
             if (_isinitloading || cb_pastsession.SelectedIndex == -1)
                 return;
-            LLMSystem.Settings.SessionHandling = (SessionHandling)cb_pastsession.SelectedIndex;
+            LLMEngine.Settings.SessionHandling = (SessionHandling)cb_pastsession.SelectedIndex;
         }
 
         private void num_removeitalicmaxword_ValueChanged(object sender, EventArgs e)
@@ -323,23 +323,23 @@ namespace WaifuAI.src.forms
 
         private void ck_sysrag_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.MoveAllInsertsToSysPrompt = ck_sysrag.Checked;
+            LLMEngine.Settings.MoveAllInsertsToSysPrompt = ck_sysrag.Checked;
         }
 
         private void ck_sessionmemory_CheckedChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.SessionMemorySystem = ck_sessionmemory.Checked;
+            LLMEngine.Settings.SessionMemorySystem = ck_sessionmemory.Checked;
         }
 
         private void num_memtokens_ValueChanged(object sender, EventArgs e)
         {
-            LLMSystem.Settings.SessionReservedTokens = (int)num_memtokens.Value;
+            LLMEngine.Settings.SessionReservedTokens = (int)num_memtokens.Value;
         }
 
         private async void ConvertChatToSessionList(object sender, EventArgs e)
         {
-            LLMSystem.History.DivideChatIntoSessions();
-            await LLMSystem.History.UpdateAllSessions();
+            LLMEngine.History.DivideChatIntoSessions();
+            await LLMEngine.History.UpdateAllSessions();
             // The MainForm would need to refresh its chat display here
             // We could raise an event or use a callback for this
             MessageBox.Show("Chat converted to session list successfully!");

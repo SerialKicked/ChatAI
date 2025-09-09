@@ -22,7 +22,7 @@ namespace WaifuAI.AgentPlugins
             await Task.Delay(10, ct).ConfigureAwait(false);
 
             // can't do what we need? that's a bummer.
-            if (LLMSystem.Client?.SupportsSchema == false || LLMSystem.Status != SystemStatus.Ready || !LLMSystem.SupportsWebSearch)
+            if (LLMEngine.Client?.SupportsSchema == false || LLMEngine.Status != SystemStatus.Ready || !LLMEngine.SupportsWebSearch)
                 return false;
 
             var delay = cfg.GetSetting<TimeSpan>("Delay");
@@ -64,7 +64,7 @@ namespace WaifuAI.AgentPlugins
 
             if (findTopicsAction == null || mergeAction == null || webSearchAction == null)
             {
-                LLMSystem.Logger?.LogWarning("ActiveResearchTask cancelled due to missing action.");
+                LLMEngine.Logger?.LogWarning("ActiveResearchTask cancelled due to missing action.");
                 return;
             }
             var param = new FindResearchTopicsParams
@@ -83,7 +83,7 @@ namespace WaifuAI.AgentPlugins
             {
                 if (ct.IsCancellationRequested)
                     return;
-                var wassearchedbefore = await LLMSystem.Bot.Brain.WasSearchedRecently(testtopic.Topic, 0.085f).ConfigureAwait(false);
+                var wassearchedbefore = await LLMEngine.Bot.Brain.WasSearchedRecently(testtopic.Topic, 0.085f).ConfigureAwait(false);
                 if (!wassearchedbefore)
                     actuallist.Add(testtopic);
             }
@@ -94,7 +94,7 @@ namespace WaifuAI.AgentPlugins
                 var allResults = await webSearchAction.Execute(topic, ct).ConfigureAwait(false);
                 if (allResults.Count == 0)
                     continue; // Skip this topic if no results
-                LLMSystem.Bot.Brain.RecentSearches.Add(topic);
+                LLMEngine.Bot.Brain.RecentSearches.Add(topic);
 
                 // Merge all results for this topic into a single memory unit
                 var mergeparams = new MergeSearchParams("This is a search done regarding the currently active discussion.", topic.Topic, topic.Reason, allResults);

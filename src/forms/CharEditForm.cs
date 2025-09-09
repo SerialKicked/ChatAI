@@ -110,7 +110,7 @@ namespace WaifuAI.src.forms
             num_ptvalue.Value = selectedCharacter.PointValue;
             ck_irldates.Checked = selectedCharacter.DatesInSessionSummaries;
             ckl_plugins.Items.Clear();
-            foreach (var item in LLMSystem.ContextPlugins)
+            foreach (var item in LLMEngine.ContextPlugins)
             {
                 ckl_plugins.Items.Add(item.PluginID, selectedCharacter.Plugins.Contains(item.PluginID));
             }

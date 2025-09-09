@@ -24,7 +24,7 @@ namespace WaifuAI
             }
             var str = File.ReadAllText("settings.json");
             Settings = JsonConvert.DeserializeObject<WaifuSettings>(str)!;
-            LLMSystem.Settings = Settings;
+            LLMEngine.Settings = Settings;
 
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.

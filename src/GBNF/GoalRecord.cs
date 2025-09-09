@@ -33,7 +33,7 @@ namespace WaifuAI.GBNF
 
         public override string GetQuery()
         {
-            var requestedTask = "Answer the request using the following JSON format:" + LLMSystem.NewLine;
+            var requestedTask = "Answer the request using the following JSON format:" + LLMEngine.NewLine;
 
             var schema = DescriptionHelper.GetAllDescriptionsRecursive<GoalList>();
 
@@ -41,7 +41,7 @@ namespace WaifuAI.GBNF
             {
                 requestedTask += $"- {prop.Key}: {prop.Value}\n";
             }
-            requestedTask = LLMSystem.ReplaceMacros(requestedTask);
+            requestedTask = LLMEngine.ReplaceMacros(requestedTask);
             return requestedTask;
         }
     }
@@ -77,13 +77,13 @@ namespace WaifuAI.GBNF
 
         public override string GetQuery()
         {
-            var requestedTask = "Answer the request using the following JSON format:" + LLMSystem.NewLine;
+            var requestedTask = "Answer the request using the following JSON format:" + LLMEngine.NewLine;
             var schema = DescriptionHelper.GetAllDescriptionsRecursive<GoalRecord>();
             foreach (var prop in schema)
             {
                 requestedTask += $"- {prop.Key}: {prop.Value}\n";
             }
-            requestedTask = LLMSystem.ReplaceMacros(requestedTask);
+            requestedTask = LLMEngine.ReplaceMacros(requestedTask);
             return requestedTask;
         }
     }
