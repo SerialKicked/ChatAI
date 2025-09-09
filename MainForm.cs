@@ -290,6 +290,36 @@ namespace WaifuAI
                 (LLMEngine.Bot as IFile).SaveToFile("data/chars/" + LLMEngine.Bot.UniqueName + ".json");
         }
 
+        /// <summary>
+        /// Handles bot/character switch 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void cb_bot_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cb_bot.SelectedItem is string key && !string.IsNullOrEmpty(key))
+            {
+                LLMEngine.Bot = DataFiles.Characters[key];
+                await LoadHistoryToUI();
+                ck_senseoftime.Checked = LLMEngine.Bot.SenseOfTime;
+                ck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
+                var searchplug = LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch");
+                if (searchplug != null)
+                {
+                    ck_onlinerag.Checked = searchplug.Enabled;
+                    ck_onlinerag.Enabled = true;
+                }
+                else
+                {
+                    ck_onlinerag.Enabled = false;
+                    ck_onlinerag.Checked = false;
+                }
+                _activityTimer?.Reset();
+                UpdateUIState();
+            }
+        }
+
+
         #region *** Event Handlers ***
 
         private void OnFullPromptReady(object? sender, string e)
@@ -444,6 +474,7 @@ namespace WaifuAI
         }
 
         #endregion
+
 
         #region *** Main Chat Functions ***
 
@@ -941,6 +972,7 @@ namespace WaifuAI
 
         #endregion
 
+
         #region *** Settings Tab Functions ***
 
         private void LoadSettings()
@@ -1022,6 +1054,7 @@ namespace WaifuAI
         }
 
         #endregion
+
 
         #region *** WebView2 Handling ***
 
@@ -1398,6 +1431,7 @@ namespace WaifuAI
 
         #endregion
 
+
         #region *** Audio and TTS ***
 
         private async Task OutputTTS(string text)
@@ -1460,35 +1494,6 @@ namespace WaifuAI
         }
 
         #endregion
-
-        /// <summary>
-        /// Called when the selected character is changed in the settings tab.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private async void cb_bot_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cb_bot.SelectedItem is string key && !string.IsNullOrEmpty(key))
-            {
-                LLMEngine.Bot = DataFiles.Characters[key];
-                await LoadHistoryToUI();
-                ck_senseoftime.Checked = LLMEngine.Bot.SenseOfTime;
-                ck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
-                var searchplug = LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch");
-                if (searchplug != null)
-                {
-                    ck_onlinerag.Checked = searchplug.Enabled;
-                    ck_onlinerag.Enabled = true;
-                }
-                else
-                {
-                    ck_onlinerag.Enabled = false;
-                    ck_onlinerag.Checked = false;
-                }
-                _activityTimer?.Reset();
-                UpdateUIState();
-            }
-        }
 
 
         // === Below lies the button click hell :D Venture at your own risk ===
