@@ -206,7 +206,6 @@ namespace WaifuAI.AgentPlugins
             return goallist!;
         }
 
-
         private string GetSystemPromptContent(BasePersona owner, RPHandling rpHandling)
         {
             var availtokens = LLMEngine.MaxContextLength - 2048 - 20; 
@@ -232,7 +231,7 @@ namespace WaifuAI.AgentPlugins
             settings.SetSetting<TimeSpan>("MinTimeInterval", new TimeSpan(7,0,0,0)); // 7 days
             settings.SetSetting<int>("MinSessionSpacing", 4); // at least 2 sessions between searches
             settings.SetSetting<Guid>("LastSessionGuid", Guid.Empty);
-            settings.SetSetting<DateTime>("LastGoalSet", default(DateTime));
+            settings.SetSetting<DateTime>("LastGoalSet", DateTime.MinValue);
             settings.SetSetting<int>("IncludeRPSession", (int)RPHandling.Random);
 
             return settings;
