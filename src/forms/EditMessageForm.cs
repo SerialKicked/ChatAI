@@ -63,7 +63,7 @@ namespace WaifuAI.src.forms
                     Close();
                 }
             };
-            Message = LLMEngine.History.GetMessageByID(messageID);
+            Message = LLMEngine.History.GetMessageByID(messageID, true);
             if (Message == null)
             {
                 Close();
