@@ -55,10 +55,10 @@ namespace WaifuAI.src.forms
                 cb_background.Items.Add(Path.GetFileName(file));
             }
             cb_background.SelectedIndex = cb_background.Items.IndexOf(Program.Settings.BackgroundFile);
-            
+
             num_memtokens.Value = Program.Settings.SessionReservedTokens;
             ck_sessionmemory.Checked = LLMEngine.Settings.SessionMemorySystem;
-            
+
             switch (LLMEngine.Settings.RAGHeuristic)
             {
                 case HNSW.Net.NeighbourSelectionHeuristic.SelectSimple:
@@ -86,6 +86,7 @@ namespace WaifuAI.src.forms
             ck_reduceitalic.Checked = Program.Settings.RoleplayFormatting.RemoveItalic;
             num_italicratio.Value = (decimal)Program.Settings.RoleplayFormatting.RemoveItalicRatio;
             num_removeitalicmaxword.Value = Program.Settings.RoleplayFormatting.RemoveItalicMaxWords;
+            ck_lastparaphfilter.Checked = Program.Settings.RoleplayFormatting.LastParagraphDeleter;
             cb_pastsession.SelectedIndex = (int)Program.Settings.SessionHandling;
             ck_sysrag.Checked = Program.Settings.MoveAllInsertsToSysPrompt;
             ck_remlastsentence.Checked = Program.Settings.RemoveCutSentence;
@@ -103,7 +104,7 @@ namespace WaifuAI.src.forms
                 webplug.EnforceCorrectGrammar = Program.Settings.WebsitePluginGrammar;
                 webplug.KeywordDetection = Program.Settings.WebsitePluginUseKeywords;
             }
-            
+
             _isinitloading = saveinit;
         }
 
@@ -127,6 +128,7 @@ namespace WaifuAI.src.forms
                 Program.Settings.RoleplayFormatting.RemoveItalic = ck_reduceitalic.Checked;
                 Program.Settings.RoleplayFormatting.RemoveItalicRatio = (float)num_italicratio.Value;
                 Program.Settings.RoleplayFormatting.RemoveItalicMaxWords = (int)num_removeitalicmaxword.Value;
+                Program.Settings.RoleplayFormatting.LastParagraphDeleter = ck_lastparaphfilter.Checked;
                 Program.Settings.RemoveCutSentence = ck_remlastsentence.Checked;
                 Program.Settings.StopGenerationOnFirstParagraph = ck_oneparagraph.Checked;
                 Program.Settings.WebsitePluginUseKeywords = ck_webkeyword.Checked;
@@ -145,7 +147,7 @@ namespace WaifuAI.src.forms
 
                 var str = JsonConvert.SerializeObject(Program.Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
-                
+
                 if (LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
                 {
                     searchplug.KeywordDetection = !ck_alwayswebsearch.Checked;
@@ -156,7 +158,7 @@ namespace WaifuAI.src.forms
                     webplug.EnforceCorrectGrammar = Program.Settings.WebsitePluginGrammar;
                     webplug.KeywordDetection = Program.Settings.WebsitePluginUseKeywords;
                 }
-                
+
                 // Apply RAG settings
                 RAGEngine.ApplySettings();
             }
@@ -358,6 +360,11 @@ namespace WaifuAI.src.forms
             Program.Settings.WebsitePluginGrammar = ck_webgrammar.Checked;
             if (!_isinitloading)
                 SaveSettings();
+        }
+
+        private void ck_lastparaphfilter_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.Settings.RoleplayFormatting.LastParagraphDeleter = ck_lastparaphfilter.Checked;
         }
     }
 }

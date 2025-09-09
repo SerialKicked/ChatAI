@@ -55,6 +55,7 @@ namespace WaifuAI.src.forms
             label32 = new Label();
             ck_sessionmemory = new CheckBox();
             groupBox10 = new GroupBox();
+            ckShowHidden = new CheckBox();
             num_msgcount = new NumericUpDown();
             label30 = new Label();
             num_fontsize = new NumericUpDown();
@@ -84,7 +85,7 @@ namespace WaifuAI.src.forms
             panel1 = new Panel();
             bt_Close = new Button();
             HelptoolTip = new ToolTip(components);
-            ckShowHidden = new CheckBox();
+            ck_lastparaphfilter = new CheckBox();
             groupBox24.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_removeitalicmaxword).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_italicratio).BeginInit();
@@ -109,6 +110,7 @@ namespace WaifuAI.src.forms
             // 
             // groupBox24
             // 
+            groupBox24.Controls.Add(ck_lastparaphfilter);
             groupBox24.Controls.Add(num_removeitalicmaxword);
             groupBox24.Controls.Add(label63);
             groupBox24.Controls.Add(ck_oneparagraph);
@@ -128,7 +130,7 @@ namespace WaifuAI.src.forms
             groupBox24.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox24.Location = new Point(416, 124);
             groupBox24.Name = "groupBox24";
-            groupBox24.Size = new Size(402, 352);
+            groupBox24.Size = new Size(402, 380);
             groupBox24.TabIndex = 29;
             groupBox24.TabStop = false;
             groupBox24.Text = "Output Formatting";
@@ -408,6 +410,17 @@ namespace WaifuAI.src.forms
             groupBox10.TabIndex = 26;
             groupBox10.TabStop = false;
             groupBox10.Text = "User Interface";
+            // 
+            // ckShowHidden
+            // 
+            ckShowHidden.AutoSize = true;
+            ckShowHidden.Font = new Font("Segoe UI", 9F);
+            ckShowHidden.Location = new Point(6, 66);
+            ckShowHidden.Name = "ckShowHidden";
+            ckShowHidden.Size = new Size(189, 19);
+            ckShowHidden.TabIndex = 31;
+            ckShowHidden.Text = "Show hidden system messages";
+            ckShowHidden.UseVisualStyleBackColor = true;
             // 
             // num_msgcount
             // 
@@ -737,16 +750,17 @@ namespace WaifuAI.src.forms
             bt_Close.UseVisualStyleBackColor = false;
             bt_Close.Click += bt_Close_Click;
             // 
-            // ckShowHidden
+            // ck_lastparaphfilter
             // 
-            ckShowHidden.AutoSize = true;
-            ckShowHidden.Font = new Font("Segoe UI", 9F);
-            ckShowHidden.Location = new Point(6, 66);
-            ckShowHidden.Name = "ckShowHidden";
-            ckShowHidden.Size = new Size(189, 19);
-            ckShowHidden.TabIndex = 31;
-            ckShowHidden.Text = "Show hidden system messages";
-            ckShowHidden.UseVisualStyleBackColor = true;
+            ck_lastparaphfilter.AutoSize = true;
+            ck_lastparaphfilter.Font = new Font("Segoe UI", 9F);
+            ck_lastparaphfilter.Location = new Point(6, 338);
+            ck_lastparaphfilter.Name = "ck_lastparaphfilter";
+            ck_lastparaphfilter.Size = new Size(206, 19);
+            ck_lastparaphfilter.TabIndex = 41;
+            ck_lastparaphfilter.Text = "Delete meaningless last paragraph";
+            ck_lastparaphfilter.UseVisualStyleBackColor = true;
+            ck_lastparaphfilter.CheckedChanged += ck_lastparaphfilter_CheckedChanged;
             // 
             // SettingsForm
             // 
@@ -848,5 +862,6 @@ namespace WaifuAI.src.forms
         private Button bt_Close;
         private ToolTip HelptoolTip;
         private CheckBox ckShowHidden;
+        private CheckBox ck_lastparaphfilter;
     }
 }
