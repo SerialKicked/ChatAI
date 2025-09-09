@@ -45,6 +45,9 @@ namespace WaifuAI
         public static Character? Bot => LLMEngine.Bot as Character;
         public static Character? User => LLMEngine.User as Character;
 
+        /// <summary>
+        /// Custom markdown pipeline with extensions
+        /// </summary>
         public static MarkdownPipeline CustomMarkDownPipeline { get; } = new MarkdownPipelineBuilder()
             .UseSoftlineBreakAsHardlineBreak().UseAdvancedExtensions()
             .UseEmojiAndSmiley()
@@ -52,56 +55,9 @@ namespace WaifuAI
             .Use(new QuoteColorExtension())
             .Build();
 
-        public MainForm()
-        {
-            InitializeComponent();
-
-            ed_input.SpellCheckLanguage = "en-US";
-
-            HelptoolTip.SetToolTip(ck_ragenabled, "Use RAG functionalities to insert summaries of relevant previous sessions based on the user's input." + Environment.NewLine + "Configurable in the Program.Settings tab.");
-            HelptoolTip.SetToolTip(ck_senseoftime, "Insert day and time information to prompt when relevant to give the bot a better understanding of time.");
-            HelptoolTip.SetToolTip(ck_sessionmemory, "Use a set amount of tokens (set in Program.Settings) to insert summaries of previous chat sessions with this bot." + Environment.NewLine + "This drastically increases the bot's long-term memory.");
-            HelptoolTip.SetToolTip(ck_worldinfo, "Use the WorldInfo file(s) associated with this bot. WorldInfo is a list of keyword-triggered textual information that is inserted into the prompt when the conditions are met." + Environment.NewLine + "See the World Info tab for additional information.");
-
-            HelptoolTip.SetToolTip(ck_charsampler, "If checked, and when using a bot persona containing a list of compatible inference Program.Settings, the inference Program.Settings will be picked at random from that list each time the bot write a new message." + Environment.NewLine + Environment.NewLine + "Will lead to a more creative and less repetitive interaction, but also less consistent.");
-            HelptoolTip.SetToolTip(ck_onlinerag, "If checked, the bot may perform a web search (using DuckDuckGo) to improve its responses when asked to.");
-
-            AgentRuntime.RegisterPlugin("GoalDesignerTask", new GoalDesignerTask());
-            AgentRuntime.RegisterPlugin("ActiveResearchTask", new ActiveResearchTask());
-
-            // Chat related events
-            SetupChatMenu();
-            _isinitloading = false;
-            _activityTimer.OnTrigger += OnBotInitiateConversation;
-
-
-            
-            Application.AddMessageFilter(new ActivityMessageFilter());
-            ed_input.KeyPress += Ed_input_KeyPress!;
-
-        }
-
-        private void Ed_input_KeyPress(object sender, KeyPressEventArgs e)
-        {
-           // never triggered on Enter
-           if (e.KeyChar == (char)13)
-            {
-                // never called
-                e.Handled = true;
-                if (ModifierKeys == Keys.Shift)
-                {
-                    int caretPosition = ed_input.SelectionStart;
-                    ed_input.Text = ed_input.Text.Insert(caretPosition, Environment.NewLine);
-                    ed_input.SelectionStart = caretPosition + Environment.NewLine.Length;
-                    //ed_input.Text += Environment.NewLine;
-                }
-                else
-                    SendMessage(sender, e);
-            }
-        }
-
-        
-
+        /// <summary>
+        /// Intercepts app level mouse/keyboard activity to check if user active or not
+        /// </summary>
         public class ActivityMessageFilter : IMessageFilter
         {
             public bool PreFilterMessage(ref Message m)
@@ -122,38 +78,60 @@ namespace WaifuAI
             }
         }
 
-
-        private async void OnBotInitiateConversation(object? sender, EventArgs e)
+        /// <summary>
+        /// // Helper method to use Invoke with async methods
+        /// </summary>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        private Task<bool> InvokeAsync(Func<Task> func)
         {
-            if (LLMEngine.Status != SystemStatus.Ready || Bot?.CanInitiateChat != true || _afkmessagecount > 2)
-                return;
-            _activityTimer?.Reset();
-            _impersonatemode = false;
-            _postdate = DateTime.Now;
-            var lastusermessage = LLMEngine.History.CurrentSession.Messages.LastOrDefault(m => m.Role == AuthorRole.User);
-            if (lastusermessage == null)
-                return;
-            var message = "The last message from {{user}} was posted " + AIToolkit.StringExtensions.TimeSpanToHumanString(DateTime.Now - lastusermessage.Date) + " ago. We're {{day}}, the {{date}} at {{time}} now. Would you like to send a message to {{user}} now? Use your best judgement based on the conversation above. In case you don't want to send a message, just respond with No. If you want to send a message, write the message to {{user}} directly while making sure it's contextually relevant. \n\nThis query will repeat every few minutes.";
-            if (_afkmessagecount > 1)
-                message += " You've already sent " + _afkmessagecount + " unanswered messages in a row.";
-            else if (_afkmessagecount == 1)
-                message += " You've already sent a message.";
-            message = LLMEngine.ReplaceMacros(message);
-            statusbar.Items[1].Text = "Analyzing...";
-            var response = await LLMEngine.QuickInferenceForSystemPrompt(message, false);
-            response = response.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd).Trim();
-
-            if (!string.IsNullOrEmpty(response) && !response.StartsWith("no", StringComparison.InvariantCultureIgnoreCase))
+            var tcs = new TaskCompletionSource<bool>();
+            BeginInvoke(new Action(async () =>
             {
-                var msg = new SingleMessage(AuthorRole.Assistant, DateTime.Now, response, LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName);
-                Bot.History.LogMessage(msg);
-                _afkmessagecount++;
-                await SendMessageToUI(msg);
-                // play a notification sound
-                System.Media.SystemSounds.Question.Play();
-            }
+                try
+                {
+                    await func();
+                    tcs.SetResult(true);
+                }
+                catch (Exception ex)
+                {
+                    tcs.SetException(ex);
+                }
+            }));
+            return tcs.Task;
         }
 
+        public MainForm()
+        {
+            InitializeComponent();
+
+            ed_input.SpellCheckLanguage = "en-US";
+
+            HelptoolTip.SetToolTip(ck_ragenabled, "Use RAG functionalities to insert summaries of relevant previous sessions based on the user's input." + Environment.NewLine + "Configurable in the Program.Settings tab.");
+            HelptoolTip.SetToolTip(ck_senseoftime, "Insert day and time information to prompt when relevant to give the bot a better understanding of time.");
+            HelptoolTip.SetToolTip(ck_sessionmemory, "Use a set amount of tokens (set in Program.Settings) to insert summaries of previous chat sessions with this bot." + Environment.NewLine + "This drastically increases the bot's long-term memory.");
+            HelptoolTip.SetToolTip(ck_worldinfo, "Use the WorldInfo file(s) associated with this bot. WorldInfo is a list of keyword-triggered textual information that is inserted into the prompt when the conditions are met." + Environment.NewLine + "See the World Info tab for additional information.");
+
+            HelptoolTip.SetToolTip(ck_charsampler, "If checked, and when using a bot persona containing a list of compatible inference Program.Settings, the inference Program.Settings will be picked at random from that list each time the bot write a new message." + Environment.NewLine + Environment.NewLine + "Will lead to a more creative and less repetitive interaction, but also less consistent.");
+            HelptoolTip.SetToolTip(ck_onlinerag, "If checked, the bot may perform a web search (using DuckDuckGo) to improve its responses when asked to.");
+
+            // Load our app level agent plugins
+            AgentRuntime.RegisterPlugin("GoalDesignerTask", new GoalDesignerTask());
+
+            // Chat related events
+            SetupChatMenu();
+            _isinitloading = false;
+            _activityTimer.OnTrigger += OnBotInitiateConversation;
+
+            // Autodetection of the user's activity (mostly for the background agent functionalities)
+            Application.AddMessageFilter(new ActivityMessageFilter());
+
+            ed_input.KeyPress += Ed_input_KeyPress!;
+        }
+
+        /// <summary>
+        /// Loads the chat menu with available characters, inference settings, system prompts and instructs.
+        /// </summary>
         private void SetupChatMenu()
         {
             cb_bot.Items.Clear();
@@ -218,6 +196,11 @@ namespace WaifuAI
             }, 1024);
         }
 
+        /// <summary>
+        /// Display an image from a base64 string. Yeah we could use the image directly in prod, 
+        /// but the point is to show the base64 convertion works.
+        /// </summary>
+        /// <param name="base64String"></param>
         private void DisplayImage(string base64String)
         {
             try
@@ -234,14 +217,9 @@ namespace WaifuAI
             }
         }
 
-        private void OnStatusChanged(object? sender, SystemStatus e)
-        {
-            Invoke((System.Windows.Forms.MethodInvoker)delegate
-            {
-                UpdateUIState();
-            });
-        }
-
+        /// <summary>
+        /// Refresh the UI state
+        /// </summary>
         private void UpdateUIState()
         {
             _activityTimer?.Reset();
@@ -258,7 +236,8 @@ namespace WaifuAI
                 bt_impersonate.Enabled = true;
                 cb_bot.Enabled = true;
                 cb_user.Enabled = true;
-                ShowCurrentSessionInfo();
+                var (tokens, duration) = LLMEngine.History.GetCurrentChatSessionInfo();
+                statusbar.Items[0].Text = $"Current Session: {duration.TotalDays:F2} days ({tokens} tokens)";
             }
             else if (LLMEngine.Status == SystemStatus.Busy)
             {
@@ -296,6 +275,22 @@ namespace WaifuAI
                 ck_charsampler.Checked = false;
             }
         }
+
+        /// <summary>
+        /// Close the program gracefully
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            AutoTalkTimer.Stop();
+            SaveSettings();
+            LLMEngine.Bot.EndChat(backup: true);
+            if (!string.IsNullOrEmpty(LLMEngine.Bot.UniqueName))
+                (LLMEngine.Bot as IFile).SaveToFile("data/chars/" + LLMEngine.Bot.UniqueName + ".json");
+        }
+
+        #region *** Event Handlers ***
 
         private void OnFullPromptReady(object? sender, string e)
         {
@@ -409,76 +404,67 @@ namespace WaifuAI
             (LLMEngine.Bot as Character)?.SaveChatHistory();
         }
 
-        private async Task OutputTTS(string text)
+        private async void OnBotInitiateConversation(object? sender, EventArgs e)
         {
-            var paragraphs = text.Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries);
-
-            if (paragraphs.Length == 0)
+            if (LLMEngine.Status != SystemStatus.Ready || Bot?.CanInitiateChat != true || _afkmessagecount > 2)
                 return;
+            _activityTimer?.Reset();
+            _impersonatemode = false;
+            _postdate = DateTime.Now;
+            var lastusermessage = LLMEngine.History.CurrentSession.Messages.LastOrDefault(m => m.Role == AuthorRole.User);
+            if (lastusermessage == null)
+                return;
+            var message = "The last message from {{user}} was posted " + AIToolkit.StringExtensions.TimeSpanToHumanString(DateTime.Now - lastusermessage.Date) + " ago. We're {{day}}, the {{date}} at {{time}} now. Would you like to send a message to {{user}} now? Use your best judgement based on the conversation above. In case you don't want to send a message, just respond with No. If you want to send a message, write the message to {{user}} directly while making sure it's contextually relevant. \n\nThis query will repeat every few minutes.";
+            if (_afkmessagecount > 1)
+                message += " You've already sent " + _afkmessagecount + " unanswered messages in a row.";
+            else if (_afkmessagecount == 1)
+                message += " You've already sent a message.";
+            message = LLMEngine.ReplaceMacros(message);
+            statusbar.Items[1].Text = "Analyzing...";
+            var response = await LLMEngine.QuickInferenceForSystemPrompt(message, false);
+            response = response.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd).Trim();
 
-            var voiceID = Bot?.TTSVoice ?? "Waifu";
-            int index = 0;
-
-            // Start generating TTS for the first paragraph
-            var currentWaveTask = LLMEngine.GenerateTTS(paragraphs[index], voiceID);
-            index++;
-
-            while (Program.Settings.UseTTS && LLMEngine.Status != SystemStatus.Busy)
+            if (!string.IsNullOrEmpty(response) && !response.StartsWith("no", StringComparison.InvariantCultureIgnoreCase))
             {
-                // Wait for the current TTS generation to complete
-                var currentWave = await currentWaveTask;
-
-                // Start playing the current audio chunk in a background task
-                var playTask = PlayAudioAsync(currentWave);
-
-                // Generate TTS for the next paragraph while the current one is playing
-                Task<byte[]>? nextWaveTask = null;
-                if (index < paragraphs.Length)
-                {
-                    nextWaveTask = LLMEngine.GenerateTTS(paragraphs[index], voiceID);
-                    index++;
-                }
-
-                // Wait for the current audio playback to finish
-                await playTask;
-
-                if (nextWaveTask == null)
-                {
-                    // No more paragraphs to process
-                    break;
-                }
-
-                // Move to the next audio chunk
-                currentWaveTask = nextWaveTask;
+                var msg = new SingleMessage(AuthorRole.Assistant, DateTime.Now, response, LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName);
+                Bot.History.LogMessage(msg);
+                _afkmessagecount++;
+                await SendMessageToUI(msg);
+                // play a notification sound
+                System.Media.SystemSounds.Question.Play();
             }
         }
 
-        private void ShowCurrentSessionInfo()
+        private void OnStatusChanged(object? sender, SystemStatus e)
         {
-            var (tokens, duration) = LLMEngine.History.GetCurrentChatSessionInfo();
-            statusbar.Items[0].Text = $"Current Session: {duration.TotalDays:F2} days ({tokens} tokens)";
+            Invoke((System.Windows.Forms.MethodInvoker)delegate
+            {
+                UpdateUIState();
+            });
         }
 
-        // Helper method to use Invoke with async methods
-        private Task<bool> InvokeAsync(Func<Task> func)
-        {
-            var tcs = new TaskCompletionSource<bool>();
-            BeginInvoke(new Action(async () =>
-            {
-                try
-                {
-                    await func();
-                    tcs.SetResult(true);
-                }
-                catch (Exception ex)
-                {
-                    tcs.SetException(ex);
-                }
-            }));
-            return tcs.Task;
-        }
+        #endregion
 
         #region *** Main Chat Functions ***
+
+        private void Ed_input_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // never triggered on Enter
+            if (e.KeyChar == (char)13)
+            {
+                // never called
+                e.Handled = true;
+                if (ModifierKeys == Keys.Shift)
+                {
+                    int caretPosition = ed_input.SelectionStart;
+                    ed_input.Text = ed_input.Text.Insert(caretPosition, Environment.NewLine);
+                    ed_input.SelectionStart = caretPosition + Environment.NewLine.Length;
+                    //ed_input.Text += Environment.NewLine;
+                }
+                else
+                    SendMessage(sender, e);
+            }
+        }
 
         private void PrepareResponse()
         {
@@ -1037,7 +1023,6 @@ namespace WaifuAI
 
         #endregion
 
-
         #region *** WebView2 Handling ***
 
         private string InjectDialogCSS(string htmlContent)
@@ -1413,6 +1398,74 @@ namespace WaifuAI
 
         #endregion
 
+        #region *** Audio and TTS ***
+
+        private async Task OutputTTS(string text)
+        {
+            var paragraphs = text.Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries);
+
+            if (paragraphs.Length == 0)
+                return;
+
+            var voiceID = Bot?.TTSVoice ?? "Waifu";
+            int index = 0;
+
+            // Start generating TTS for the first paragraph
+            var currentWaveTask = LLMEngine.GenerateTTS(paragraphs[index], voiceID);
+            index++;
+
+            while (Program.Settings.UseTTS && LLMEngine.Status != SystemStatus.Busy)
+            {
+                // Wait for the current TTS generation to complete
+                var currentWave = await currentWaveTask;
+
+                // Start playing the current audio chunk in a background task
+                var playTask = PlayAudioAsync(currentWave);
+
+                // Generate TTS for the next paragraph while the current one is playing
+                Task<byte[]>? nextWaveTask = null;
+                if (index < paragraphs.Length)
+                {
+                    nextWaveTask = LLMEngine.GenerateTTS(paragraphs[index], voiceID);
+                    index++;
+                }
+
+                // Wait for the current audio playback to finish
+                await playTask;
+
+                if (nextWaveTask == null)
+                {
+                    // No more paragraphs to process
+                    break;
+                }
+
+                // Move to the next audio chunk
+                currentWaveTask = nextWaveTask;
+            }
+        }
+
+        private static Task PlayAudioAsync(byte[] audioData)
+        {
+            return Task.Run(() =>
+            {
+                using var audioStream = new MemoryStream(audioData);
+                using var player = new SoundPlayer(audioStream);
+                player.PlaySync(); // Plays the sound and waits until it completes
+            });
+        }
+
+        private void ck_ttstoggle_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.Settings.UseTTS = ck_ttstoggle.Checked;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Called when the selected character is changed in the settings tab.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void cb_bot_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cb_bot.SelectedItem is string key && !string.IsNullOrEmpty(key))
@@ -1436,6 +1489,9 @@ namespace WaifuAI
                 UpdateUIState();
             }
         }
+
+
+        // === Below lies the button click hell :D Venture at your own risk ===
 
         private void num_maxcontext_ValueChanged(object sender, EventArgs e)
         {
@@ -1472,15 +1528,6 @@ namespace WaifuAI
         private void num_temperature_ValueChanged(object sender, EventArgs e)
         {
             LLMEngine.ForceTemperature = ((double)num_temperature.Value);
-        }
-
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            AutoTalkTimer.Stop();
-            SaveSettings();
-            LLMEngine.Bot.EndChat(backup: true);
-            if (!string.IsNullOrEmpty(LLMEngine.Bot.UniqueName))
-                (LLMEngine.Bot as IFile).SaveToFile("data/chars/" + LLMEngine.Bot.UniqueName + ".json");
         }
 
         private void ck_senseoftime_CheckedChanged(object sender, EventArgs e)
@@ -1546,21 +1593,6 @@ namespace WaifuAI
                 ck_onlinerag.Enabled = false;
                 ck_onlinerag.Checked = false;
             }
-        }
-
-        private static Task PlayAudioAsync(byte[] audioData)
-        {
-            return Task.Run(() =>
-            {
-                using var audioStream = new MemoryStream(audioData);
-                using var player = new SoundPlayer(audioStream);
-                player.PlaySync(); // Plays the sound and waits until it completes
-            });
-        }
-
-        private void ck_ttstoggle_CheckedChanged(object sender, EventArgs e)
-        {
-            Program.Settings.UseTTS = ck_ttstoggle.Checked;
         }
 
         private void bt_editchar_Click(object sender, EventArgs e)
