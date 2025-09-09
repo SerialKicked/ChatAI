@@ -112,6 +112,7 @@ namespace WaifuAI.src.forms
             if (listSampler.SelectedItem == null || disableevents)
                 return;
             SelectedSamplerEditor = DataFiles.Inference[listSampler.SelectedItem.ToString()!].GetCopy();
+            edFileName.Text = listSampler.SelectedItem.ToString();
             LoadSamplerSettings(SelectedSamplerEditor);
         }
 

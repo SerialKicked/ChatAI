@@ -118,7 +118,7 @@ namespace WaifuAI.src.forms
             if (disableevents || listInstruct.SelectedItem == null)
                 return;
             SelectedInstructEditor = DataFiles.Instruct[listInstruct.SelectedItem!.ToString()!].Copy<InstructFormat>()!;
-            edInstruct.Text = SelectedInstructEditor.UniqueName;
+            edInstruct.Text = listInstruct.SelectedItem!.ToString();
             CreateInstructControls(panContent, SelectedInstructEditor);
         }
 

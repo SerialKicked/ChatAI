@@ -57,6 +57,7 @@ namespace WaifuAI.src.forms
             if (listPrompt.SelectedItem == null || disableevents)
                 return;
             SelectedPromptEditor = DataFiles.SysPrompts[listPrompt.SelectedItem.ToString()!].Copy<SystemPrompt>()!;
+            edFileName.Text = listPrompt.SelectedItem.ToString();
             LoadSysPromptSettings(SelectedPromptEditor);
         }
 
