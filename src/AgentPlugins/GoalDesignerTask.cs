@@ -89,7 +89,7 @@ namespace WaifuAI.AgentPlugins
                 };
                 if (RAGEngine.Enabled)
                     await memunit.EmbedText().ConfigureAwait(false);
-                owner.Brain.Memories.Add(memunit);
+                owner.Brain.Memorize(memunit);
             }
 
 
@@ -126,7 +126,7 @@ namespace WaifuAI.AgentPlugins
                 };
                 if (RAGEngine.Enabled)
                     await memunit.EmbedText();
-                owner.Brain.Memories.Add(memunit);
+                owner.Brain.Memorize(memunit);
             }
 
             // Let's go through each goal, detail them, and add to the persona's Brain
