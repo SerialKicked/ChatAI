@@ -125,7 +125,6 @@ namespace WaifuAI.src.forms
             num_wentryposition.Value = worldEntry.PositionIndex;
             num_wentrypriority.Value = worldEntry.Priority;
             cb_wentrykwlink.SelectedIndex = (int)worldEntry.WordLink;
-            cb_wentrylocation.SelectedIndex = (int)worldEntry.Position;
             ck_wentrycasesensitive.Checked = worldEntry.CaseSensitive;
             ck_wentryenabled.Checked = worldEntry.Enabled;
             numWItriggerchance.Value = (decimal)worldEntry.TriggerChance;
@@ -158,7 +157,6 @@ namespace WaifuAI.src.forms
             SelectedWorldEntryEditor.PositionIndex = (int)num_wentryposition.Value;
             SelectedWorldEntryEditor.Priority = (int)num_wentrypriority.Value;
             SelectedWorldEntryEditor.WordLink = (KeyWordLink)cb_wentrykwlink.SelectedIndex;
-            SelectedWorldEntryEditor.Position = (WEPosition)cb_wentrylocation.SelectedIndex;
             SelectedWorldEntryEditor.CaseSensitive = ck_wentrycasesensitive.Checked;
             SelectedWorldEntryEditor.Enabled = ck_wentryenabled.Checked;
             SelectedWorldEntryEditor.TriggerChance = (float)numWItriggerchance.Value;

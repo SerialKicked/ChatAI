@@ -147,12 +147,11 @@ namespace WaifuAI
                         Duration = item.sticky,
                         Enabled = !item.disable,
                         Content = item.content,
-                        Category = AIToolkit.Memory.MemoryType.WorldInfo,
-                        Insertion = AIToolkit.Memory.MemoryInsertion.Trigger,
+                        Category = MemoryType.WorldInfo,
+                        Insertion = MemoryInsertion.Trigger,
                         Name = item.comment,
                         Priority = item.order,
                         PositionIndex = item.depth,
-                        Position = item.position == 1 ? WEPosition.SystemPrompt : WEPosition.Chat,
                         WordLink = item.selectiveLogic switch
                         {
                             0 => KeyWordLink.And,
