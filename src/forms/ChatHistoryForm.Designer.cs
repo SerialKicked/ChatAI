@@ -57,6 +57,7 @@ namespace WaifuAI.src.forms
             panel5 = new Panel();
             btEmbedAll = new Button();
             bt_deleteAllHistory = new Button();
+            button1 = new Button();
             panel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_sessioncontent).BeginInit();
             panel7.SuspendLayout();
@@ -217,6 +218,7 @@ namespace WaifuAI.src.forms
             // groupBox12
             // 
             groupBox12.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox12.Controls.Add(button1);
             groupBox12.Controls.Add(ck_hist_isrp);
             groupBox12.Controls.Add(bt_historyupdate);
             groupBox12.Controls.Add(lbl_sessiondata);
@@ -379,6 +381,16 @@ namespace WaifuAI.src.forms
             bt_deleteAllHistory.UseVisualStyleBackColor = false;
             bt_deleteAllHistory.Click += bt_deleteAllHistory_Click;
             // 
+            // button1
+            // 
+            button1.Location = new Point(449, 11);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 22);
+            button1.TabIndex = 21;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // ChatHistoryForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -435,5 +447,6 @@ namespace WaifuAI.src.forms
         private Panel panel5;
         private Button btEmbedAll;
         private Button bt_deleteAllHistory;
+        private Button button1;
     }
 }
