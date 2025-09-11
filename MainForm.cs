@@ -1740,38 +1740,41 @@ namespace WaifuAI
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            LLMEngine.NamesInPromptOverride = false;
-            var sense = LLMEngine.Bot.DatesInSessionSummaries;
-            LLMEngine.Bot.DatesInSessionSummaries = false;
-            //var res = await SentimentAnalysis.Analyze("I am very happy today!");
-            var availtokens = LLMEngine.MaxContextLength - 1024;
-            var requestedtask = "Based on the information provided in the system prompt, write a list of goals for {{char}}. Things she would want to convince {{user}} to do, or even things she'd like to think or do for herself. Keep the list realistic.";
+            SentimentAnalysis.Enabled = true;
+            var cool = await SentimentAnalysis.Analyze(ed_input.Text);
+            
+            //LLMEngine.NamesInPromptOverride = false;
+            //var sense = LLMEngine.Bot.DatesInSessionSummaries;
+            //LLMEngine.Bot.DatesInSessionSummaries = false;
+            ////var res = await SentimentAnalysis.Analyze("I am very happy today!");
+            //var availtokens = LLMEngine.MaxContextLength - 1024;
+            //var requestedtask = "Based on the information provided in the system prompt, write a list of goals for {{char}}. Things she would want to convince {{user}} to do, or even things she'd like to think or do for herself. Keep the list realistic.";
 
-            var promptbuild = LLMEngine.Client!.GetPromptBuilder();
-            var sysprompt = "You are {{char}}, and you're looking for things you'd want to convince {{user}} to do or become, but seems reluctant to try." + LLMEngine.NewLine +
-                LLMEngine.NewLine +
-                "## Name: {{char}}" + LLMEngine.NewLine + LLMEngine.NewLine +
-                "{{charbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
-                "## Name: {{user}}" + LLMEngine.NewLine + LLMEngine.NewLine +
-                "{{userbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
-                "## Chronological chat session summaries:" + LLMEngine.NewLine + LLMEngine.NewLine;
+            //var promptbuild = LLMEngine.Client!.GetPromptBuilder();
+            //var sysprompt = "You are {{char}}, and you're looking for things you'd want to convince {{user}} to do or become, but seems reluctant to try." + LLMEngine.NewLine +
+            //    LLMEngine.NewLine +
+            //    "## Name: {{char}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+            //    "{{charbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+            //    "## Name: {{user}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+            //    "{{userbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+            //    "## Chronological chat session summaries:" + LLMEngine.NewLine + LLMEngine.NewLine;
 
-            availtokens -= promptbuild.GetTokenCount(AuthorRole.SysPrompt, sysprompt);
-            availtokens -= promptbuild.GetTokenCount(AuthorRole.User, requestedtask);
+            //availtokens -= promptbuild.GetTokenCount(AuthorRole.SysPrompt, sysprompt);
+            //availtokens -= promptbuild.GetTokenCount(AuthorRole.User, requestedtask);
 
-            var summaries = LLMEngine.History.GetPreviousSummaries(availtokens, allowRP: true);
-            sysprompt += summaries;
-            promptbuild.AddMessage(AuthorRole.SysPrompt, sysprompt);
-            promptbuild.AddMessage(AuthorRole.User, requestedtask);
+            //var summaries = LLMEngine.History.GetPreviousSummaries(availtokens, allowRP: true);
+            //sysprompt += summaries;
+            //promptbuild.AddMessage(AuthorRole.SysPrompt, sysprompt);
+            //promptbuild.AddMessage(AuthorRole.User, requestedtask);
 
-            var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, 1000);
-            var finalstr = await LLMEngine.SimpleQuery(ct);
-            if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart))
-            {
-                finalstr = finalstr.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd);
-            }
-            LLMEngine.Bot.DatesInSessionSummaries = sense;
-            LLMEngine.NamesInPromptOverride = null;
+            //var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, 1000);
+            //var finalstr = await LLMEngine.SimpleQuery(ct);
+            //if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart))
+            //{
+            //    finalstr = finalstr.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd);
+            //}
+            //LLMEngine.Bot.DatesInSessionSummaries = sense;
+            //LLMEngine.NamesInPromptOverride = null;
         }
     }
 }

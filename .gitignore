@@ -363,5 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /data/chatlogs/*.json
 /data/worlds/*.json
-/data/models/*.gguf
 /data/websites/*.*
