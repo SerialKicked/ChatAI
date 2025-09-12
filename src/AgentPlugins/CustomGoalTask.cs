@@ -89,7 +89,7 @@ namespace WaifuAI.AgentPlugins
                     Insertion = MemoryInsertion.NaturalForced,
                     Added = DateTime.Now,
                     EndTime = DateTime.Now.AddDays(30),
-                    Priority = 2
+                    Priority = 5
                 };
                 if (RAGEngine.Enabled)
                     await memunit.EmbedText().ConfigureAwait(false);
