@@ -59,18 +59,18 @@ namespace WaifuAI.AgentPlugins
 
             var sessioncount = cfg.GetSetting<int>("MinSessionSpacing");
 
-            var mainPrompt = GetSystemPromptContent(owner, rpmode, sessioncount * 2);
+            var mainPrompt = GetSystemPromptContent(rpmode, sessioncount * 2);
 
             var allgoals = new List<string>();
 
             // add personal goals
             var req = "Based on the information provided, write a list of personal goals you want to set for yourself as {{char}}. Those have to be goals, or topics of research for you directly. They must be of interest to you, independently of {{user}}'s own goals.";
-            var goallist = await GetGoalList(owner, mainPrompt, req).ConfigureAwait(false) ?? new();
+            var goallist = await GetGoalList(mainPrompt, req).ConfigureAwait(false) ?? new();
             allgoals.AddRange(goallist.Goals);
 
             // add user specific goals
             req = "Based on the information provided, write a list of things that you want {{user}} to do or become for you. This can also include any personal topic where you want to question or challenge {{user}}'s perspective. Order the list from most to least important.";
-            goallist = await GetGoalList(owner, mainPrompt, req).ConfigureAwait(false);
+            goallist = await GetGoalList(mainPrompt, req).ConfigureAwait(false);
             allgoals.AddRange(goallist.Goals);
 
             // add goals from sessions
@@ -88,7 +88,7 @@ namespace WaifuAI.AgentPlugins
             foreach (var item in allgoals)
             {
                 var sprompt = await GetGoalSpecificSystemPrompt(owner, rpmode, item, sessioncount * 2).ConfigureAwait(false);
-                var rec = await GetGoalDetail(owner, sprompt, item).ConfigureAwait(false);
+                var rec = await GetGoalDetail(sprompt, item).ConfigureAwait(false);
                 goaldetails.Add(rec);
                 // Cancellation requested?
                 if (ct.IsCancellationRequested)
@@ -128,7 +128,7 @@ namespace WaifuAI.AgentPlugins
 
         }
 
-        private async Task<GoalRecord> GetGoalDetail(BasePersona owner, string systemprompt, string goalinfo)
+        private static async Task<GoalRecord> GetGoalDetail(string systemprompt, string goalinfo)
         {
             var goalrecord = new GoalRecord();
             var grammar = await goalrecord.GetGrammar().ConfigureAwait(false);
@@ -164,7 +164,7 @@ namespace WaifuAI.AgentPlugins
             return goalrecord!;
         }
 
-        private async Task<GoalList> GetGoalList(BasePersona owner, string systemprompt, string query)
+        private static async Task<GoalList> GetGoalList(string systemprompt, string query)
         {
             var goallist = new GoalList();
             var grammar = await goallist.GetGrammar().ConfigureAwait(false);
@@ -199,7 +199,7 @@ namespace WaifuAI.AgentPlugins
             return goallist!;
         }
 
-        private string GetSystemPromptContent(BasePersona owner, RPHandling rpHandling, int maxsession)
+        private static string GetSystemPromptContent(RPHandling rpHandling, int maxsession)
         {
             var availtokens = LLMEngine.MaxContextLength - 2048 - 20; 
             var promptbuild = LLMEngine.Client!.GetPromptBuilder();
@@ -218,7 +218,7 @@ namespace WaifuAI.AgentPlugins
             return sysprompt.CleanupAndTrim();
         }
 
-        private async Task<string> GetGoalSpecificSystemPrompt(BasePersona owner, RPHandling rpHandling, string goal, int maxsession)
+        private static async Task<string> GetGoalSpecificSystemPrompt(BasePersona owner, RPHandling rpHandling, string goal, int maxsession)
         {
             var availtokens = LLMEngine.MaxContextLength - 2048 - 20;
             var promptbuild = LLMEngine.Client!.GetPromptBuilder();

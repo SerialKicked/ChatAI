@@ -224,7 +224,7 @@ namespace WaifuAI.src.forms
                 res.AppendLinuxLine("### Sentiments: " + session.MetaData.Relevance.ToString());
                 foreach (var item in session.Sentiments)
                 {
-                    res.AppendLine($"{item.Item1}: {item.Item2}");
+                    res.AppendLine($"{item.Label}: {item.Probability}");
                 }
                 res.AppendLinuxLine().AppendLinuxLine();
 
@@ -397,49 +397,13 @@ namespace WaifuAI.src.forms
         {
             if (_selectedSession == null)
                 return;
-
-            var action = new SessionAnalysisAction();
-
-            var q = _selectedSession.MetaData.IsRoleplaySession ?
-                "Describe your sentiments and feelings about this roleplay, both in the moment and now." :
-                "Describe your sentiments and feelings about this discussion, express yourself freely and honestly.";
-
-            var opinion = await action.Execute(new SessionAnalysisParams(_selectedSession, q), CancellationToken.None);
-
-            var res = await SentimentAnalysis.MergedAnalyze(opinion, topK: 10); 
-            var res2 = await _selectedSession.GetSentimentTotalFor(LLMEngine.Bot.UniqueName);
-
-            res2.RemoveAll(e => e.Item2 < 0.05);
-
-            // Merge the 2 lists and weight res1 more
-            foreach (var item in res2)
-            {
-                var existing = res.Find(r => r.Label == item.Item1);
-                if (existing != default)
-                {
-                    existing.Probability = (existing.Probability * 0.7f) + (item.Probability * 0.3f);
-                }
-                else
-                {
-                    if (item.Label == "desire")
-                        res.Add((item.Label, item.Probability));
-                    else
-                        res.Add((item.Label, item.Probability * 0.3f));
-                }
-            }
-
-            // Sort by probability (highest to lowest)
-            res.Sort((a, b) => b.Probability.CompareTo(a.Probability));
-            res.RemoveAll(e => e.Probability < 0.3f || e.Label == "neutral");
-            res = res.Take(5).ToList();
-
+            await _selectedSession.UpdateSentiment();
             var strb = new StringBuilder();
-            foreach (var item in res)
+            foreach (var item in _selectedSession.Sentiments)
             {
                 strb.AppendLine($"{item.Label}: {item.Probability}");
             }
             MessageBox.Show(strb.ToString(), "Sentiment Analysis Results");
-
         }
     }
 }
