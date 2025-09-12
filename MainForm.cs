@@ -118,6 +118,7 @@ namespace WaifuAI
             // Load our app level agent plugins
             AgentRuntime.RegisterPlugin("GoalDesignerTask", new GoalDesignerTask());
             AgentRuntime.RegisterPlugin("CustomGoalTask", new CustomGoalTask());
+            AgentRuntime.RegisterPlugin("JournalTask", new JournalTask());
 
             // Chat related events
             SetupChatMenu();
