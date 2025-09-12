@@ -210,6 +210,7 @@ namespace WaifuAI.Plugins
             }
             else
             {
+                crawler.ClearCache();
                 return new WebNavigationResult(false, "Failed to navigate the website properly.", null);
             }
         }
@@ -220,7 +221,11 @@ namespace WaifuAI.Plugins
             Program.BigForm!.ForceUpdateLastMessage($"**{LLMEngine.Bot.Name}:** *I am browsing {page.Title}...*");
             var websiterender = await Website!.RenderPage(page.ID, string.Empty, crawler);
             if (string.IsNullOrEmpty(websiterender))
+            {
+                crawler.ClearCache();
                 return new WebNavigationResult(false, "Failed to load the page content.", null);
+
+            }
 
             LLMEngine.NamesInPromptOverride = false;
             var promptbuilder = LLMEngine.Client!.GetPromptBuilder();
@@ -255,6 +260,7 @@ namespace WaifuAI.Plugins
                             //else if (NavigationHistory && metaindex == 0)
                             //    return await StartWebNavigation(_basegoal);
                         }
+                        crawler.ClearCache();
                         return new WebNavigationResult(false, "Failed to navigate meta page", null);
                     }
                 case PageType.ListingPage:
@@ -266,9 +272,11 @@ namespace WaifuAI.Plugins
                             //else if (NavigationHistory && index == 0)
                             //    return await StartWebNavigation(_basegoal);
                         }
+                        crawler.ClearCache();
                         return new WebNavigationResult(false, "Failed to navigate the listing properly.", null);
                     }
                 default:
+                    crawler.ClearCache();
                     return new WebNavigationResult(false, "The request page type is not handled yet.", null);
             }
         }
