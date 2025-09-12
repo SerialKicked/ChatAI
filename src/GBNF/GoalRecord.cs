@@ -41,7 +41,7 @@ namespace WaifuAI.GBNF
             {
                 requestedTask += $"- {prop.Key}: {prop.Value}\n";
             }
-            requestedTask = LLMEngine.ReplaceMacros(requestedTask);
+            requestedTask = LLMEngine.Bot.ReplaceMacros(requestedTask);
             return requestedTask;
         }
     }
@@ -83,7 +83,7 @@ namespace WaifuAI.GBNF
             {
                 requestedTask += $"- {prop.Key}: {prop.Value}\n";
             }
-            requestedTask = LLMEngine.ReplaceMacros(requestedTask);
+            requestedTask = LLMEngine.Bot.ReplaceMacros(requestedTask);
             return requestedTask;
         }
     }

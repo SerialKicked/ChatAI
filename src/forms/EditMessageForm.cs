@@ -45,7 +45,7 @@ namespace WaifuAI.src.forms
             }
             else
             {
-                Message.Message = LLMEngine.ReplaceMacros(ed_message.Text.ToLinuxFormat());
+                Message.Message = LLMEngine.Bot.ReplaceMacros(ed_message.Text.ToLinuxFormat());
                 DialogResult = DialogResult.OK;
                 Close();
             }

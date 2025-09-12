@@ -450,7 +450,7 @@ namespace WaifuAI
                 message += " You've already sent " + _afkmessagecount + " unanswered messages in a row.";
             else if (_afkmessagecount == 1)
                 message += " You've already sent a message.";
-            message = LLMEngine.ReplaceMacros(message);
+            message = LLMEngine.Bot.ReplaceMacros(message);
             statusbar.Items[1].Text = "Analyzing...";
             var response = await LLMEngine.QuickInferenceForSystemPrompt(message, false);
             response = response.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd).Trim();
@@ -556,7 +556,7 @@ namespace WaifuAI
 
             if (!string.IsNullOrEmpty(response))
             {
-                return (new SingleMessage(AuthorRole.System, DateTime.Now, LLMEngine.ReplaceMacros(response), LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName), usercmdonly);
+                return (new SingleMessage(AuthorRole.System, DateTime.Now, LLMEngine.Bot.ReplaceMacros(response), LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName), usercmdonly);
             }
             return (null, usercmdonly);
         }
@@ -579,7 +579,7 @@ namespace WaifuAI
             if (!string.IsNullOrEmpty(ed_input.Text))
             {
                 var msgtxt = ed_input.Text.ToLinuxFormat();
-                msgtxt = LLMEngine.ReplaceMacros(msgtxt, LLMEngine.User, LLMEngine.Bot);
+                msgtxt = LLMEngine.Bot.ReplaceMacros(msgtxt);
                 var msg = new SingleMessage(AuthorRole.User, DateTime.Now, msgtxt, LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName);
 
                 if (ed_input.Text.StartsWith("/sys "))

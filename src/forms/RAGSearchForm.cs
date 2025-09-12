@@ -43,7 +43,7 @@ namespace WaifuAI.src.forms
                     if (item.session is MemoryUnit unit)
                     {
                         title = unit.Name;
-                        content = LLMEngine.ReplaceMacros(unit.Content);
+                        content = LLMEngine.Bot.ReplaceMacros(unit.Content);
                     }
                     res.AppendLine(cat + " (dist: " + distance + "): " + title);
                     res.AppendLine(content);
