@@ -118,7 +118,7 @@ namespace WaifuAI.AgentPlugins
             var prefill = LLMEngine.Instruct.PrefillThinking;
             LLMEngine.Instruct.PrefillThinking = false;
 
-            var promptbuild = LLMEngine.Client!.GetPromptBuilder();
+            var promptbuild = LLMEngine.GetPromptBuilder();
 
             var requestedTask = "Based on the information provided in the system prompt, {{char}} has set the following goal for themselves: " + goalinfo + LLMEngine.NewLine + "Fill the required information about this specific goal so it can processed. " + goalrecord.GetQuery();
 
@@ -154,7 +154,7 @@ namespace WaifuAI.AgentPlugins
             var prefill = LLMEngine.Instruct.PrefillThinking;
             LLMEngine.Instruct.PrefillThinking = false;
 
-            var promptbuild = LLMEngine.Client!.GetPromptBuilder();
+            var promptbuild = LLMEngine.GetPromptBuilder();
 
             var requestedTask = query + LLMEngine.NewLine + goallist.GetQuery();
 
@@ -180,7 +180,7 @@ namespace WaifuAI.AgentPlugins
         private static string GetSystemPromptContent(int maxsession)
         {
             var availtokens = LLMEngine.MaxContextLength - 2048 - 20; 
-            var promptbuild = LLMEngine.Client!.GetPromptBuilder();
+            var promptbuild = LLMEngine.GetPromptBuilder();
             var sysprompt = "You are {{char}}, an independent AI entity with your own goals, tastes, and inner world." + LLMEngine.NewLine +
                 LLMEngine.NewLine +
                 "## Name: {{char}} (this is you)" + LLMEngine.NewLine + LLMEngine.NewLine +
@@ -198,7 +198,7 @@ namespace WaifuAI.AgentPlugins
         private static async Task<string> GetGoalSpecificSystemPrompt(BasePersona owner, string goal, int maxsession)
         {
             var availtokens = LLMEngine.MaxContextLength - 2048 - 20;
-            var promptbuild = LLMEngine.Client!.GetPromptBuilder();
+            var promptbuild = LLMEngine.GetPromptBuilder();
             var sysprompt = "You are {{char}}, and you're about to check to design personal goals based on the provided information." + LLMEngine.NewLine +
                 LLMEngine.NewLine +
                 "## Name: {{char}}" + LLMEngine.NewLine + LLMEngine.NewLine +

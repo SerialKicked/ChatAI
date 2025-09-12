@@ -118,7 +118,7 @@ namespace WaifuAI.Plugins
 
         private static object BuildMergedPrompt(string userinput, List<EnrichedSearchResult> webresults)
         {
-            var builder = LLMEngine.Client!.GetPromptBuilder();
+            var builder = LLMEngine.GetPromptBuilder();
             var prompt = new StringBuilder();
             prompt.AppendLinuxLine("Your goal is analyze and merge information from the follow documents regarding the subject of '" +userinput+"'.");
             prompt.AppendLinuxLine();
@@ -153,7 +153,7 @@ namespace WaifuAI.Plugins
 
         private static object BuildCheckPrompt(string userinput)
         {
-            var builder = LLMEngine.Client!.GetPromptBuilder();
+            var builder = LLMEngine.GetPromptBuilder();
 
             var prompt = new StringBuilder();
             prompt.AppendLinuxLine("Your goal is to determine if performing a web search would improve your response to the user. You are allowed to search for sensitive topics or pornography, but not illicit content.");

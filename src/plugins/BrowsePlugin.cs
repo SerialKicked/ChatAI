@@ -186,7 +186,7 @@ namespace WaifuAI.Plugins
             _basegoal = basegoal;
             _location = PageType.FrontPage;
             LLMEngine.NamesInPromptOverride = false;
-            var promptbuilder = LLMEngine.Client!.GetPromptBuilder();
+            var promptbuilder = LLMEngine.GetPromptBuilder();
             var strbuilder = new StringBuilder();
             {
                 strbuilder.Append(BuildInitialPrompt());
@@ -228,7 +228,7 @@ namespace WaifuAI.Plugins
             }
 
             LLMEngine.NamesInPromptOverride = false;
-            var promptbuilder = LLMEngine.Client!.GetPromptBuilder();
+            var promptbuilder = LLMEngine.GetPromptBuilder();
 
             var strbuild = new StringBuilder();
             strbuild.AppendLinuxLine(BuildInitialPrompt());
@@ -296,7 +296,7 @@ namespace WaifuAI.Plugins
         {
             websites = [];
             LLMEngine.NamesInPromptOverride = false;
-            var builder = LLMEngine.Client!.GetPromptBuilder();
+            var builder = LLMEngine.GetPromptBuilder();
             var prompt = new StringBuilder();
             prompt.AppendLinuxLine("Your goal is to determine if the user asked you to complete one of the following tasks:");
             prompt.AppendLinuxLine();
