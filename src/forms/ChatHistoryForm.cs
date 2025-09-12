@@ -353,17 +353,17 @@ namespace WaifuAI.src.forms
                 loadingForm.SetMessage("Embedding all chat sessions. This might take a moment.");
                 loadingForm.SetProgress(0);
                 loadingForm.SetMax(LLMEngine.History.Sessions.Count);
-                RAGEngine.OnEmbedSession += (s, e) =>
+                RAGEngine.OnEmbedText += (s, e) =>
                 {
                     loadingForm.AddProgress(1);
                 };
-                await RAGEngine.EmbedChatSessions(LLMEngine.History);
+                await LLMEngine.History.EmbedChatSessions();
                 loadingForm.SetMessage("Saving history...");
                 (LLMEngine.Bot as Character)?.SaveChatHistory(true);
-                loadingForm.SetMessage("Loading Updated Vector Database...");
-                RAGEngine.VectorizeChatBot(LLMEngine.Bot);
                 loadingForm.SetMessage("Brain Embedding...");
                 await LLMEngine.Bot.Brain.RegenEmbeds();
+                loadingForm.SetMessage("Loading Updated Vector Database...");
+                RAGEngine.VectorizeChatBot(LLMEngine.Bot);
             }
             finally
             {

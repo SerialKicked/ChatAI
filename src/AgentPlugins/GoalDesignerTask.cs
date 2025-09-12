@@ -77,7 +77,11 @@ namespace WaifuAI.AgentPlugins
             var grabcount = cfg.GetSetting<int>("MinSessionSpacing");
             var prevsessions = sessions.Skip(Math.Max(0, sessions.Count - 1 - grabcount)).Take(grabcount).ToList();
             foreach (var prev in prevsessions)
+            {
+                if (prev.MetaData.IsRoleplaySession && rpmode == RPHandling.Never)
+                    continue;
                 allgoals.AddRange(prev.MetaData.FutureGoals);
+            }
 
 
             var goaldetails = new List<GoalRecord>();
