@@ -57,8 +57,7 @@ namespace WaifuAI.Files
                     MyPoints = ps.Copy<PointSystem>()!;
                 MyPoints.PointCount = PointValue;
             }
-
-            LoadChatHistory();
+            // Load World Data
             MyWorlds = [.. DataFiles.WorldInfos.Values.Where(wi => Worlds.Contains(wi.UniqueName))];
             foreach (var item in MyWorlds)
                 item.Reset();
@@ -66,14 +65,13 @@ namespace WaifuAI.Files
 
         public override void EndChat(bool backup = false)
         {
-            base.EndChat(backup);
             PointValue = MyPoints.PointCount;
-            SaveChatHistory(backup);
+            base.EndChat(backup);
         }
 
-        public void LoadChatHistory() => LoadChatHistory("data/chatlogs/");
+        public override void LoadChatHistory() => LoadChatHistory("data/chatlogs/");
 
-        public void SaveChatHistory(bool backup = false) => SaveChatHistory("data/chatlogs/", backup);
+        public override void SaveChatHistory(bool backup = false) => SaveChatHistory("data/chatlogs/", backup);
 
         public void ClearChatHistory(bool deletefile = true) => ClearChatHistory("data/chatlogs/", deletefile);
 
