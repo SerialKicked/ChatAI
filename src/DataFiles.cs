@@ -78,7 +78,7 @@ namespace WaifuAI
         public static void ReloadChars()
         {
             Characters = Load<Character>("data/chars/", "*.json");
-            LLMEngine.LoadPersona([.. Characters.Values]);
+            LLMEngine.LoadPersonas([.. Characters.Values]);
         }
     }
 }
