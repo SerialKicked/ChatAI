@@ -26,6 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LetheAISharp\LetheAISharp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="src\forms\RawLogsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -176,9 +180,5 @@
     <None Update="mods\renpy_logger.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\AnarkisTools\LetheAISharp.csproj" />
   </ItemGroup>
 </Project>
