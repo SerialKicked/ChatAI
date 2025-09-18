@@ -1,6 +1,6 @@
 # w(AI)fu.NET
 
-Windows-based high-performance front-end for [KoboldCPP](https://github.com/LostRuins/koboldcpp) and OpenAI API written in C#.NET. Using [LetheAISharp](https://github.com/SerialKicked/LetheAISharp) to do the heavy lifting.
+Windows-based high-performance front-end for [KoboldCPP](https://github.com/LostRuins/koboldcpp) and OpenAI API written in C#.NET. Using [Lethe AI](https://github.com/SerialKicked/Lethe-AI-Sharp) to do the heavy lifting.
 
 ![WaifuAI_RjiqpbMiTq](https://github.com/user-attachments/assets/a4d1595d-a5f4-41f6-885e-5c50cd8fa619)
 
@@ -24,11 +24,11 @@ Windows-based high-performance front-end for [KoboldCPP](https://github.com/Lost
 
 ## Supported Backend API
 - **KoboldCPP API**: Recommended, with the most functionalities
-- **OpenAI API**: Compatible with most backends, less functionalities
+- **OpenAI API**: Compatible with most backends, much less functionalities
 
 This application is designed for local deployment. The backend must be running on your computer or on a local network. The following backends have been tested: KoboldCpp, LM Studio, and Text Generation Web UI.
 
-## Current Limitations:
+## Current Limitations
 - No support for those drag & drop character cards/images (not planned, I use a very different system)
 - 1v1 chat only, no group mode (yet)
 - No RAG support for external documents (yet)
@@ -37,6 +37,8 @@ This application is designed for local deployment. The backend must be running o
 - Runs on Windows 10+ (may work on 7, untested)
 - To take full advantage of the LTM and dynamic character systems, a context window of at least 10K is required, 16K+ is *heavily* recommended
 - Small models (<=8B params), and models with poor instruction following, may struggle with some of the features
+- You can find a list of recommended models in my [Hugging Face Collections](https://huggingface.co/SerialKicked/collections)
+- For TTS and Web Search functionalities, KoboldCPP API is required
 
 ## License
 
