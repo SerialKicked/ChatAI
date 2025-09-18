@@ -13,7 +13,7 @@ namespace WaifuAI.GBNF
 
     public class UserRecord : LLMExtractableBase<UserRecord>
     {
-        [JsonIgnore] protected static string Schema = string.Empty;
+        [JsonIgnore] private static string Schema = string.Empty;
 
         [MinLength(0)]
         [MaxLength(20)]
@@ -22,11 +22,11 @@ namespace WaifuAI.GBNF
 
         [MinLength(0)]
         [MaxLength(20)]
-        [Description("A detailed list of {{user}}'s sexual interests, activities and kinks")]
-        public List<string> Sexuality { get; set; } = [];
+        [Description("A detailed list of {{user}}'s tastes and hobbies")]
+        public List<string> Tastes { get; set; } = [];
 
 
-        [MinLength(0)][MaxLength(30)][Description("A list of other facts about {{user}}, like tastes, hobbies, and anything not fitting in the other categories")]
+        [MinLength(0)][MaxLength(30)][Description("A list of other facts about {{user}} not fitting in the other categories")]
         public List<string> UserInfo { get; set; } = [];
 
 

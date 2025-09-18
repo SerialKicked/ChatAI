@@ -414,8 +414,11 @@ namespace WaifuAI
                 var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
 
                 var msg = LLMEngine.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMEngine.User, LLMEngine.Bot);
-                await Task.Delay(50);
-                await WebEditLastMessage(MsgPrefix + stringfix, msg.Guid);
+                Invoke((System.Windows.Forms.MethodInvoker)async delegate
+                {
+                    await Task.Delay(50);
+                    await WebEditLastMessage(MsgPrefix + stringfix, msg.Guid);
+                });
                 PrepareResponse();
                 if (_forcereload || Program.Settings.MaxMessagesOnScreen <= LLMEngine.History.CurrentSession.Messages.Count)
                 {
@@ -1742,7 +1745,7 @@ namespace WaifuAI
         private async void button1_Click(object sender, EventArgs e)
         {
             SentimentAnalysis.Enabled = true;
-            var cool = await SentimentAnalysis.Analyze(ed_input.Text);
+            _ = await SentimentAnalysis.Analyze(ed_input.Text);
             
             //LLMEngine.NamesInPromptOverride = false;
             //var sense = LLMEngine.Bot.DatesInSessionSummaries;

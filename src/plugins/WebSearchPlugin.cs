@@ -1,4 +1,5 @@
 ﻿using AIToolkit;
+using AIToolkit.Agent.Actions;
 using AIToolkit.API;
 using AIToolkit.Files;
 using AIToolkit.LLM;
@@ -72,7 +73,10 @@ namespace WaifuAI.Plugins
         /// <returns></returns>
         public async Task<PluginResponse> ReplaceUserInput(string userinput)
         {
-            var response = string.Empty;
+            if (!LLMEngine.SupportsGrammar || !LLMEngine.SupportsWebSearch)
+                return new PluginResponse { IsHandled = false, Response = null };
+
+            var response = false;
             responseAppendNeeded = false;
             if (KeywordDetection)
             {
@@ -85,23 +89,35 @@ namespace WaifuAI.Plugins
             {
                 response = await QueryLLM(userinput);
             }
-            if (string.IsNullOrEmpty(response))
+            if (!response)
+                return new PluginResponse { IsHandled = false, Response = null };
+
+            var topicsearch = new FindSingleTopicSearchAction();
+            var topics = await topicsearch.Execute(new FindResearchTopicsParams
+            {
+                Messages = [ new SingleMessage(AuthorRole.User, DateTime.Now, userinput, LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName) ],
+                IncludeBios = false,
+                CustomRequest = "Review the message in the prompt above and identify the topic for which a web search would be beneficial.",
+            }, CancellationToken.None);
+            if (topics == null || topics.SearchQueries.Count == 0)
                 return new PluginResponse { IsHandled = false, Response = null };
             // run web search
-            Program.BigForm!.ForceUpdateLastMessage($"**{LLMEngine.Bot.Name}:** *I am searching the web for '{response}'...*");
-            lastresponse = await LLMEngine.WebSearch(response);
-            if (lastresponse == null || lastresponse.Count == 0)
+            Program.BigForm!.ForceUpdateLastMessage($"**{LLMEngine.Bot.Name}:** *I am searching the web about '{topics.Topic}'...*");
+            var searcheng = new WebSearchAction();
+            var webres = await searcheng.Execute(topics, CancellationToken.None);
+            if (webres == null || webres.Count == 0)
                 return new PluginResponse { IsHandled = false, Response = null };
-            responseAppendNeeded = true;
+            lastresponse = webres;
 
-            Program.BigForm!.ForceUpdateLastMessage($"**{LLMEngine.Bot.Name}:** *I am processing web info about '{response}'...*");
-            var mergedResponse = await MergeResults(response, lastresponse);
-            if (string.IsNullOrWhiteSpace(mergedResponse))
+            Program.BigForm!.ForceUpdateLastMessage($"**{LLMEngine.Bot.Name}:** *I am processing web info about '{topics.Topic}'...*");
+            var merger = new MergeSearchResultsAction();
+            var merged = await merger.Execute(new MergeSearchParams("This is a search done regarding the currently active discussion.", topics.Topic, topics.Reason, webres), CancellationToken.None);
+            if (string.IsNullOrWhiteSpace(merged))
                 return new PluginResponse { IsHandled = false, Response = null };
 
             var formatedresponsed = new StringBuilder();
             formatedresponsed.AppendLinuxLine("You looked up the information on the web and found the following information that you can use to improve your response:").AppendLine();
-            formatedresponsed.AppendLinuxLine(mergedResponse.CleanupAndTrim());
+            formatedresponsed.AppendLinuxLine(merged.CleanupAndTrim());
 
             var output = new PluginResponse
             {
@@ -116,41 +132,6 @@ namespace WaifuAI.Plugins
         #endregion
 
 
-        private static object BuildMergedPrompt(string userinput, List<EnrichedSearchResult> webresults)
-        {
-            var builder = LLMEngine.GetPromptBuilder();
-            var prompt = new StringBuilder();
-            prompt.AppendLinuxLine("Your goal is analyze and merge information from the follow documents regarding the subject of '" +userinput+"'.");
-            prompt.AppendLinuxLine();
-            var cnt = 0;
-            foreach (var item in webresults)
-            {
-                prompt.AppendLinuxLine($"# {item.Title}");
-                prompt.AppendLinuxLine($"{item.Description}").AppendLinuxLine();
-                if (item.ContentExtracted && LLMEngine.GetTokenCount(item.FullContent) <= 3000)
-                    cnt++;
-            }
-            prompt.AppendLinuxLine();
-            if (cnt > 0)
-            {
-                prompt.AppendLinuxLine($"You can also use the following content to improve your response.").AppendLinuxLine();
-                for (var i = 0; i < webresults.Count; i++)
-                {
-                    var item = webresults[i];
-                    if (item.ContentExtracted && LLMEngine.GetTokenCount(item.FullContent) <= 3000)
-                    {
-                        prompt.AppendLinuxLine($"# {item.Title} (Full Content)");
-                        prompt.AppendLinuxLine($"{item.FullContent.CleanupAndTrim()}").AppendLinuxLine().AppendLinuxLine();
-                    }
-                }
-            }
-
-            builder.AddMessage(AuthorRole.SysPrompt, prompt.ToString());
-            builder.AddMessage(AuthorRole.Assistant, $"Merge the information available in the system prompt regarding '{userinput}' to offer a detailed explanation on about this topic.");
-
-            return builder.PromptToQuery(AuthorRole.Assistant, 0.5, 1024);
-        }
-
         private static object BuildCheckPrompt(string userinput)
         {
             var builder = LLMEngine.GetPromptBuilder();
@@ -158,19 +139,22 @@ namespace WaifuAI.Plugins
             var prompt = new StringBuilder();
             prompt.AppendLinuxLine("Your goal is to determine if performing a web search would improve your response to the user. You are allowed to search for sensitive topics or pornography, but not illicit content.");
             prompt.AppendLinuxLine();
-            prompt.AppendLinuxLine("Typical examples where a web search should be done:");
+            prompt.AppendLinuxLine("# Typical examples where a web search should be done:");
+            prompt.AppendLinuxLine();
             prompt.AppendLinuxLine("- The user is asking a direct question about history, a location, or a news item");
             prompt.AppendLinuxLine("- The user is explicitly telling you to search for something on the internet");
-            prompt.AppendLinuxLine("- You're not sure of the response");
             prompt.AppendLinuxLine("- If information and links from the web would improve your response");
-            prompt.AppendLinuxLine("Examples where a web search would not be beneficial:");
+            prompt.AppendLinuxLine("# Examples where a web search would not be beneficial:");
+            prompt.AppendLinuxLine();
             prompt.AppendLinuxLine("- You're actively engaged in roleplay or deep conversation with the user");
             prompt.AppendLinuxLine("- The query is illegal or dangerous");
             prompt.AppendLinuxLine();
-            prompt.AppendLinuxLine("If the user directly asks you to search the internet, or if you think a web search would be beneficial, respond with the exact query you want to search the web for (and ONLY that query). Otherwise, just say No.");
-
+            prompt.AppendLinuxLine("# Input to evaluate:");
+            prompt.AppendLinuxLine();
+            prompt.AppendLinuxLine(userinput);
+            prompt.AppendLinuxLine();
             builder.AddMessage(AuthorRole.SysPrompt, prompt.ToString());
-            builder.AddMessage(AuthorRole.User, userinput);
+            builder.AddMessage(AuthorRole.User, "If the input to evaluate directly asks you to search the internet, or if you think a web search would be beneficial, respond with Yes. Otherwise, just say No. Do not argue are add any more information. Just Yes or No.");
             return builder.PromptToQuery(AuthorRole.Assistant, 0.5);
         }
 
@@ -180,7 +164,7 @@ namespace WaifuAI.Plugins
         /// <param name="inputText"></param>
         /// <param name="lb"></param>
         /// <returns></returns>
-        private static async Task<string> QueryLLM(string inputText)
+        private static async Task<bool> QueryLLM(string inputText)
         {
             var savedKV = false;
             if (LLMEngine.Client!.SupportsStateSave)
@@ -208,22 +192,8 @@ namespace WaifuAI.Plugins
             }
             if (string.IsNullOrEmpty(response) || 
                 (response.StartsWith("no", StringComparison.InvariantCultureIgnoreCase) && response.Length<5))
-                return string.Empty;
-            return response;
-        }
-
-        private static async Task<string> MergeResults(string topic, List<EnrichedSearchResult> webresults)
-        {
-            LLMEngine.NamesInPromptOverride = false;
-            var fullprompt = BuildMergedPrompt(topic, webresults);
-            var response = await LLMEngine.SimpleQuery(fullprompt);
-            if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart))
-            {
-                response = response.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd);
-            }
-            LLMEngine.Logger?.LogInformation("WebSearch Plugin Result: {output}", response);
-            LLMEngine.NamesInPromptOverride = null;
-            return response;
+                return false;
+            return true;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace WaifuAI.GBNF
 
     public class GoalList : LLMExtractableBase<GoalList>
     {
-        [JsonIgnore] protected static string Schema = string.Empty;
+        [JsonIgnore] private static string Schema = string.Empty;
 
         [Required]
         [MinLength(0)]
@@ -48,7 +48,7 @@ namespace WaifuAI.GBNF
 
     public class GoalRecord : LLMExtractableBase<GoalRecord>
     {
-        [JsonIgnore] protected static string Schema = string.Empty;
+        [JsonIgnore] private static string Schema = string.Empty;
 
         [Required]
         [Description("A goal {{char}} wants to set for themselves.")]

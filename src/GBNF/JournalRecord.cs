@@ -14,7 +14,7 @@ namespace WaifuAI.GBNF
 
     public class JournalRecord : LLMExtractableBase<JournalRecord>
     {
-        [JsonIgnore] protected static string Schema = string.Empty;
+        [JsonIgnore] private static string Schema = string.Empty;
 
         [Required]
         [Description("Decide if you want to write in your journal today (true or false)")]
