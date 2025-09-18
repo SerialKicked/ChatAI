@@ -1,8 +1,8 @@
-using AIToolkit;
-using AIToolkit.Files;
-using AIToolkit.LLM;
-using AIToolkit.Memory;
-using AIToolkit.SearchAPI;
+using LetheAISharp;
+using LetheAISharp.Files;
+using LetheAISharp.LLM;
+using LetheAISharp.Memory;
+using LetheAISharp.SearchAPI;
 using Newtonsoft.Json;
 using System;
 using System.ComponentModel;

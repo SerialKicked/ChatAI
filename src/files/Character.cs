@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System.Text;
 using WaifuAI.Plugins;
-using AIToolkit.Files;
-using AIToolkit.LLM;
+using LetheAISharp.Files;
+using LetheAISharp.LLM;
 using Microsoft.VisualBasic;
 using System.IO;
 

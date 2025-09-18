@@ -1,6 +1,6 @@
-﻿using AIToolkit;
-using AIToolkit.Agent;
-using AIToolkit.LLM;
+﻿using LetheAISharp;
+using LetheAISharp.Agent;
+using LetheAISharp.LLM;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

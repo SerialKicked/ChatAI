@@ -1,6 +1,6 @@
-﻿using AIToolkit;
-using AIToolkit.LLM;
-using AIToolkit.Memory;
+﻿using LetheAISharp;
+using LetheAISharp.LLM;
+using LetheAISharp.Memory;
 using System;
 using System.Text;
 using System.Threading.Tasks;

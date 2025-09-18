@@ -179,6 +179,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AnarkisTools\AIToolkit.csproj" />
+    <ProjectReference Include="..\AnarkisTools\LetheAISharp.csproj" />
   </ItemGroup>
 </Project>

@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using AIToolkit.Files;
-using AIToolkit.LLM;
-using AIToolkit;
+using LetheAISharp.Files;
+using LetheAISharp.LLM;
+using LetheAISharp;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Diagnostics;
 

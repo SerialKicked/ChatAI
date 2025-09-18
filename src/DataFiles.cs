@@ -5,11 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AIToolkit.Files;
+using LetheAISharp.Files;
 using WaifuAI.Files;
 using WaifuAI.Web;
-using AIToolkit.LLM;
-using AIToolkit.Memory;
+using LetheAISharp.LLM;
+using LetheAISharp.Memory;
 
 namespace WaifuAI
 {

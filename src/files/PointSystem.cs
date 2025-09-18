@@ -1,5 +1,5 @@
-﻿using AIToolkit;
-using AIToolkit.Files;
+﻿using LetheAISharp;
+using LetheAISharp.Files;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;

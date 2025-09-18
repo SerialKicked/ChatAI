@@ -1,6 +1,6 @@
-using AIToolkit.Files;
-using AIToolkit.Memory;
-using AIToolkit;
+using LetheAISharp.Files;
+using LetheAISharp.Memory;
+using LetheAISharp;
 using System;
 using System.ComponentModel;
 using System.Drawing;

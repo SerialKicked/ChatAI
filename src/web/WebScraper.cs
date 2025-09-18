@@ -6,8 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using AIToolkit.Files;
-using AIToolkit;
+using LetheAISharp.Files;
+using LetheAISharp;
 
 namespace WaifuAI.Web
 {

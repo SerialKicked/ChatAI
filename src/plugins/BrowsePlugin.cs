@@ -10,11 +10,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using WaifuAI.Files;
-using AIToolkit.Files;
-using AIToolkit.LLM;
-using AIToolkit;
+using LetheAISharp.Files;
+using LetheAISharp.LLM;
+using LetheAISharp;
 using WaifuAI.Web;
-using AIToolkit.API;
+using LetheAISharp.API;
 
 namespace WaifuAI.Plugins
 {

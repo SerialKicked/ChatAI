@@ -1,8 +1,8 @@
-﻿using AIToolkit;
-using AIToolkit.Agent.Actions;
-using AIToolkit.API;
-using AIToolkit.Files;
-using AIToolkit.LLM;
+﻿using LetheAISharp;
+using LetheAISharp.Agent.Actions;
+using LetheAISharp.API;
+using LetheAISharp.Files;
+using LetheAISharp.LLM;
 using AngleSharp.Dom;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using WaifuAI.Files;
-using static AIToolkit.SearchAPI.WebSearchAPI;
+using static LetheAISharp.SearchAPI.WebSearchAPI;
 
 namespace WaifuAI.Plugins
 

@@ -1,7 +1,7 @@
-﻿using AIToolkit;
-using AIToolkit.Files;
-using AIToolkit.LLM;
-using AIToolkit.Memory;
+﻿using LetheAISharp;
+using LetheAISharp.Files;
+using LetheAISharp.LLM;
+using LetheAISharp.Memory;
 using Microsoft.Extensions.Logging;
 using System;
 using System.CodeDom.Compiler;

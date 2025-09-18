@@ -1,8 +1,8 @@
-using AIToolkit;
-using AIToolkit.Agent.Actions;
-using AIToolkit.Files;
-using AIToolkit.LLM;
-using AIToolkit.Memory;
+using LetheAISharp;
+using LetheAISharp.Agent.Actions;
+using LetheAISharp.Files;
+using LetheAISharp.LLM;
+using LetheAISharp.Memory;
 using Markdig;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;

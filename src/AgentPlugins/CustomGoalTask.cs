@@ -1,9 +1,9 @@
-﻿using AIToolkit;
-using AIToolkit.Agent;
-using AIToolkit.API;
-using AIToolkit.Files;
-using AIToolkit.LLM;
-using AIToolkit.Memory;
+﻿using LetheAISharp;
+using LetheAISharp.Agent;
+using LetheAISharp.API;
+using LetheAISharp.Files;
+using LetheAISharp.LLM;
+using LetheAISharp.Memory;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Collections.Generic;

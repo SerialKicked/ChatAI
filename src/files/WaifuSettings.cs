@@ -1,7 +1,7 @@
-﻿using AIToolkit;
-using AIToolkit.Files;
-using AIToolkit.LLM;
-using AIToolkit.SearchAPI;
+﻿using LetheAISharp;
+using LetheAISharp.Files;
+using LetheAISharp.LLM;
+using LetheAISharp.SearchAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;

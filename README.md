@@ -1,6 +1,6 @@
 # w(AI)fu.NET
 
-Windows-based high-performance front-end for [KoboldCPP](https://github.com/LostRuins/koboldcpp) and OpenAI API written in C#.NET. Using [AIToolkit](https://github.com/SerialKicked/AIToolkit) to do the heavy lifting.
+Windows-based high-performance front-end for [KoboldCPP](https://github.com/LostRuins/koboldcpp) and OpenAI API written in C#.NET. Using [LetheAISharp](https://github.com/SerialKicked/LetheAISharp) to do the heavy lifting.
 
 ![WaifuAI_RjiqpbMiTq](https://github.com/user-attachments/assets/a4d1595d-a5f4-41f6-885e-5c50cd8fa619)
 

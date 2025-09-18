@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AIToolkit;
-using AIToolkit.Files;
-using AIToolkit.LLM;
+using LetheAISharp;
+using LetheAISharp.Files;
+using LetheAISharp.LLM;
 using WaifuAI.Files;
 
 namespace WaifuAI.Plugins

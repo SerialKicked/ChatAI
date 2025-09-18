@@ -1,5 +1,5 @@
-﻿using AIToolkit.Files;
-using AIToolkit;
+﻿using LetheAISharp.Files;
+using LetheAISharp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

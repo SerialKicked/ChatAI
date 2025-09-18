@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using AIToolkit.Files;
-using AIToolkit.LLM;
-using AIToolkit.Memory;
+using LetheAISharp.Files;
+using LetheAISharp.LLM;
+using LetheAISharp.Memory;
 using Newtonsoft.Json;
 
 namespace WaifuAI

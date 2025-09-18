@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using AIToolkit.LLM;
-using AIToolkit;
+using LetheAISharp.LLM;
+using LetheAISharp;
 
 namespace WaifuAI.src.forms
 {

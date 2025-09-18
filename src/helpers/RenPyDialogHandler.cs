@@ -1,5 +1,5 @@
-﻿using AIToolkit;
-using AIToolkit.LLM;
+﻿using LetheAISharp;
+using LetheAISharp.LLM;
 using Markdig.Syntax;
 using MessagePack;
 using System;

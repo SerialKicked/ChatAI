@@ -1,6 +1,6 @@
-﻿using AIToolkit;
-using AIToolkit.Files;
-using AIToolkit.LLM;
+﻿using LetheAISharp;
+using LetheAISharp.Files;
+using LetheAISharp.LLM;
 using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Collections.Generic;

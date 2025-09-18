@@ -1,4 +1,4 @@
-using AIToolkit.LLM;
+using LetheAISharp.LLM;
 using Newtonsoft.Json;
 using System.IO;
 using WaifuAI.Files;
