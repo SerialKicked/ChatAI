@@ -76,7 +76,7 @@ namespace WaifuAI.AgentPlugins
             };
             await entry.EmbedText().ConfigureAwait(false);
             await entry.UpdateSentiment().ConfigureAwait(false);
-            owner.Brain.Memorize(entry);
+            owner.Brain.Memorize(entry, true);
             owner.Brain.AddUserReturnInsert($"{owner.Name} wrote an entry in their journal.");
             LLMEngine.Logger?.LogInformation("{char} wrote a new journal entry: {entry}", owner.Name, entry.Name);
         }

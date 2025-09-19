@@ -420,6 +420,7 @@ namespace WaifuAI
                     await WebEditLastMessage(MsgPrefix + stringfix, msg.Guid);
                 });
                 PrepareResponse();
+                _forcereload = true;
                 if (_forcereload || Program.Settings.MaxMessagesOnScreen <= LLMEngine.History.CurrentSession.Messages.Count)
                 {
                     Invoke((System.Windows.Forms.MethodInvoker)async delegate
@@ -1746,7 +1747,7 @@ namespace WaifuAI
         {
             SentimentAnalysis.Enabled = true;
             _ = await SentimentAnalysis.Analyze(ed_input.Text);
-            
+
             //LLMEngine.NamesInPromptOverride = false;
             //var sense = LLMEngine.Bot.DatesInSessionSummaries;
             //LLMEngine.Bot.DatesInSessionSummaries = false;
@@ -1779,6 +1780,11 @@ namespace WaifuAI
             //}
             //LLMEngine.Bot.DatesInSessionSummaries = sense;
             //LLMEngine.NamesInPromptOverride = null;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            MemoryBrowserForm.ShowForActiveBot(this);
         }
     }
 }

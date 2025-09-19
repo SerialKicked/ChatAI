@@ -94,6 +94,7 @@ namespace WaifuAI
             num_maxcontext = new NumericUpDown();
             label8 = new Label();
             bt_connect = new Button();
+            button2 = new Button();
             statusbar.SuspendLayout();
             panRight.SuspendLayout();
             groupBox5.SuspendLayout();
@@ -504,6 +505,7 @@ namespace WaifuAI
             // groupBox23
             // 
             groupBox23.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox23.Controls.Add(button2);
             groupBox23.Controls.Add(btRawLog);
             groupBox23.Controls.Add(btWorldEditor);
             groupBox23.Controls.Add(btMainSettings);
@@ -846,6 +848,18 @@ namespace WaifuAI
             bt_connect.UseVisualStyleBackColor = true;
             bt_connect.Click += Connect;
             // 
+            // button2
+            // 
+            button2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button2.Font = new Font("Segoe UI", 9F);
+            button2.Location = new Point(6, 147);
+            button2.Name = "button2";
+            button2.Size = new Size(178, 23);
+            button2.TabIndex = 41;
+            button2.Text = "Brain Memory Map";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -950,5 +964,6 @@ namespace WaifuAI
         private Button btVectorSearch;
         private Button btRawLog;
         private Button button1;
+        private Button button2;
     }
 }
