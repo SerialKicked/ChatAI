@@ -118,7 +118,7 @@ namespace WaifuAI.Plugins
             var formatedresponsed = new StringBuilder();
             formatedresponsed.AppendLinuxLine("You looked up the information on the web and found the following information that you can use to improve your response:").AppendLine();
             formatedresponsed.AppendLinuxLine(merged.CleanupAndTrim());
-
+            responseAppendNeeded = true;
             var output = new PluginResponse
             {
                 IsHandled = true,
@@ -190,10 +190,7 @@ namespace WaifuAI.Plugins
                 }
                 await Task.Delay(100);
             }
-            if (string.IsNullOrEmpty(response) || 
-                (response.StartsWith("no", StringComparison.InvariantCultureIgnoreCase) && response.Length<5))
-                return false;
-            return true;
+            return (!string.IsNullOrEmpty(response) && response.Contains("yes", StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }
