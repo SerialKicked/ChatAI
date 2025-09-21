@@ -86,7 +86,7 @@ namespace WaifuAI.AgentPlugins
                     Content = item.GoalDetails + LLMEngine.NewLine + item.PlanOfAction,
                     Reason = item.Reason,
                     Category = MemoryType.Goal,
-                    Insertion = MemoryInsertion.NaturalForced,
+                    Insertion = MemoryInsertion.Natural,
                     Added = DateTime.Now,
                     EndTime = DateTime.Now.AddDays(30),
                     Priority = 5

@@ -35,6 +35,7 @@
             webView = new Microsoft.Web.WebView2.WinForms.WebView2();
             panelBottom = new Panel();
             btClose = new Button();
+            btDeleteSelected = new Button();
             ((System.ComponentModel.ISupportInitialize)splitMain).BeginInit();
             splitMain.Panel1.SuspendLayout();
             splitMain.Panel2.SuspendLayout();
@@ -53,13 +54,14 @@
             // splitMain.Panel1
             // 
             splitMain.Panel1.Controls.Add(listMemories);
+            splitMain.Panel1.Controls.Add(btDeleteSelected);
             splitMain.Panel1.Controls.Add(panelLeftTop);
             // 
             // splitMain.Panel2
             // 
             splitMain.Panel2.Controls.Add(webView);
-            splitMain.Size = new Size(1079, 656);
-            splitMain.SplitterDistance = 403;
+            splitMain.Size = new Size(1072, 514);
+            splitMain.SplitterDistance = 400;
             splitMain.TabIndex = 0;
             // 
             // listMemories
@@ -70,7 +72,7 @@
             listMemories.Location = new Point(0, 44);
             listMemories.MultiSelect = false;
             listMemories.Name = "listMemories";
-            listMemories.Size = new Size(403, 612);
+            listMemories.Size = new Size(400, 447);
             listMemories.TabIndex = 0;
             listMemories.UseCompatibleStateImageBehavior = false;
             listMemories.View = View.Details;
@@ -100,7 +102,7 @@
             panelLeftTop.Location = new Point(0, 0);
             panelLeftTop.Name = "panelLeftTop";
             panelLeftTop.Padding = new Padding(8);
-            panelLeftTop.Size = new Size(403, 44);
+            panelLeftTop.Size = new Size(400, 44);
             panelLeftTop.TabIndex = 1;
             // 
             // cbCategory
@@ -109,7 +111,7 @@
             cbCategory.DropDownStyle = ComboBoxStyle.DropDownList;
             cbCategory.Location = new Point(80, 8);
             cbCategory.Name = "cbCategory";
-            cbCategory.Size = new Size(312, 23);
+            cbCategory.Size = new Size(309, 23);
             cbCategory.TabIndex = 0;
             cbCategory.SelectedIndexChanged += cbCategory_SelectedIndexChanged;
             // 
@@ -130,7 +132,7 @@
             webView.Dock = DockStyle.Fill;
             webView.Location = new Point(0, 0);
             webView.Name = "webView";
-            webView.Size = new Size(672, 656);
+            webView.Size = new Size(668, 514);
             webView.TabIndex = 0;
             webView.ZoomFactor = 1D;
             // 
@@ -138,10 +140,10 @@
             // 
             panelBottom.Controls.Add(btClose);
             panelBottom.Dock = DockStyle.Bottom;
-            panelBottom.Location = new Point(0, 656);
+            panelBottom.Location = new Point(0, 514);
             panelBottom.Name = "panelBottom";
             panelBottom.Padding = new Padding(8);
-            panelBottom.Size = new Size(1079, 44);
+            panelBottom.Size = new Size(1072, 44);
             panelBottom.TabIndex = 1;
             // 
             // btClose
@@ -152,17 +154,28 @@
             btClose.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btClose.Location = new Point(8, 8);
             btClose.Name = "btClose";
-            btClose.Size = new Size(1063, 28);
+            btClose.Size = new Size(1056, 28);
             btClose.TabIndex = 0;
             btClose.Text = "Close";
             btClose.UseVisualStyleBackColor = false;
             btClose.Click += btClose_Click;
             // 
+            // btDeleteSelected
+            // 
+            btDeleteSelected.Dock = DockStyle.Bottom;
+            btDeleteSelected.Location = new Point(0, 491);
+            btDeleteSelected.Name = "btDeleteSelected";
+            btDeleteSelected.Size = new Size(400, 23);
+            btDeleteSelected.TabIndex = 2;
+            btDeleteSelected.Text = "Delete Entry";
+            btDeleteSelected.UseVisualStyleBackColor = true;
+            btDeleteSelected.Click += btDeleteSelected_Click;
+            // 
             // MemoryBrowserForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1079, 700);
+            ClientSize = new Size(1072, 558);
             Controls.Add(splitMain);
             Controls.Add(panelBottom);
             MinimizeBox = false;
@@ -179,5 +192,6 @@
             panelBottom.ResumeLayout(false);
             ResumeLayout(false);
         }
+        private Button btDeleteSelected;
     }
 }

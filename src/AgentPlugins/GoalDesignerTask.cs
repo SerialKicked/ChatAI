@@ -66,23 +66,28 @@ namespace WaifuAI.AgentPlugins
             // add personal goals
             var req = "Based on the information provided, write a list of personal goals you want to set for yourself as {{char}}. Those have to be goals, or topics of research for you directly. They must be of interest to you, independently of {{user}}'s own goals.";
             var goallist = await GetGoalList(mainPrompt, req).ConfigureAwait(false) ?? new();
+            if (goallist.Goals.Count > 2)
+                goallist.Goals = goallist.Goals.Take(2).ToList();
             allgoals.AddRange(goallist.Goals);
 
             // add user specific goals
             req = "Based on the information provided, write a list of things that you want {{user}} to do or become for you. This can also include any personal topic where you want to question or challenge {{user}}'s perspective. Order the list from most to least important.";
             goallist = await GetGoalList(mainPrompt, req).ConfigureAwait(false);
+            if (goallist.Goals.Count > 2)
+                goallist.Goals = goallist.Goals.Take(2).ToList();
             allgoals.AddRange(goallist.Goals);
 
             // add goals from sessions
             var grabcount = cfg.GetSetting<int>("MinSessionSpacing");
-            var prevsessions = sessions.Skip(Math.Max(0, sessions.Count - 1 - grabcount)).Take(grabcount).ToList();
-            foreach (var prev in prevsessions)
-            {
-                if (prev.MetaData.IsRoleplaySession && rpmode == RPHandling.Never)
-                    continue;
-                allgoals.AddRange(prev.MetaData.FutureGoals);
-            }
 
+            // grab the list of sessions to analyze
+            var prevsessions = sessions.Skip(Math.Max(0, sessions.Count - 1 - grabcount)).Take(grabcount).ToList();
+            if (rpmode == RPHandling.Never)
+                prevsessions.RemoveAll(s => !s.MetaData.IsRoleplaySession);
+            if (prevsessions.Count > 0)
+            {
+                allgoals.AddRange(prevsessions[^1].MetaData.FutureGoals);
+            }
 
             var goaldetails = new List<GoalRecord>();
             foreach (var item in allgoals)

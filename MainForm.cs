@@ -41,6 +41,7 @@ namespace WaifuAI
         private readonly Random RNG = new();
         private RenPyDialogHandler? _renpyDialogHandler;
         private string ed_log = string.Empty;
+        private string? _currentStreamDomId;
 
         public static Character? Bot => LLMEngine.Bot as Character;
         public static Character? User => LLMEngine.User as Character;
@@ -414,13 +415,9 @@ namespace WaifuAI
                 var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
 
                 var msg = LLMEngine.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMEngine.User, LLMEngine.Bot);
-                Invoke((System.Windows.Forms.MethodInvoker)async delegate
-                {
-                    await Task.Delay(50);
-                    await WebEditLastMessage(MsgPrefix + stringfix, msg.Guid);
-                });
+                await InvokeAsync(async () => { await WebEditLastMessage(MsgPrefix + stringfix, msg.Guid); });
                 PrepareResponse();
-                _forcereload = true;
+
                 if (_forcereload || Program.Settings.MaxMessagesOnScreen <= LLMEngine.History.CurrentSession.Messages.Count)
                 {
                     Invoke((System.Windows.Forms.MethodInvoker)async delegate
@@ -1193,19 +1190,20 @@ namespace WaifuAI
 
         private static string InjectDialogHtml(string imgPath, string dialog, Guid messageGuid)
         {
-            // Replace thinking tags with collapsible div structure, using the instruction format's tags
-            var processedDialog = dialog;
+            // dialog should already be sanitized for HTML; the pipeline calling this produces the HTML
+            // Ensure both .thinking-content and .message-raw exist so JS paths always have a target.
             return $@"
-                <div class='chat-message' data-message-guid='{messageGuid}'>
-                    <div class='portrait'>
-                        <img src='https://appassets.test/img/{imgPath}' alt='Portrait' width='60'>
-                    </div>
-                    <div class='message-content'>
-                        <div class='message-raw'>
-                            {processedDialog}
-                        </div>
-                    </div>
-                </div>";
+        <div class='chat-message' data-message-guid='{messageGuid}'>
+            <div class='portrait'>
+                <img src='https://appassets.test/img/{imgPath}' alt='Portrait' width='60'>
+            </div>
+            <div class='message-content'>
+                <div class='thinking-content'></div>
+                <div class='message-raw'>
+                    {dialog}
+                </div>
+            </div>
+        </div>";
         }
 
         private static string AddHtmlMessage(SingleMessage singleMessage)
@@ -1239,6 +1237,7 @@ namespace WaifuAI
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
 
+        // Replace your existing WebEditLastMessage with this version
         private async Task WebEditLastMessage(string newMessage, Guid? messageGuid = null)
         {
             if (InvokeRequired)
@@ -1247,58 +1246,74 @@ namespace WaifuAI
                 return;
             }
 
+            // Builds one atomic JS block that updates content AND sets GUID on the same wrapper
+            string BuildAtomicUpdateScript(string html, bool isThinking, Guid? guid)
+            {
+                var guidLiteral = guid.HasValue ? guid.Value.ToString() : string.Empty;
+
+                return $@"
+(function() {{
+  try {{
+    const contents = document.getElementsByClassName('message-content');
+    if (!contents || contents.length === 0) {{
+      console.error('WebEditLastMessage: no .message-content elements found');
+      return;
+    }}
+    const idx = contents.length - 1;
+
+    if (typeof updateMessageAtIndex === 'function') {{
+      updateMessageAtIndex(""{html}"", idx, {(isThinking ? "true" : "false")});
+    }} else {{
+      const messageContent = contents[idx];
+      const target = {(isThinking ? "messageContent.querySelector('.thinking-content')" : "messageContent.querySelector('.message-raw')")};
+      if (target) {{
+        target.innerHTML = ""{html}"";
+      }} else {{
+        console.error('WebEditLastMessage: target element not found for isThinking=' + {(isThinking ? "true" : "false").ToString().ToLowerInvariant()});
+      }}
+    }}
+
+    const wrapper = contents[idx].closest('.chat-message');
+    {(messageGuid.HasValue ? $"if (wrapper) wrapper.setAttribute('data-message-guid', '{guidLiteral}');" : "")}
+  }} catch (e) {{
+    console.error('WebEditLastMessage: exception', e);
+  }}
+}})();";
+            }
+
             if (!string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart) &&
                 newMessage.StartsWith(ChatRender.GetMessagePrefix(AuthorRole.Assistant)) &&
                 newMessage.Contains(LLMEngine.Instruct.ThinkingStart))
             {
-                // remove prefix from message
+                // Strip assistant prefix
                 var worktext = newMessage[ChatRender.GetMessagePrefix(AuthorRole.Assistant).Length..];
+
                 if (!worktext.Contains(LLMEngine.Instruct.ThinkingEnd))
                 {
+                    // Thinking-only update
                     worktext = worktext.Replace(LLMEngine.Instruct.ThinkingStart, string.Empty);
-                    var text = Markdown.ToHtml(worktext, CustomMarkDownPipeline);
-                    text = text.SanitizeForJS();
-                    var script = $"updateMessageAtIndex(\"{text}\", document.getElementsByClassName('message-content').length - 1, true);";
-                    await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+                    var text = Markdown.ToHtml(worktext, CustomMarkDownPipeline).SanitizeForJS();
+                    await web_chat.CoreWebView2.ExecuteScriptAsync(BuildAtomicUpdateScript(text, isThinking: true, messageGuid));
                 }
                 else
                 {
-                    // both tokens are found, so we want two strings now: the first one is the thinking part, the second one is the message part
+                    // Thinking + final
                     var parts = worktext.Split([LLMEngine.Instruct.ThinkingEnd], 2, StringSplitOptions.None);
+
                     var thinkingText = parts[0].Replace(LLMEngine.Instruct.ThinkingStart, string.Empty);
-                    thinkingText = Markdown.ToHtml(thinkingText, CustomMarkDownPipeline).SanitizeForJS();
-                    var script = $"updateMessageAtIndex(\"{thinkingText}\", document.getElementsByClassName('message-content').length - 1, true);";
-                    await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+                    var thinkingHtml = Markdown.ToHtml(thinkingText, CustomMarkDownPipeline).SanitizeForJS();
+                    await web_chat.CoreWebView2.ExecuteScriptAsync(BuildAtomicUpdateScript(thinkingHtml, isThinking: true, messageGuid));
 
                     var msgoutput = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + parts[1].TrimStart().TrimStart('\n').TrimStart();
-                    var messageText = Markdown.ToHtml(msgoutput, CustomMarkDownPipeline).SanitizeForJS();
-                    script = $"updateMessageAtIndex(\"{messageText}\", document.getElementsByClassName('message-content').length - 1, false);";
-                    await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+                    var messageHtml = Markdown.ToHtml(msgoutput, CustomMarkDownPipeline).SanitizeForJS();
+                    await web_chat.CoreWebView2.ExecuteScriptAsync(BuildAtomicUpdateScript(messageHtml, isThinking: false, messageGuid));
                 }
             }
             else
             {
-                var text = Markdown.ToHtml(newMessage, CustomMarkDownPipeline);
-                text = text.SanitizeForJS();
-                var script = $"updateMessageAtIndex(\"{text}\", document.getElementsByClassName('message-content').length - 1, false);";
-                await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+                var text = Markdown.ToHtml(newMessage, CustomMarkDownPipeline).SanitizeForJS();
+                await web_chat.CoreWebView2.ExecuteScriptAsync(BuildAtomicUpdateScript(text, isThinking: false, messageGuid));
             }
-
-            // Update the data-message-guid attribute if a GUID is provided
-            if (messageGuid.HasValue)
-            {
-                var updateGuidScript = $@"
-                    const chatMessages = document.querySelectorAll('.chat-message');
-                    if (chatMessages.length > 0) {{
-                        const lastMessage = chatMessages[chatMessages.length - 1];
-                        lastMessage.setAttribute('data-message-guid', '{messageGuid.Value}');
-                        console.log('Updated GUID for last message to: {messageGuid.Value}');
-                    }} else {{
-                        console.error('No chat messages found to update GUID');
-                    }}";
-                await web_chat.CoreWebView2.ExecuteScriptAsync(updateGuidScript);
-            }
-
 
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
@@ -1786,5 +1801,6 @@ namespace WaifuAI
         {
             MemoryBrowserForm.ShowForActiveBot(this);
         }
+
     }
 }

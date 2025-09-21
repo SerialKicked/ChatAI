@@ -5,6 +5,7 @@ using Markdig;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -34,6 +35,9 @@ namespace WaifuAI.src.forms
             Text = "Memory Browser";
             KeyPreview = true;
             KeyDown += MemoryBrowserForm_KeyDown;
+
+            // Set WebView background to match dark theme (overrides Designer's white)
+            try { webView.DefaultBackgroundColor = Color.FromArgb(0x12, 0x14, 0x17); } catch { }
 
             LoadFromActiveBot();
             PopulateCategories();
@@ -260,7 +264,7 @@ namespace WaifuAI.src.forms
         {
             if (mem == null)
             {
-                NavigateHtml("<html><body style='font-family:Segoe UI; color:#333;'><i>No memory selected.</i></body></html>");
+                NavigateHtml("<html><body style='font-family:Segoe UI; color:#ddd; background:#0f1117;'><i>No memory selected.</i></body></html>");
                 return;
             }
 
@@ -311,22 +315,73 @@ namespace WaifuAI.src.forms
 <html>
 <head>
 <meta charset="utf-8" />
+<meta name="color-scheme" content="dark light" />
 <style>
-    body { font-family: "Segoe UI", Arial, sans-serif; margin: 0; padding: 16px; color: #222; background: #fff; }
-    .title { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
-    .meta { color: #666; margin-bottom: 12px; }
-    .badge { display: inline-block; background: #eef1f7; color: #334; padding: 2px 8px; border-radius: 10px; margin-right: 8px; font-size: 12px; }
-    .sentiment { display: inline-block; background: #f7f1ee; color: #433; padding: 2px 8px; border-radius: 10px; font-size: 12px; }
-    .reason { margin: 12px 0; color: #444; }
-    .content { line-height: 1.5; }
-    blockquote { color: #555; border-left: 4px solid #ddd; margin: 8px 0; padding: 4px 12px; background: #fafafa; }
-    code, pre { background: #f6f8fa; border-radius: 4px; }
-    pre { padding: 8px; overflow: auto; }
-    h1, h2, h3, h4 { margin-top: 16px; }
+    :root {
+        --bg: #0f1117;          /* panel background */
+        --bg-panel: #111827;    /* slightly lighter than bg for blocks */
+        --fg: #e5e7eb;          /* primary text */
+        --muted: #9aa4af;       /* secondary text */
+        --border: #1f2937;      /* borders/separators */
+        --badge-bg: #1f2937;
+        --badge-fg: #cdd6f4;
+        --sent-bg: #2b1f1d;
+        --sent-fg: #f5e0dc;
+        --blockquote-border: #334155;
+        --blockquote-bg: #0f172a;
+        --code-bg: #0b1220;
+        --link: #8ab4f8;
+        --link-hover: #a8c7fa;
+        --accent: #64748b;
+    }
+
+    html, body { height: 100%; }
+    body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        margin: 0; padding: 16px;
+        color: var(--fg);
+        background: var(--bg);
+    }
+    .title { font-size: 20px; font-weight: 600; margin-bottom: 6px; color: var(--fg); }
+    .meta { color: var(--muted); margin-bottom: 12px; }
+    .badge {
+        display: inline-block; background: var(--badge-bg); color: var(--badge-fg);
+        padding: 2px 8px; border-radius: 10px; margin-right: 8px; font-size: 12px;
+        border: 1px solid var(--border);
+    }
+    .sentiment {
+        display: inline-block; background: var(--sent-bg); color: var(--sent-fg);
+        padding: 2px 8px; border-radius: 10px; font-size: 12px;
+        border: 1px solid #4b2f2a;
+    }
+    .reason { margin: 12px 0; color: var(--fg); background: var(--bg-panel); padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; }
+    .content { line-height: 1.6; color: var(--fg); }
+    blockquote {
+        color: var(--fg);
+        border-left: 4px solid var(--blockquote-border);
+        margin: 8px 0; padding: 6px 12px; background: var(--blockquote-bg);
+        border-radius: 4px;
+    }
+    code, pre { background: var(--code-bg); border-radius: 6px; color: #e6edf3; }
+    pre { padding: 10px; overflow: auto; border: 1px solid var(--border); }
+    hr { border: 0; border-top: 1px solid var(--border); margin: 16px 0; }
+    h1, h2, h3, h4 { margin-top: 16px; color: var(--fg); }
+    a { color: var(--link); text-decoration: none; }
+    a:hover { color: var(--link-hover); text-decoration: underline; }
     img, video { max-width: 100%; }
-    .kv { display: grid; grid-template-columns: max-content 1fr; gap: 6px 12px; margin: 12px 0 16px 0; }
-    .k { color: #666; }
-    .v { color: #222; }
+
+    .kv {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 6px 12px;
+        margin: 12px 0 16px 0;
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px 12px;
+    }
+    .k { color: var(--muted); }
+    .v { color: var(--fg); }
 </style>
 </head>
 <body>
@@ -359,6 +414,7 @@ namespace WaifuAI.src.forms
                 if (webView.CoreWebView2 == null)
                 {
                     await webView.EnsureCoreWebView2Async();
+                    try { webView.DefaultBackgroundColor = Color.FromArgb(0x12, 0x14, 0x17); } catch { }
                 }
                 webView.NavigateToString(html);
             }
@@ -372,6 +428,29 @@ namespace WaifuAI.src.forms
         {
             DialogResult = DialogResult.OK;
             Close();
+        }
+
+        private void btDeleteSelected_Click(object sender, EventArgs e)
+        {
+            // delete the selected memory
+            if (listMemories.SelectedItems.Count == 0)
+                return;
+            var item = listMemories.SelectedItems[0];
+            if (item.Tag is not MemoryUnit mem)
+                return;
+            var confirm = MessageBox.Show(this, $"Are you sure you want to delete the selected memory?\n\nTitle: {mem.Name}\nCategory: {mem.Category}\n\nThis action cannot be undone.", "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (confirm != DialogResult.Yes)
+                return;
+            try
+            {
+                LLMEngine.Bot.Brain.Forget(mem);
+                _allMemories.Remove(mem);
+                ApplyFilterAndRefreshList();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, "Failed to delete memory: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 
