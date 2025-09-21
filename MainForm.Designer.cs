@@ -40,21 +40,21 @@ namespace WaifuAI
             panRight = new Panel();
             button1 = new Button();
             groupBox5 = new GroupBox();
-            btVectorSearch = new Button();
             btChatHistory = new Button();
             btSysPrompt = new Button();
+            cb_user = new ComboBox();
+            label4 = new Label();
             bt_editchar = new Button();
             bt_scenario = new Button();
             label3 = new Label();
             cb_bot = new ComboBox();
-            label4 = new Label();
             ck_ttstoggle = new CheckBox();
-            cb_user = new ComboBox();
             bt_newsession = new Button();
             label11 = new Label();
             ck_caninitchat = new CheckBox();
             cb_sysprompt = new ComboBox();
             ck_senseoftime = new CheckBox();
+            btVectorSearch = new Button();
             bt_impersonate = new Button();
             web_chat = new Microsoft.Web.WebView2.WinForms.WebView2();
             bt_delete = new Button();
@@ -67,6 +67,8 @@ namespace WaifuAI
             pictEmbed = new PictureBox();
             bt_clearimg = new Button();
             groupBox23 = new GroupBox();
+            ckNatMem = new CheckBox();
+            button2 = new Button();
             btRawLog = new Button();
             btWorldEditor = new Button();
             btMainSettings = new Button();
@@ -94,7 +96,6 @@ namespace WaifuAI
             num_maxcontext = new NumericUpDown();
             label8 = new Label();
             bt_connect = new Button();
-            button2 = new Button();
             statusbar.SuspendLayout();
             panRight.SuspendLayout();
             groupBox5.SuspendLayout();
@@ -122,7 +123,7 @@ namespace WaifuAI
             // statusbar
             // 
             statusbar.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, toolStripStatusLabel2 });
-            statusbar.Location = new Point(0, 781);
+            statusbar.Location = new Point(0, 877);
             statusbar.Name = "statusbar";
             statusbar.Size = new Size(1261, 22);
             statusbar.TabIndex = 2;
@@ -155,12 +156,12 @@ namespace WaifuAI
             panRight.Dock = DockStyle.Right;
             panRight.Location = new Point(1058, 0);
             panRight.Name = "panRight";
-            panRight.Size = new Size(203, 781);
+            panRight.Size = new Size(203, 877);
             panRight.TabIndex = 8;
             // 
             // button1
             // 
-            button1.Location = new Point(6, 370);
+            button1.Location = new Point(6, 359);
             button1.Name = "button1";
             button1.Size = new Size(190, 23);
             button1.TabIndex = 26;
@@ -171,16 +172,15 @@ namespace WaifuAI
             // groupBox5
             // 
             groupBox5.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            groupBox5.Controls.Add(btVectorSearch);
             groupBox5.Controls.Add(btChatHistory);
             groupBox5.Controls.Add(btSysPrompt);
+            groupBox5.Controls.Add(cb_user);
+            groupBox5.Controls.Add(label4);
             groupBox5.Controls.Add(bt_editchar);
             groupBox5.Controls.Add(bt_scenario);
             groupBox5.Controls.Add(label3);
             groupBox5.Controls.Add(cb_bot);
-            groupBox5.Controls.Add(label4);
             groupBox5.Controls.Add(ck_ttstoggle);
-            groupBox5.Controls.Add(cb_user);
             groupBox5.Controls.Add(bt_newsession);
             groupBox5.Controls.Add(label11);
             groupBox5.Controls.Add(ck_caninitchat);
@@ -189,76 +189,93 @@ namespace WaifuAI
             groupBox5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox5.Location = new Point(6, 3);
             groupBox5.Name = "groupBox5";
-            groupBox5.Size = new Size(190, 361);
+            groupBox5.Size = new Size(190, 350);
             groupBox5.TabIndex = 25;
             groupBox5.TabStop = false;
             groupBox5.Text = "Chat Settings";
             // 
-            // btVectorSearch
-            // 
-            btVectorSearch.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            btVectorSearch.Font = new Font("Segoe UI", 9F);
-            btVectorSearch.Location = new Point(6, 238);
-            btVectorSearch.Name = "btVectorSearch";
-            btVectorSearch.Size = new Size(178, 23);
-            btVectorSearch.TabIndex = 34;
-            btVectorSearch.Text = "Search Memories";
-            btVectorSearch.UseVisualStyleBackColor = true;
-            btVectorSearch.Click += btVectorSearch_Click;
-            // 
             // btChatHistory
             // 
             btChatHistory.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btChatHistory.BackColor = Color.Khaki;
+            btChatHistory.FlatStyle = FlatStyle.Flat;
             btChatHistory.Font = new Font("Segoe UI", 9F);
-            btChatHistory.Location = new Point(6, 267);
+            btChatHistory.Location = new Point(6, 263);
             btChatHistory.Name = "btChatHistory";
             btChatHistory.Size = new Size(178, 23);
             btChatHistory.TabIndex = 33;
             btChatHistory.Text = "Chat History Manager";
-            btChatHistory.UseVisualStyleBackColor = true;
+            btChatHistory.UseVisualStyleBackColor = false;
             btChatHistory.Click += btChatHistory_Click;
             // 
             // btSysPrompt
             // 
-            btSysPrompt.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btSysPrompt.Location = new Point(146, 104);
+            btSysPrompt.BackColor = Color.LightSteelBlue;
+            btSysPrompt.FlatStyle = FlatStyle.Flat;
+            btSysPrompt.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Pixel);
+            btSysPrompt.Location = new Point(127, 14);
             btSysPrompt.Name = "btSysPrompt";
-            btSysPrompt.Size = new Size(35, 20);
+            btSysPrompt.Size = new Size(58, 20);
             btSysPrompt.TabIndex = 29;
-            btSysPrompt.Text = "...";
-            btSysPrompt.UseVisualStyleBackColor = true;
+            btSysPrompt.Text = "Editor";
+            btSysPrompt.UseVisualStyleBackColor = false;
             btSysPrompt.Click += btSysPrompt_Click;
+            // 
+            // cb_user
+            // 
+            cb_user.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            cb_user.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_user.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            cb_user.Location = new Point(7, 150);
+            cb_user.Name = "cb_user";
+            cb_user.Size = new Size(178, 23);
+            cb_user.TabIndex = 3;
+            cb_user.SelectedIndexChanged += cb_user_SelectedIndexChanged;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
+            label4.Location = new Point(7, 128);
+            label4.Name = "label4";
+            label4.Size = new Size(75, 15);
+            label4.TabIndex = 2;
+            label4.Text = "User Persona";
             // 
             // bt_editchar
             // 
-            bt_editchar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_editchar.Location = new Point(146, 16);
+            bt_editchar.BackColor = Color.LightSteelBlue;
+            bt_editchar.FlatStyle = FlatStyle.Flat;
+            bt_editchar.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Pixel);
+            bt_editchar.Location = new Point(126, 69);
             bt_editchar.Name = "bt_editchar";
-            bt_editchar.Size = new Size(35, 20);
+            bt_editchar.Size = new Size(58, 20);
             bt_editchar.TabIndex = 27;
-            bt_editchar.Text = "...";
-            bt_editchar.UseVisualStyleBackColor = true;
+            bt_editchar.Text = "Editor";
+            bt_editchar.UseVisualStyleBackColor = false;
             bt_editchar.Click += bt_editchar_Click;
             // 
             // bt_scenario
             // 
             bt_scenario.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            bt_scenario.BackColor = Color.Khaki;
+            bt_scenario.FlatStyle = FlatStyle.Flat;
             bt_scenario.Font = new Font("Segoe UI", 9F);
-            bt_scenario.Location = new Point(6, 296);
+            bt_scenario.Location = new Point(6, 292);
             bt_scenario.Name = "bt_scenario";
             bt_scenario.Size = new Size(178, 23);
             bt_scenario.TabIndex = 26;
             bt_scenario.Text = "Change Scenario";
-            bt_scenario.UseVisualStyleBackColor = true;
+            bt_scenario.UseVisualStyleBackColor = false;
             bt_scenario.Click += bt_scenario_Click;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 9F);
-            label3.Location = new Point(6, 19);
+            label3.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
+            label3.Location = new Point(7, 74);
             label3.Name = "label3";
-            label3.Size = new Size(70, 15);
+            label3.Size = new Size(69, 15);
             label3.TabIndex = 0;
             label3.Text = "Bot Persona";
             // 
@@ -267,27 +284,17 @@ namespace WaifuAI
             cb_bot.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cb_bot.DropDownStyle = ComboBoxStyle.DropDownList;
             cb_bot.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            cb_bot.Location = new Point(6, 37);
+            cb_bot.Location = new Point(7, 95);
             cb_bot.Name = "cb_bot";
             cb_bot.Size = new Size(178, 23);
             cb_bot.TabIndex = 1;
             cb_bot.SelectedIndexChanged += cb_bot_SelectedIndexChanged;
             // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 9F);
-            label4.Location = new Point(6, 63);
-            label4.Name = "label4";
-            label4.Size = new Size(75, 15);
-            label4.TabIndex = 2;
-            label4.Text = "User Persona";
-            // 
             // ck_ttstoggle
             // 
             ck_ttstoggle.AutoSize = true;
             ck_ttstoggle.Font = new Font("Segoe UI", 9F);
-            ck_ttstoggle.Location = new Point(6, 204);
+            ck_ttstoggle.Location = new Point(7, 230);
             ck_ttstoggle.Name = "ck_ttstoggle";
             ck_ttstoggle.Size = new Size(84, 19);
             ck_ttstoggle.TabIndex = 32;
@@ -295,36 +302,27 @@ namespace WaifuAI
             ck_ttstoggle.UseVisualStyleBackColor = true;
             ck_ttstoggle.CheckedChanged += ck_ttstoggle_CheckedChanged;
             // 
-            // cb_user
-            // 
-            cb_user.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            cb_user.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_user.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            cb_user.Location = new Point(6, 81);
-            cb_user.Name = "cb_user";
-            cb_user.Size = new Size(178, 23);
-            cb_user.TabIndex = 3;
-            cb_user.SelectedIndexChanged += cb_user_SelectedIndexChanged;
-            // 
             // bt_newsession
             // 
             bt_newsession.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            bt_newsession.BackColor = Color.PaleGreen;
+            bt_newsession.FlatStyle = FlatStyle.Flat;
             bt_newsession.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_newsession.Location = new Point(6, 325);
+            bt_newsession.Location = new Point(6, 321);
             bt_newsession.Name = "bt_newsession";
             bt_newsession.Size = new Size(178, 23);
             bt_newsession.TabIndex = 21;
             bt_newsession.Text = "Start New Session";
-            bt_newsession.UseVisualStyleBackColor = true;
+            bt_newsession.UseVisualStyleBackColor = false;
             bt_newsession.Click += StartNewSession;
             // 
             // label11
             // 
             label11.AutoSize = true;
-            label11.Font = new Font("Segoe UI", 9F);
-            label11.Location = new Point(6, 107);
+            label11.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
+            label11.Location = new Point(6, 19);
             label11.Name = "label11";
-            label11.Size = new Size(88, 15);
+            label11.Size = new Size(85, 15);
             label11.TabIndex = 18;
             label11.Text = "System Prompt";
             // 
@@ -332,7 +330,7 @@ namespace WaifuAI
             // 
             ck_caninitchat.AutoSize = true;
             ck_caninitchat.Font = new Font("Segoe UI", 9F);
-            ck_caninitchat.Location = new Point(6, 179);
+            ck_caninitchat.Location = new Point(7, 181);
             ck_caninitchat.Name = "ck_caninitchat";
             ck_caninitchat.Size = new Size(131, 19);
             ck_caninitchat.TabIndex = 28;
@@ -345,7 +343,7 @@ namespace WaifuAI
             cb_sysprompt.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cb_sysprompt.DropDownStyle = ComboBoxStyle.DropDownList;
             cb_sysprompt.Font = new Font("Segoe UI", 9F);
-            cb_sysprompt.Location = new Point(6, 125);
+            cb_sysprompt.Location = new Point(7, 40);
             cb_sysprompt.Name = "cb_sysprompt";
             cb_sysprompt.Size = new Size(178, 23);
             cb_sysprompt.TabIndex = 19;
@@ -355,7 +353,7 @@ namespace WaifuAI
             // 
             ck_senseoftime.AutoSize = true;
             ck_senseoftime.Font = new Font("Segoe UI", 9F);
-            ck_senseoftime.Location = new Point(6, 154);
+            ck_senseoftime.Location = new Point(7, 205);
             ck_senseoftime.Name = "ck_senseoftime";
             ck_senseoftime.Size = new Size(100, 19);
             ck_senseoftime.TabIndex = 23;
@@ -363,13 +361,27 @@ namespace WaifuAI
             ck_senseoftime.UseVisualStyleBackColor = true;
             ck_senseoftime.CheckedChanged += ck_senseoftime_CheckedChanged;
             // 
+            // btVectorSearch
+            // 
+            btVectorSearch.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btVectorSearch.BackColor = Color.Khaki;
+            btVectorSearch.FlatStyle = FlatStyle.Flat;
+            btVectorSearch.Font = new Font("Segoe UI", 9F);
+            btVectorSearch.Location = new Point(6, 176);
+            btVectorSearch.Name = "btVectorSearch";
+            btVectorSearch.Size = new Size(178, 23);
+            btVectorSearch.TabIndex = 34;
+            btVectorSearch.Text = "Vector Search";
+            btVectorSearch.UseVisualStyleBackColor = false;
+            btVectorSearch.Click += btVectorSearch_Click;
+            // 
             // bt_impersonate
             // 
             bt_impersonate.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             bt_impersonate.BackColor = Color.Turquoise;
             bt_impersonate.FlatStyle = FlatStyle.Flat;
             bt_impersonate.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_impersonate.Location = new Point(992, 692);
+            bt_impersonate.Location = new Point(992, 788);
             bt_impersonate.Name = "bt_impersonate";
             bt_impersonate.Size = new Size(60, 25);
             bt_impersonate.TabIndex = 7;
@@ -385,7 +397,7 @@ namespace WaifuAI
             web_chat.DefaultBackgroundColor = Color.White;
             web_chat.Location = new Point(209, 3);
             web_chat.Name = "web_chat";
-            web_chat.Size = new Size(843, 683);
+            web_chat.Size = new Size(843, 779);
             web_chat.TabIndex = 6;
             web_chat.ZoomFactor = 1D;
             // 
@@ -395,7 +407,7 @@ namespace WaifuAI
             bt_delete.BackColor = Color.LightCoral;
             bt_delete.FlatStyle = FlatStyle.Flat;
             bt_delete.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_delete.Location = new Point(992, 753);
+            bt_delete.Location = new Point(992, 849);
             bt_delete.Name = "bt_delete";
             bt_delete.Size = new Size(60, 25);
             bt_delete.TabIndex = 5;
@@ -409,7 +421,7 @@ namespace WaifuAI
             bt_reroll.BackColor = Color.PaleGoldenrod;
             bt_reroll.FlatStyle = FlatStyle.Flat;
             bt_reroll.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_reroll.Location = new Point(992, 723);
+            bt_reroll.Location = new Point(992, 819);
             bt_reroll.Name = "bt_reroll";
             bt_reroll.Size = new Size(60, 25);
             bt_reroll.TabIndex = 4;
@@ -423,7 +435,7 @@ namespace WaifuAI
             bt_send.BackColor = Color.PaleGreen;
             bt_send.FlatStyle = FlatStyle.Flat;
             bt_send.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_send.Location = new Point(926, 692);
+            bt_send.Location = new Point(926, 788);
             bt_send.Name = "bt_send";
             bt_send.Size = new Size(60, 86);
             bt_send.TabIndex = 3;
@@ -437,7 +449,7 @@ namespace WaifuAI
             ed_input.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             ed_input.BackColor = Color.FromArgb(32, 70, 130, 180);
             ed_input.Font = new Font("Segoe UI", 16F);
-            ed_input.Location = new Point(209, 692);
+            ed_input.Location = new Point(209, 788);
             ed_input.Multiline = true;
             ed_input.Name = "ed_input";
             ed_input.ScrollBars = ScrollBars.Vertical;
@@ -454,7 +466,7 @@ namespace WaifuAI
             panLeft.Dock = DockStyle.Left;
             panLeft.Location = new Point(0, 0);
             panLeft.Name = "panLeft";
-            panLeft.Size = new Size(203, 781);
+            panLeft.Size = new Size(203, 877);
             panLeft.TabIndex = 0;
             // 
             // boxVLM
@@ -464,7 +476,7 @@ namespace WaifuAI
             boxVLM.Controls.Add(pictEmbed);
             boxVLM.Controls.Add(bt_clearimg);
             boxVLM.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            boxVLM.Location = new Point(6, 639);
+            boxVLM.Location = new Point(6, 735);
             boxVLM.Name = "boxVLM";
             boxVLM.Size = new Size(190, 139);
             boxVLM.TabIndex = 27;
@@ -505,6 +517,8 @@ namespace WaifuAI
             // groupBox23
             // 
             groupBox23.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox23.Controls.Add(ckNatMem);
+            groupBox23.Controls.Add(btVectorSearch);
             groupBox23.Controls.Add(button2);
             groupBox23.Controls.Add(btRawLog);
             groupBox23.Controls.Add(btWorldEditor);
@@ -515,47 +529,79 @@ namespace WaifuAI
             groupBox23.Controls.Add(ck_ragenabled);
             groupBox23.Controls.Add(ck_sessionmemory);
             groupBox23.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox23.Location = new Point(6, 370);
+            groupBox23.Location = new Point(6, 408);
             groupBox23.Name = "groupBox23";
-            groupBox23.Size = new Size(190, 263);
+            groupBox23.Size = new Size(190, 321);
             groupBox23.TabIndex = 26;
             groupBox23.TabStop = false;
             groupBox23.Text = "Quick Settings";
             // 
+            // ckNatMem
+            // 
+            ckNatMem.AutoSize = true;
+            ckNatMem.Font = new Font("Segoe UI", 9F);
+            ckNatMem.Location = new Point(6, 145);
+            ckNatMem.Name = "ckNatMem";
+            ckNatMem.Size = new Size(150, 19);
+            ckNatMem.TabIndex = 42;
+            ckNatMem.Text = "Natural Memory Inserts";
+            ckNatMem.UseVisualStyleBackColor = true;
+            ckNatMem.CheckedChanged += ckNatMem_CheckedChanged;
+            // 
+            // button2
+            // 
+            button2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button2.BackColor = Color.Khaki;
+            button2.FlatStyle = FlatStyle.Flat;
+            button2.Font = new Font("Segoe UI", 9F);
+            button2.Location = new Point(6, 205);
+            button2.Name = "button2";
+            button2.Size = new Size(178, 23);
+            button2.TabIndex = 41;
+            button2.Text = "Brain Memory Map";
+            button2.UseVisualStyleBackColor = false;
+            button2.Click += button2_Click;
+            // 
             // btRawLog
             // 
             btRawLog.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btRawLog.BackColor = Color.Khaki;
+            btRawLog.FlatStyle = FlatStyle.Flat;
             btRawLog.Font = new Font("Segoe UI", 9F);
-            btRawLog.Location = new Point(6, 176);
+            btRawLog.Location = new Point(6, 234);
             btRawLog.Name = "btRawLog";
             btRawLog.Size = new Size(178, 23);
             btRawLog.TabIndex = 40;
             btRawLog.Text = "View Raw Log";
-            btRawLog.UseVisualStyleBackColor = true;
+            btRawLog.UseVisualStyleBackColor = false;
             btRawLog.Click += btRawLog_Click;
             // 
             // btWorldEditor
             // 
             btWorldEditor.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btWorldEditor.BackColor = Color.LightGreen;
+            btWorldEditor.FlatStyle = FlatStyle.Flat;
             btWorldEditor.Font = new Font("Segoe UI", 9F);
-            btWorldEditor.Location = new Point(6, 205);
+            btWorldEditor.Location = new Point(6, 263);
             btWorldEditor.Name = "btWorldEditor";
             btWorldEditor.Size = new Size(178, 23);
             btWorldEditor.TabIndex = 39;
             btWorldEditor.Text = "WorldInfo Editor";
-            btWorldEditor.UseVisualStyleBackColor = true;
+            btWorldEditor.UseVisualStyleBackColor = false;
             btWorldEditor.Click += btWorldEditor_Click;
             // 
             // btMainSettings
             // 
             btMainSettings.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btMainSettings.BackColor = Color.PaleGreen;
+            btMainSettings.FlatStyle = FlatStyle.Flat;
             btMainSettings.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btMainSettings.Location = new Point(6, 234);
+            btMainSettings.Location = new Point(6, 292);
             btMainSettings.Name = "btMainSettings";
             btMainSettings.Size = new Size(178, 23);
             btMainSettings.TabIndex = 38;
             btMainSettings.Text = "General Settings";
-            btMainSettings.UseVisualStyleBackColor = true;
+            btMainSettings.UseVisualStyleBackColor = false;
             btMainSettings.Click += btMainSettings_Click;
             // 
             // ck_agentmode
@@ -638,38 +684,42 @@ namespace WaifuAI
             groupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox4.Location = new Point(6, 105);
             groupBox4.Name = "groupBox4";
-            groupBox4.Size = new Size(190, 259);
+            groupBox4.Size = new Size(190, 297);
             groupBox4.TabIndex = 24;
             groupBox4.TabStop = false;
             groupBox4.Text = "Inference Settings";
             // 
             // btSampleEditor
             // 
-            btSampleEditor.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btSampleEditor.Location = new Point(146, 60);
+            btSampleEditor.BackColor = Color.LightSteelBlue;
+            btSampleEditor.FlatStyle = FlatStyle.Flat;
+            btSampleEditor.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Pixel);
+            btSampleEditor.Location = new Point(123, 77);
             btSampleEditor.Name = "btSampleEditor";
-            btSampleEditor.Size = new Size(35, 20);
+            btSampleEditor.Size = new Size(58, 20);
             btSampleEditor.TabIndex = 30;
-            btSampleEditor.Text = "...";
-            btSampleEditor.UseVisualStyleBackColor = true;
+            btSampleEditor.Text = "Editor";
+            btSampleEditor.UseVisualStyleBackColor = false;
             btSampleEditor.Click += btSampleEditor_Click;
             // 
             // btInstructEdit
             // 
-            btInstructEdit.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btInstructEdit.Location = new Point(146, 16);
+            btInstructEdit.BackColor = Color.LightSteelBlue;
+            btInstructEdit.FlatStyle = FlatStyle.Flat;
+            btInstructEdit.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Pixel);
+            btInstructEdit.Location = new Point(123, 22);
             btInstructEdit.Name = "btInstructEdit";
-            btInstructEdit.Size = new Size(35, 20);
+            btInstructEdit.Size = new Size(58, 20);
             btInstructEdit.TabIndex = 28;
-            btInstructEdit.Text = "...";
-            btInstructEdit.UseVisualStyleBackColor = true;
+            btInstructEdit.Text = "Editor";
+            btInstructEdit.UseVisualStyleBackColor = false;
             btInstructEdit.Click += btInstructEdit_Click;
             // 
             // ck_ragtothink
             // 
             ck_ragtothink.AutoSize = true;
             ck_ragtothink.Font = new Font("Segoe UI", 9F);
-            ck_ragtothink.Location = new Point(6, 231);
+            ck_ragtothink.Location = new Point(6, 265);
             ck_ragtothink.Name = "ck_ragtothink";
             ck_ragtothink.Size = new Size(161, 19);
             ck_ragtothink.TabIndex = 36;
@@ -681,7 +731,7 @@ namespace WaifuAI
             // 
             ck_charsampler.AutoSize = true;
             ck_charsampler.Font = new Font("Segoe UI", 9F);
-            ck_charsampler.Location = new Point(6, 156);
+            ck_charsampler.Location = new Point(6, 190);
             ck_charsampler.Name = "ck_charsampler";
             ck_charsampler.Size = new Size(155, 19);
             ck_charsampler.TabIndex = 26;
@@ -692,7 +742,7 @@ namespace WaifuAI
             // 
             ck_disablethink.AutoSize = true;
             ck_disablethink.Font = new Font("Segoe UI", 9F);
-            ck_disablethink.Location = new Point(6, 206);
+            ck_disablethink.Location = new Point(6, 240);
             ck_disablethink.Name = "ck_disablethink";
             ck_disablethink.Size = new Size(92, 19);
             ck_disablethink.TabIndex = 35;
@@ -704,7 +754,7 @@ namespace WaifuAI
             // 
             ck_forceNames.AutoSize = true;
             ck_forceNames.Font = new Font("Segoe UI", 9F);
-            ck_forceNames.Location = new Point(6, 181);
+            ck_forceNames.Location = new Point(6, 215);
             ck_forceNames.Name = "ck_forceNames";
             ck_forceNames.Size = new Size(143, 19);
             ck_forceNames.TabIndex = 25;
@@ -715,10 +765,10 @@ namespace WaifuAI
             // label5
             // 
             label5.AutoSize = true;
-            label5.Font = new Font("Segoe UI", 9F);
-            label5.Location = new Point(6, 19);
+            label5.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
+            label5.Location = new Point(6, 27);
             label5.Name = "label5";
-            label5.Size = new Size(105, 15);
+            label5.Size = new Size(102, 15);
             label5.TabIndex = 4;
             label5.Text = "Instruction Format";
             // 
@@ -726,7 +776,7 @@ namespace WaifuAI
             // 
             cb_instruct.DropDownStyle = ComboBoxStyle.DropDownList;
             cb_instruct.Font = new Font("Segoe UI", 9F);
-            cb_instruct.Location = new Point(6, 37);
+            cb_instruct.Location = new Point(6, 48);
             cb_instruct.Name = "cb_instruct";
             cb_instruct.Size = new Size(175, 23);
             cb_instruct.TabIndex = 5;
@@ -735,8 +785,8 @@ namespace WaifuAI
             // label6
             // 
             label6.AutoSize = true;
-            label6.Font = new Font("Segoe UI", 9F);
-            label6.Location = new Point(4, 65);
+            label6.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
+            label6.Location = new Point(6, 83);
             label6.Name = "label6";
             label6.Size = new Size(102, 15);
             label6.TabIndex = 6;
@@ -746,7 +796,7 @@ namespace WaifuAI
             // 
             cb_infer.DropDownStyle = ComboBoxStyle.DropDownList;
             cb_infer.Font = new Font("Segoe UI", 9F);
-            cb_infer.Location = new Point(6, 83);
+            cb_infer.Location = new Point(6, 103);
             cb_infer.Name = "cb_infer";
             cb_infer.Size = new Size(175, 23);
             cb_infer.TabIndex = 7;
@@ -755,8 +805,8 @@ namespace WaifuAI
             // label9
             // 
             label9.AutoSize = true;
-            label9.Font = new Font("Segoe UI", 9F);
-            label9.Location = new Point(6, 109);
+            label9.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
+            label9.Location = new Point(6, 132);
             label9.Name = "label9";
             label9.Size = new Size(122, 15);
             label9.TabIndex = 16;
@@ -767,7 +817,7 @@ namespace WaifuAI
             num_temperature.DecimalPlaces = 2;
             num_temperature.Font = new Font("Segoe UI", 9F);
             num_temperature.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_temperature.Location = new Point(6, 127);
+            num_temperature.Location = new Point(6, 150);
             num_temperature.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
             num_temperature.Name = "num_temperature";
             num_temperature.Size = new Size(175, 23);
@@ -840,31 +890,21 @@ namespace WaifuAI
             // 
             // bt_connect
             // 
+            bt_connect.BackColor = Color.PaleGreen;
+            bt_connect.FlatStyle = FlatStyle.Flat;
             bt_connect.Location = new Point(6, 66);
             bt_connect.Name = "bt_connect";
             bt_connect.Size = new Size(175, 23);
             bt_connect.TabIndex = 14;
             bt_connect.Text = "Connect";
-            bt_connect.UseVisualStyleBackColor = true;
+            bt_connect.UseVisualStyleBackColor = false;
             bt_connect.Click += Connect;
-            // 
-            // button2
-            // 
-            button2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            button2.Font = new Font("Segoe UI", 9F);
-            button2.Location = new Point(6, 147);
-            button2.Name = "button2";
-            button2.Size = new Size(178, 23);
-            button2.TabIndex = 41;
-            button2.Text = "Brain Memory Map";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1261, 803);
+            ClientSize = new Size(1261, 899);
             Controls.Add(panRight);
             Controls.Add(bt_impersonate);
             Controls.Add(web_chat);
@@ -965,5 +1005,6 @@ namespace WaifuAI
         private Button btRawLog;
         private Button button1;
         private Button button2;
+        private CheckBox ckNatMem;
     }
 }

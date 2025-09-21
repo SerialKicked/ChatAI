@@ -1802,5 +1802,9 @@ namespace WaifuAI
             MemoryBrowserForm.ShowForActiveBot(this);
         }
 
+        private void ckNatMem_CheckedChanged(object sender, EventArgs e)
+        {
+            LLMEngine.Bot.Brain.DisableEurekas = !ckNatMem.Checked;
+        }
     }
 }
