@@ -190,5 +190,21 @@ namespace WaifuAI.src.forms
                 ed_selfedit.Text = SelectedCharacter.SelfEditField.ToWinFormat();
             }
         }
+
+        private void ckPassword_CheckedChanged(object sender, EventArgs e)
+        {
+            SelectedCharacter.Protected = ckPassword.Checked;
+            if (SelectedCharacter.Protected)
+            {
+                var NewName = cb_charlist.Text;
+                if (string.IsNullOrWhiteSpace(NewName))
+                {
+                    MessageBox.Show("Please select a valide name for the character first.");
+                    SelectedCharacter.Protected = false;
+                    return;
+                }
+                SelectedCharacter.EndChat();
+            }
+        }
     }
 }
