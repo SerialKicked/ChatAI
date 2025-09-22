@@ -399,7 +399,6 @@ namespace WaifuAI
             web_chat.Name = "web_chat";
             web_chat.Size = new Size(843, 779);
             web_chat.TabIndex = 6;
-            web_chat.ZoomFactor = 1D;
             // 
             // bt_delete
             // 

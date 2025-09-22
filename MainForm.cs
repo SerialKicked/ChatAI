@@ -105,6 +105,12 @@ namespace WaifuAI
         public MainForm()
         {
             InitializeComponent();
+            this.Shown += async (_, __) =>
+            {
+                await InitializeWebViewAsync();
+                // If you want first render on startup:
+                await LoadHistoryToUI();
+            };
 
             ed_input.SpellCheckLanguage = "en-US";
 
@@ -120,6 +126,14 @@ namespace WaifuAI
             AgentRuntime.RegisterPlugin("GoalDesignerTask", new GoalDesignerTask());
             AgentRuntime.RegisterPlugin("CustomGoalTask", new CustomGoalTask());
             AgentRuntime.RegisterPlugin("JournalTask", new JournalTask());
+
+            var loginForm = new LoginForm();
+            loginForm.ShowDialog(this);
+            if (loginForm.DialogResult != DialogResult.OK)
+            {
+                MessageBox.Show("No connection with backend server. You can use the application, but you cannot chat with the AI.");
+            }
+
 
             // Chat related events
             SetupChatMenu();
@@ -165,12 +179,6 @@ namespace WaifuAI
             LoadSettings();
 
             // Show LoginForm
-            var loginForm = new LoginForm();
-            loginForm.ShowDialog(this);
-            if (loginForm.DialogResult != DialogResult.OK)
-            {
-                MessageBox.Show("No connection with backend server. You can use the application, but you cannot chat with the AI.");
-            }
 
             LLMEngine.Init();
             LLMEngine.ContextPlugins = [];
@@ -300,6 +308,9 @@ namespace WaifuAI
         /// <param name="e"></param>
         private async void cb_bot_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_isinitloading || !IsHandleCreated || !web_chat.IsHandleCreated)
+                return;
+
             if (cb_bot.SelectedItem is string key && !string.IsNullOrEmpty(key))
             {
                 LLMEngine.Bot = DataFiles.Characters[key];
@@ -903,7 +914,15 @@ namespace WaifuAI
 
         private async Task LoadHistoryToUI()
         {
-            await WebChatLoad();
+            if (InvokeRequired)
+            {
+                await InvokeAsync(WebChatLoad);
+            }
+            else
+            {
+                await WebChatLoad();
+            }
+            
         }
 
         private async Task SendMessageToUI(SingleMessage singleMessage)
@@ -1329,16 +1348,8 @@ namespace WaifuAI
         private async Task WebChatLoad()
         {
             if (web_chat.CoreWebView2 == null)
-            {
-                await web_chat.EnsureCoreWebView2Async();
-                web_chat.CoreWebView2!.Settings.AreDevToolsEnabled = false;
-                web_chat.CoreWebView2!.Settings.AreDefaultContextMenusEnabled = false;
-                web_chat.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets.test", AppContext.BaseDirectory + "data\\", CoreWebView2HostResourceAccessKind.Allow);
-                web_chat.CoreWebView2.DOMContentLoaded += OnWebChatContentLoaded!; // Add event handler
-                web_chat.CoreWebView2.WebMessageReceived += OnWebChatWebMessageReceived!;
-                web_chat.CoreWebView2.NewWindowRequested += OnNewWindowRequested;
-                web_chat.CoreWebView2.NavigationStarting += OnNavigationStarting;
-            }
+                await InitializeWebViewAsync();
+
             var html = string.Empty;
             _forcereload = false;
             var start = LLMEngine.History.CurrentSession.Messages.Count - Program.Settings.MaxMessagesOnScreen;
@@ -1451,6 +1462,24 @@ namespace WaifuAI
             {
                 this.Enabled = true;
             }
+        }
+
+        private async Task InitializeWebViewAsync()
+        {
+            if (web_chat.CoreWebView2 != null) return;
+            await web_chat.EnsureCoreWebView2Async();
+            web_chat.CoreWebView2!.Settings.AreDevToolsEnabled = false;
+            web_chat.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            web_chat.CoreWebView2.SetVirtualHostNameToFolderMapping(
+                "appassets.test",
+                Path.Combine(AppContext.BaseDirectory, "data"),
+                CoreWebView2HostResourceAccessKind.Allow);
+
+            web_chat.CoreWebView2.DOMContentLoaded += OnWebChatContentLoaded!;
+            web_chat.CoreWebView2.WebMessageReceived += OnWebChatWebMessageReceived!;
+            web_chat.CoreWebView2.NewWindowRequested += OnNewWindowRequested;
+            web_chat.CoreWebView2.NavigationStarting += OnNavigationStarting;
+            web_chat.ZoomFactor = 1D;
         }
 
         #endregion
