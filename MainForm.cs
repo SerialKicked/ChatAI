@@ -755,16 +755,17 @@ namespace WaifuAI
             await LLMEngine.RerollLastMessage();
         }
 
-        private async void Connect(object sender, EventArgs e)
+        private async void bt_connectClick(object sender, EventArgs e)
         {
             await LLMEngine.Connect();
             num_maxcontext.Maximum = LLMEngine.MaxContextLength;
             num_maxcontext.Value = LLMEngine.MaxContextLength;
-            grp_model.Text = LLMEngine.CurrentModel;
+            this.Text = "w(AI)fu.NET: " + LLMEngine.CurrentModel;
             ck_ttstoggle.Enabled = LLMEngine.SupportsTTS;
             ck_onlinerag.Enabled = LLMEngine.SupportsWebSearch;
             boxVLM.Enabled = LLMEngine.SupportsVision;
             LLMEngine.Bot.AgentSystem?.NotifyUserActivity();
+            UpdateUIState();
         }
 
         private async void StartNewSession(object sender, EventArgs e)
@@ -1012,6 +1013,7 @@ namespace WaifuAI
             ck_disablethink.Checked = Program.Settings.DisableThinking;
             ck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
             ck_agentmode.Checked = LLMEngine.Bot.AgentMode;
+            ckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
 
             if (LLMEngine.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
             {
@@ -1033,6 +1035,7 @@ namespace WaifuAI
                 Program.Settings.Temperature = (double)num_temperature.Value;
                 Program.Settings.UseTTS = ck_ttstoggle.Checked;
                 LLMEngine.Bot.AgentMode = ck_agentmode.Checked;
+                LLMEngine.Bot.Brain.DisableEurekas = !ckNatMem.Checked;
                 Program.Settings.SessionMemorySystem = ck_sessionmemory.Checked;
 
                 if (LLMEngine.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)

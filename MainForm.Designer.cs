@@ -378,7 +378,7 @@ namespace WaifuAI
             // bt_impersonate
             // 
             bt_impersonate.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            bt_impersonate.BackColor = Color.Turquoise;
+            bt_impersonate.BackColor = Color.LightSteelBlue;
             bt_impersonate.FlatStyle = FlatStyle.Flat;
             bt_impersonate.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_impersonate.Location = new Point(992, 788);
@@ -418,7 +418,7 @@ namespace WaifuAI
             // bt_reroll
             // 
             bt_reroll.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            bt_reroll.BackColor = Color.PaleGoldenrod;
+            bt_reroll.BackColor = Color.Khaki;
             bt_reroll.FlatStyle = FlatStyle.Flat;
             bt_reroll.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_reroll.Location = new Point(992, 819);
@@ -898,7 +898,7 @@ namespace WaifuAI
             bt_connect.TabIndex = 14;
             bt_connect.Text = "Connect";
             bt_connect.UseVisualStyleBackColor = false;
-            bt_connect.Click += Connect;
+            bt_connect.Click += bt_connectClick;
             // 
             // MainForm
             // 
