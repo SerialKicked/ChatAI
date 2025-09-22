@@ -145,6 +145,7 @@ namespace WaifuAI.src.forms
             SelectedCharacter.UniqueName = NewName;
             DataFiles.Characters[NewName] = SelectedCharacter;
             (SelectedCharacter as IFile).SaveToFile("data/chars/" + NewName + ".json");
+
             SetupCharacterEditor(NewName, false);
 
             // Update the sampler list in the chat menu
@@ -194,17 +195,6 @@ namespace WaifuAI.src.forms
         private void ckPassword_CheckedChanged(object sender, EventArgs e)
         {
             SelectedCharacter.Protected = ckPassword.Checked;
-            if (SelectedCharacter.Protected)
-            {
-                var NewName = cb_charlist.Text;
-                if (string.IsNullOrWhiteSpace(NewName))
-                {
-                    MessageBox.Show("Please select a valide name for the character first.");
-                    SelectedCharacter.Protected = false;
-                    return;
-                }
-                SelectedCharacter.EndChat();
-            }
         }
     }
 }

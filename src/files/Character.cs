@@ -72,8 +72,9 @@ namespace WaifuAI.Files
         {
             PointValue = MyPoints.PointCount;
             base.EndChat(backup);
-            // Clear password from memory when chat session ends
-            _password = null;
+            // if the setting is enabled, forget the password when switching bots (will ask each switch)
+            if (Program.Settings.AlwaysForcePasswordOnBotSwitch)
+                _password = null;
         }
 
         public override void LoadChatHistory() 
@@ -187,7 +188,6 @@ namespace WaifuAI.Files
                     return;
                 }
                 
-                throw new UnauthorizedAccessException("Wrong password or corrupted file");
             }
             
             // Not protected or no encrypted files - use base implementation

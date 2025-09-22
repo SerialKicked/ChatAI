@@ -32,6 +32,7 @@ namespace WaifuAI.Files
         public bool WebsitePluginUseKeywords { get; set; } = false;
         public bool WebsitePluginGrammar { get; set; } = false;
         public bool RemoveCutSentence { get; set; } = false;
+        public bool AlwaysForcePasswordOnBotSwitch { get; set; } = false;
         public StringFix RoleplayFormatting { get; set; } = new StringFix(false, false, false, false, false, 1, 50, false);
     }
 }
