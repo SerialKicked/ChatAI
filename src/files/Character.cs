@@ -1,10 +1,11 @@
-﻿using Newtonsoft.Json;
-using System.Text;
-using WaifuAI.Plugins;
-using LetheAISharp.Files;
+﻿using LetheAISharp.Files;
 using LetheAISharp.LLM;
 using Microsoft.VisualBasic;
+using Newtonsoft.Json;
 using System.IO;
+using System.Text;
+using WaifuAI.Plugins;
+using WaifuAI.Security;
 
 namespace WaifuAI.Files
 {
@@ -39,7 +40,11 @@ namespace WaifuAI.Files
         /// <summary> Current point value </summary>
         public int PointValue { get; set; } = 0;
 
+        /// <summary> Whether this character's brain and chatlog files should be encrypted at rest </summary>
+        public bool Protected { get; set; } = false;
+
         [JsonIgnore] public PointSystem MyPoints = new();
+        [JsonIgnore] private string? _password;
 
         public override void BeginChat()
         {
@@ -67,13 +72,285 @@ namespace WaifuAI.Files
         {
             PointValue = MyPoints.PointCount;
             base.EndChat(backup);
+            // Clear password from memory when chat session ends
+            _password = null;
         }
 
-        public override void LoadChatHistory() => LoadChatHistory("data/chatlogs/");
+        public override void LoadChatHistory() 
+        {
+            var path = "data/chatlogs/";
+            var filePath = System.IO.Path.Combine(path, UniqueName + ".log");
+            var encPath = filePath + ".enc";
+            var bakPath = encPath + ".bak";
 
-        public override void SaveChatHistory(bool backup = false) => SaveChatHistory("data/chatlogs/", backup);
+            // Check if we need encryption (Protected flag set or .enc files exist)
+            bool needsEncryption = Protected || CryptoFile.IsEncryptedFile(encPath) || CryptoFile.IsEncryptedFile(bakPath);
+
+            if (needsEncryption)
+            {
+                EnsurePassword();
+
+                if (TryLoadEncryptedChatHistory(encPath, filePath) || TryLoadEncryptedChatHistory(bakPath, filePath))
+                {
+                    return;
+                }
+
+                // If we get here and Protected is true but no encrypted files, it's first-time migration
+                if (Protected && File.Exists(filePath))
+                {
+                    // Load plaintext and will save encrypted on EndChat
+                    base.LoadChatHistory(path);
+                    return;
+                }
+
+                throw new UnauthorizedAccessException("Wrong password or corrupted file");
+            }
+
+            // Not protected or no encrypted files - use base implementation
+            base.LoadChatHistory(path);
+
+        }
+
+        public override void SaveChatHistory(bool backup = false)
+        {
+            var path = "data/chatlogs/";
+            var filePath = Path.Combine(path, UniqueName + ".log");
+
+            if (Protected)
+            {
+                if (string.IsNullOrEmpty(_password))
+                {
+                    EnsurePassword();
+                }
+
+                base.SaveChatHistory(path, false);
+
+                try
+                {
+                    // Read the temp file and encrypt it
+                    if (File.Exists(filePath))
+                    {
+                        var chatBytes = File.ReadAllBytes(filePath);
+                        var encPath = filePath + ".enc";
+                        CryptoFile.EncryptFile(encPath, chatBytes, _password!, backup);
+                    }
+                }
+                finally
+                {
+                    if (File.Exists(filePath + ".enc"))
+                    {
+                        if (File.Exists(filePath))
+                            File.Delete(filePath);
+                        if (File.Exists(filePath + ".bak"))
+                            File.Delete(filePath + ".bak");
+                    }
+                }
+            }
+            else
+            {
+                // Not protected - use base implementation
+                base.SaveChatHistory(path, backup);
+
+                // Clean up any lingering encrypted files if protection is turned off
+                var encPath = filePath + ".enc";
+                var bakPath = encPath + ".bak";
+                if (File.Exists(encPath)) File.Delete(encPath);
+                if (File.Exists(bakPath)) File.Delete(bakPath);
+            }
+        }
 
         public void ClearChatHistory(bool deletefile = true) => ClearChatHistory("data/chatlogs/", deletefile);
+
+        // Override base methods to handle encryption
+        protected override void LoadBrain(string path)
+        {
+            var encPath = path + UniqueName + ".brain.enc";
+            var bakPath = encPath + ".bak";
+            
+            // Check if we need encryption (Protected flag set or .enc files exist)
+            bool needsEncryption = Protected || CryptoFile.IsEncryptedFile(encPath) || CryptoFile.IsEncryptedFile(bakPath);
+            
+            if (needsEncryption)
+            {
+                EnsurePassword();
+                
+                if (TryLoadEncryptedBrain(encPath, path) || TryLoadEncryptedBrain(bakPath, path))
+                {
+                    return;
+                }
+                
+                // If we get here and Protected is true but no encrypted files, it's first-time migration
+                if (Protected && File.Exists(encPath))
+                {
+                    // Load plaintext and will save encrypted on EndChat
+                    base.LoadBrain(path);
+                    return;
+                }
+                
+                throw new UnauthorizedAccessException("Wrong password or corrupted file");
+            }
+            
+            // Not protected or no encrypted files - use base implementation
+            base.LoadBrain(path);
+        }
+
+        private bool TryLoadEncryptedBrain(string encPath, string originalPath)
+        {
+            if (!CryptoFile.IsEncryptedFile(encPath)) return false;
+            
+            try
+            {
+                var decryptedBytes = CryptoFile.DecryptFile(encPath, _password!);
+                if (decryptedBytes != null)
+                {
+                    // Create a temporary file with the decrypted content
+                    var tempPath = originalPath + UniqueName +".brain";
+                    File.WriteAllBytes(tempPath, decryptedBytes);
+                    
+                    try
+                    {
+                        // Use base implementation to load from temp file
+                        base.LoadBrain(originalPath);
+                        return true;
+                    }
+                    finally
+                    {
+                        // Clean up temp file
+                        if (File.Exists(tempPath))
+                            File.Delete(tempPath);
+                    }
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Let caller handle password errors
+                throw;
+            }
+            catch
+            {
+                // Other errors - file might be corrupted
+                return false;
+            }
+            
+            return false;
+        }
+
+        protected override void SaveBrain(string path, bool backup)
+        {
+            if (Protected)
+            {
+                if (string.IsNullOrEmpty(_password))
+                {
+                    EnsurePassword();
+                }
+                // Create a temporary file with current brain data
+                base.SaveBrain(path, false);
+                var selpath = path;
+                if (!selpath.EndsWith('/') && !selpath.EndsWith('\\'))
+                    selpath += Path.DirectorySeparatorChar;
+                var clearBrainPath = selpath + UniqueName + ".brain";
+
+                try
+                {
+                    // Read the temp file and encrypt it
+                    var brainBytes = File.ReadAllBytes(clearBrainPath);
+                    var encPath = clearBrainPath + ".enc";
+                    CryptoFile.EncryptFile(encPath, brainBytes, _password!, backup);
+                    
+                }
+                finally
+                {
+                    if (File.Exists(clearBrainPath + ".enc"))
+                    {
+                        if (File.Exists(clearBrainPath))
+                            File.Delete(clearBrainPath);
+                        if (File.Exists(clearBrainPath + ".bak"))
+                            File.Delete(clearBrainPath + ".bak");
+                    }
+                }
+            }
+            else
+            {
+                // Not protected - use base implementation
+                base.SaveBrain(path, backup);
+                
+                // Clean up any lingering encrypted files if protection is turned off
+                var encPath = path + ".enc";
+                var bakPath = encPath + ".bak";
+                if (File.Exists(encPath)) File.Delete(encPath);
+                if (File.Exists(bakPath)) File.Delete(bakPath);
+            }
+        }
+
+        private bool TryLoadEncryptedChatHistory(string encPath, string originalPath)
+        {
+            if (!CryptoFile.IsEncryptedFile(encPath)) return false;
+            
+            try
+            {
+                var decryptedBytes = CryptoFile.DecryptFile(encPath, _password!);
+                if (decryptedBytes != null)
+                {
+                    // Create a temporary file with the decrypted content
+                    var tempPath = originalPath + ".temp";
+                    File.WriteAllBytes(tempPath, decryptedBytes);
+                    
+                    try
+                    {
+                        // Use base implementation to load from temp file
+                        // We need to extract the directory and filename for the base method
+                        var dir = Path.GetDirectoryName(tempPath);
+                        var fileName = Path.GetFileNameWithoutExtension(tempPath);
+                        var basePath = Path.Combine(dir!, fileName.Replace(".temp", ""));
+                        
+                        // Temporarily move temp file to expected location
+                        File.Move(tempPath, basePath);
+                        try
+                        {
+                            base.LoadChatHistory(dir!);
+                            return true;
+                        }
+                        finally
+                        {
+                            // Move back to temp location for cleanup
+                            if (File.Exists(basePath))
+                                File.Move(basePath, tempPath);
+                        }
+                    }
+                    finally
+                    {
+                        // Clean up temp file
+                        if (File.Exists(tempPath))
+                            File.Delete(tempPath);
+                    }
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Let caller handle password errors
+                throw;
+            }
+            catch
+            {
+                // Other errors - file might be corrupted
+                return false;
+            }
+            
+            return false;
+        }
+
+        private void EnsurePassword()
+        {
+            if (string.IsNullOrEmpty(_password))
+            {
+                var password = string.Empty;
+                while (string.IsNullOrEmpty(password))
+                {
+                    password = Interaction.InputBox($"Enter password for protected character '{Name}':", "Character Password Required", "");
+                }
+                _password = password;
+            }
+        }
 
         private Image GetPortrait()
         {

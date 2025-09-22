@@ -84,6 +84,7 @@
             groupBox6 = new GroupBox();
             ckl_plugins = new CheckedListBox();
             label9 = new Label();
+            ckPassword = new CheckBox();
             groupBox3.SuspendLayout();
             tabControl1.SuspendLayout();
             tabBio.SuspendLayout();
@@ -617,6 +618,7 @@
             // 
             // groupBox7
             // 
+            groupBox7.Controls.Add(ckPassword);
             groupBox7.Controls.Add(ck_irldates);
             groupBox7.Controls.Add(label10);
             groupBox7.Controls.Add(ck_senseoftime);
@@ -704,6 +706,18 @@
             label9.Size = new Size(419, 15);
             label9.TabIndex = 0;
             label9.Text = "Plugins this character has access to. Some can be toggled on/off in main chat.";
+            // 
+            // ckPassword
+            // 
+            ckPassword.AutoSize = true;
+            ckPassword.Font = new Font("Segoe UI", 9F);
+            ckPassword.Location = new Point(6, 115);
+            ckPassword.Name = "ckPassword";
+            ckPassword.Size = new Size(134, 19);
+            ckPassword.TabIndex = 6;
+            ckPassword.Text = "Password protection";
+            ckPassword.UseVisualStyleBackColor = true;
+            ckPassword.CheckedChanged += ckPassword_CheckedChanged;
             // 
             // CharEditForm
             // 
@@ -808,5 +822,6 @@
         private NumericUpDown num_ptvalue;
         private Button btRegenBio;
         private CheckBox ck_irldates;
+        private CheckBox ckPassword;
     }
 }
