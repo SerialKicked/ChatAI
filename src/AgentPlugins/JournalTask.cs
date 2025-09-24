@@ -100,8 +100,8 @@ namespace WaifuAI.AgentPlugins
             prompt.AppendLinuxLine("{{charbio}}").AppendLinuxLine();
             prompt.AppendLinuxLine("# {{user}}'s Biography").AppendLinuxLine();
             prompt.AppendLinuxLine("{{userbio}}").AppendLinuxLine();
-            prompt.AppendLinuxLine("# Last archived session with {{user}}").AppendLinuxLine();
-            prompt.AppendLinuxLine($"{lastsession.GetRawMemory(true, true)}").AppendLinuxLine();
+            prompt.AppendLinuxLine("# Summary of previous session with {{user}}").AppendLinuxLine();
+            prompt.AppendLinuxLine($"{lastsession.ToSnippet(TitleInsertType.None, LLMEngine.Bot.DatesInSessionSummaries, false, false)}").AppendLinuxLine();
             if (mostrecententry is not null)
             {
                 prompt.AppendLinuxLine("# You most recent journal entry").AppendLinuxLine();
@@ -144,8 +144,8 @@ namespace WaifuAI.AgentPlugins
             prompt.AppendLinuxLine("{{charbio}}").AppendLinuxLine();
             prompt.AppendLinuxLine("# {{user}}'s Biography").AppendLinuxLine();
             prompt.AppendLinuxLine("{{userbio}}").AppendLinuxLine();
-            prompt.AppendLinuxLine("# Last archived session with {{user}}").AppendLinuxLine();
-            prompt.AppendLinuxLine($"{lastsession.GetRawMemory(true, true)}").AppendLinuxLine();
+            prompt.AppendLinuxLine("# Summary of previous session with {{user}}").AppendLinuxLine();
+            prompt.AppendLinuxLine($"{lastsession.ToSnippet(TitleInsertType.None, LLMEngine.Bot.DatesInSessionSummaries, false, false)}").AppendLinuxLine();
             if (mostrecententry is not null)
             {
                 prompt.AppendLinuxLine("# You most recent journal entry").AppendLinuxLine();
