@@ -22,7 +22,7 @@ namespace WaifuAI.AgentPlugins
             // Just a small delay so i don't have to remove async and do Task.ResultFrom everywhere. It's not like we're on a timer anyway.
             await Task.Delay(10, ct).ConfigureAwait(false);
 
-            if (LLMEngine.Status != SystemStatus.Ready || LLMEngine.SupportsGrammar != true || LLMEngine.MaxContextLength < 8000)
+            if (LLMEngine.Status != SystemStatus.Ready || LLMEngine.SupportsSchema != true || LLMEngine.MaxContextLength < 8000)
                 return false;
 
             var MinTimeInterval = cfg.GetSetting<TimeSpan>("MinTimeInterval");
@@ -136,11 +136,6 @@ namespace WaifuAI.AgentPlugins
         private static async Task<GoalRecord> GetGoalDetail(string systemprompt, string goalinfo)
         {
             var goalrecord = new GoalRecord();
-            var grammar = await goalrecord.GetGrammar().ConfigureAwait(false);
-            if (string.IsNullOrWhiteSpace(grammar))
-            {
-                throw new Exception("Something went wrong when building goal list grammar and json format.");
-            }
             LLMEngine.NamesInPromptOverride = false;
             var prefill = LLMEngine.Instruct.PrefillThinking;
             LLMEngine.Instruct.PrefillThinking = false;
@@ -157,11 +152,8 @@ namespace WaifuAI.AgentPlugins
             var replyln = (availtokens > 2048) ? 2048 : availtokens;
             promptbuild.AddMessage(AuthorRole.SysPrompt, systemprompt);
             promptbuild.AddMessage(AuthorRole.User, requestedTask);
+            await promptbuild.SetStructuredOutput(goalrecord).ConfigureAwait(false);
             var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, replyln);
-            if (ct is GenerationInput input)
-            {
-                input.Grammar = grammar;
-            }
             var finalstr = await LLMEngine.SimpleQuery(ct).ConfigureAwait(false);
             goalrecord = JsonConvert.DeserializeObject<GoalRecord>(finalstr);
             LLMEngine.NamesInPromptOverride = null;
@@ -172,11 +164,6 @@ namespace WaifuAI.AgentPlugins
         private static async Task<GoalList> GetGoalList(string systemprompt, string query)
         {
             var goallist = new GoalList();
-            var grammar = await goallist.GetGrammar().ConfigureAwait(false);
-            if (string.IsNullOrWhiteSpace(grammar))
-            {
-                throw new Exception("Something went wrong when building goal list grammar and json format.");
-            }
             LLMEngine.NamesInPromptOverride = false;
             var prefill = LLMEngine.Instruct.PrefillThinking;
             LLMEngine.Instruct.PrefillThinking = false;
@@ -192,11 +179,8 @@ namespace WaifuAI.AgentPlugins
             var replyln = (availtokens > 2048) ? 2048 : availtokens;
             promptbuild.AddMessage(AuthorRole.SysPrompt, systemprompt);
             promptbuild.AddMessage(AuthorRole.User, requestedTask);
+            await promptbuild.SetStructuredOutput(goallist).ConfigureAwait(false);
             var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 1.0) ? 1 : LLMEngine.Sampler.Temperature, replyln);
-            if (ct is GenerationInput input)
-            {
-                input.Grammar = grammar;
-            }
             var finalstr = await LLMEngine.SimpleQuery(ct).ConfigureAwait(false);
             goallist = JsonConvert.DeserializeObject<GoalList>(finalstr);
             LLMEngine.NamesInPromptOverride = null;

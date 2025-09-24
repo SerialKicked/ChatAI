@@ -14,9 +14,9 @@ using WaifuAI.GBNF;
 namespace WaifuAI.AgentPlugins
 {
 
-    public sealed class JournalTask : IAgentTask
+    public sealed class UserBioTask : IAgentTask
     {
-        public string Id => "JournalTask";
+        public string Id => "UserBioTask";
 
         public async Task<bool> Observe(BasePersona owner, AgentTaskSetting cfg, CancellationToken ct)
         {
@@ -38,7 +38,6 @@ namespace WaifuAI.AgentPlugins
         {
             var response = new JournalRecord();
             var query = GetQueryPrompt(owner);
-
             var result = await LLMEngine.SimpleQuery(query, ct).ConfigureAwait(false);
             try
             {
@@ -125,7 +124,6 @@ namespace WaifuAI.AgentPlugins
         private static async Task<object> GetQueryPrompt(BasePersona owner)
         {
             var journal = new JournalRecord();
-
             var lastsession = owner.History.Sessions[^2];
             var entries = owner.Brain.GetMemories(MemoryType.Journal);
             MemoryUnit? mostrecententry = null;
@@ -176,15 +174,17 @@ namespace WaifuAI.AgentPlugins
             {
                 builder.AddMessage(AuthorRole.User, "Based on the above information, decide if you want to write a new journal entry or not. " + journal.GetQuery());
             }
-            await builder.SetStructuredOutput(journal);
+            await builder.SetStructuredOutput(journal).ConfigureAwait(false);
             return builder.PromptToQuery(AuthorRole.Assistant, -1, 1024, false);
         }
 
         public AgentTaskSetting GetDefaultSettings()
         {
             var settings = new AgentTaskSetting();
-            settings.SetSetting<TimeSpan>("TriggerInterval", new TimeSpan(1, 0, 0, 0)); // 1 days
+            settings.SetSetting<TimeSpan>("TriggerInterval", new TimeSpan(2, 0, 0, 0)); // 2 days
             settings.SetSetting<DateTime>("LastTrigger", DateTime.MinValue);
+            settings.SetSetting<Guid>("LastGuid", Guid.Empty);
+            settings.SetSetting<List<string>>("Facts", []);
 
             return settings;
         }
