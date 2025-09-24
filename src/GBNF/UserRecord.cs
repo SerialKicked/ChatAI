@@ -15,22 +15,21 @@ namespace WaifuAI.GBNF
     {
         [JsonIgnore] private static string Schema = string.Empty;
 
+        //[Description("A list of {{user}}'s relations and friends, add relevant details when available")]
+        //public List<string> Relationships { get; set; } = [];
         [MinLength(0)]
-        [MaxLength(50)]
-        [Description("A list of {{user}}'s relations and friends, add relevant details when available")]
-        public List<string> Relationships { get; set; } = [];
-
-        [MinLength(0)]
-        [MaxLength(50)]
-        [Description("A detailed list of {{user}}'s tastes and hobbies")]
+        [MaxLength(10)]
+        [Description("A detailed list of {{user}}'s tastes and hobbies (up to 10 entries)")]
         public List<string> TastesAndHobbies { get; set; } = [];
 
         [MinLength(0)]
-        [MaxLength(50)]
-        [Description("A detailed list of {{user}}'s kinks and sexual tastes")]
+        [MaxLength(10)]
+        [Description("A detailed list of {{user}}'s kinks and sexual tastes (up to 10 entries)")]
         public List<string> Sexual { get; set; } = [];
 
-        [MinLength(0)][MaxLength(50)][Description("A list of other facts about {{user}} not fitting in the other categories")]
+        [MinLength(0)]
+        [MaxLength(10)]
+        [Description("A list of other facts about {{user}} not fitting in the other categories (up to 10 entries)")]
         public List<string> UserInfo { get; set; } = [];
 
 

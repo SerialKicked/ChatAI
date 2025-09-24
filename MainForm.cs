@@ -466,7 +466,7 @@ namespace WaifuAI
             message = LLMEngine.Bot.ReplaceMacros(message);
             statusbar.Items[1].Text = "Analyzing...";
             var response = await LLMEngine.QuickInferenceForSystemPrompt(message, false);
-            response = response.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd).Trim();
+            response = response.RemoveThinkingBlocks().Trim();
 
             if (!string.IsNullOrEmpty(response) && !response.StartsWith("no", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -1795,8 +1795,12 @@ namespace WaifuAI
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            SentimentAnalysis.Enabled = true;
-            _ = await SentimentAnalysis.Analyze(ed_input.Text);
+            var test = new UserBioTask();
+            var cfg = test.GetDefaultSettings();
+            await test.Execute(Bot, cfg, CancellationToken.None);
+
+            //SentimentAnalysis.Enabled = true;
+            //_ = await SentimentAnalysis.Analyze(ed_input.Text);
 
             //LLMEngine.NamesInPromptOverride = false;
             //var sense = LLMEngine.Bot.DatesInSessionSummaries;

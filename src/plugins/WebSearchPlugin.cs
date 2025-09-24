@@ -175,10 +175,7 @@ namespace WaifuAI.Plugins
             LLMEngine.NamesInPromptOverride = false;
             var fullprompt = BuildCheckPrompt(inputText);
             var response = await LLMEngine.SimpleQuery(fullprompt);
-            if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart))
-            {
-                response = response.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd);
-            }
+            response = response.RemoveThinkingBlocks();
             LLMEngine.Logger?.LogInformation("WebSearch Plugin Result: {output}", response);
             LLMEngine.NamesInPromptOverride = null;
             if (LLMEngine.Client!.SupportsStateSave && savedKV)

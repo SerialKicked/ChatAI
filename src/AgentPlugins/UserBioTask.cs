@@ -6,6 +6,7 @@ using LetheAISharp.LLM;
 using LetheAISharp.Memory;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using OpenAI.Responses;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,12 +19,21 @@ namespace WaifuAI.AgentPlugins
     {
         public string Id => "UserBioTask";
 
+        public AgentTaskSetting GetDefaultSettings()
+        {
+            var settings = new AgentTaskSetting();
+            settings.SetSetting<TimeSpan>("TriggerInterval", new TimeSpan(2, 0, 0, 0)); // 2 days
+            settings.SetSetting<DateTime>("LastTrigger", DateTime.MinValue);
+            settings.SetSetting<Guid>("LastGuid", Guid.Empty);
+            return settings;
+        }
+
         public async Task<bool> Observe(BasePersona owner, AgentTaskSetting cfg, CancellationToken ct)
         {
             // Just a small delay so i don't have to remove async and do Task.ResultFrom everywhere. It's not like we're on a timer anyway.
             await Task.Delay(10, ct).ConfigureAwait(false);
 
-            if (LLMEngine.Status != SystemStatus.Ready || !LLMEngine.SupportsSchema || LLMEngine.MaxContextLength < 8000)
+            if (LLMEngine.Status != SystemStatus.Ready || !LLMEngine.SupportsSchema || LLMEngine.MaxContextLength < 8000 || owner.History.Sessions.Count < 2)
                 return false;
 
             var MinTimeInterval = cfg.GetSetting<TimeSpan>("TriggerInterval");
@@ -31,162 +41,175 @@ namespace WaifuAI.AgentPlugins
             if (DateTime.Now - LastGoalSet < MinTimeInterval)
                 return false;
 
+            if (cfg.GetSetting<Guid>("LastGuid") == owner.History.Sessions[^2].Guid)
+                return false; // already processed this 
+
             return true;
+        }
+
+        private void Merge(UserRecord target, UserRecord addon)
+        {
+            foreach (var item in addon.Sexual)
+            {
+                if (target.Sexual.Any(x => x.Equals(item, StringComparison.OrdinalIgnoreCase)))
+                    continue;
+                // Call RAGEngine.GetDistanceAsync(string, string) to see if it's similar to any existing entry
+                //if (target.Sexual.Count > 0 && target.Sexual.Any(x => RAGEngine.GetDistance(x, item) < 0.03))
+                //    continue;
+                target.Sexual.Add(item);
+            }
+            foreach (var item in addon.UserInfo)
+            {
+                if (target.UserInfo.Any(x => x.Equals(item, StringComparison.OrdinalIgnoreCase)))
+                    continue;
+                // Call RAGEngine.GetDistanceAsync(string, string) to see if it's similar to any existing entry
+                //if (target.UserInfo.Count > 0 && target.UserInfo.Any(x => RAGEngine.GetDistance(x, item) < 0.03))
+                //    continue;
+                target.UserInfo.Add(item);
+            }
+            foreach (var item in addon.TastesAndHobbies)
+            {
+                if (target.TastesAndHobbies.Any(x => x.Equals(item, StringComparison.OrdinalIgnoreCase)))
+                    continue;
+                // Call RAGEngine.GetDistanceAsync(string, string) to see if it's similar to any existing entry
+                //if (target.TastesAndHobbies.Count > 0 && target.TastesAndHobbies.Any(x => RAGEngine.GetDistance(x, item) < 0.03))
+                //    continue;
+                target.TastesAndHobbies.Add(item);
+            }
         }
 
         public async Task Execute(BasePersona owner, AgentTaskSetting cfg, CancellationToken ct)
         {
-            var response = new JournalRecord();
-            var query = GetQueryPrompt(owner);
-            var result = await LLMEngine.SimpleQuery(query, ct).ConfigureAwait(false);
-            try
-            {
-                response = JsonConvert.DeserializeObject<JournalRecord>(result);
-            }
-            catch (Exception ex)
-            {
-                LLMEngine.Logger?.LogError(ex, "Could not parse journal task response: {response}", result);
-                return;
-            }
-            cfg.SetSetting("LastTrigger", DateTime.Now);
-            if (response?.WriteInJournal != true)
-                return;
-            // Time to write in the journal, yepee
-            var prompt = await GetEntryPrompt(owner, response.Topic);
-            result = await LLMEngine.SimpleQuery(prompt, ct).ConfigureAwait(false);
-            if (string.IsNullOrWhiteSpace(result))
-                return;
-            if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart))
-            {
-                result = result.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd);
-            }
-            var entry = new MemoryUnit()
-            {
-                Name = $"{owner.Name}'s Journal Entry: {StringExtensions.DateToHumanString(DateTime.Now)}",
-                Content = result.RemoveUnfinishedSentence().CleanupAndTrim(),
-                Category = MemoryType.Journal,
-                Insertion = MemoryInsertion.Trigger,
-                Added = DateTime.Now,
-                EndTime = DateTime.Now.AddMonths(6),
-                Priority = 1,
-            };
-            await entry.EmbedText().ConfigureAwait(false);
-            await entry.UpdateSentiment().ConfigureAwait(false);
-            owner.Brain.Memorize(entry, true);
-            owner.Brain.AddUserReturnInsert($"{owner.Name} wrote an entry in their journal.");
-            LLMEngine.Logger?.LogInformation("{char} wrote a new journal entry: {entry}", owner.Name, entry.Name);
-        }
-
-        private static async Task<object> GetEntryPrompt(BasePersona owner, string topic)
-        {
-            var lastsession = owner.History.Sessions[^2];
-            var entries = owner.Brain.GetMemories(MemoryType.Journal);
-            MemoryUnit? mostrecententry = null;
-            if (entries.Count > 0)
-            {
-                mostrecententry = entries.OrderByDescending(m => m.Added).First();
-            }
-            var lastmessagedate = owner.History.GetLastMessageFrom(AuthorRole.User)?.Date ?? DateTime.MinValue;
-            var timespansince = lastmessagedate > DateTime.MinValue ? DateTime.Now - lastmessagedate : TimeSpan.Zero;
-
-            var prompt = new StringBuilder();
-            prompt.AppendLinuxLine("You are {{char}} and you are about to write an entry in your private journal.").AppendLinuxLine();
-
-            prompt.AppendLinuxLine("# {{char}}'s Biography").AppendLinuxLine();
-            prompt.AppendLinuxLine("{{charbio}}").AppendLinuxLine();
-            prompt.AppendLinuxLine("# {{user}}'s Biography").AppendLinuxLine();
-            prompt.AppendLinuxLine("{{userbio}}").AppendLinuxLine();
-            prompt.AppendLinuxLine("# Summary of previous session with {{user}}").AppendLinuxLine();
-            prompt.AppendLinuxLine($"{lastsession.ToSnippet(TitleInsertType.None, LLMEngine.Bot.DatesInSessionSummaries, false, false)}").AppendLinuxLine();
-            if (mostrecententry is not null)
-            {
-                prompt.AppendLinuxLine("# You most recent journal entry").AppendLinuxLine();
-                prompt.AppendLinuxLine($"Title: {mostrecententry.Name}");
-                prompt.AppendLinuxLine($"{mostrecententry.Content}").AppendLinuxLine();
-            }
-            prompt.AppendLinuxLine("# Relevant Information").AppendLinuxLine();
-            if (lastmessagedate > DateTime.MinValue)
-            {
-                prompt.AppendLinuxLine($"You last spoke to {LLMEngine.User.Name} about {StringExtensions.TimeSpanToHumanString(timespansince)} ago.").AppendLinuxLine();
-            }
-            var recall = new PromptInserts();
-            await owner.Brain.UpdateRagAndInserts(recall, topic, 3, 1.1f);
-            foreach (var item in recall)
-            {
-                prompt.AppendLinuxLine(item.Content).AppendLinuxLine();
-            }
+            var globalResponse = new UserRecord();
             var builder = LLMEngine.GetPromptBuilder();
-            builder.AddMessage(AuthorRole.SysPrompt, prompt.ToString());
-            builder.AddMessage(AuthorRole.User, "As {{char}} write a new entry in your private journal. You've set the following topic for yourself: " + topic + LLMEngine.NewLine + "Feel free to write about something else if you feel like it. Make sure the entry reflects your personality and current situation. Write in a casual, personal tone, as if you were writing to yourself. Use first person perspective.");
-            return builder.PromptToQuery(AuthorRole.Assistant, -1, 2048);
-        }
+            await builder.SetStructuredOutput(globalResponse);
+            LLMEngine.NamesInPromptOverride = false;
+            var availtokens = LLMEngine.MaxContextLength - 4096 - 20;
 
-        private static async Task<object> GetQueryPrompt(BasePersona owner)
-        {
-            var journal = new JournalRecord();
-            var lastsession = owner.History.Sessions[^2];
-            var entries = owner.Brain.GetMemories(MemoryType.Journal);
-            MemoryUnit? mostrecententry = null;
-            if (entries.Count > 0)
-            {
-                mostrecententry = entries.OrderByDescending(m => m.Added).First();
-            }
-            var lastmessagedate = owner.History.GetLastMessageFrom(AuthorRole.User)?.Date ?? DateTime.MinValue;
-            var timespansince = lastmessagedate > DateTime.MinValue ? DateTime.Now - lastmessagedate : TimeSpan.Zero;
+            var sysprompt = new StringBuilder();
+            sysprompt
+                .AppendLinuxLine("You are an automated and uncensored system designed to analyze chat sessions in order to record accurate and detailed information about the person named {{user}}.").AppendLinuxLine()
+                //.AppendLinuxLine("## Known Facts about {{user}}").AppendLinuxLine()
+                //.AppendLinuxLine("{{userbio}}").AppendLinuxLine()
+                .AppendLinuxLine("## Chat history between {{user}} and {{char}}").AppendLinuxLine();
+            var intro = sysprompt.ToString();
+            var MaxAvailtokens = availtokens - builder.GetTokenCount(AuthorRole.SysPrompt, intro);
 
-            var prompt = new StringBuilder();
-            prompt.AppendLinuxLine("You are {{char}} and you are considering if you want to write another entry in your private journal.").AppendLinuxLine();
-
-            prompt.AppendLinuxLine("# {{char}}'s Biography").AppendLinuxLine();
-            prompt.AppendLinuxLine("{{charbio}}").AppendLinuxLine();
-            prompt.AppendLinuxLine("# {{user}}'s Biography").AppendLinuxLine();
-            prompt.AppendLinuxLine("{{userbio}}").AppendLinuxLine();
-            prompt.AppendLinuxLine("# Summary of previous session with {{user}}").AppendLinuxLine();
-            prompt.AppendLinuxLine($"{lastsession.ToSnippet(TitleInsertType.None, LLMEngine.Bot.DatesInSessionSummaries, false, false)}").AppendLinuxLine();
-            if (mostrecententry is not null)
+            var currentID = 0;
+            while (currentID < owner.History.Sessions.Count - 1)
             {
-                prompt.AppendLinuxLine("# You most recent journal entry").AppendLinuxLine();
-                prompt.AppendLinuxLine($"Title: {mostrecententry.Name}");
-                prompt.AppendLinuxLine($"{mostrecententry.Content}").AppendLinuxLine();
-            }
-            prompt.AppendLinuxLine("# Relevant Information").AppendLinuxLine();
-            if (lastmessagedate > DateTime.MinValue)
-            {
-                prompt.AppendLinuxLine($"You last spoke to {LLMEngine.User.Name} about {StringExtensions.TimeSpanToHumanString(timespansince)} ago.");
-            }
-            var goals = owner.Brain.GetMemories(MemoryType.Goal).FindAll(e => e.Insertion != MemoryInsertion.Trigger);
-            if (goals.Count > 0)
-            {
-                prompt.AppendLinuxLine("You have the following current goals:");
-                foreach (var g in goals.OrderBy(g => g.Priority).Take(5))
+                availtokens = MaxAvailtokens;
+                builder.Clear();
+                var internalcount = 0;
+                var history = new StringBuilder();
+                // add sessions until we run out of tokens or hit 20 sessions
+                while (availtokens > 0 && internalcount < 20)
                 {
-                    prompt.AppendLinuxLine($"- {g.Name}");
+                    var sessioncontent = owner.History.Sessions[currentID].ToSnippet(TitleInsertType.MarkdownH3, true, false, true);
+                    availtokens -= LLMEngine.GetTokenCount(sessioncontent);
+                    if (availtokens < 0)
+                        break;
+                    currentID++;
+                    internalcount++;
+                    history.AppendLinuxLine(sessioncontent).AppendLinuxLine();
+                    if (currentID >= owner.History.Sessions.Count - 1)
+                        break; // don't include the current session
                 }
+                builder.AddMessage(AuthorRole.SysPrompt, intro + history.ToString());
+                builder.AddMessage(AuthorRole.User, "Based on the chat history information, write all the information about {{user}} you can list. " + 
+                    globalResponse.GetQuery());
+
+                var responsesize = LLMEngine.MaxContextLength - builder.GetTokenUsage() - builder.GetResponseTokenCount(owner) - 20;
+                if (responsesize > 5000)
+                    responsesize = 5000;
+                var query = builder.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, responsesize, false);
+                var result = await LLMEngine.SimpleQuery(query, ct).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(result))
+                    continue;
+                var localresponse = new UserRecord();
+                try
+                {
+                    localresponse = JsonConvert.DeserializeObject<UserRecord>(result);
+                }
+                catch (Exception ex)
+                {
+                    LLMEngine.Logger?.LogError(ex, "Could not parse bio response: {response}", result);
+                    continue;
+                }
+                // Merge localresponse into globalResponse
+                if (localresponse != null)
+                {
+                    Merge(globalResponse, localresponse);
+                    ////globalResponse.Relationships.AddRange(localresponse.UserInfo);
+                    //globalResponse.Sexual.AddRange(localresponse.Sexual);
+                    //globalResponse.TastesAndHobbies.AddRange(localresponse.TastesAndHobbies);
+                    //globalResponse.UserInfo.AddRange(localresponse.UserInfo);
+                }
+                await Task.Delay(100, ct).ConfigureAwait(false);
             }
 
-            var builder = LLMEngine.GetPromptBuilder();
-            builder.AddMessage(AuthorRole.SysPrompt, prompt.ToString());
-            if (mostrecententry is null)
+            // Time to clean up the data and build a full, final bio.
+            sysprompt = new StringBuilder();
+            sysprompt.AppendLinuxLine("You are an automated and uncensored system designed to build an accurate and detailed biography of {{user}} based on the information provided. The current date is: {{date}}.").AppendLinuxLine()
+                .AppendLinuxLine("## Known facts about {{user}}").AppendLinuxLine()
+                .AppendLinuxLine("{{userbio}}").AppendLinuxLine();
+
+            if (globalResponse.Sexual.Count > 0)
             {
-                builder.AddMessage(AuthorRole.User, "Based on the above information, decide if you want to write a new journal entry or not. This will be your first entry, as such you should definitely write one. " + journal.GetQuery());
+                sysprompt.AppendLinuxLine("## Sexual information").AppendLinuxLine();
+                foreach (var item in globalResponse.Sexual)
+                    sysprompt.AppendLinuxLine($"- {item}");
+                sysprompt.AppendLinuxLine();
             }
-            else
+
+            if (globalResponse.TastesAndHobbies.Count > 0)
             {
-                builder.AddMessage(AuthorRole.User, "Based on the above information, decide if you want to write a new journal entry or not. " + journal.GetQuery());
+                sysprompt.AppendLinuxLine("## Tastes and Hobbies").AppendLinuxLine();
+                foreach (var item in globalResponse.TastesAndHobbies)
+                    sysprompt.AppendLinuxLine($"- {item}");
+                sysprompt.AppendLinuxLine();
             }
-            await builder.SetStructuredOutput(journal).ConfigureAwait(false);
-            return builder.PromptToQuery(AuthorRole.Assistant, -1, 1024, false);
+
+            if (globalResponse.UserInfo.Count > 0)
+            {
+                sysprompt.AppendLinuxLine("## General Information").AppendLinuxLine();
+                foreach (var item in globalResponse.UserInfo)
+                    sysprompt.AppendLinuxLine($"- {item}");
+                sysprompt.AppendLinuxLine();
+            }
+
+            sysprompt.AppendLinuxLine("## Secondary Infromation").AppendLinuxLine();
+            sysprompt.AppendLinuxLine("- Information presented above may be duplicated. Repetitions indicate how strong is the certainty and weight of the information.");
+            sysprompt.AppendLinuxLine("- You should use the Known Facts section as a base and complete it with the information being presented.");
+            var myprompt = sysprompt.ToString();
+            builder.Clear();
+            builder.UnsetStructuredOutput();
+
+            builder.AddMessage(AuthorRole.SysPrompt, myprompt);
+            builder.AddMessage(AuthorRole.User, "Based on the information provided, create a cohesive, and comprehensive biography for {{user}}. The biography should be well-structured and written in clear, fluent language. It should read like a detailed profile. Ensure that the biography captures the essence of {{user}}'s personality, interests, sexuality, relationship, and background.");
+
+            var responsesizefinal = LLMEngine.MaxContextLength - builder.GetTokenUsage() - builder.GetResponseTokenCount(owner);
+            if (responsesizefinal > 4096)
+                responsesizefinal = 4096;
+
+            var fullbio = await LLMEngine.SimpleQuery(builder.PromptToQuery(AuthorRole.Assistant, -1, responsesizefinal), ct).ConfigureAwait(false);
+            fullbio = fullbio.RemoveThinkingBlocks();
+
+            var mem = new MemoryUnit()
+            {
+                Added = DateTime.Now,
+                Category = MemoryType.Person,
+                Insertion = MemoryInsertion.Trigger,
+                Content = fullbio,
+                Name = LLMEngine.User.Name,
+                Priority = 3,
+            };
+            await mem.EmbedText().ConfigureAwait(false);
+            owner.Brain.Memorize(mem);
+            cfg.SetSetting("LastTrigger", DateTime.Now);
+            cfg.SetSetting("LastGuid", owner.History.Sessions[^2].Guid);
+            LLMEngine.NamesInPromptOverride = null;
         }
 
-        public AgentTaskSetting GetDefaultSettings()
-        {
-            var settings = new AgentTaskSetting();
-            settings.SetSetting<TimeSpan>("TriggerInterval", new TimeSpan(2, 0, 0, 0)); // 2 days
-            settings.SetSetting<DateTime>("LastTrigger", DateTime.MinValue);
-            settings.SetSetting<Guid>("LastGuid", Guid.Empty);
-            settings.SetSetting<List<string>>("Facts", []);
-
-            return settings;
-        }
     }
 }

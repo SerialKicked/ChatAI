@@ -57,10 +57,7 @@ namespace WaifuAI.AgentPlugins
             result = await LLMEngine.SimpleQuery(prompt, ct).ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(result))
                 return;
-            if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart))
-            {
-                result = result.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd);
-            }
+            result = result.RemoveThinkingBlocks();
             var entry = new MemoryUnit()
             {
                 Name = $"{owner.Name}'s Journal Entry: {StringExtensions.DateToHumanString(DateTime.Now)}",

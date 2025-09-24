@@ -171,8 +171,8 @@ namespace WaifuAI.Plugins
                     llmparams.Grammar = "root ::= ([0-9][0-9]?[0-9]?)";
             }
             var response = await LLMEngine.SimpleQuery(context);
-            if (!EnforceCorrectGrammar && !string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart))
-                response = response.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd);
+            if (!EnforceCorrectGrammar)
+                response = response.RemoveThinkingBlocks();
             // strip anything that is not a number from response
             response = new string([.. response.Where(c => char.IsDigit(c))]);
             return response;
@@ -344,8 +344,7 @@ namespace WaifuAI.Plugins
         private async Task<string> QueryLLM(string inputText, string cmd)
         {
             var finalstr = await LLMEngine.SimpleQuery(TaskSelectionPrompt(inputText, cmd));
-            if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart))
-                finalstr = finalstr.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd);
+            finalstr = finalstr.RemoveThinkingBlocks();
             if (string.IsNullOrEmpty(finalstr))
                 return string.Empty;
             if (finalstr.Equals("no", StringComparison.InvariantCultureIgnoreCase) || !int.TryParse(finalstr, out var found) || found > websites.Count)
