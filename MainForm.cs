@@ -922,7 +922,7 @@ namespace WaifuAI
             {
                 await WebChatLoad();
             }
-            
+
         }
 
         private async Task SendMessageToUI(SingleMessage singleMessage)
@@ -1033,6 +1033,7 @@ namespace WaifuAI
             ck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
             ck_agentmode.Checked = LLMEngine.Bot.AgentMode;
             ckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
+            btVectorSearch.Enabled = RAGEngine.Enabled;
 
             if (LLMEngine.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
             {
@@ -1076,6 +1077,7 @@ namespace WaifuAI
         private void ck_ragenabled_CheckedChanged(object sender, EventArgs e)
         {
             RAGEngine.Enabled = ck_ragenabled.Checked;
+            btVectorSearch.Enabled = RAGEngine.Enabled;
         }
 
         #endregion
@@ -1615,6 +1617,7 @@ namespace WaifuAI
         private void ck_worldinfo_CheckedChanged(object sender, EventArgs e)
         {
             LLMEngine.Settings.AllowWorldInfo = ck_worldinfo.Checked;
+
         }
 
         private void cb_sysprompt_SelectionIndexChanged(object sender, EventArgs e)
@@ -1838,5 +1841,6 @@ namespace WaifuAI
         {
             LLMEngine.Bot.Brain.DisableEurekas = !ckNatMem.Checked;
         }
+
     }
 }
