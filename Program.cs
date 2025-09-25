@@ -2,6 +2,7 @@ using LetheAISharp.LLM;
 using Newtonsoft.Json;
 using System.IO;
 using WaifuAI.Files;
+using WaifuAI.Plugins;
 
 namespace WaifuAI
 {
@@ -32,6 +33,20 @@ namespace WaifuAI
             DataFiles.LoadDB();
             BigForm = new MainForm();
             Application.Run(BigForm);
+        }
+
+        public static void ApplyContextPluginSettings()
+        {
+            if (LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
+            {
+                searchplug.KeywordDetection = !Settings.AlwaysWebSearchQuery;
+            }
+
+            if (LLMEngine.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
+            {
+                webplug.EnforceCorrectGrammar = Settings.WebsitePluginGrammar;
+                webplug.KeywordDetection = Settings.WebsitePluginUseKeywords;
+            }
         }
     }
 }

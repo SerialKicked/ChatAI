@@ -1042,11 +1042,8 @@ namespace WaifuAI
             ckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
             btVectorSearch.Enabled = RAGEngine.Enabled;
 
-            if (LLMEngine.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
-            {
-                webplug.EnforceCorrectGrammar = Program.Settings.WebsitePluginGrammar;
-                webplug.KeywordDetection = Program.Settings.WebsitePluginUseKeywords;
-            }
+            Program.ApplyContextPluginSettings();
+
             _isinitloading = saveinit;
         }
 
@@ -1065,11 +1062,8 @@ namespace WaifuAI
                 LLMEngine.Bot.Brain.DisableEurekas = !ckNatMem.Checked;
                 Program.Settings.SessionMemorySystem = ck_sessionmemory.Checked;
 
-                if (LLMEngine.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
-                {
-                    webplug.EnforceCorrectGrammar = Program.Settings.WebsitePluginGrammar;
-                    webplug.KeywordDetection = Program.Settings.WebsitePluginUseKeywords;
-                }
+                Program.ApplyContextPluginSettings();
+
 
                 var str = JsonConvert.SerializeObject(Program.Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
