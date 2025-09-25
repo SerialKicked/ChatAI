@@ -18,6 +18,7 @@ namespace WaifuAI.AgentPlugins
     public sealed class UserBioTask : IAgentTask
     {
         public string Id => "UserBioTask";
+        public string Ability => "Update user's bio";
 
         public AgentTaskSetting GetDefaultSettings()
         {

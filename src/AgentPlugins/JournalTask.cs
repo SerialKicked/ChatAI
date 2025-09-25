@@ -17,6 +17,7 @@ namespace WaifuAI.AgentPlugins
     public sealed class JournalTask : IAgentTask
     {
         public string Id => "JournalTask";
+        public string Ability => "Write journal entries";
 
         public async Task<bool> Observe(BasePersona owner, AgentTaskSetting cfg, CancellationToken ct)
         {
@@ -37,7 +38,7 @@ namespace WaifuAI.AgentPlugins
         public async Task Execute(BasePersona owner, AgentTaskSetting cfg, CancellationToken ct)
         {
             var response = new JournalRecord();
-            var query = GetQueryPrompt(owner);
+            var query = await GetQueryPrompt(owner);
 
             var result = await LLMEngine.SimpleQuery(query, ct).ConfigureAwait(false);
             try

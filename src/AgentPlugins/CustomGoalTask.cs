@@ -16,6 +16,7 @@ namespace WaifuAI.AgentPlugins
     public sealed class CustomGoalTask : IAgentTask
     {
         public string Id => "CustomGoalTask";
+        public string Ability => "Set goals";
 
         public async Task<bool> Observe(BasePersona owner, AgentTaskSetting cfg, CancellationToken ct)
         {

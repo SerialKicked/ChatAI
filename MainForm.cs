@@ -285,6 +285,13 @@ namespace WaifuAI
                 ck_charsampler.Enabled = false;
                 ck_charsampler.Checked = false;
             }
+            ck_sessionmemory.Checked = LLMEngine.Settings.SessionMemorySystem;
+            ck_ttstoggle.Checked = Program.Settings.UseTTS;
+            ck_disablethink.Checked = Program.Settings.DisableThinking;
+            ck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
+            ck_agentmode.Checked = LLMEngine.Bot.AgentMode;
+            ckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
+            btVectorSearch.Enabled = RAGEngine.Enabled;
         }
 
         /// <summary>
