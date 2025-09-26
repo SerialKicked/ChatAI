@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WaifuAI.Files;
 using static LetheAISharp.SearchAPI.WebSearchAPI;
+using LetheAISharp.Memory;
 
 namespace WaifuAI.Plugins
 
@@ -116,8 +117,16 @@ namespace WaifuAI.Plugins
                 return new PluginResponse { IsHandled = false, Response = null };
 
             var formatedresponsed = new StringBuilder();
-            formatedresponsed.AppendLinuxLine("You looked up the information on the web and found the following information that you can use to improve your response:").AppendLine();
-            formatedresponsed.AppendLinuxLine(merged.CleanupAndTrim());
+            if (LLMEngine.Settings.AntiHallucinationMemoryFormat)
+            {
+                formatedresponsed.AppendLinuxLine($"<SystemEvent>[{MemoryType.WebSearch.ToString().ToUpperInvariant()}] - Topic: {topics.Topic}.");
+                formatedresponsed.Append($"{merged.CleanupAndTrim()}");
+            }
+            else
+            {
+                formatedresponsed.AppendLinuxLine("You looked up the information on the web and found the following information that you can use to improve your response:").AppendLinuxLine();
+                formatedresponsed.Append(merged.CleanupAndTrim());
+            }
             responseAppendNeeded = true;
             var output = new PluginResponse
             {
