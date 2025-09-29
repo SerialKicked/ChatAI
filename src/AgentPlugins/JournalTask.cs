@@ -63,6 +63,7 @@ namespace WaifuAI.AgentPlugins
             {
                 Name = $"{owner.Name}'s Journal Entry: {StringExtensions.DateToHumanString(DateTime.Now)}",
                 Content = result.RemoveUnfinishedSentence().CleanupAndTrim(),
+                Reason = response?.Topic ?? string.Empty,
                 Category = MemoryType.Journal,
                 Insertion = MemoryInsertion.Trigger,
                 Added = DateTime.Now,
@@ -97,13 +98,17 @@ namespace WaifuAI.AgentPlugins
             prompt.AppendLinuxLine("{{userbio}}").AppendLinuxLine();
             prompt.AppendLinuxLine("# Summary of previous session with {{user}}").AppendLinuxLine();
             prompt.AppendLinuxLine($"{lastsession.ToSnippet(TitleInsertType.None, LLMEngine.Bot.DatesInSessionSummaries, false, false)}").AppendLinuxLine();
+
+            prompt.AppendLinuxLine("# Most recent dialogs between you and {{user}}").AppendLinuxLine();
+            prompt.AppendLinuxLine(owner.History.CurrentSession.GetRawDialogs(1250, true, false, false, false)).AppendLinuxLine();
+
             if (mostrecententry is not null)
             {
-                prompt.AppendLinuxLine("# You most recent journal entry").AppendLinuxLine();
-                prompt.AppendLinuxLine($"Title: {mostrecententry.Name}");
-                prompt.AppendLinuxLine($"{mostrecententry.Content}").AppendLinuxLine();
+                prompt.AppendLinuxLine("# Your most recent journal entry").AppendLinuxLine();
+                prompt.AppendLinuxLine($"**{mostrecententry.Name}**");
+                prompt.AppendLinuxLine($"{mostrecententry.Content.CleanupAndTrim()}").AppendLinuxLine();
             }
-            prompt.AppendLinuxLine("# Relevant Information").AppendLinuxLine();
+            prompt.AppendLinuxLine("# Relevant Information and Thoughts").AppendLinuxLine();
             if (lastmessagedate > DateTime.MinValue)
             {
                 prompt.AppendLinuxLine($"You last spoke to {LLMEngine.User.Name} about {StringExtensions.TimeSpanToHumanString(timespansince)} ago.").AppendLinuxLine();
@@ -116,8 +121,8 @@ namespace WaifuAI.AgentPlugins
             }
             var builder = LLMEngine.GetPromptBuilder();
             builder.AddMessage(AuthorRole.SysPrompt, prompt.ToString());
-            builder.AddMessage(AuthorRole.User, "As {{char}} write a new entry in your private journal. You've set the following topic for yourself: " + topic + LLMEngine.NewLine + "Feel free to write about something else if you feel like it. Make sure the entry reflects your personality and current situation. Write in a casual, personal tone, as if you were writing to yourself. Use first person perspective.");
-            return builder.PromptToQuery(AuthorRole.Assistant, -1, 2048);
+            builder.AddMessage(AuthorRole.User, "As {{char}} write a new entry in your private journal. You've set the following topic for yourself: " + topic + LLMEngine.NewLine + "Feel free to write about something else if you feel like it. Make sure the entry reflects your personality and current situation. Write in a casual, personal tone, as if you were writing to yourself. Use first person perspective. Do not add a date (it's done automatically.");
+            return builder.PromptToQuery(AuthorRole.Assistant, -1, 3000);
         }
 
         private static async Task<object> GetQueryPrompt(BasePersona owner)
@@ -143,6 +148,8 @@ namespace WaifuAI.AgentPlugins
             prompt.AppendLinuxLine("{{userbio}}").AppendLinuxLine();
             prompt.AppendLinuxLine("# Summary of previous session with {{user}}").AppendLinuxLine();
             prompt.AppendLinuxLine($"{lastsession.ToSnippet(TitleInsertType.None, LLMEngine.Bot.DatesInSessionSummaries, false, false)}").AppendLinuxLine();
+            prompt.AppendLinuxLine("# Most recent dialogs between you and {{user}}").AppendLinuxLine();
+            prompt.AppendLinuxLine(owner.History.CurrentSession.GetRawDialogs(1250, true, false, false, false)).AppendLinuxLine();
             if (mostrecententry is not null)
             {
                 prompt.AppendLinuxLine("# You most recent journal entry").AppendLinuxLine();

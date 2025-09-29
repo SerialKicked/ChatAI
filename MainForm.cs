@@ -41,7 +41,6 @@ namespace WaifuAI
         private readonly Random RNG = new();
         private RenPyDialogHandler? _renpyDialogHandler;
         private string ed_log = string.Empty;
-        private string? _currentStreamDomId;
 
         public static Character? Bot => LLMEngine.Bot as Character;
         public static Character? User => LLMEngine.User as Character;
@@ -123,6 +122,8 @@ namespace WaifuAI
             HelptoolTip.SetToolTip(ck_onlinerag, "If checked, the bot may perform a web search (using DuckDuckGo) to improve its responses when asked to.");
 
             // Load our app level agent plugins
+            AgentRuntime.RegisterAction(new SessionMoodCheckAction());
+
             AgentRuntime.RegisterPlugin("GoalDesignerTask", new GoalDesignerTask());
             AgentRuntime.RegisterPlugin("CustomGoalTask", new CustomGoalTask());
             AgentRuntime.RegisterPlugin("JournalTask", new JournalTask());
@@ -814,9 +815,10 @@ namespace WaifuAI
 
                 LLMEngine.OnQuickInferenceEnded += (s, e) =>
                 {
-                    loadingForm.AddProgress(50);
+                    loadingForm.AddProgress(25);
                 };
                 await LLMEngine.History.StartNewChatSession(true, false);
+                await LLMEngine.Bot.Brain.ProcessPreviousSession();
                 if (LLMEngine.Bot.SelfEditTokens > 0)
                 {
                     loadingForm.SetMessage("Updating dynamic character (this might take a few minutes).");
@@ -1798,7 +1800,7 @@ namespace WaifuAI
         {
             var test = new UserBioTask();
             var cfg = test.GetDefaultSettings();
-            await test.Execute(Bot, cfg, CancellationToken.None);
+            await test.Execute(LLMEngine.Bot, cfg, CancellationToken.None);
 
             //SentimentAnalysis.Enabled = true;
             //_ = await SentimentAnalysis.Analyze(ed_input.Text);

@@ -1,4 +1,5 @@
 using LetheAISharp;
+using LetheAISharp.Agent;
 using LetheAISharp.Agent.Actions;
 using LetheAISharp.Files;
 using LetheAISharp.LLM;
@@ -8,7 +9,9 @@ using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Text;
+using WaifuAI.AgentPlugins;
 using WaifuAI.Files;
+using WaifuAI.GBNF;
 using WaifuAI.src.forms;
 
 namespace WaifuAI.src.forms
@@ -397,13 +400,36 @@ namespace WaifuAI.src.forms
         {
             if (_selectedSession == null)
                 return;
-            await _selectedSession.UpdateSentiment();
-            var strb = new StringBuilder();
-            foreach (var item in _selectedSession.Sentiments)
+
+            var action = AgentRuntime.GetAction<MoodAnalysis?, SessionMoodCheckParams>("SessionMoodCheckAction");
+            if (action is not null)
             {
-                strb.AppendLine($"{item.Label}: {item.Probability}");
+                var result = await action.Execute(new SessionMoodCheckParams(_selectedSession), CancellationToken.None);
+                if (result is not null)
+                {
+                    var strb = new StringBuilder();
+                    strb.AppendLine($"Horniness: {result.Horniness.ToString()}");
+                    strb.AppendLine($"Submission: {result.Submission.ToString()}");
+                    strb.AppendLine($"Energy: {result.Energy.ToString()}");
+                    strb.AppendLine($"Cheer: {result.Cheer.ToString()}");
+                    strb.AppendLine($"Curiosity: {result.Curiosity.ToString()}");
+                    strb.AppendLine($"Sanity: {result.Sanity.ToString()}");
+                    MessageBox.Show(strb.ToString(), "Mood Analysis Results");
+                }
+                else
+                {
+                    MessageBox.Show("Mood analysis failed or returned no data.", "Mood Analysis Results");
+                }
             }
-            MessageBox.Show(strb.ToString(), "Sentiment Analysis Results");
+
+
+            //await _selectedSession.UpdateSentiment();
+            //var strb = new StringBuilder();
+            //foreach (var item in _selectedSession.Sentiments)
+            //{
+            //    strb.AppendLine($"{item.Label}: {item.Probability}");
+            //}
+            //MessageBox.Show(strb.ToString(), "Sentiment Analysis Results");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using LetheAISharp.Files;
 using LetheAISharp.LLM;
+using LetheAISharp.Memory;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using System.IO;
@@ -184,14 +185,33 @@ namespace WaifuAI.Files
                 if (Protected && File.Exists(encPath))
                 {
                     // Load plaintext and will save encrypted on EndChat
-                    base.LoadBrain(path);
+                    LoadOrCreateClearBrain(path);
                     return;
                 }
                 
             }
-            
+
             // Not protected or no encrypted files - use base implementation
-            base.LoadBrain(path);
+            LoadOrCreateClearBrain(path);
+        }
+
+        private void LoadOrCreateClearBrain(string path)
+        {
+            var selpath = path;
+            if (!selpath.EndsWith('/') && !selpath.EndsWith('\\'))
+                selpath += Path.DirectorySeparatorChar;
+            var brainFilePath = selpath + UniqueName + ".brain";
+            // If brain file exists, load it
+            if (!string.IsNullOrEmpty(UniqueName) && File.Exists(brainFilePath))
+            {
+                Brain = JsonConvert.DeserializeObject<CharBrain>(File.ReadAllText(brainFilePath))! ?? new CharBrain(this);
+            }
+            else
+            {
+                // Default to empty brain
+                Brain = new CharBrain(this);
+            }
+            Brain.Init(this);
         }
 
         private bool TryLoadEncryptedBrain(string encPath, string originalPath)
@@ -361,5 +381,7 @@ namespace WaifuAI.Files
             _image = Image.FromFile("data/img/" + selectedfile);
             return _image;
         }
+
+        
     }
 }
