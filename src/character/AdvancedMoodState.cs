@@ -175,7 +175,7 @@ namespace WaifuAI.Files
             }
             else
             {
-                if (Sanity < 0.25)
+                if (Sanity < 0.2)
                 {
                     adjectives.Add("like a mind-broken slave");
                 }
@@ -185,9 +185,7 @@ namespace WaifuAI.Files
                 }
             }
 
-
             return adjectives;
-
         }
 
     }

@@ -46,9 +46,6 @@
             ed_name = new TextBox();
             label1 = new Label();
             tabAdvanc = new TabPage();
-            groupBox5 = new GroupBox();
-            ed_whims = new TextBox();
-            label8 = new Label();
             groupBox4 = new GroupBox();
             ed_writingstyle = new TextBox();
             label7 = new Label();
@@ -77,6 +74,8 @@
             ed_outetts = new TextBox();
             label11 = new Label();
             groupBox7 = new GroupBox();
+            ckMoodSystem = new CheckBox();
+            ckPassword = new CheckBox();
             ck_irldates = new CheckBox();
             label10 = new Label();
             ck_senseoftime = new CheckBox();
@@ -84,13 +83,11 @@
             groupBox6 = new GroupBox();
             ckl_plugins = new CheckedListBox();
             label9 = new Label();
-            ckPassword = new CheckBox();
             groupBox3.SuspendLayout();
             tabControl1.SuspendLayout();
             tabBio.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pic).BeginInit();
             tabAdvanc.SuspendLayout();
-            groupBox5.SuspendLayout();
             groupBox4.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -275,7 +272,6 @@
             // 
             // tabAdvanc
             // 
-            tabAdvanc.Controls.Add(groupBox5);
             tabAdvanc.Controls.Add(groupBox4);
             tabAdvanc.Controls.Add(groupBox2);
             tabAdvanc.Controls.Add(groupBox1);
@@ -286,39 +282,6 @@
             tabAdvanc.Text = "Advanced";
             tabAdvanc.UseVisualStyleBackColor = true;
             // 
-            // groupBox5
-            // 
-            groupBox5.Controls.Add(ed_whims);
-            groupBox5.Controls.Add(label8);
-            groupBox5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox5.Location = new Point(482, 247);
-            groupBox5.Name = "groupBox5";
-            groupBox5.Size = new Size(455, 233);
-            groupBox5.TabIndex = 11;
-            groupBox5.TabStop = false;
-            groupBox5.Text = "Whim System";
-            // 
-            // ed_whims
-            // 
-            ed_whims.Enabled = false;
-            ed_whims.Font = new Font("Segoe UI", 9F);
-            ed_whims.Location = new Point(6, 37);
-            ed_whims.Multiline = true;
-            ed_whims.Name = "ed_whims";
-            ed_whims.ScrollBars = ScrollBars.Vertical;
-            ed_whims.Size = new Size(443, 183);
-            ed_whims.TabIndex = 13;
-            // 
-            // label8
-            // 
-            label8.AutoSize = true;
-            label8.Font = new Font("Segoe UI", 9F);
-            label8.Location = new Point(6, 19);
-            label8.Name = "label8";
-            label8.Size = new Size(96, 15);
-            label8.TabIndex = 0;
-            label8.Text = "Work In Progress";
-            // 
             // groupBox4
             // 
             groupBox4.Controls.Add(ed_writingstyle);
@@ -326,7 +289,7 @@
             groupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox4.Location = new Point(8, 247);
             groupBox4.Name = "groupBox4";
-            groupBox4.Size = new Size(455, 233);
+            groupBox4.Size = new Size(929, 233);
             groupBox4.TabIndex = 10;
             groupBox4.TabStop = false;
             groupBox4.Text = "Writing Style";
@@ -338,7 +301,7 @@
             ed_writingstyle.Multiline = true;
             ed_writingstyle.Name = "ed_writingstyle";
             ed_writingstyle.ScrollBars = ScrollBars.Vertical;
-            ed_writingstyle.Size = new Size(443, 183);
+            ed_writingstyle.Size = new Size(917, 183);
             ed_writingstyle.TabIndex = 13;
             // 
             // label7
@@ -618,6 +581,7 @@
             // 
             // groupBox7
             // 
+            groupBox7.Controls.Add(ckMoodSystem);
             groupBox7.Controls.Add(ckPassword);
             groupBox7.Controls.Add(ck_irldates);
             groupBox7.Controls.Add(label10);
@@ -631,11 +595,35 @@
             groupBox7.TabStop = false;
             groupBox7.Text = "Default Character Settings";
             // 
+            // ckMoodSystem
+            // 
+            ckMoodSystem.AutoSize = true;
+            ckMoodSystem.Font = new Font("Segoe UI", 9F);
+            ckMoodSystem.Location = new Point(6, 90);
+            ckMoodSystem.Name = "ckMoodSystem";
+            ckMoodSystem.Size = new Size(98, 19);
+            ckMoodSystem.TabIndex = 7;
+            ckMoodSystem.Text = "Mood system";
+            ckMoodSystem.UseVisualStyleBackColor = true;
+            ckMoodSystem.CheckedChanged += ckMoodSystem_CheckedChanged;
+            // 
+            // ckPassword
+            // 
+            ckPassword.AutoSize = true;
+            ckPassword.Font = new Font("Segoe UI", 9F);
+            ckPassword.Location = new Point(6, 140);
+            ckPassword.Name = "ckPassword";
+            ckPassword.Size = new Size(134, 19);
+            ckPassword.TabIndex = 6;
+            ckPassword.Text = "Password protection";
+            ckPassword.UseVisualStyleBackColor = true;
+            ckPassword.CheckedChanged += ckPassword_CheckedChanged;
+            // 
             // ck_irldates
             // 
             ck_irldates.AutoSize = true;
             ck_irldates.Font = new Font("Segoe UI", 9F);
-            ck_irldates.Location = new Point(6, 90);
+            ck_irldates.Location = new Point(6, 115);
             ck_irldates.Name = "ck_irldates";
             ck_irldates.Size = new Size(230, 19);
             ck_irldates.TabIndex = 5;
@@ -707,18 +695,6 @@
             label9.TabIndex = 0;
             label9.Text = "Plugins this character has access to. Some can be toggled on/off in main chat.";
             // 
-            // ckPassword
-            // 
-            ckPassword.AutoSize = true;
-            ckPassword.Font = new Font("Segoe UI", 9F);
-            ckPassword.Location = new Point(6, 115);
-            ckPassword.Name = "ckPassword";
-            ckPassword.Size = new Size(134, 19);
-            ckPassword.TabIndex = 6;
-            ckPassword.Text = "Password protection";
-            ckPassword.UseVisualStyleBackColor = true;
-            ckPassword.CheckedChanged += ckPassword_CheckedChanged;
-            // 
             // CharEditForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -738,8 +714,6 @@
             tabBio.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pic).EndInit();
             tabAdvanc.ResumeLayout(false);
-            groupBox5.ResumeLayout(false);
-            groupBox5.PerformLayout();
             groupBox4.ResumeLayout(false);
             groupBox4.PerformLayout();
             groupBox2.ResumeLayout(false);
@@ -792,12 +766,9 @@
         private GroupBox groupBox2;
         private CheckedListBox ckl_samplers;
         private Label label5;
-        private GroupBox groupBox5;
-        private Label label8;
         private GroupBox groupBox4;
         private TextBox ed_writingstyle;
         private Label label7;
-        private TextBox ed_whims;
         private GroupBox groupBox6;
         private CheckedListBox ckl_plugins;
         private Label label9;
@@ -823,5 +794,6 @@
         private Button btRegenBio;
         private CheckBox ck_irldates;
         private CheckBox ckPassword;
+        private CheckBox ckMoodSystem;
     }
 }

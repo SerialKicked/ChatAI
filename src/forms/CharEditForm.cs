@@ -88,6 +88,8 @@ namespace WaifuAI.src.forms
             mychar.PointSystem = (cb_pointsystems.SelectedIndex != -1) ? cb_pointsystems.Text : string.Empty;
             mychar.PointValue = (int)num_ptvalue.Value;
             mychar.DatesInSessionSummaries = ck_irldates.Checked;
+            mychar.Protected = ckPassword.Checked;
+            mychar.Brain.MoodHandling = ckMoodSystem.Checked;
             return mychar;
         }
 
@@ -109,6 +111,8 @@ namespace WaifuAI.src.forms
             ed_selfedit.Text = selectedCharacter.SelfEditField.ToWinFormat();
             num_ptvalue.Value = selectedCharacter.PointValue;
             ck_irldates.Checked = selectedCharacter.DatesInSessionSummaries;
+            ckPassword.Checked = selectedCharacter.Protected;
+            ckMoodSystem.Checked = selectedCharacter.Brain.MoodHandling;
             ckl_plugins.Items.Clear();
             foreach (var item in LLMEngine.ContextPlugins)
             {
@@ -195,6 +199,11 @@ namespace WaifuAI.src.forms
         private void ckPassword_CheckedChanged(object sender, EventArgs e)
         {
             SelectedCharacter.Protected = ckPassword.Checked;
+        }
+
+        private void ckMoodSystem_CheckedChanged(object sender, EventArgs e)
+        {
+            SelectedCharacter.Brain.MoodHandling = ckMoodSystem.Checked;
         }
     }
 }
