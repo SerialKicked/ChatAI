@@ -13,9 +13,7 @@ namespace WaifuAI.Files
 {
     internal class CharBrain(BasePersona basePersona) : Brain(basePersona)
     {
-        public override MoodState Mood => new AdvancedMoodState();
-
-        private AdvancedMoodState AdvancedMood => (AdvancedMoodState)Mood;
+        public new AdvancedMoodState Mood { get; set; } = new AdvancedMoodState();
 
         public override async Task ProcessPreviousSession()
         {
@@ -28,7 +26,7 @@ namespace WaifuAI.Files
             var prevsession = Owner.History.Sessions[^2];
             
             if (prevsession.MetaData.IsRoleplaySession && prevsession.Messages.Count >= 10)
-                AdvancedMood.Horniness -= (0.015 * prevsession.Messages.Count);
+                Mood.Horniness -= (0.015 * prevsession.Messages.Count);
 
             // Analyze previous session for triggers
             var action = AgentRuntime.GetAction<MoodAnalysis?, SessionMoodCheckParams>("SessionMoodCheckAction");
@@ -48,12 +46,12 @@ namespace WaifuAI.Files
                 _ => 0.0
             };
 
-            AdvancedMood.Horniness  += Delta(result.Horniness);
-            AdvancedMood.Submission += Delta(result.Submission);
-            AdvancedMood.Energy     += Delta(result.Energy);
-            AdvancedMood.Cheer      += Delta(result.Cheer);
-            AdvancedMood.Curiosity  += Delta(result.Curiosity);
-            AdvancedMood.Sanity     += Delta(result.Sanity);
+            Mood.Horniness  += Delta(result.Horniness);
+            Mood.Submission += Delta(result.Submission);
+            Mood.Energy     += Delta(result.Energy);
+            Mood.Cheer      += Delta(result.Cheer);
+            Mood.Curiosity  += Delta(result.Curiosity);
+            Mood.Sanity     += Delta(result.Sanity);
         }
     }
 }

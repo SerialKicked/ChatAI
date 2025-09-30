@@ -185,17 +185,17 @@ namespace WaifuAI.Files
                 if (Protected && File.Exists(encPath))
                 {
                     // Load plaintext and will save encrypted on EndChat
-                    LoadOrCreateClearBrain(path);
+                    LoadOrCreateCharBrain(path);
                     return;
                 }
                 
             }
 
             // Not protected or no encrypted files - use base implementation
-            LoadOrCreateClearBrain(path);
+            LoadOrCreateCharBrain(path);
         }
 
-        private void LoadOrCreateClearBrain(string path)
+        private void LoadOrCreateCharBrain(string path)
         {
             var selpath = path;
             if (!selpath.EndsWith('/') && !selpath.EndsWith('\\'))
@@ -230,7 +230,7 @@ namespace WaifuAI.Files
                     try
                     {
                         // Use base implementation to load from temp file
-                        base.LoadBrain(originalPath);
+                        LoadOrCreateCharBrain(originalPath);
                         return true;
                     }
                     finally

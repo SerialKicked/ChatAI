@@ -818,7 +818,7 @@ namespace WaifuAI
                     loadingForm.AddProgress(25);
                 };
                 await LLMEngine.History.StartNewChatSession(true, false);
-                await LLMEngine.Bot.Brain.ProcessPreviousSession();
+                //await LLMEngine.Bot.Brain.ProcessPreviousSession();
                 if (LLMEngine.Bot.SelfEditTokens > 0)
                 {
                     loadingForm.SetMessage("Updating dynamic character (this might take a few minutes).");
