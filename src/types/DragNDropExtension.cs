@@ -8,6 +8,8 @@ namespace WaifuAI
 {
     public static class DragNDropExtension
     {
+        public static string DroppedFilePath = string.Empty;
+
         /// <summary>
         /// Enables drag and drop functionality for images on a control
         /// </summary>
@@ -59,6 +61,7 @@ namespace WaifuAI
                             if (base64Image != null)
                             {
                                 // Call the provided action with the base64 string
+                                DroppedFilePath = filePath;
                                 onImageDropped(base64Image);
                             }
                             else

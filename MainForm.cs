@@ -200,13 +200,13 @@ namespace WaifuAI
             ed_input.EnableImageDragDrop(basestr =>
             {
                 LLMEngine.VLM_ClearImages();
-                LLMEngine.VLM_AddB64Image(basestr);
+                LLMEngine.VLM_AddImage(DragNDropExtension.DroppedFilePath);
                 DisplayImage(basestr);
             }, 1024);
             pictEmbed.EnableImageDragDrop(basestr =>
             {
                 LLMEngine.VLM_ClearImages();
-                LLMEngine.VLM_AddB64Image(basestr);
+                LLMEngine.VLM_AddImage(DragNDropExtension.DroppedFilePath);
                 DisplayImage(basestr);
             }, 1024);
         }
