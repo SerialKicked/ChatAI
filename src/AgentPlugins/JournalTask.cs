@@ -96,18 +96,20 @@ namespace WaifuAI.AgentPlugins
             prompt.AppendLinuxLine("{{charbio}}").AppendLinuxLine();
             prompt.AppendLinuxLine("# {{user}}'s Biography").AppendLinuxLine();
             prompt.AppendLinuxLine("{{userbio}}").AppendLinuxLine();
-            prompt.AppendLinuxLine("# Summary of previous session with {{user}}").AppendLinuxLine();
-            prompt.AppendLinuxLine($"{lastsession.ToSnippet(TitleInsertType.None, LLMEngine.Bot.DatesInSessionSummaries, false, false)}").AppendLinuxLine();
-
-            prompt.AppendLinuxLine("# Most recent dialogs between you and {{user}}").AppendLinuxLine();
-            prompt.AppendLinuxLine(owner.History.CurrentSession.GetRawDialogs(1250, true, false, false, false)).AppendLinuxLine();
-
             if (mostrecententry is not null)
             {
-                prompt.AppendLinuxLine("# Your most recent journal entry").AppendLinuxLine();
+                prompt.AppendLinuxLine("# Your previous journal entry").AppendLinuxLine();
                 prompt.AppendLinuxLine($"**{mostrecententry.Name}**");
-                prompt.AppendLinuxLine($"{mostrecententry.Content.CleanupAndTrim()}").AppendLinuxLine();
+                prompt.AppendLinuxLine($"{mostrecententry.Content}").AppendLinuxLine();
             }
+            prompt.AppendLinuxLine("# Summary of previous session with {{user}}").AppendLinuxLine();
+            prompt.AppendLinuxLine($"{lastsession.ToSnippet(TitleInsertType.None, LLMEngine.Bot.DatesInSessionSummaries, false, false)}").AppendLinuxLine();
+            if (owner.History.CurrentSession.Messages.Count > 5)
+            {
+                prompt.AppendLinuxLine("# Most recent dialogs between you and {{user}}").AppendLinuxLine();
+                prompt.AppendLinuxLine(owner.History.CurrentSession.GetRawDialogs(1250, true, false, false, false)).AppendLinuxLine();
+            }
+
             prompt.AppendLinuxLine("# Relevant Information and Thoughts").AppendLinuxLine();
             if (lastmessagedate > DateTime.MinValue)
             {
@@ -121,7 +123,7 @@ namespace WaifuAI.AgentPlugins
             }
             var builder = LLMEngine.GetPromptBuilder();
             builder.AddMessage(AuthorRole.SysPrompt, prompt.ToString());
-            builder.AddMessage(AuthorRole.User, "As {{char}} write a new entry in your private journal. You've set the following topic for yourself: " + topic + LLMEngine.NewLine + "Feel free to write about something else if you feel like it. Make sure the entry reflects your personality and current situation. Write in a casual, personal tone, as if you were writing to yourself. Use first person perspective. Do not add a date (it's done automatically.");
+            builder.AddMessage(AuthorRole.User, "As {{char}} write a new entry in your private journal. You've set the following topic for yourself: " + topic + LLMEngine.NewLine + LLMEngine.NewLine + "Feel free to write about something else if you feel like it. Make sure the entry reflects your personality and current situation. Write in a casual, personal tone, as if you were writing to yourself. Use first person perspective. Do not add a date (it's done automatically). Don't repeat the previous entry.");
             return builder.PromptToQuery(AuthorRole.Assistant, -1, 3000);
         }
 
@@ -146,15 +148,18 @@ namespace WaifuAI.AgentPlugins
             prompt.AppendLinuxLine("{{charbio}}").AppendLinuxLine();
             prompt.AppendLinuxLine("# {{user}}'s Biography").AppendLinuxLine();
             prompt.AppendLinuxLine("{{userbio}}").AppendLinuxLine();
-            prompt.AppendLinuxLine("# Summary of previous session with {{user}}").AppendLinuxLine();
-            prompt.AppendLinuxLine($"{lastsession.ToSnippet(TitleInsertType.None, LLMEngine.Bot.DatesInSessionSummaries, false, false)}").AppendLinuxLine();
-            prompt.AppendLinuxLine("# Most recent dialogs between you and {{user}}").AppendLinuxLine();
-            prompt.AppendLinuxLine(owner.History.CurrentSession.GetRawDialogs(1250, true, false, false, false)).AppendLinuxLine();
             if (mostrecententry is not null)
             {
-                prompt.AppendLinuxLine("# You most recent journal entry").AppendLinuxLine();
-                prompt.AppendLinuxLine($"Title: {mostrecententry.Name}");
+                prompt.AppendLinuxLine("# Your previous journal entry").AppendLinuxLine();
+                prompt.AppendLinuxLine($"**{mostrecententry.Name}**");
                 prompt.AppendLinuxLine($"{mostrecententry.Content}").AppendLinuxLine();
+            }
+            prompt.AppendLinuxLine("# Summary of previous session with {{user}}").AppendLinuxLine();
+            prompt.AppendLinuxLine($"{lastsession.ToSnippet(TitleInsertType.None, LLMEngine.Bot.DatesInSessionSummaries, false, false)}").AppendLinuxLine();
+            if (owner.History.CurrentSession.Messages.Count > 5)
+            {
+                prompt.AppendLinuxLine("# Most recent dialogs between you and {{user}}").AppendLinuxLine();
+                prompt.AppendLinuxLine(owner.History.CurrentSession.GetRawDialogs(1250, true, false, false, false)).AppendLinuxLine();
             }
             prompt.AppendLinuxLine("# Relevant Information").AppendLinuxLine();
             if (lastmessagedate > DateTime.MinValue)
@@ -175,11 +180,11 @@ namespace WaifuAI.AgentPlugins
             builder.AddMessage(AuthorRole.SysPrompt, prompt.ToString());
             if (mostrecententry is null)
             {
-                builder.AddMessage(AuthorRole.User, "Based on the above information, decide if you want to write a new journal entry or not. This will be your first entry, as such you should definitely write one. " + journal.GetQuery());
+                builder.AddMessage(AuthorRole.User, "Based on the above information, decide if you want to write a new journal entry or not. This will be your first entry, as such you should definitely write one. " + journal.GetQuery().CleanupAndTrim());
             }
             else
             {
-                builder.AddMessage(AuthorRole.User, "Based on the above information, decide if you want to write a new journal entry or not. " + journal.GetQuery());
+                builder.AddMessage(AuthorRole.User, "Based on the above information, decide if you want to write a new journal entry or not. " + journal.GetQuery().CleanupAndTrim());
             }
             await builder.SetStructuredOutput(journal);
             return builder.PromptToQuery(AuthorRole.Assistant, -1, 1024, false);

@@ -22,6 +22,8 @@ using WaifuAI.Game;
 using WaifuAI.Plugins;
 using WaifuAI.src.forms;
 using WaifuAI.Web;
+using WaifuAI.GBNF;
+using Microsoft.Extensions.Logging;
 
 namespace WaifuAI
 {
@@ -123,6 +125,7 @@ namespace WaifuAI
 
             // Load our app level agent plugins
             AgentRuntime.RegisterAction(new SessionMoodCheckAction());
+            AgentRuntime.RegisterAction(new ImageInfoAction());
 
             AgentRuntime.RegisterPlugin("GoalDesignerTask", new GoalDesignerTask());
             AgentRuntime.RegisterPlugin("CustomGoalTask", new CustomGoalTask());
@@ -1798,45 +1801,92 @@ namespace WaifuAI
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            var test = new UserBioTask();
-            var cfg = test.GetDefaultSettings();
-            await test.Execute(LLMEngine.Bot, cfg, CancellationToken.None);
+            // Go through all image files (png, jpg, gif) in a given folder recursively
+            // and run the ImageInfoAction on them, saving the results to a JSON file with the same name
+            string folderPath = @"S:\Content\Pictures\Incest Bait";
+            var imageFiles = Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories)
+                .Where(s => s.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                            s.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                            s.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
+                            s.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            folderPath = @"S:\Content\Pictures\Pro Rape";
+            imageFiles.AddRange(Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories)
+                .Where(s => s.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                            s.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                            s.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
+                            s.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))
+                .ToList());
+            var imageAction = new ImageInfoAction();
 
-            //SentimentAnalysis.Enabled = true;
-            //_ = await SentimentAnalysis.Analyze(ed_input.Text);
+            var Memories = new List<MemoryUnit>();
 
-            //LLMEngine.NamesInPromptOverride = false;
-            //var sense = LLMEngine.Bot.DatesInSessionSummaries;
-            //LLMEngine.Bot.DatesInSessionSummaries = false;
-            ////var res = await SentimentAnalysis.Analyze("I am very happy today!");
-            //var availtokens = LLMEngine.MaxContextLength - 1024;
-            //var requestedtask = "Based on the information provided in the system prompt, write a list of goals for {{char}}. Things she would want to convince {{user}} to do, or even things she'd like to think or do for herself. Keep the list realistic.";
-
-            //var promptbuild = LLMEngine.Client!.GetPromptBuilder();
-            //var sysprompt = "You are {{char}}, and you're looking for things you'd want to convince {{user}} to do or become, but seems reluctant to try." + LLMEngine.NewLine +
-            //    LLMEngine.NewLine +
-            //    "## Name: {{char}}" + LLMEngine.NewLine + LLMEngine.NewLine +
-            //    "{{charbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
-            //    "## Name: {{user}}" + LLMEngine.NewLine + LLMEngine.NewLine +
-            //    "{{userbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
-            //    "## Chronological chat session summaries:" + LLMEngine.NewLine + LLMEngine.NewLine;
-
-            //availtokens -= promptbuild.GetTokenCount(AuthorRole.SysPrompt, sysprompt);
-            //availtokens -= promptbuild.GetTokenCount(AuthorRole.User, requestedtask);
-
-            //var summaries = LLMEngine.History.GetPreviousSummaries(availtokens, allowRP: true);
-            //sysprompt += summaries;
-            //promptbuild.AddMessage(AuthorRole.SysPrompt, sysprompt);
-            //promptbuild.AddMessage(AuthorRole.User, requestedtask);
-
-            //var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, 1000);
-            //var finalstr = await LLMEngine.SimpleQuery(ct);
-            //if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart))
+            using var loadingForm = new LoadingForm() { Owner = this, StartPosition = FormStartPosition.Manual };
+            loadingForm.CenterToParent();
+            loadingForm.Show();
+            loadingForm.BringToFront();
+            loadingForm.Refresh();
+            loadingForm.SetMax(imageFiles.Count);
+            loadingForm.SetMessage("Processing images...");
+            //var mems = LLMEngine.Bot.Brain.GetMemories(MemoryType.Image);
+            //foreach (var mem in mems)
             //{
-            //    finalstr = finalstr.RemoveThinkingBlocks(LLMEngine.Instruct.ThinkingStart, LLMEngine.Instruct.ThinkingEnd);
+            //    LLMEngine.Bot.Brain.Forget(mem);
             //}
-            //LLMEngine.Bot.DatesInSessionSummaries = sense;
-            //LLMEngine.NamesInPromptOverride = null;
+
+
+            foreach (var imageFile in imageFiles)
+            {
+                var jsonFile = Path.ChangeExtension(imageFile, ".json");
+                loadingForm.SetMessage("Processing images: " + Environment.NewLine + imageFile);
+                loadingForm.AddProgress(1);
+                // if the json file already exists, load it instead of processing the image
+                ImageRecord? found = null;
+                if (File.Exists(jsonFile))
+                {
+                    try
+                    {
+                        found = JsonConvert.DeserializeObject<ImageRecord>(File.ReadAllText(jsonFile));
+                    }
+                    catch (Exception ex)
+                    {
+                        LLMEngine.Logger?.LogError(ex, "Error loading existing image information from {JsonFile}", jsonFile);
+                    }
+                }
+                if (found is null)
+                {
+                    var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+                    found = await imageAction.Execute(imageFile, cts.Token);
+                    if (found is not null)
+                    {
+                        var json = JsonConvert.SerializeObject(found, Formatting.Indented);
+                        File.WriteAllText(jsonFile, json);
+                    }
+                }
+                if (found is not null)
+                {
+                    loadingForm.SetMessage("Embedding Memory: " + found.Title);
+                    var fulldesc = new StringBuilder();
+                    if (!string.IsNullOrWhiteSpace(found.Description))
+                        fulldesc.AppendLinuxLine(found.Description);
+                    if (!string.IsNullOrWhiteSpace(found.ImageText))
+                        fulldesc.AppendLinuxLine().AppendLinuxLine("The following text can be read on the image: " + found.ImageText.RemoveNewLines());
+                    if (!string.IsNullOrWhiteSpace(found.Interpretation))
+                        fulldesc.AppendLinuxLine().AppendLinuxLine(found.Description);
+
+                    var mem = new MemoryUnit
+                    {
+                        Name = found.Title,
+                        Content = fulldesc.ToString().CleanupAndTrim(),
+                        Category = MemoryType.Image,
+                        Path = imageFile,
+                        Insertion = MemoryInsertion.Trigger,                       
+                    };
+                    await mem.EmbedText();
+                    LLMEngine.Bot.Brain.Memorize(mem, true);
+                }
+            }
+            loadingForm.Close();
         }
 
         private void button2_Click(object sender, EventArgs e)

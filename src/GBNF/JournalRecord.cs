@@ -31,19 +31,5 @@ namespace WaifuAI.GBNF
             }
             return Schema;
         }
-
-        public override string GetQuery()
-        {
-            var requestedTask = "Answer the request using the following JSON format:" + LLMEngine.NewLine;
-
-            var schema = DescriptionHelper.GetAllDescriptionsRecursive<GoalList>();
-
-            foreach (var prop in schema)
-            {
-                requestedTask += $"- {prop.Key}: {prop.Value}\n";
-            }
-            requestedTask = LLMEngine.Bot.ReplaceMacros(requestedTask);
-            return requestedTask;
-        }
     }
 }

@@ -26,7 +26,8 @@ namespace WaifuAI.AgentPlugins
     public class SessionMoodCheckAction : IAgentAction<MoodAnalysis?, SessionMoodCheckParams>
     {
         public string Id => "SessionMoodCheckAction";
-        public HashSet<AgentActionRequirements> Requirements => [ AgentActionRequirements.LLM ];
+        public HashSet<AgentActionRequirements> Requirements => [AgentActionRequirements.LLM, AgentActionRequirements.Grammar];
+
         public async Task<MoodAnalysis?> Execute(SessionMoodCheckParams param, CancellationToken ct)
         {
             if (ct.IsCancellationRequested)
