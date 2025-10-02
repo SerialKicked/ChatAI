@@ -29,9 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CharEditForm));
-            groupBox3 = new GroupBox();
-            bt_worldsave = new Button();
-            cb_charlist = new ComboBox();
             tabControl1 = new TabControl();
             tabBio = new TabPage();
             pic = new PictureBox();
@@ -65,6 +62,14 @@
             num_selfedittokens = new NumericUpDown();
             ed_selfedit = new TextBox();
             label12 = new Label();
+            tabBrain = new TabPage();
+            groupBox5 = new GroupBox();
+            label19 = new Label();
+            numAgentDelay = new NumericUpDown();
+            ckAgent = new CheckBox();
+            groupBox3 = new GroupBox();
+            listAgentTasks = new CheckedListBox();
+            label18 = new Label();
             tabSettings = new TabPage();
             groupBox10 = new GroupBox();
             num_ptvalue = new NumericUpDown();
@@ -74,6 +79,15 @@
             ed_outetts = new TextBox();
             label11 = new Label();
             groupBox7 = new GroupBox();
+            label17 = new Label();
+            numKeepEurekas = new NumericUpDown();
+            numEurekaMinTime = new NumericUpDown();
+            label16 = new Label();
+            label15 = new Label();
+            numEurekaMinMess = new NumericUpDown();
+            label8 = new Label();
+            num_minAFK = new NumericUpDown();
+            ckAllowEurekas = new CheckBox();
             ckMoodSystem = new CheckBox();
             ckPassword = new CheckBox();
             ck_irldates = new CheckBox();
@@ -83,7 +97,11 @@
             groupBox6 = new GroupBox();
             ckl_plugins = new CheckedListBox();
             label9 = new Label();
-            groupBox3.SuspendLayout();
+            panel1 = new Panel();
+            btSave = new Button();
+            edFilename = new TextBox();
+            cb_charlist = new ListBox();
+            panel2 = new Panel();
             tabControl1.SuspendLayout();
             tabBio.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pic).BeginInit();
@@ -95,55 +113,38 @@
             tabDynamic.SuspendLayout();
             groupBox9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_selfedittokens).BeginInit();
+            tabBrain.SuspendLayout();
+            groupBox5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numAgentDelay).BeginInit();
+            groupBox3.SuspendLayout();
             tabSettings.SuspendLayout();
             groupBox10.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_ptvalue).BeginInit();
             groupBox8.SuspendLayout();
             groupBox7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numKeepEurekas).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numEurekaMinTime).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numEurekaMinMess).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)num_minAFK).BeginInit();
             groupBox6.SuspendLayout();
+            panel1.SuspendLayout();
+            panel2.SuspendLayout();
             SuspendLayout();
-            // 
-            // groupBox3
-            // 
-            groupBox3.Controls.Add(bt_worldsave);
-            groupBox3.Controls.Add(cb_charlist);
-            groupBox3.Location = new Point(12, 12);
-            groupBox3.Name = "groupBox3";
-            groupBox3.Padding = new Padding(10);
-            groupBox3.Size = new Size(951, 57);
-            groupBox3.TabIndex = 1;
-            groupBox3.TabStop = false;
-            groupBox3.Text = "Character Selection";
-            // 
-            // bt_worldsave
-            // 
-            bt_worldsave.Location = new Point(371, 20);
-            bt_worldsave.Name = "bt_worldsave";
-            bt_worldsave.Size = new Size(110, 23);
-            bt_worldsave.TabIndex = 1;
-            bt_worldsave.Text = "Save";
-            bt_worldsave.UseVisualStyleBackColor = true;
-            bt_worldsave.Click += bt_worldsave_Click;
-            // 
-            // cb_charlist
-            // 
-            cb_charlist.FormattingEnabled = true;
-            cb_charlist.Location = new Point(12, 21);
-            cb_charlist.Name = "cb_charlist";
-            cb_charlist.Size = new Size(353, 23);
-            cb_charlist.TabIndex = 0;
             // 
             // tabControl1
             // 
+            tabControl1.Appearance = TabAppearance.FlatButtons;
             tabControl1.Controls.Add(tabBio);
             tabControl1.Controls.Add(tabAdvanc);
             tabControl1.Controls.Add(tabPrompt);
             tabControl1.Controls.Add(tabDynamic);
+            tabControl1.Controls.Add(tabBrain);
             tabControl1.Controls.Add(tabSettings);
-            tabControl1.Location = new Point(12, 75);
+            tabControl1.Dock = DockStyle.Fill;
+            tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(951, 512);
+            tabControl1.Size = new Size(953, 517);
             tabControl1.TabIndex = 3;
             // 
             // tabBio
@@ -159,10 +160,10 @@
             tabBio.Controls.Add(ck_isuser);
             tabBio.Controls.Add(ed_name);
             tabBio.Controls.Add(label1);
-            tabBio.Location = new Point(4, 24);
+            tabBio.Location = new Point(4, 27);
             tabBio.Name = "tabBio";
             tabBio.Padding = new Padding(3);
-            tabBio.Size = new Size(943, 484);
+            tabBio.Size = new Size(945, 486);
             tabBio.TabIndex = 0;
             tabBio.Text = "Biography";
             tabBio.UseVisualStyleBackColor = true;
@@ -275,11 +276,11 @@
             tabAdvanc.Controls.Add(groupBox4);
             tabAdvanc.Controls.Add(groupBox2);
             tabAdvanc.Controls.Add(groupBox1);
-            tabAdvanc.Location = new Point(4, 24);
+            tabAdvanc.Location = new Point(4, 27);
             tabAdvanc.Name = "tabAdvanc";
-            tabAdvanc.Size = new Size(943, 484);
+            tabAdvanc.Size = new Size(945, 486);
             tabAdvanc.TabIndex = 2;
-            tabAdvanc.Text = "Advanced";
+            tabAdvanc.Text = "Context";
             tabAdvanc.UseVisualStyleBackColor = true;
             // 
             // groupBox4
@@ -384,10 +385,10 @@
             // 
             tabPrompt.Controls.Add(ed_sysprompt);
             tabPrompt.Controls.Add(textBox2);
-            tabPrompt.Location = new Point(4, 24);
+            tabPrompt.Location = new Point(4, 27);
             tabPrompt.Name = "tabPrompt";
             tabPrompt.Padding = new Padding(3);
-            tabPrompt.Size = new Size(943, 484);
+            tabPrompt.Size = new Size(945, 486);
             tabPrompt.TabIndex = 1;
             tabPrompt.Text = "System Prompt";
             tabPrompt.UseVisualStyleBackColor = true;
@@ -418,10 +419,10 @@
             // tabDynamic
             // 
             tabDynamic.Controls.Add(groupBox9);
-            tabDynamic.Location = new Point(4, 24);
+            tabDynamic.Location = new Point(4, 27);
             tabDynamic.Name = "tabDynamic";
             tabDynamic.Padding = new Padding(3);
-            tabDynamic.Size = new Size(943, 484);
+            tabDynamic.Size = new Size(945, 486);
             tabDynamic.TabIndex = 4;
             tabDynamic.Text = "Dynamic Bio";
             tabDynamic.UseVisualStyleBackColor = true;
@@ -436,7 +437,7 @@
             groupBox9.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox9.Location = new Point(8, 8);
             groupBox9.Name = "groupBox9";
-            groupBox9.Size = new Size(929, 229);
+            groupBox9.Size = new Size(929, 470);
             groupBox9.TabIndex = 11;
             groupBox9.TabStop = false;
             groupBox9.Text = "Character's Journal";
@@ -444,7 +445,7 @@
             // btRegenBio
             // 
             btRegenBio.Font = new Font("Segoe UI", 9F);
-            btRegenBio.Location = new Point(733, 197);
+            btRegenBio.Location = new Point(733, 84);
             btRegenBio.Name = "btRegenBio";
             btRegenBio.Size = new Size(190, 23);
             btRegenBio.TabIndex = 16;
@@ -481,7 +482,7 @@
             ed_selfedit.Name = "ed_selfedit";
             ed_selfedit.ReadOnly = true;
             ed_selfedit.ScrollBars = ScrollBars.Vertical;
-            ed_selfedit.Size = new Size(721, 183);
+            ed_selfedit.Size = new Size(721, 427);
             ed_selfedit.TabIndex = 13;
             // 
             // label12
@@ -494,15 +495,109 @@
             label12.TabIndex = 0;
             label12.Text = "This is an optional field the character is allowed to edit on its own as new sessions are added to the chat";
             // 
+            // tabBrain
+            // 
+            tabBrain.Controls.Add(groupBox5);
+            tabBrain.Controls.Add(groupBox3);
+            tabBrain.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            tabBrain.Location = new Point(4, 27);
+            tabBrain.Name = "tabBrain";
+            tabBrain.Padding = new Padding(3);
+            tabBrain.Size = new Size(945, 486);
+            tabBrain.TabIndex = 5;
+            tabBrain.Text = "Agentic System";
+            tabBrain.UseVisualStyleBackColor = true;
+            // 
+            // groupBox5
+            // 
+            groupBox5.Controls.Add(label19);
+            groupBox5.Controls.Add(numAgentDelay);
+            groupBox5.Controls.Add(ckAgent);
+            groupBox5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            groupBox5.Location = new Point(476, 6);
+            groupBox5.Name = "groupBox5";
+            groupBox5.Size = new Size(461, 474);
+            groupBox5.TabIndex = 12;
+            groupBox5.TabStop = false;
+            groupBox5.Text = "Agentic Settings";
+            // 
+            // label19
+            // 
+            label19.AutoSize = true;
+            label19.Font = new Font("Segoe UI", 9F);
+            label19.Location = new Point(124, 49);
+            label19.Name = "label19";
+            label19.Size = new Size(174, 15);
+            label19.TabIndex = 12;
+            label19.Text = "Hours AFK before running tasks";
+            // 
+            // numAgentDelay
+            // 
+            numAgentDelay.DecimalPlaces = 2;
+            numAgentDelay.Font = new Font("Segoe UI", 9F);
+            numAgentDelay.Increment = new decimal(new int[] { 25, 0, 0, 131072 });
+            numAgentDelay.Location = new Point(24, 47);
+            numAgentDelay.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            numAgentDelay.Minimum = new decimal(new int[] { 25, 0, 0, 131072 });
+            numAgentDelay.Name = "numAgentDelay";
+            numAgentDelay.Size = new Size(94, 23);
+            numAgentDelay.TabIndex = 11;
+            numAgentDelay.Value = new decimal(new int[] { 125, 0, 0, 131072 });
+            // 
+            // ckAgent
+            // 
+            ckAgent.AutoSize = true;
+            ckAgent.Font = new Font("Segoe UI", 9F);
+            ckAgent.Location = new Point(6, 22);
+            ckAgent.Name = "ckAgent";
+            ckAgent.Size = new Size(226, 19);
+            ckAgent.TabIndex = 3;
+            ckAgent.Text = "Allow the character to run as an agent";
+            ckAgent.UseVisualStyleBackColor = true;
+            ckAgent.CheckedChanged += ckAgent_CheckedChanged;
+            // 
+            // groupBox3
+            // 
+            groupBox3.Controls.Add(listAgentTasks);
+            groupBox3.Controls.Add(label18);
+            groupBox3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            groupBox3.Location = new Point(6, 6);
+            groupBox3.Name = "groupBox3";
+            groupBox3.Size = new Size(455, 472);
+            groupBox3.TabIndex = 9;
+            groupBox3.TabStop = false;
+            groupBox3.Text = "Allowed Tasks";
+            // 
+            // listAgentTasks
+            // 
+            listAgentTasks.Font = new Font("Segoe UI", 9F);
+            listAgentTasks.FormattingEnabled = true;
+            listAgentTasks.Items.AddRange(new object[] { "Assistant", "General" });
+            listAgentTasks.Location = new Point(6, 37);
+            listAgentTasks.Name = "listAgentTasks";
+            listAgentTasks.ScrollAlwaysVisible = true;
+            listAgentTasks.Size = new Size(443, 418);
+            listAgentTasks.TabIndex = 1;
+            // 
+            // label18
+            // 
+            label18.AutoSize = true;
+            label18.Font = new Font("Segoe UI", 9F);
+            label18.Location = new Point(6, 19);
+            label18.Name = "label18";
+            label18.Size = new Size(351, 15);
+            label18.TabIndex = 0;
+            label18.Text = "Select the tasks this character is allowed to run in the background";
+            // 
             // tabSettings
             // 
             tabSettings.Controls.Add(groupBox10);
             tabSettings.Controls.Add(groupBox8);
             tabSettings.Controls.Add(groupBox7);
             tabSettings.Controls.Add(groupBox6);
-            tabSettings.Location = new Point(4, 24);
+            tabSettings.Location = new Point(4, 27);
             tabSettings.Name = "tabSettings";
-            tabSettings.Size = new Size(943, 484);
+            tabSettings.Size = new Size(945, 486);
             tabSettings.TabIndex = 3;
             tabSettings.Text = "Settings";
             tabSettings.UseVisualStyleBackColor = true;
@@ -513,9 +608,9 @@
             groupBox10.Controls.Add(cb_pointsystems);
             groupBox10.Controls.Add(label14);
             groupBox10.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox10.Location = new Point(8, 222);
+            groupBox10.Location = new Point(382, 295);
             groupBox10.Name = "groupBox10";
-            groupBox10.Size = new Size(455, 97);
+            groupBox10.Size = new Size(549, 78);
             groupBox10.TabIndex = 12;
             groupBox10.TabStop = false;
             groupBox10.Text = "Gold / Point System (optional)";
@@ -523,7 +618,7 @@
             // num_ptvalue
             // 
             num_ptvalue.Font = new Font("Segoe UI", 9F);
-            num_ptvalue.Location = new Point(329, 63);
+            num_ptvalue.Location = new Point(423, 38);
             num_ptvalue.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
             num_ptvalue.Minimum = new decimal(new int[] { 10000000, 0, 0, int.MinValue });
             num_ptvalue.Name = "num_ptvalue";
@@ -536,7 +631,7 @@
             cb_pointsystems.FormattingEnabled = true;
             cb_pointsystems.Location = new Point(6, 37);
             cb_pointsystems.Name = "cb_pointsystems";
-            cb_pointsystems.Size = new Size(443, 23);
+            cb_pointsystems.Size = new Size(411, 23);
             cb_pointsystems.TabIndex = 3;
             // 
             // label14
@@ -554,9 +649,9 @@
             groupBox8.Controls.Add(ed_outetts);
             groupBox8.Controls.Add(label11);
             groupBox8.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox8.Location = new Point(482, 247);
+            groupBox8.Location = new Point(382, 217);
             groupBox8.Name = "groupBox8";
-            groupBox8.Size = new Size(455, 72);
+            groupBox8.Size = new Size(555, 72);
             groupBox8.TabIndex = 11;
             groupBox8.TabStop = false;
             groupBox8.Text = "Text To Speech (KoboldCpp API)";
@@ -566,7 +661,7 @@
             ed_outetts.Font = new Font("Segoe UI", 9F);
             ed_outetts.Location = new Point(6, 37);
             ed_outetts.Name = "ed_outetts";
-            ed_outetts.Size = new Size(443, 23);
+            ed_outetts.Size = new Size(411, 23);
             ed_outetts.TabIndex = 2;
             // 
             // label11
@@ -581,6 +676,15 @@
             // 
             // groupBox7
             // 
+            groupBox7.Controls.Add(label17);
+            groupBox7.Controls.Add(numKeepEurekas);
+            groupBox7.Controls.Add(numEurekaMinTime);
+            groupBox7.Controls.Add(label16);
+            groupBox7.Controls.Add(label15);
+            groupBox7.Controls.Add(numEurekaMinMess);
+            groupBox7.Controls.Add(label8);
+            groupBox7.Controls.Add(num_minAFK);
+            groupBox7.Controls.Add(ckAllowEurekas);
             groupBox7.Controls.Add(ckMoodSystem);
             groupBox7.Controls.Add(ckPassword);
             groupBox7.Controls.Add(ck_irldates);
@@ -588,18 +692,114 @@
             groupBox7.Controls.Add(ck_senseoftime);
             groupBox7.Controls.Add(ck_caninitchat);
             groupBox7.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox7.Location = new Point(482, 8);
+            groupBox7.Location = new Point(3, 3);
             groupBox7.Name = "groupBox7";
-            groupBox7.Size = new Size(455, 233);
+            groupBox7.Size = new Size(373, 475);
             groupBox7.TabIndex = 10;
             groupBox7.TabStop = false;
-            groupBox7.Text = "Default Character Settings";
+            groupBox7.Text = "General Settings";
+            // 
+            // label17
+            // 
+            label17.AutoSize = true;
+            label17.Font = new Font("Segoe UI", 9F);
+            label17.Location = new Point(126, 200);
+            label17.Name = "label17";
+            label17.Size = new Size(186, 15);
+            label17.TabIndex = 17;
+            label17.Text = "Keep Natural memories for X days";
+            // 
+            // numKeepEurekas
+            // 
+            numKeepEurekas.Font = new Font("Segoe UI", 9F);
+            numKeepEurekas.Location = new Point(26, 198);
+            numKeepEurekas.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numKeepEurekas.Name = "numKeepEurekas";
+            numKeepEurekas.Size = new Size(94, 23);
+            numKeepEurekas.TabIndex = 16;
+            numKeepEurekas.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // numEurekaMinTime
+            // 
+            numEurekaMinTime.DecimalPlaces = 2;
+            numEurekaMinTime.Font = new Font("Segoe UI", 9F);
+            numEurekaMinTime.Increment = new decimal(new int[] { 25, 0, 0, 131072 });
+            numEurekaMinTime.Location = new Point(26, 169);
+            numEurekaMinTime.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            numEurekaMinTime.Name = "numEurekaMinTime";
+            numEurekaMinTime.Size = new Size(94, 23);
+            numEurekaMinTime.TabIndex = 15;
+            numEurekaMinTime.Value = new decimal(new int[] { 125, 0, 0, 131072 });
+            // 
+            // label16
+            // 
+            label16.AutoSize = true;
+            label16.Font = new Font("Segoe UI", 9F);
+            label16.Location = new Point(126, 171);
+            label16.Name = "label16";
+            label16.Size = new Size(234, 15);
+            label16.TabIndex = 14;
+            label16.Text = "Min time spent between memories (Hours)";
+            // 
+            // label15
+            // 
+            label15.AutoSize = true;
+            label15.Font = new Font("Segoe UI", 9F);
+            label15.Location = new Point(126, 142);
+            label15.Name = "label15";
+            label15.Size = new Size(186, 15);
+            label15.TabIndex = 12;
+            label15.Text = "Min messages between memories";
+            // 
+            // numEurekaMinMess
+            // 
+            numEurekaMinMess.Font = new Font("Segoe UI", 9F);
+            numEurekaMinMess.Location = new Point(26, 140);
+            numEurekaMinMess.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numEurekaMinMess.Name = "numEurekaMinMess";
+            numEurekaMinMess.Size = new Size(94, 23);
+            numEurekaMinMess.TabIndex = 11;
+            numEurekaMinMess.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Segoe UI", 9F);
+            label8.Location = new Point(126, 254);
+            label8.Name = "label8";
+            label8.Size = new Size(159, 15);
+            label8.TabIndex = 10;
+            label8.Text = "Hours AFK before time insert";
+            // 
+            // num_minAFK
+            // 
+            num_minAFK.DecimalPlaces = 2;
+            num_minAFK.Font = new Font("Segoe UI", 9F);
+            num_minAFK.Increment = new decimal(new int[] { 25, 0, 0, 131072 });
+            num_minAFK.Location = new Point(26, 252);
+            num_minAFK.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            num_minAFK.Minimum = new decimal(new int[] { 25, 0, 0, 131072 });
+            num_minAFK.Name = "num_minAFK";
+            num_minAFK.Size = new Size(94, 23);
+            num_minAFK.TabIndex = 9;
+            num_minAFK.Value = new decimal(new int[] { 125, 0, 0, 131072 });
+            // 
+            // ckAllowEurekas
+            // 
+            ckAllowEurekas.AutoSize = true;
+            ckAllowEurekas.Font = new Font("Segoe UI", 9F);
+            ckAllowEurekas.Location = new Point(6, 115);
+            ckAllowEurekas.Name = "ckAllowEurekas";
+            ckAllowEurekas.Size = new Size(150, 19);
+            ckAllowEurekas.TabIndex = 8;
+            ckAllowEurekas.Text = "Natural memory inserts";
+            ckAllowEurekas.UseVisualStyleBackColor = true;
             // 
             // ckMoodSystem
             // 
             ckMoodSystem.AutoSize = true;
             ckMoodSystem.Font = new Font("Segoe UI", 9F);
-            ckMoodSystem.Location = new Point(6, 90);
+            ckMoodSystem.Location = new Point(6, 65);
             ckMoodSystem.Name = "ckMoodSystem";
             ckMoodSystem.Size = new Size(98, 19);
             ckMoodSystem.TabIndex = 7;
@@ -610,10 +810,10 @@
             // ckPassword
             // 
             ckPassword.AutoSize = true;
-            ckPassword.Font = new Font("Segoe UI", 9F);
-            ckPassword.Location = new Point(6, 140);
+            ckPassword.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            ckPassword.Location = new Point(6, 281);
             ckPassword.Name = "ckPassword";
-            ckPassword.Size = new Size(134, 19);
+            ckPassword.Size = new Size(140, 19);
             ckPassword.TabIndex = 6;
             ckPassword.Text = "Password protection";
             ckPassword.UseVisualStyleBackColor = true;
@@ -623,7 +823,7 @@
             // 
             ck_irldates.AutoSize = true;
             ck_irldates.Font = new Font("Segoe UI", 9F);
-            ck_irldates.Location = new Point(6, 115);
+            ck_irldates.Location = new Point(6, 90);
             ck_irldates.Name = "ck_irldates";
             ck_irldates.Size = new Size(230, 19);
             ck_irldates.TabIndex = 5;
@@ -636,15 +836,15 @@
             label10.Font = new Font("Segoe UI", 9F);
             label10.Location = new Point(6, 19);
             label10.Name = "label10";
-            label10.Size = new Size(305, 15);
+            label10.Size = new Size(291, 15);
             label10.TabIndex = 4;
-            label10.Text = "Those options can be toggled on or off in the main chat.";
+            label10.Text = "Some options can be toggled on/off in the main chat.";
             // 
             // ck_senseoftime
             // 
             ck_senseoftime.AutoSize = true;
             ck_senseoftime.Font = new Font("Segoe UI", 9F);
-            ck_senseoftime.Location = new Point(6, 65);
+            ck_senseoftime.Location = new Point(6, 227);
             ck_senseoftime.Name = "ck_senseoftime";
             ck_senseoftime.Size = new Size(290, 19);
             ck_senseoftime.TabIndex = 3;
@@ -667,12 +867,12 @@
             groupBox6.Controls.Add(ckl_plugins);
             groupBox6.Controls.Add(label9);
             groupBox6.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox6.Location = new Point(8, 8);
+            groupBox6.Location = new Point(382, 3);
             groupBox6.Name = "groupBox6";
-            groupBox6.Size = new Size(455, 208);
+            groupBox6.Size = new Size(555, 208);
             groupBox6.TabIndex = 9;
             groupBox6.TabStop = false;
-            groupBox6.Text = "Plugins";
+            groupBox6.Text = "Context Plugins";
             // 
             // ckl_plugins
             // 
@@ -682,7 +882,7 @@
             ckl_plugins.Location = new Point(6, 37);
             ckl_plugins.Name = "ckl_plugins";
             ckl_plugins.ScrollAlwaysVisible = true;
-            ckl_plugins.Size = new Size(443, 130);
+            ckl_plugins.Size = new Size(543, 166);
             ckl_plugins.TabIndex = 1;
             // 
             // label9
@@ -695,20 +895,70 @@
             label9.TabIndex = 0;
             label9.Text = "Plugins this character has access to. Some can be toggled on/off in main chat.";
             // 
+            // panel1
+            // 
+            panel1.Controls.Add(btSave);
+            panel1.Controls.Add(edFilename);
+            panel1.Controls.Add(cb_charlist);
+            panel1.Dock = DockStyle.Left;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(234, 517);
+            panel1.TabIndex = 4;
+            // 
+            // btSave
+            // 
+            btSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btSave.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btSave.Location = new Point(3, 484);
+            btSave.Name = "btSave";
+            btSave.Size = new Size(228, 23);
+            btSave.TabIndex = 3;
+            btSave.Text = "Save Character";
+            btSave.UseVisualStyleBackColor = true;
+            btSave.Click += bt_worldsave_Click;
+            // 
+            // edFilename
+            // 
+            edFilename.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            edFilename.Location = new Point(3, 455);
+            edFilename.Name = "edFilename";
+            edFilename.Size = new Size(228, 23);
+            edFilename.TabIndex = 2;
+            // 
+            // cb_charlist
+            // 
+            cb_charlist.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            cb_charlist.BorderStyle = BorderStyle.FixedSingle;
+            cb_charlist.FormattingEnabled = true;
+            cb_charlist.Location = new Point(3, 3);
+            cb_charlist.Name = "cb_charlist";
+            cb_charlist.ScrollAlwaysVisible = true;
+            cb_charlist.Size = new Size(228, 437);
+            cb_charlist.TabIndex = 1;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(tabControl1);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(234, 0);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(953, 517);
+            panel2.TabIndex = 5;
+            // 
             // CharEditForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(975, 599);
-            Controls.Add(tabControl1);
-            Controls.Add(groupBox3);
+            ClientSize = new Size(1187, 517);
+            Controls.Add(panel2);
+            Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "CharEditForm";
             Text = "Character Editor";
-            groupBox3.ResumeLayout(false);
             tabControl1.ResumeLayout(false);
             tabBio.ResumeLayout(false);
             tabBio.PerformLayout();
@@ -726,6 +976,12 @@
             groupBox9.ResumeLayout(false);
             groupBox9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)num_selfedittokens).EndInit();
+            tabBrain.ResumeLayout(false);
+            groupBox5.ResumeLayout(false);
+            groupBox5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numAgentDelay).EndInit();
+            groupBox3.ResumeLayout(false);
+            groupBox3.PerformLayout();
             tabSettings.ResumeLayout(false);
             groupBox10.ResumeLayout(false);
             groupBox10.PerformLayout();
@@ -734,16 +990,19 @@
             groupBox8.PerformLayout();
             groupBox7.ResumeLayout(false);
             groupBox7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numKeepEurekas).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numEurekaMinTime).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numEurekaMinMess).EndInit();
+            ((System.ComponentModel.ISupportInitialize)num_minAFK).EndInit();
             groupBox6.ResumeLayout(false);
             groupBox6.PerformLayout();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            panel2.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
-
-        private GroupBox groupBox3;
-        private Button bt_worldsave;
-        private ComboBox cb_charlist;
         private TabControl tabControl1;
         private TabPage tabBio;
         private TabPage tabPrompt;
@@ -795,5 +1054,27 @@
         private CheckBox ck_irldates;
         private CheckBox ckPassword;
         private CheckBox ckMoodSystem;
+        private Panel panel1;
+        private Button btSave;
+        private TextBox edFilename;
+        private ListBox cb_charlist;
+        private TabPage tabBrain;
+        private Panel panel2;
+        private CheckBox ckAllowEurekas;
+        private Label label8;
+        private NumericUpDown num_minAFK;
+        private NumericUpDown numEurekaMinTime;
+        private Label label16;
+        private Label label15;
+        private NumericUpDown numEurekaMinMess;
+        private Label label17;
+        private NumericUpDown numKeepEurekas;
+        private GroupBox groupBox5;
+        private GroupBox groupBox3;
+        private CheckedListBox listAgentTasks;
+        private Label label18;
+        private CheckBox ckAgent;
+        private Label label19;
+        private NumericUpDown numAgentDelay;
     }
 }

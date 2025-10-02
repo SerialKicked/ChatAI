@@ -1,4 +1,5 @@
 ﻿using LetheAISharp;
+using LetheAISharp.Agent;
 using LetheAISharp.Files;
 using LetheAISharp.LLM;
 using Microsoft.VisualBasic.ApplicationServices;
@@ -89,7 +90,17 @@ namespace WaifuAI.src.forms
             mychar.PointValue = (int)num_ptvalue.Value;
             mychar.DatesInSessionSummaries = ck_irldates.Checked;
             mychar.Protected = ckPassword.Checked;
+            mychar.UniqueName = edFilename.Text;
             mychar.Brain.MoodHandling = ckMoodSystem.Checked;
+            mychar.Brain.DisableEurekas = !ckAllowEurekas.Checked;
+            mychar.Brain.HoursBeforeAFK = (float)num_minAFK.Value;
+            mychar.Brain.MinMessageDelay = (int)numEurekaMinMess.Value;
+            mychar.Brain.MinInsertDelay = TimeSpan.FromHours((double)numEurekaMinTime.Value);
+            mychar.Brain.EurekaCutOff = TimeSpan.FromDays((int)numKeepEurekas.Value);
+            mychar.AgentMode = ckAgent.Checked;
+            mychar.AgentTasks = [.. listAgentTasks.CheckedItems.Cast<string>()];
+            if (mychar.AgentSystem is not null)
+                mychar.AgentSystem.Config.MinInactivityTime = TimeSpan.FromHours((double)numAgentDelay.Value);
             return mychar;
         }
 
@@ -113,6 +124,15 @@ namespace WaifuAI.src.forms
             ck_irldates.Checked = selectedCharacter.DatesInSessionSummaries;
             ckPassword.Checked = selectedCharacter.Protected;
             ckMoodSystem.Checked = selectedCharacter.Brain.MoodHandling;
+            ckAllowEurekas.Checked = !selectedCharacter.Brain.DisableEurekas;
+            num_minAFK.Value = (decimal)selectedCharacter.Brain.HoursBeforeAFK;
+            numEurekaMinMess.Value = selectedCharacter.Brain.MinMessageDelay;
+            numEurekaMinTime.Value = (decimal)selectedCharacter.Brain.MinInsertDelay.TotalHours;
+            numKeepEurekas.Value = (decimal)selectedCharacter.Brain.EurekaCutOff.TotalDays;
+            ckAgent.Checked = selectedCharacter.AgentMode;
+            numAgentDelay.Value = (decimal)(selectedCharacter.AgentSystem?.Config.MinInactivityTime.TotalHours ?? 0.5);
+
+            edFilename.Text = selectedCharacter.UniqueName;
             ckl_plugins.Items.Clear();
             foreach (var item in LLMEngine.ContextPlugins)
             {
@@ -128,6 +148,14 @@ namespace WaifuAI.src.forms
             {
                 ckl_samplers.Items.Add(item.Value.UniqueName, selectedCharacter.AllowedSamplers.Contains(item.Value.UniqueName));
             }
+
+            listAgentTasks.Items.Clear();
+            var tasks = AgentRuntime.GetRegisteredPluginIds();
+            foreach (var item in tasks)
+            {
+                listAgentTasks.Items.Add(item, selectedCharacter.AgentTasks.Contains(item));
+            }
+
             // set cb_icon item index to the one that matches the selected character icon
             cb_icon.SelectedIndex = cb_icon.Items.IndexOf(selectedCharacter.Icon);
 
@@ -136,7 +164,7 @@ namespace WaifuAI.src.forms
 
         private void bt_worldsave_Click(object sender, EventArgs e)
         {
-            var NewName = cb_charlist.Text;
+            var NewName = edFilename.Text;
             if (string.IsNullOrWhiteSpace(NewName))
             {
                 MessageBox.Show("Please select a valide name for the character");
@@ -203,7 +231,13 @@ namespace WaifuAI.src.forms
 
         private void ckMoodSystem_CheckedChanged(object sender, EventArgs e)
         {
-            SelectedCharacter.Brain.MoodHandling = ckMoodSystem.Checked;
+
+        }
+
+
+        private void ckAgent_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

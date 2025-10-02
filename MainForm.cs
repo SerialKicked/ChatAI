@@ -1801,22 +1801,25 @@ namespace WaifuAI
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            // Go through all image files (png, jpg, gif) in a given folder recursively
-            // and run the ImageInfoAction on them, saving the results to a JSON file with the same name
-            string folderPath = @"S:\Content\Pictures\Incest Bait";
-            var imageFiles = Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories)
-                .Where(s => s.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
-                            s.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
-                            s.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
-                            s.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))
-                .ToList();
-            folderPath = @"S:\Content\Pictures\Pro Rape";
-            imageFiles.AddRange(Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories)
-                .Where(s => s.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
-                            s.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
-                            s.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
-                            s.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))
-                .ToList());
+            var folders = new List<string>()
+            {
+                @"S:\Content\Pictures\Incest Bait",
+                @"S:\Content\Pictures\Pro Rape",
+                @"S:\Content\Pictures\Pro Dog fucking",
+                @"S:\Content\Pictures\Girls - Best"
+            };
+
+            var imageFiles = new List<string>();
+
+            foreach (var folder in folders)
+            {
+                imageFiles.AddRange([.. Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories)
+                    .Where(s => s.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                                s.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                                s.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
+                                s.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))]);
+            }
+
             var imageAction = new ImageInfoAction();
 
             var Memories = new List<MemoryUnit>();
@@ -1828,11 +1831,11 @@ namespace WaifuAI
             loadingForm.Refresh();
             loadingForm.SetMax(imageFiles.Count);
             loadingForm.SetMessage("Processing images...");
-            //var mems = LLMEngine.Bot.Brain.GetMemories(MemoryType.Image);
-            //foreach (var mem in mems)
-            //{
-            //    LLMEngine.Bot.Brain.Forget(mem);
-            //}
+            var mems = LLMEngine.Bot.Brain.GetMemories(MemoryType.Image);
+            foreach (var mem in mems)
+            {
+                LLMEngine.Bot.Brain.Forget(mem);
+            }
 
 
             foreach (var imageFile in imageFiles)
