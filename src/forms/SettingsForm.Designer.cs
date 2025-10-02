@@ -79,6 +79,7 @@ namespace WaifuAI.src.forms
             bt_importworld = new Button();
             bt_ImportSTChat = new Button();
             groupBox1 = new GroupBox();
+            ckThirdPerson = new CheckBox();
             num_ragM = new NumericUpDown();
             label1 = new Label();
             label15 = new Label();
@@ -95,7 +96,6 @@ namespace WaifuAI.src.forms
             groupBox3 = new GroupBox();
             ck_hallusafe = new CheckBox();
             ck_sysrag = new CheckBox();
-            ckThirdPerson = new CheckBox();
             groupBox24.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_removeitalicmaxword).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_italicratio).BeginInit();
@@ -682,6 +682,17 @@ namespace WaifuAI.src.forms
             groupBox1.TabStop = false;
             groupBox1.Text = "RAG Database Settings";
             // 
+            // ckThirdPerson
+            // 
+            ckThirdPerson.AutoSize = true;
+            ckThirdPerson.Font = new Font("Segoe UI", 9F);
+            ckThirdPerson.Location = new Point(6, 154);
+            ckThirdPerson.Name = "ckThirdPerson";
+            ckThirdPerson.Size = new Size(182, 19);
+            ckThirdPerson.TabIndex = 38;
+            ckThirdPerson.Text = "Convert queries to 3rd person";
+            ckThirdPerson.UseVisualStyleBackColor = true;
+            // 
             // num_ragM
             // 
             num_ragM.Font = new Font("Segoe UI", 9F);
@@ -781,7 +792,7 @@ namespace WaifuAI.src.forms
             // 
             cb_ragheuristic.DropDownStyle = ComboBoxStyle.DropDownList;
             cb_ragheuristic.Font = new Font("Segoe UI", 9F);
-            cb_ragheuristic.Items.AddRange(new object[] { "Heuristic", "Simple" });
+            cb_ragheuristic.Items.AddRange(new object[] { "Simple", "Heuristic", "Exact" });
             cb_ragheuristic.Location = new Point(6, 37);
             cb_ragheuristic.Name = "cb_ragheuristic";
             cb_ragheuristic.Size = new Size(144, 23);
@@ -843,17 +854,6 @@ namespace WaifuAI.src.forms
             ck_sysrag.TabIndex = 36;
             ck_sysrag.Text = "Move all memory inserts to system prompt";
             ck_sysrag.UseVisualStyleBackColor = true;
-            // 
-            // ckThirdPerson
-            // 
-            ckThirdPerson.AutoSize = true;
-            ckThirdPerson.Font = new Font("Segoe UI", 9F);
-            ckThirdPerson.Location = new Point(6, 154);
-            ckThirdPerson.Name = "ckThirdPerson";
-            ckThirdPerson.Size = new Size(182, 19);
-            ckThirdPerson.TabIndex = 38;
-            ckThirdPerson.Text = "Convert queries to 3rd person";
-            ckThirdPerson.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 

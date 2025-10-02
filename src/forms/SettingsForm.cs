@@ -33,7 +33,10 @@ namespace WaifuAI.src.forms
             HelptoolTip.SetToolTip(num_ragmaxretrieve, "The maximum number of RAG entries to retrieve for each query. The more entries you retrieve, the more context the bot will have." + Environment.NewLine + "A good starting point is between 2 and 5.");
             HelptoolTip.SetToolTip(num_ragindex, "The level in the chatlog where the entries will be inserted, 0 is just above the latest message pair. " + Environment.NewLine + "You can set it to -1 to put it into the system prompt.");
             HelptoolTip.SetToolTip(num_ragM, "The M parameter for the HNSW index. Higher values lead to better quality results, but slower indexing and retrieval." + Environment.NewLine + "A good starting point is around 15-20.");
-            HelptoolTip.SetToolTip(cb_ragheuristic, "The heuristic used to select neighbors in the HNSW index. 'Heuristic' is more less accurate but faster, 'Simple' is somewhat slower but more accurate." + Environment.NewLine + "You should keep it at Simple unless you really know what you're doing.");
+            HelptoolTip.SetToolTip(cb_ragheuristic, "The heuristic used to select neighbors in the HNSW index:" + Environment.NewLine +
+                "- Simple: fast, but slightly less accurate." + Environment.NewLine +
+                "- Heuristic: better choice for large datasets and varied types of data." + Environment.NewLine +
+                "- Exact: Uses exact distance calculation for all entries, best accuracy but slower with very large datasets.");
             HelptoolTip.SetToolTip(ck_fixasterix, "If checked, the bot will try to fix any asterisks in its responses. This is useful if the bot is using asterisks for emphasis incorrectly." + Environment.NewLine + "Note that this may not work perfectly, and may lead to some weird formatting.");
             HelptoolTip.SetToolTip(ck_antislop, "A very basic filter to remove words or sentences from the bot's output." + Environment.NewLine + "This is done by checking the bot's responses against a list of 'sloppy' words, and removing them." + Environment.NewLine + "You can customize the list of words in the text box below.");
             HelptoolTip.SetToolTip(num_antislopchance, "The chance that the bot will delete the word or sentence.");
@@ -93,18 +96,7 @@ namespace WaifuAI.src.forms
 
             num_memtokens.Value = Program.Settings.SessionReservedTokens;
             ck_sessionmemory.Checked = LLMEngine.Settings.SessionMemorySystem;
-
-            switch (LLMEngine.Settings.RAGHeuristic)
-            {
-                case HNSW.Net.NeighbourSelectionHeuristic.SelectSimple:
-                    cb_ragheuristic.SelectedIndex = 1;
-                    break;
-                case HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic:
-                    cb_ragheuristic.SelectedIndex = 0;
-                    break;
-                default:
-                    break;
-            }
+            cb_ragheuristic.SelectedIndex = (int)LLMEngine.Settings.RAGHeuristic;
             num_ragcutoff.Value = (decimal)Program.Settings.RAGDistanceCutOff;
             num_ragmaxretrieve.Value = Program.Settings.RAGMaxEntries;
             num_ragindex.Value = Program.Settings.RAGIndex;
@@ -190,11 +182,7 @@ namespace WaifuAI.src.forms
                 Program.Settings.SessionReservedTokens = (int)num_memtokens.Value;
                 Program.Settings.AlwaysForcePasswordOnBotSwitch = ck_forcePW.Checked;
                 Program.Settings.RAGConvertTo3rdPerson = ckThirdPerson.Checked;
-
-                if (cb_ragheuristic.SelectedIndex == 0)
-                    Program.Settings.RAGHeuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;
-                else if (cb_ragheuristic.SelectedIndex == 1)
-                    Program.Settings.RAGHeuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectSimple;
+                Program.Settings.RAGHeuristic = (RAGSelectionHeuristic)cb_ragheuristic.SelectedIndex;
 
                 // Search API Settings
                 if (cb_searchapi.SelectedIndex == 0)
