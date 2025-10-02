@@ -1,19 +1,71 @@
 ﻿using LetheAISharp.Agent;
 using LetheAISharp.Files;
 using LetheAISharp.Memory;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using WaifuAI.AgentPlugins;
 using WaifuAI.GBNF;
 
 namespace WaifuAI.Files
 {
-    internal class CharBrain(BasePersona basePersona) : Brain(basePersona)
+    public class CharBrain(BasePersona basePersona) : Brain(basePersona)
     {
-        public new AdvancedMoodState Mood { get; set; } = new AdvancedMoodState();
+        [JsonIgnore] protected new Character Owner { get; set; } = (Character)basePersona;
+
+        //public new AdvancedMoodState Mood { get; set; } 
+
+        [JsonIgnore]
+        public new AdvancedMoodState Mood
+        {
+            get => (AdvancedMoodState)base.Mood;
+            set => base.Mood = value;
+        }
+
+        [JsonIgnore] private MemoryVault fileSystem { get; set; } = new();
+
+        private void ResetFileSystem()
+        {
+            fileSystem.Clear();
+            var files = Memories.Where(m => m.Category == MemoryType.Image || m.Category == MemoryType.File).ToList();
+            fileSystem.AddMemories(files);
+        }
+
+        public override void Init(BasePersona owner)
+        {
+            DisableRAG.Add(MemoryType.File);
+            DisableRAG.Add(MemoryType.Image);
+            base.Init(owner);
+            ResetFileSystem();
+        }
+
+        public override void Memorize(MemoryUnit mem, bool skipDuplicateCheck = false)
+        {
+            base.Memorize(mem, skipDuplicateCheck);
+            if (mem.Category == MemoryType.Image || mem.Category == MemoryType.File)
+                ResetFileSystem();
+        }
+
+        public override void Forget(MemoryUnit mem)
+        {
+            base.Forget(mem);
+            if (mem.Category == MemoryType.Image || mem.Category == MemoryType.File)
+                ResetFileSystem();
+        }
+
+        public async Task<List<MemoryUnit>> GetFiles(string userInput, int maxResults = 3, float? maxDist = null)
+        {
+            if (fileSystem.Count == 0)
+                return [];
+            var res = await fileSystem.Search(userInput, maxResults, maxDist).ConfigureAwait(false);
+            if (res.Count == 0)
+                return [];
+            return [.. res.Select(r => r.Memory)];
+        }
 
         public override async Task ProcessPreviousSession()
         {

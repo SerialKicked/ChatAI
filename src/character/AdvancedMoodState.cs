@@ -36,7 +36,7 @@ namespace WaifuAI.Files
         }
     }
 
-    internal class AdvancedMoodState : MoodState
+    public class AdvancedMoodState : MoodState
     {
         private double horniness = 0.25;
         private double submission = 0.5;

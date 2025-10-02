@@ -47,6 +47,13 @@ namespace WaifuAI.Files
         [JsonIgnore] public PointSystem MyPoints = new();
         [JsonIgnore] private string? _password;
 
+        [JsonIgnore]
+        public new CharBrain Brain
+        {
+            get => (CharBrain)base.Brain;
+            protected set => base.Brain = value;
+        }
+
         public override void BeginChat()
         {
             base.BeginChat();
