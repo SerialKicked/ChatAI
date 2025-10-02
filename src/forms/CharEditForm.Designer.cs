@@ -64,6 +64,10 @@
             label12 = new Label();
             tabBrain = new TabPage();
             groupBox5 = new GroupBox();
+            label21 = new Label();
+            listCanDecay = new CheckedListBox();
+            label20 = new Label();
+            listNoRAGMemTypes = new CheckedListBox();
             label19 = new Label();
             numAgentDelay = new NumericUpDown();
             ckAgent = new CheckBox();
@@ -510,16 +514,62 @@
             // 
             // groupBox5
             // 
+            groupBox5.Controls.Add(label21);
+            groupBox5.Controls.Add(listCanDecay);
+            groupBox5.Controls.Add(label20);
+            groupBox5.Controls.Add(listNoRAGMemTypes);
             groupBox5.Controls.Add(label19);
             groupBox5.Controls.Add(numAgentDelay);
             groupBox5.Controls.Add(ckAgent);
             groupBox5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox5.Location = new Point(476, 6);
             groupBox5.Name = "groupBox5";
-            groupBox5.Size = new Size(461, 474);
+            groupBox5.Size = new Size(461, 472);
             groupBox5.TabIndex = 12;
             groupBox5.TabStop = false;
             groupBox5.Text = "Agentic Settings";
+            // 
+            // label21
+            // 
+            label21.AutoSize = true;
+            label21.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label21.Location = new Point(6, 289);
+            label21.Name = "label21";
+            label21.Size = new Size(183, 15);
+            label21.TabIndex = 16;
+            label21.Text = "Memory types allowed to decay";
+            // 
+            // listCanDecay
+            // 
+            listCanDecay.Font = new Font("Segoe UI", 9F);
+            listCanDecay.FormattingEnabled = true;
+            listCanDecay.Items.AddRange(new object[] { "Assistant", "General" });
+            listCanDecay.Location = new Point(6, 307);
+            listCanDecay.Name = "listCanDecay";
+            listCanDecay.ScrollAlwaysVisible = true;
+            listCanDecay.Size = new Size(446, 148);
+            listCanDecay.TabIndex = 15;
+            // 
+            // label20
+            // 
+            label20.AutoSize = true;
+            label20.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label20.Location = new Point(6, 120);
+            label20.Name = "label20";
+            label20.Size = new Size(243, 15);
+            label20.TabIndex = 14;
+            label20.Text = "Forbid Memory types from going into RAG";
+            // 
+            // listNoRAGMemTypes
+            // 
+            listNoRAGMemTypes.Font = new Font("Segoe UI", 9F);
+            listNoRAGMemTypes.FormattingEnabled = true;
+            listNoRAGMemTypes.Items.AddRange(new object[] { "Assistant", "General" });
+            listNoRAGMemTypes.Location = new Point(6, 138);
+            listNoRAGMemTypes.Name = "listNoRAGMemTypes";
+            listNoRAGMemTypes.ScrollAlwaysVisible = true;
+            listNoRAGMemTypes.Size = new Size(446, 148);
+            listNoRAGMemTypes.TabIndex = 13;
             // 
             // label19
             // 
@@ -811,6 +861,7 @@
             // 
             ckPassword.AutoSize = true;
             ckPassword.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            ckPassword.ForeColor = Color.DarkRed;
             ckPassword.Location = new Point(6, 281);
             ckPassword.Name = "ckPassword";
             ckPassword.Size = new Size(140, 19);
@@ -1076,5 +1127,9 @@
         private CheckBox ckAgent;
         private Label label19;
         private NumericUpDown numAgentDelay;
+        private Label label20;
+        private CheckedListBox listNoRAGMemTypes;
+        private Label label21;
+        private CheckedListBox listCanDecay;
     }
 }

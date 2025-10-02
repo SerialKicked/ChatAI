@@ -95,6 +95,7 @@ namespace WaifuAI.src.forms
             groupBox3 = new GroupBox();
             ck_hallusafe = new CheckBox();
             ck_sysrag = new CheckBox();
+            ckThirdPerson = new CheckBox();
             groupBox24.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_removeitalicmaxword).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_italicratio).BeginInit();
@@ -619,9 +620,9 @@ namespace WaifuAI.src.forms
             groupBox2.Controls.Add(bt_importworld);
             groupBox2.Controls.Add(bt_ImportSTChat);
             groupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            groupBox2.Location = new Point(12, 423);
+            groupBox2.Location = new Point(344, 423);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(1019, 57);
+            groupBox2.Size = new Size(687, 57);
             groupBox2.TabIndex = 24;
             groupBox2.TabStop = false;
             groupBox2.Text = "Import";
@@ -662,6 +663,7 @@ namespace WaifuAI.src.forms
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(ckThirdPerson);
             groupBox1.Controls.Add(num_ragM);
             groupBox1.Controls.Add(label1);
             groupBox1.Controls.Add(label15);
@@ -675,7 +677,7 @@ namespace WaifuAI.src.forms
             groupBox1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             groupBox1.Location = new Point(12, 246);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(326, 171);
+            groupBox1.Size = new Size(326, 234);
             groupBox1.TabIndex = 23;
             groupBox1.TabStop = false;
             groupBox1.Text = "RAG Database Settings";
@@ -837,10 +839,21 @@ namespace WaifuAI.src.forms
             ck_sysrag.Font = new Font("Segoe UI", 9F);
             ck_sysrag.Location = new Point(6, 22);
             ck_sysrag.Name = "ck_sysrag";
-            ck_sysrag.Size = new Size(231, 19);
+            ck_sysrag.Size = new Size(253, 19);
             ck_sysrag.TabIndex = 36;
-            ck_sysrag.Text = "Move all RAG inserts to system prompt";
+            ck_sysrag.Text = "Move all memory inserts to system prompt";
             ck_sysrag.UseVisualStyleBackColor = true;
+            // 
+            // ckThirdPerson
+            // 
+            ckThirdPerson.AutoSize = true;
+            ckThirdPerson.Font = new Font("Segoe UI", 9F);
+            ckThirdPerson.Location = new Point(6, 154);
+            ckThirdPerson.Name = "ckThirdPerson";
+            ckThirdPerson.Size = new Size(182, 19);
+            ckThirdPerson.TabIndex = 38;
+            ckThirdPerson.Text = "Convert queries to 3rd person";
+            ckThirdPerson.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -956,5 +969,6 @@ namespace WaifuAI.src.forms
         private ComboBox cb_searchapi;
         private CheckBox ck_searchextract;
         private Label label4;
+        private CheckBox ckThirdPerson;
     }
 }

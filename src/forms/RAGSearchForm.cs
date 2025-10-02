@@ -29,22 +29,20 @@ namespace WaifuAI.src.forms
             {
                 var res = new StringBuilder();
                 res.AppendLine($"Base string: {searchstr}");
-                searchstr = searchstr.ConvertToThirdPerson();
-                res.AppendLine($"Converted to 3rd person: {searchstr}");
+                if (LLMEngine.Settings.RAGConvertTo3rdPerson)
+                {
+                    searchstr = searchstr.ConvertToThirdPerson();
+                    res.AppendLine($"Converted to 3rd person: {searchstr}");
+                }
                 res.AppendLine();
                 res.AppendLine("Search Results:");
                 var found = await RAGEngine.Search(searchstr, 100, 1.2f);
                 foreach (var item in found)
                 {
-                    var title = "[unknown]";
-                    var content = "[unknown]";
-                    var distance = item.distance.ToString("0.0000");
-                    var cat = item.category.ToString();
-                    if (item.session is MemoryUnit unit)
-                    {
-                        title = unit.Name;
-                        content = LLMEngine.Bot.ReplaceMacros(unit.Content);
-                    }
+                    var distance = item.Distance.ToString("0.0000");
+                    var cat = item.Memory.Category.ToString();
+                    var title = item.Memory.Name;
+                    var content = LLMEngine.Bot.ReplaceMacros(item.Memory.Content);
                     res.AppendLine(cat + " (dist: " + distance + "): " + title);
                     res.AppendLine(content);
                     res.AppendLine();

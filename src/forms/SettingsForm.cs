@@ -56,6 +56,7 @@ namespace WaifuAI.src.forms
             HelptoolTip.SetToolTip(bt_importworld, "Import a worldinfo file exported from SillyTavern." + Environment.NewLine + "The worldinfo will be converted to the internal format and saved to 'exported_world.json' in this application's main folder.");
             HelptoolTip.SetToolTip(bt_ImportSTChat, "Import a chatlog file exported from SillyTavern." + Environment.NewLine + "The chatlog will be converted to the internal format and saved to 'exported_chat.json' in this application's main folder.");
             HelptoolTip.SetToolTip(ck_forcePW, "Normally, when switching to a password-protected bot, the app will remember its password for as long as it's running, so you don't need to enter it multiple times. If checked, the application will always ask for the bot's password when switching.");
+            HelptoolTip.SetToolTip(ckThirdPerson, "If checked, the bot will convert user messages to 3rd person when performing RAG searches. This tends to be more effective, especially to retrieve past sessions.");
             HelptoolTip.IsBalloon = true;
             HelptoolTip.ToolTipIcon = ToolTipIcon.Info;
             HelptoolTip.ToolTipTitle = "Settings";
@@ -130,6 +131,7 @@ namespace WaifuAI.src.forms
             ed_sloplist.Text = Program.Settings.AntiSlopList.Length > 0 ? string.Join(",", Program.Settings.AntiSlopList) : string.Empty;
             ckShowHidden.Checked = Program.Settings.ShowHiddenMessages;
             ck_hallusafe.Checked = Program.Settings.AntiHallucinationMemoryFormat;
+            ckThirdPerson.Checked = Program.Settings.RAGConvertTo3rdPerson;
 
             Program.ApplyContextPluginSettings();
 
@@ -187,6 +189,7 @@ namespace WaifuAI.src.forms
                 Program.Settings.AntiHallucinationMemoryFormat = ck_hallusafe.Checked;
                 Program.Settings.SessionReservedTokens = (int)num_memtokens.Value;
                 Program.Settings.AlwaysForcePasswordOnBotSwitch = ck_forcePW.Checked;
+                Program.Settings.RAGConvertTo3rdPerson = ckThirdPerson.Checked;
 
                 if (cb_ragheuristic.SelectedIndex == 0)
                     Program.Settings.RAGHeuristic = HNSW.Net.NeighbourSelectionHeuristic.SelectHeuristic;

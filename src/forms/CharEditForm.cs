@@ -2,6 +2,7 @@
 using LetheAISharp.Agent;
 using LetheAISharp.Files;
 using LetheAISharp.LLM;
+using LetheAISharp.Memory;
 using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Collections.Generic;
@@ -101,6 +102,9 @@ namespace WaifuAI.src.forms
             mychar.AgentTasks = [.. listAgentTasks.CheckedItems.Cast<string>()];
             if (mychar.AgentSystem is not null)
                 mychar.AgentSystem.Config.MinInactivityTime = TimeSpan.FromHours((double)numAgentDelay.Value);
+            mychar.Brain.DisableRAG = [.. listNoRAGMemTypes.CheckedItems.Cast<string>().Select(s => Enum.Parse<MemoryType>(s))];
+            mychar.Brain.DecayableMemories = [.. listCanDecay.CheckedItems.Cast<string>().Select(s => Enum.Parse<MemoryType>(s))];
+
             return mychar;
         }
 
@@ -154,6 +158,14 @@ namespace WaifuAI.src.forms
             foreach (var item in tasks)
             {
                 listAgentTasks.Items.Add(item, selectedCharacter.AgentTasks.Contains(item));
+            }
+
+            listNoRAGMemTypes.Items.Clear();
+            listCanDecay.Items.Clear();
+            foreach (var item in Enum.GetValues<MemoryType>())
+            {
+                listNoRAGMemTypes.Items.Add(item.ToString(), selectedCharacter.Brain.DisableRAG.Contains(item));
+                listCanDecay.Items.Add(item.ToString(), selectedCharacter.Brain.DecayableMemories.Contains(item));
             }
 
             // set cb_icon item index to the one that matches the selected character icon
