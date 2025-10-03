@@ -241,14 +241,5 @@ namespace WaifuAI.src.forms
             SelectedCharacter.Protected = ckPassword.Checked;
         }
 
-        private void ckMoodSystem_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ckAgent_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }

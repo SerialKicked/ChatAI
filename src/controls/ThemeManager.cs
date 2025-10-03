@@ -175,9 +175,9 @@ namespace WaifuAI.Controls
                 Focus: Color.FromArgb(0x70, 0xB8, 0xFF),
                 GlyphBack: GlyphBack,
                 GlyphBackHover: GlyphBackHover,
-                Base: new Font("Segoe UI", 9F),
-                Header: new Font("Segoe UI Semibold", 9.75F),
-                Mono: new Font("Consolas", 8.5F)
+                Base: new Font("Segoe UI", 9.25F),
+                Header: new Font("Segoe UI Semibold", 10F),
+                Mono: new Font("Consolas", 8.75F)
             );
         }
 
