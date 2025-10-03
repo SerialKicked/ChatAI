@@ -12,6 +12,7 @@ using LetheAISharp.LLM;
 using LetheAISharp;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Diagnostics;
+using WaifuAI.Controls;
 
 namespace WaifuAI.src.forms
 {
@@ -84,7 +85,11 @@ namespace WaifuAI.src.forms
         {
             if (InvokeRequired)
             {
-                SafeInvoke(() => ed_message.Text = Message!.Message.ToWinFormat());
+                SafeInvoke(() =>
+                {
+                    ed_message.Text = Message!.Message.ToWinFormat();
+                });
+
             }
             else
             {

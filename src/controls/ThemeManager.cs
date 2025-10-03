@@ -11,6 +11,46 @@ namespace WaifuAI.Controls
         void ApplyTheme(ThemeManager.Theme theme);
     }
 
+    internal static class NativeDarkMode
+    {
+        // Windows 10 1809+: attribute 19, Windows 10 1903+/Win11: attribute 20
+        private const int DWMWA_USE_IMMERSIVE_DARK_MODE_OLD = 19;
+        private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+
+        [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
+        private static extern int SetWindowTheme(IntPtr hWnd, string pszSubAppName, string? pszSubIdList);
+
+        public static void ApplyDarkModeIfNeeded(Form form, bool dark)
+        {
+            if (form.IsDisposed) return;
+            try
+            {
+                int useDark = dark ? 1 : 0;
+                // Try new attribute first, fall back to old
+                _ = DwmSetWindowAttribute(form.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE, ref useDark, sizeof(int));
+                _ = DwmSetWindowAttribute(form.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE_OLD, ref useDark, sizeof(int));
+            }
+            catch { }
+
+            // Apply "Explorer" theme to common controls so they pick up modern scrollbars
+            EnumerateDescendants(form, h =>
+            {
+                try { SetWindowTheme(h, "Explorer", null); } catch { }
+            });
+        }
+
+        private static void EnumerateDescendants(Control root, Action<IntPtr> action)
+        {
+            if (root.IsDisposed) return;
+            action(root.Handle);
+            foreach (Control c in root.Controls)
+                EnumerateDescendants(c, action);
+        }
+    }
+
     public interface IThemeExclude { }
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class ThemeExcludeAttribute : Attribute { }
@@ -117,6 +157,8 @@ namespace WaifuAI.Controls
 
             // Pass 3: restore excluded original styling
             RestoreExcluded();
+            // New: ask Windows for dark scrollbars if appropriate
+            NativeDarkMode.ApplyDarkModeIfNeeded(f, CurrentTheme.Name.Equals("Dark", StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -135,8 +177,8 @@ namespace WaifuAI.Controls
                 Back: Color.FromArgb(0x1E, 0x1F, 0x22),
                 Panel: Color.FromArgb(0x25, 0x26, 0x2A),
                 Border: Color.FromArgb(0x37, 0x38, 0x3D),
-                Accent: accent,
-                AccentHover: Lighten(accent, 0.14),
+                Accent: Color.FromArgb(0x3D, 0x9F, 0x3D),
+                AccentHover: Color.FromArgb(0x3D, 0x8F, 0x3D),
                 TextPrimary: Color.FromArgb(0xE6, 0xE6, 0xE6),
                 TextMuted: Color.FromArgb(0x9F, 0xA4, 0xAE),
                 Danger: Color.FromArgb(0xE1, 0x63, 0x63),
@@ -240,11 +282,13 @@ namespace WaifuAI.Controls
                     break;
 
                 case Label lbl:
-                    // Keep transparent labels transparent if you prefer; adjust if needed.
                     if (lbl.BackColor != Color.Transparent)
                         lbl.BackColor = PanelColor;
                     lbl.ForeColor = TextColor;
-                    lbl.Font = BaseFont;
+                    if (lbl.Font.Bold || lbl.Font.Italic)
+                        lbl.Font = new Font(BaseFont, lbl.Font.Style);
+                    else
+                        lbl.Font = BaseFont;
                     break;
 
                 case ListBox lb:
@@ -252,6 +296,14 @@ namespace WaifuAI.Controls
                     lb.ForeColor = TextColor;
                     lb.Font = BaseFont;
                     lb.BorderStyle = BorderStyle.FixedSingle;
+                    break;
+
+                case ListView lv:
+                    lv.BackColor = PanelColor;
+                    lv.ForeColor = TextColor;
+                    lv.Font = BaseFont;
+                    lv.BorderStyle = BorderStyle.FixedSingle;
+                    // Leave OwnerDraw false for now to preserve system selection + headers.
                     break;
 
                 case NumericUpDown nud:
@@ -363,7 +415,7 @@ namespace WaifuAI.Controls
         // =========================================================
         // Utilities
         // =========================================================
-        private static Color Lighten(Color c, double amount)
+        public static Color Lighten(Color c, double amount)
         {
             amount = Math.Max(-1, Math.Min(1, amount));
             int r = Clamp(c.R + (int)(255 * amount));
@@ -392,5 +444,8 @@ namespace WaifuAI.Controls
 
         [DllImport("dwmapi.dll", ExactSpelling = true, PreserveSig = true)]
         private static extern int DwmGetColorizationColor(out uint pcrColorization, out bool pfOpaqueBlend);
+
     }
+
+
 }

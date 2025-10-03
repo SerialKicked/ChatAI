@@ -244,7 +244,7 @@ namespace WaifuAI.Controls
 
         private void DrawSwitchStyle(Graphics g, Rectangle r)
         {
-            int radius = r.Height / 2;
+            //int radius = r.Height / 2;
             using (var path = new GraphicsPath())
             {
                 path.AddArc(r.X, r.Y, r.Height, r.Height, 90, 180);
@@ -272,8 +272,8 @@ namespace WaifuAI.Controls
             var thumb = new Rectangle(thumbX, r.Y + 2, thumbDiameter, thumbDiameter);
             using (var sb = new SolidBrush(AccentEvaluated()))
                 g.FillEllipse(sb, thumb);
-            using (var pen = new Pen(Color.FromArgb(60, Color.Black)))
-                g.DrawEllipse(pen, thumb);
+            using var pen = new Pen(Color.FromArgb(60, Color.Black));
+            g.DrawEllipse(pen, thumb);
         }
 
         private void DrawLabel(Graphics g, Rectangle glyph)

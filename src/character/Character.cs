@@ -50,7 +50,12 @@ namespace WaifuAI.Files
         [JsonIgnore]
         public new CharBrain Brain
         {
-            get => (CharBrain)base.Brain;
+            get 
+            {
+                if (base.Brain is not CharBrain)
+                    base.Brain = new CharBrain(this);
+                return (CharBrain)base.Brain;
+            }
             protected set => base.Brain = value;
         }
 

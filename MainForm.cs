@@ -116,13 +116,13 @@ namespace WaifuAI
 
             ed_input.SpellCheckLanguage = "en-US";
 
-            HelptoolTip.SetToolTip(ck_ragenabled, "Use RAG functionalities to insert summaries of relevant previous sessions based on the user's input." + Environment.NewLine + "Configurable in the Program.Settings tab.");
-            HelptoolTip.SetToolTip(ck_senseoftime, "Insert day and time information to prompt when relevant to give the bot a better understanding of time.");
-            HelptoolTip.SetToolTip(ck_sessionmemory, "Use a set amount of tokens (set in Program.Settings) to insert summaries of previous chat sessions with this bot." + Environment.NewLine + "This drastically increases the bot's long-term memory.");
-            HelptoolTip.SetToolTip(ck_worldinfo, "Use the WorldInfo file(s) associated with this bot. WorldInfo is a list of keyword-triggered textual information that is inserted into the prompt when the conditions are met." + Environment.NewLine + "See the World Info tab for additional information.");
+            HelptoolTip.SetToolTip(mck_ragenabled, "Use RAG functionalities to insert summaries of relevant previous sessions based on the user's input." + Environment.NewLine + "Configurable in the Program.Settings tab.");
+            HelptoolTip.SetToolTip(mck_senseoftime, "Insert day and time information to prompt when relevant to give the bot a better understanding of time.");
+            HelptoolTip.SetToolTip(mck_sessionmemory, "Use a set amount of tokens (set in Program.Settings) to insert summaries of previous chat sessions with this bot." + Environment.NewLine + "This drastically increases the bot's long-term memory.");
+            HelptoolTip.SetToolTip(mck_worldinfo, "Use the WorldInfo file(s) associated with this bot. WorldInfo is a list of keyword-triggered textual information that is inserted into the prompt when the conditions are met." + Environment.NewLine + "See the World Info tab for additional information.");
 
-            HelptoolTip.SetToolTip(ck_charsampler, "If checked, and when using a bot persona containing a list of compatible inference Program.Settings, the inference Program.Settings will be picked at random from that list each time the bot write a new message." + Environment.NewLine + Environment.NewLine + "Will lead to a more creative and less repetitive interaction, but also less consistent.");
-            HelptoolTip.SetToolTip(ck_onlinerag, "If checked, the bot may perform a web search (using DuckDuckGo) to improve its responses when asked to.");
+            HelptoolTip.SetToolTip(mck_charsampler, "If checked, and when using a bot persona containing a list of compatible inference Program.Settings, the inference Program.Settings will be picked at random from that list each time the bot write a new message." + Environment.NewLine + Environment.NewLine + "Will lead to a more creative and less repetitive interaction, but also less consistent.");
+            HelptoolTip.SetToolTip(mck_onlinerag, "If checked, the bot may perform a web search (using DuckDuckGo) to improve its responses when asked to.");
 
             // Load our app level agent plugins
             AgentRuntime.RegisterAction(new SessionMoodCheckAction());
@@ -131,8 +131,10 @@ namespace WaifuAI
             AgentRuntime.RegisterPlugin("GoalDesignerTask", new GoalDesignerTask());
             AgentRuntime.RegisterPlugin("CustomGoalTask", new CustomGoalTask());
             AgentRuntime.RegisterPlugin("JournalTask", new JournalTask());
+            ThemeManager.ApplyDark();
 
             var loginForm = new LoginForm();
+            ThemeManager.ApplyToForm(loginForm);
             loginForm.ShowDialog(this);
             if (loginForm.DialogResult != DialogResult.OK)
             {
@@ -192,8 +194,8 @@ namespace WaifuAI
             LLMEngine.ContextPlugins.Add(new LocationPlugin("Locations"));
             LLMEngine.ContextPlugins.Add(new WebSearchPlugin());
             RAGEngine.Enabled = true;
-            ck_ragenabled.Checked = RAGEngine.Enabled;
-            ck_worldinfo.Checked = LLMEngine.Settings.AllowWorldInfo;
+            mck_ragenabled.Checked = RAGEngine.Enabled;
+            mck_worldinfo.Checked = LLMEngine.Settings.AllowWorldInfo;
             LLMEngine.OnInferenceStreamed += OnStreamMessageReceived;
             LLMEngine.OnInferenceEnded += OnStreamInferenceEnded;
             LLMEngine.OnFullPromptReady += OnFullPromptReady;
@@ -284,19 +286,19 @@ namespace WaifuAI
             }
             if (Bot?.AllowedSamplers.Count > 0)
             {
-                ck_charsampler.Enabled = true;
+                mck_charsampler.Enabled = true;
             }
             else
             {
-                ck_charsampler.Enabled = false;
-                ck_charsampler.Checked = false;
+                mck_charsampler.Enabled = false;
+                mck_charsampler.Checked = false;
             }
-            ck_sessionmemory.Checked = LLMEngine.Settings.SessionMemorySystem;
-            ck_ttstoggle.Checked = Program.Settings.UseTTS;
-            ck_disablethink.Checked = Program.Settings.DisableThinking;
-            ck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
-            ck_agentmode.Checked = LLMEngine.Bot.AgentMode;
-            ckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
+            mck_sessionmemory.Checked = LLMEngine.Settings.SessionMemorySystem;
+            mck_ttstoggle.Checked = Program.Settings.UseTTS;
+            mck_disablethink.Checked = Program.Settings.DisableThinking;
+            mck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
+            mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
+            mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
             btVectorSearch.Enabled = RAGEngine.Enabled;
         }
 
@@ -328,18 +330,18 @@ namespace WaifuAI
             {
                 LLMEngine.Bot = DataFiles.Characters[key];
                 await LoadHistoryToUI();
-                ck_senseoftime.Checked = LLMEngine.Bot.SenseOfTime;
-                ck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
+                mck_senseoftime.Checked = LLMEngine.Bot.SenseOfTime;
+                mck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
                 var searchplug = LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch");
                 if (searchplug != null)
                 {
-                    ck_onlinerag.Checked = searchplug.Enabled;
-                    ck_onlinerag.Enabled = true;
+                    mck_onlinerag.Checked = searchplug.Enabled;
+                    mck_onlinerag.Enabled = true;
                 }
                 else
                 {
-                    ck_onlinerag.Enabled = false;
-                    ck_onlinerag.Checked = false;
+                    mck_onlinerag.Enabled = false;
+                    mck_onlinerag.Checked = false;
                 }
                 _activityTimer?.Reset();
                 UpdateUIState();
@@ -785,9 +787,10 @@ namespace WaifuAI
             num_maxcontext.Maximum = LLMEngine.MaxContextLength;
             num_maxcontext.Value = LLMEngine.MaxContextLength;
             this.Text = "w(AI)fu.NET: " + LLMEngine.CurrentModel;
-            ck_ttstoggle.Enabled = LLMEngine.SupportsTTS;
-            ck_onlinerag.Enabled = LLMEngine.SupportsWebSearch;
-            boxVLM.Enabled = LLMEngine.SupportsVision;
+            mck_ttstoggle.Enabled = LLMEngine.SupportsTTS;
+            mck_onlinerag.Enabled = LLMEngine.SupportsWebSearch;
+            cboxVLM.Enabled = LLMEngine.SupportsVision;
+            cboxVLM.Expanded = LLMEngine.SupportsVision;
             LLMEngine.Bot.AgentSystem?.NotifyUserActivity();
             UpdateUIState();
         }
@@ -990,7 +993,7 @@ namespace WaifuAI
 
         private void UseCharacterDefinedSampler()
         {
-            if (!ck_charsampler.Checked || !ck_charsampler.Enabled || Bot == null)
+            if (!mck_charsampler.Checked || !mck_charsampler.Enabled || Bot == null)
                 return;
             // make a list of samplers, looking at DataFiles.Inference and what samplers are allowed in the Character's Program.Settings
             var samplers = new List<string>();
@@ -1041,12 +1044,12 @@ namespace WaifuAI
             num_maxcontext.Value = Program.Settings.MaxTotalTokens;
             num_maxresponse.Value = Program.Settings.MaxReplyLength;
             num_temperature.Value = (decimal)Program.Settings.Temperature;
-            ck_sessionmemory.Checked = LLMEngine.Settings.SessionMemorySystem;
-            ck_ttstoggle.Checked = Program.Settings.UseTTS;
-            ck_disablethink.Checked = Program.Settings.DisableThinking;
-            ck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
-            ck_agentmode.Checked = LLMEngine.Bot.AgentMode;
-            ckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
+            mck_sessionmemory.Checked = LLMEngine.Settings.SessionMemorySystem;
+            mck_ttstoggle.Checked = Program.Settings.UseTTS;
+            mck_disablethink.Checked = Program.Settings.DisableThinking;
+            mck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
+            mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
+            mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
             btVectorSearch.Enabled = RAGEngine.Enabled;
 
             Program.ApplyContextPluginSettings();
@@ -1064,10 +1067,10 @@ namespace WaifuAI
                 Program.Settings.Instruct = cb_instruct.SelectedItem?.ToString() ?? string.Empty;
                 Program.Settings.PromptFile = cb_sysprompt.SelectedItem?.ToString() ?? string.Empty;
                 Program.Settings.Temperature = (double)num_temperature.Value;
-                Program.Settings.UseTTS = ck_ttstoggle.Checked;
-                LLMEngine.Bot.AgentMode = ck_agentmode.Checked;
-                LLMEngine.Bot.Brain.DisableEurekas = !ckNatMem.Checked;
-                Program.Settings.SessionMemorySystem = ck_sessionmemory.Checked;
+                Program.Settings.UseTTS = mck_ttstoggle.Checked;
+                LLMEngine.Bot.AgentMode = mck_agentmode.Checked;
+                LLMEngine.Bot.Brain.DisableEurekas = !mckNatMem.Checked;
+                Program.Settings.SessionMemorySystem = mck_sessionmemory.Checked;
 
                 Program.ApplyContextPluginSettings();
 
@@ -1084,7 +1087,7 @@ namespace WaifuAI
 
         private void ck_ragenabled_CheckedChanged(object sender, EventArgs e)
         {
-            RAGEngine.Enabled = ck_ragenabled.Checked;
+            RAGEngine.Enabled = mck_ragenabled.Checked;
             btVectorSearch.Enabled = RAGEngine.Enabled;
         }
 
@@ -1553,7 +1556,7 @@ namespace WaifuAI
 
         private void ck_ttstoggle_CheckedChanged(object sender, EventArgs e)
         {
-            Program.Settings.UseTTS = ck_ttstoggle.Checked;
+            Program.Settings.UseTTS = mck_ttstoggle.Checked;
         }
 
         #endregion
@@ -1582,7 +1585,7 @@ namespace WaifuAI
             if (cb_instruct.SelectedItem is string key && !string.IsNullOrEmpty(key))
             {
                 LLMEngine.Instruct = DataFiles.Instruct[key];
-                ck_forceNames.Checked = LLMEngine.Instruct.AddNamesToPrompt;
+                mck_forceNames.Checked = LLMEngine.Instruct.AddNamesToPrompt;
             }
         }
 
@@ -1600,12 +1603,12 @@ namespace WaifuAI
 
         private void ck_senseoftime_CheckedChanged(object sender, EventArgs e)
         {
-            LLMEngine.Bot.SenseOfTime = ck_senseoftime.Checked;
+            LLMEngine.Bot.SenseOfTime = mck_senseoftime.Checked;
         }
 
         private void ck_sessionmemory_CheckedChanged(object sender, EventArgs e)
         {
-            LLMEngine.Settings.SessionMemorySystem = ck_sessionmemory.Checked;
+            LLMEngine.Settings.SessionMemorySystem = mck_sessionmemory.Checked;
         }
 
         private void bt_scenario_Click(object sender, EventArgs e)
@@ -1618,14 +1621,13 @@ namespace WaifuAI
 
         private void ck_forceNames_CheckedChanged(object sender, EventArgs e)
         {
-            LLMEngine.Instruct.AddNamesToPrompt = ck_forceNames.Checked;
+            LLMEngine.Instruct.AddNamesToPrompt = mck_forceNames.Checked;
             LLMEngine.InvalidatePromptCache();
         }
 
         private void ck_worldinfo_CheckedChanged(object sender, EventArgs e)
         {
-            LLMEngine.Settings.AllowWorldInfo = ck_worldinfo.Checked;
-
+            LLMEngine.Settings.AllowWorldInfo = mck_worldinfo.Checked;
         }
 
         private void cb_sysprompt_SelectionIndexChanged(object sender, EventArgs e)
@@ -1637,7 +1639,7 @@ namespace WaifuAI
         private void ck_caninit_CheckedChanged(object sender, EventArgs e)
         {
             if (Bot != null)
-                Bot.CanInitiateChat = ck_caninitchat.Checked;
+                Bot.CanInitiateChat = mck_caninitchat.Checked;
         }
 
         private void AutoTalkTimer_Tick(object sender, EventArgs e)
@@ -1654,13 +1656,13 @@ namespace WaifuAI
             var searchplug = LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch");
             if (searchplug != null)
             {
-                searchplug.Enabled = ck_onlinerag.Checked;
-                ck_onlinerag.Enabled = true;
+                searchplug.Enabled = mck_onlinerag.Checked;
+                mck_onlinerag.Enabled = true;
             }
             else
             {
-                ck_onlinerag.Enabled = false;
-                ck_onlinerag.Checked = false;
+                mck_onlinerag.Enabled = false;
+                mck_onlinerag.Checked = false;
             }
         }
 
@@ -1695,22 +1697,23 @@ namespace WaifuAI
 
         private void ck_disablethink_CheckedChanged(object sender, EventArgs e)
         {
-            LLMEngine.Settings.DisableThinking = ck_disablethink.Checked;
+            LLMEngine.Settings.DisableThinking = mck_disablethink.Checked;
         }
 
         private void ck_ragtothink_CheckedChanged(object sender, EventArgs e)
         {
-            LLMEngine.Settings.RAGMoveToThinkBlock = ck_ragtothink.Checked;
+            LLMEngine.Settings.RAGMoveToThinkBlock = mck_ragtothink.Checked;
         }
 
         private void ck_agentmode_CheckedChanged(object sender, EventArgs e)
         {
-            LLMEngine.Bot.AgentMode = ck_agentmode.Checked;
+            LLMEngine.Bot.AgentMode = mck_agentmode.Checked;
         }
 
         private void btInstructEdit_Click(object sender, EventArgs e)
         {
             using var editForm = new InstructForm();
+            ThemeManager.ApplyToForm(editForm);
             editForm.SetupInstructEditor(LLMEngine.Instruct.UniqueName ?? string.Empty);
             editForm.ShowDialog();
             LLMEngine.InvalidatePromptCache();
@@ -1728,6 +1731,7 @@ namespace WaifuAI
         private void btSysPrompt_Click(object sender, EventArgs e)
         {
             using var editForm = new SysPromptForm();
+            ThemeManager.ApplyToForm(editForm);
             editForm.SetupPromptEditor(LLMEngine.SystemPrompt.UniqueName ?? string.Empty);
             editForm.ShowDialog();
             LLMEngine.InvalidatePromptCache();
@@ -1744,6 +1748,7 @@ namespace WaifuAI
         private void btSampleEditor_Click(object sender, EventArgs e)
         {
             using var editForm = new SamplerForm();
+            ThemeManager.ApplyToForm(editForm);
             editForm.SetupSamplerEditor(LLMEngine.Sampler.UniqueName ?? string.Empty);
             editForm.ShowDialog();
             LLMEngine.InvalidatePromptCache();
@@ -1762,6 +1767,7 @@ namespace WaifuAI
         {
             // Open settings form as modal dialog
             using var settingsForm = new SettingsForm();
+            ThemeManager.ApplyToForm(settingsForm);
             settingsForm.StartPosition = FormStartPosition.CenterParent;
             settingsForm.ShowDialog();
             LLMEngine.InvalidatePromptCache();
@@ -1771,6 +1777,7 @@ namespace WaifuAI
         private void btWorldEditor_Click(object sender, EventArgs e)
         {
             using var worldForm = new WorldEditForm();
+            ThemeManager.ApplyToForm(worldForm);
             worldForm.StartPosition = FormStartPosition.CenterParent;
             worldForm.ShowDialog();
             LLMEngine.InvalidatePromptCache();
@@ -1779,6 +1786,7 @@ namespace WaifuAI
         private async void btChatHistory_Click(object sender, EventArgs e)
         {
             using var worldForm = new ChatHistoryForm();
+            ThemeManager.ApplyToForm(worldForm);
             worldForm.StartPosition = FormStartPosition.CenterParent;
             worldForm.ShowDialog();
             LLMEngine.InvalidatePromptCache();
@@ -1788,6 +1796,7 @@ namespace WaifuAI
         private void btVectorSearch_Click(object sender, EventArgs e)
         {
             using var ragForm = new RAGSearchForm();
+            ThemeManager.ApplyToForm(ragForm);
             ragForm.StartPosition = FormStartPosition.CenterParent;
             ragForm.ShowDialog();
         }
@@ -1796,6 +1805,7 @@ namespace WaifuAI
         {
             // Show a basic window with the ed_log content in a textbox and a close button
             using var logForm = new RawLogForm();
+            ThemeManager.ApplyToForm(logForm);
             logForm.SetText(ed_log);
             logForm.StartPosition = FormStartPosition.CenterParent;
             logForm.ShowDialog();
@@ -1901,7 +1911,7 @@ namespace WaifuAI
 
         private void ckNatMem_CheckedChanged(object sender, EventArgs e)
         {
-            LLMEngine.Bot.Brain.DisableEurekas = !ckNatMem.Checked;
+            LLMEngine.Bot.Brain.DisableEurekas = !mckNatMem.Checked;
         }
 
     }

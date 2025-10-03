@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using WaifuAI.Controls;
 
 namespace WaifuAI.src.forms
 {
@@ -47,6 +48,7 @@ namespace WaifuAI.src.forms
         public static void ShowForActiveBot(IWin32Window? owner = null)
         {
             using var f = new MemoryBrowserForm();
+            ThemeManager.ApplyToForm(f);
             f.ShowDialog(owner);
         }
 

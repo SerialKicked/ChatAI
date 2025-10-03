@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WaifuAI.Controls;
 
 namespace WaifuAI.src.forms
 {
@@ -72,6 +73,12 @@ namespace WaifuAI.src.forms
         private void LoginForm_Shown(object sender, EventArgs e)
         {
             LoadSettings();
+            WindowDragHelper.MakeDraggable(collapsibleGroupBox1, this);
+        }
+
+        private void collapsibleGroupBox1_ExpandedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
