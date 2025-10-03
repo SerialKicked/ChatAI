@@ -1669,6 +1669,7 @@ namespace WaifuAI
         private void bt_editchar_Click(object sender, EventArgs e)
         {
             using var editForm = new CharEditForm();
+            ThemeManager.ApplyToForm(editForm);
             editForm.SetupCharacterEditor(Bot?.UniqueName ?? string.Empty);
             editForm.ShowDialog();
             LLMEngine.InvalidatePromptCache();
@@ -1895,7 +1896,7 @@ namespace WaifuAI
                         Content = fulldesc.ToString().CleanupAndTrim(),
                         Category = MemoryType.Image,
                         Path = imageFile,
-                        Insertion = MemoryInsertion.Trigger,                       
+                        Insertion = MemoryInsertion.Trigger,
                     };
                     await mem.EmbedText();
                     LLMEngine.Bot.Brain.Memorize(mem, true);
@@ -1914,5 +1915,13 @@ namespace WaifuAI
             LLMEngine.Bot.Brain.DisableEurekas = !mckNatMem.Checked;
         }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            using var loadingForm = new TestForm();
+            ThemeManager.ApplyToForm(loadingForm);
+            loadingForm.StartPosition = FormStartPosition.CenterParent;
+            loadingForm.ShowDialog();
+
+        }
     }
 }

@@ -246,7 +246,6 @@ namespace WaifuAI.src.forms
 
         }
 
-
         private void ckAgent_CheckedChanged(object sender, EventArgs e)
         {
 

@@ -38,7 +38,7 @@ namespace WaifuAI.Controls
         private Color _glyphBackHover;
         private Color _text;
 
-        private bool _useAnimation = true;
+        private bool _useAnimation = false;
         private int _animationDuration = 140;
         private ModernCheckVisual _visualStyle = ModernCheckVisual.Box;
 
@@ -90,7 +90,7 @@ namespace WaifuAI.Controls
         }
 
         [Category("Behavior")]
-        [DefaultValue(true)]
+        [DefaultValue(false)]
         public bool UseAnimation
         {
             get => _useAnimation;
@@ -125,7 +125,11 @@ namespace WaifuAI.Controls
             Invalidate();
         }
 
-        private Color AccentEvaluated() => _hover ? _accentHover : _accent;
+        private Color AccentEvaluated()
+        {
+            if (!Enabled) return ThemeManager.MutedText;
+            return _hover ? _accentHover : _accent;
+        }
 
         // -------------- Input / animation (reuse your prior implementation) --------------
         protected override void OnMouseEnter(EventArgs e) { _hover = true; Invalidate(); base.OnMouseEnter(e); }
@@ -280,6 +284,7 @@ namespace WaifuAI.Controls
         {
             int textOffset = glyph.Right + 8;
             var rect = new Rectangle(textOffset, 0, Width - textOffset - 2, Height);
+
             TextRenderer.DrawText(g, Text, Font, rect, _text,
                 TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
         }

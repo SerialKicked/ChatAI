@@ -25,7 +25,7 @@ namespace WaifuAI.Controls
 
         private bool _expanded = true;
         private int _animationDuration = 140;
-        private bool _animate = true;
+        private bool _animate = false;
         private bool _isAnimating;
 
         // Cached theme colors
@@ -88,7 +88,7 @@ namespace WaifuAI.Controls
         public bool CanCollapse { get; set; } = true;
 
         [Category("Behavior")]
-        [DefaultValue(true)]
+        [DefaultValue(false)]
         public bool Animate
         {
             get => _animate;
@@ -304,8 +304,8 @@ namespace WaifuAI.Controls
             _glyphRect = new Rectangle(8, (HeaderHeightConst - 16) / 2, 16, 16);
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-            var caccent = Enabled ? _accent : ThemeManager.Lighten(_accent, 0.5);
-            var caccenth = Enabled ? _accentHover : ThemeManager.Lighten(_accentHover, 0.5);
+            var caccent = Enabled ? _accent : ThemeManager.MutedText;
+            var caccenth = Enabled ? _accentHover : ThemeManager.Lighten(ThemeManager.MutedText, 0.5);
 
             using (var p = new Pen(_hover ? caccenth : caccent, 2f)
             {

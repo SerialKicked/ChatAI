@@ -13,7 +13,6 @@ namespace WaifuAI.Controls
 
     internal static class NativeDarkMode
     {
-        // Windows 10 1809+: attribute 19, Windows 10 1903+/Win11: attribute 20
         private const int DWMWA_USE_IMMERSIVE_DARK_MODE_OLD = 19;
         private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
 
@@ -29,13 +28,11 @@ namespace WaifuAI.Controls
             try
             {
                 int useDark = dark ? 1 : 0;
-                // Try new attribute first, fall back to old
                 _ = DwmSetWindowAttribute(form.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE, ref useDark, sizeof(int));
                 _ = DwmSetWindowAttribute(form.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE_OLD, ref useDark, sizeof(int));
             }
             catch { }
 
-            // Apply "Explorer" theme to common controls so they pick up modern scrollbars
             EnumerateDescendants(form, h =>
             {
                 try { SetWindowTheme(h, "Explorer", null); } catch { }
@@ -57,7 +54,7 @@ namespace WaifuAI.Controls
 
     public static class ThemeManager
     {
-        // Legacy static palette fields (unchanged interface)
+        // Legacy palette fields
         public static Color BackColor = Color.FromArgb(0x1E, 0x1F, 0x22);
         public static Color PanelColor = Color.FromArgb(0x25, 0x26, 0x2A);
         public static Color BorderColor = Color.FromArgb(0x37, 0x38, 0x3D);
@@ -97,11 +94,14 @@ namespace WaifuAI.Controls
         public static Theme CurrentTheme { get; private set; } = CreateDark();
         public static event EventHandler<Theme>? ThemeChanged;
 
-        // Owner-drawn tracking for ComboBoxes
         private static readonly HashSet<ComboBox> OwnerDrawnComboBoxes = new();
+        private static readonly HashSet<TabControl> OwnerDrawnTabControls = new();
 
-        // Capture store for excluded controls to restore original styling (fore, back, font)
         private static readonly Dictionary<Control, (Color Fore, Color Back, Font? Font)> ExcludedOriginals = new();
+
+        // TabControl config (applies only in Buttons mode now)
+        private const bool FillHeaderBackground = true;
+        private const bool UsePanelForHeader = false;
 
         // =========================================================
         // Public API
@@ -115,7 +115,6 @@ namespace WaifuAI.Controls
         {
             CurrentTheme = t;
 
-            // Sync legacy fields
             BackColor = t.Back;
             PanelColor = t.Panel;
             BorderColor = t.Border;
@@ -137,33 +136,23 @@ namespace WaifuAI.Controls
                 ThemeChanged?.Invoke(null, t);
         }
 
-        /// <summary>
-        /// One-shot apply (two-pass) on a form. Captures excluded originals first.
-        /// </summary>
         public static void ApplyToForm(Form f)
         {
             if (f == null) return;
             ExcludedOriginals.Clear();
 
-            // Pass 1: capture original styles of excluded subtrees
             foreach (Control c in f.Controls)
                 CaptureExcludedRecursive(c);
 
-            // Pass 2: apply theme to everything else
             f.BackColor = BackColor;
             f.Font = BaseFont;
             foreach (Control c in f.Controls)
                 ApplyRecursive(c);
 
-            // Pass 3: restore excluded original styling
             RestoreExcluded();
-            // New: ask Windows for dark scrollbars if appropriate
             NativeDarkMode.ApplyDarkModeIfNeeded(f, CurrentTheme.Name.Equals("Dark", StringComparison.OrdinalIgnoreCase));
         }
 
-        /// <summary>
-        /// Re-apply after a theme toggle (keeps excluded controls intact).
-        /// </summary>
         public static void ReapplyTheme(Form f) => ApplyToForm(f);
 
         // =========================================================
@@ -216,26 +205,22 @@ namespace WaifuAI.Controls
         }
 
         // =========================================================
-        // Pass 1: Capture originals for excluded subtrees
+        // Capture excluded
         // =========================================================
         private static void CaptureExcludedRecursive(Control c)
         {
             if (IsExcluded(c))
             {
-                // Store exactly once (if not already)
                 if (!ExcludedOriginals.ContainsKey(c))
                     ExcludedOriginals[c] = (c.ForeColor, c.BackColor, c.Font);
-                // Do NOT recurse into excluded subtree
                 return;
             }
-
-            // Recurse into children
             foreach (Control child in c.Controls)
                 CaptureExcludedRecursive(child);
         }
 
         // =========================================================
-        // Pass 2: Apply theme to non-excluded
+        // Apply recursively
         // =========================================================
         private static void ApplyRecursive(Control c)
         {
@@ -285,10 +270,9 @@ namespace WaifuAI.Controls
                     if (lbl.BackColor != Color.Transparent)
                         lbl.BackColor = PanelColor;
                     lbl.ForeColor = TextColor;
-                    if (lbl.Font.Bold || lbl.Font.Italic)
-                        lbl.Font = new Font(BaseFont, lbl.Font.Style);
-                    else
-                        lbl.Font = BaseFont;
+                    lbl.Font = lbl.Font.Bold || lbl.Font.Italic
+                        ? new Font(BaseFont, lbl.Font.Style)
+                        : BaseFont;
                     break;
 
                 case ListBox lb:
@@ -303,7 +287,6 @@ namespace WaifuAI.Controls
                     lv.ForeColor = TextColor;
                     lv.Font = BaseFont;
                     lv.BorderStyle = BorderStyle.FixedSingle;
-                    // Leave OwnerDraw false for now to preserve system selection + headers.
                     break;
 
                 case NumericUpDown nud:
@@ -313,18 +296,7 @@ namespace WaifuAI.Controls
                     break;
 
                 case TabControl tc:
-                    tc.BackColor = PanelColor;
-                    tc.ForeColor = TextColor;
-                    tc.Font = BaseFont;
-                    foreach (TabPage page in tc.TabPages)
-                    {
-                        if (!IsExcluded(page))
-                        {
-                            page.BackColor = PanelColor;
-                            page.ForeColor = TextColor;
-                            page.Font = BaseFont;
-                        }
-                    }
+                    ThemeTabControl(tc);
                     break;
             }
 
@@ -336,7 +308,7 @@ namespace WaifuAI.Controls
         }
 
         // =========================================================
-        // Pass 3: Restore excluded exactly
+        // Restore excluded
         // =========================================================
         private static void RestoreExcluded()
         {
@@ -344,17 +316,13 @@ namespace WaifuAI.Controls
             {
                 var ctrl = kv.Key;
                 if (ctrl.IsDisposed) continue;
-
                 ctrl.ForeColor = kv.Value.Fore;
                 ctrl.BackColor = kv.Value.Back;
-
-                // Only restore font if it differs from stored (so we keep instance references valid)
                 if (kv.Value.Font != null && ctrl.Font != kv.Value.Font)
                     ctrl.Font = kv.Value.Font;
             }
         }
 
-        // Exclusion test (Tag contains "no-theme" OR marker interface/attribute)
         private static bool IsExcluded(Control c)
         {
             if (c.Tag is string ts && ts.IndexOf("no-theme", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -365,7 +333,7 @@ namespace WaifuAI.Controls
         }
 
         // =========================================================
-        // ComboBox theming (owner draw for DropDownList)
+        // ComboBox theming
         // =========================================================
         private static void ThemeComboBox(ComboBox cb)
         {
@@ -391,7 +359,6 @@ namespace WaifuAI.Controls
         {
             var cb = (ComboBox)sender!;
             e.DrawBackground();
-            var g = e.Graphics;
 
             bool selected = (e.State & DrawItemState.Selected) != 0;
             bool disabled = (e.State & DrawItemState.Disabled) != 0;
@@ -400,16 +367,130 @@ namespace WaifuAI.Controls
             Color fore = disabled ? MutedText : (selected ? Color.White : TextColor);
 
             using (var b = new SolidBrush(back))
-                g.FillRectangle(b, e.Bounds);
+                e.Graphics.FillRectangle(b, e.Bounds);
 
             if (e.Index >= 0 && e.Index < cb.Items.Count)
             {
                 string text = cb.GetItemText(cb.Items[e.Index]);
-                TextRenderer.DrawText(g, text, cb.Font, e.Bounds, fore,
+                TextRenderer.DrawText(e.Graphics, text, cb.Font, e.Bounds, fore,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
             }
 
             e.DrawFocusRectangle();
+        }
+
+        // =========================================================
+        // TabControl theming
+        // =========================================================
+        private static void ThemeTabControl(TabControl tc)
+        {
+            tc.Font = BaseFont;
+            tc.BackColor = PanelColor;
+            tc.ForeColor = TextColor;
+
+            foreach (TabPage page in tc.TabPages)
+            {
+                if (IsExcluded(page)) continue;
+                page.BackColor = PanelColor;
+                page.ForeColor = TextColor;
+                page.Font = BaseFont;
+            }
+
+            bool shouldOwnerDraw = tc.Appearance == TabAppearance.Buttons;
+            EnsureTabControlOwnerDraw(tc, shouldOwnerDraw);
+            tc.Invalidate();
+        }
+
+        private static void EnsureTabControlOwnerDraw(TabControl tc, bool enable)
+        {
+            if (enable)
+            {
+                if (!OwnerDrawnTabControls.Contains(tc))
+                {
+                    tc.DrawMode = TabDrawMode.OwnerDrawFixed;
+                    tc.Padding = new Point(16, 4);
+                    tc.DrawItem += TabControl_DrawItem;
+                    tc.ControlAdded += TabControl_ChildChanged;
+                    tc.ControlRemoved += TabControl_ChildChanged;
+                    OwnerDrawnTabControls.Add(tc);
+                }
+            }
+            else
+            {
+                if (OwnerDrawnTabControls.Contains(tc))
+                {
+                    // Revert to system drawing
+                    tc.DrawItem -= TabControl_DrawItem;
+                    tc.ControlAdded -= TabControl_ChildChanged;
+                    tc.ControlRemoved -= TabControl_ChildChanged;
+                    try { tc.DrawMode = TabDrawMode.Normal; } catch { }
+                    OwnerDrawnTabControls.Remove(tc);
+                }
+            }
+        }
+
+        private static void TabControl_ChildChanged(object? sender, ControlEventArgs e)
+        {
+            if (sender is TabControl tc) tc.Invalidate();
+        }
+
+        private static void TabControl_DrawItem(object? sender, DrawItemEventArgs e)
+        {
+            var tc = (TabControl)sender!;
+            if (e.Index < 0 || e.Index >= tc.TabCount) return;
+
+            // Header fill (Buttons mode only)
+            if (e.Index == 0 && FillHeaderBackground)
+            {
+                int headerHeight = GetHeaderHeight(tc);
+                var headerRect = new Rectangle(0, 0, tc.Width, headerHeight);
+                Color headerColor = UsePanelForHeader ? PanelColor : BackColor;
+
+                using var hb = new SolidBrush(headerColor);
+                e.Graphics.FillRectangle(hb, headerRect);
+
+                using var pen = new Pen(BorderColor);
+                e.Graphics.DrawLine(pen, headerRect.Left, headerRect.Bottom - 1, headerRect.Right, headerRect.Bottom - 1);
+            }
+
+            bool selected = (e.State & DrawItemState.Selected) != 0;
+            var page = tc.TabPages[e.Index];
+            Rectangle r = e.Bounds;
+
+            Color tabBack = selected ? AccentColor : (UsePanelForHeader ? PanelColor : BackColor);
+            Color tabFore = selected ? Color.White : TextColor;
+            Color tabBorder = selected ? AccentHover : BorderColor;
+
+            using (var b = new SolidBrush(tabBack))
+                e.Graphics.FillRectangle(b, r);
+
+            TextRenderer.DrawText(
+                e.Graphics,
+                page.Text,
+                BaseFont,
+                r,
+                tabFore,
+                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+
+            using var penBorder = new Pen(tabBorder);
+            e.Graphics.DrawRectangle(penBorder, r.Left, r.Top, r.Width - 1, r.Height - 1);
+
+            if ((e.State & DrawItemState.Focus) != 0)
+            {
+                var focusRect = Rectangle.Inflate(r, -4, -4);
+                ControlPaint.DrawFocusRectangle(e.Graphics, focusRect, tabFore, tabBack);
+            }
+        }
+
+        private static int GetHeaderHeight(TabControl tc)
+        {
+            int h = 0;
+            for (int i = 0; i < tc.TabCount; i++)
+            {
+                var r = tc.GetTabRect(i);
+                if (r.Bottom > h) h = r.Bottom;
+            }
+            return h + 1;
         }
 
         // =========================================================
@@ -444,8 +525,5 @@ namespace WaifuAI.Controls
 
         [DllImport("dwmapi.dll", ExactSpelling = true, PreserveSig = true)]
         private static extern int DwmGetColorizationColor(out uint pcrColorization, out bool pfOpaqueBlend);
-
     }
-
-
 }

@@ -98,6 +98,7 @@ namespace WaifuAI
             mck_ttstoggle = new WaifuAI.Controls.ModernCheckBox();
             mck_senseoftime = new WaifuAI.Controls.ModernCheckBox();
             mck_caninitchat = new WaifuAI.Controls.ModernCheckBox();
+            button3 = new Button();
             statusbar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictEmbed).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_temperature).BeginInit();
@@ -894,6 +895,7 @@ namespace WaifuAI
             // 
             // panRight
             // 
+            panRight.Controls.Add(button3);
             panRight.Controls.Add(button1);
             panRight.Controls.Add(collapsibleGroupBox3);
             panRight.Dock = DockStyle.Right;
@@ -960,6 +962,16 @@ namespace WaifuAI
             mck_caninitchat.Text = "Bot can initiate chat";
             mck_caninitchat.UseVisualStyleBackColor = true;
             mck_caninitchat.CheckedChanged += ck_caninit_CheckedChanged;
+            // 
+            // button3
+            // 
+            button3.Location = new Point(0, 438);
+            button3.Name = "button3";
+            button3.Size = new Size(200, 23);
+            button3.TabIndex = 28;
+            button3.Text = "button3";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click;
             // 
             // MainForm
             // 
@@ -1069,5 +1081,6 @@ namespace WaifuAI
         private Controls.ModernCheckBox mck_ttstoggle;
         private Controls.ModernCheckBox mck_senseoftime;
         private Controls.ModernCheckBox mck_caninitchat;
+        private Button button3;
     }
 }
