@@ -244,5 +244,10 @@ namespace WaifuAI.src.forms
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+
+        private void num_memtokens_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
