@@ -22,7 +22,12 @@ namespace WaifuAI.Files
         [JsonIgnore]
         public new AdvancedMoodState Mood
         {
-            get => (AdvancedMoodState)base.Mood;
+            get
+            {
+                if (base.Mood is not AdvancedMoodState)
+                    base.Mood = new AdvancedMoodState();
+                return (AdvancedMoodState)base.Mood;
+            }
             set => base.Mood = value;
         }
 

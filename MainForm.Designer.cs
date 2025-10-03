@@ -81,10 +81,10 @@ namespace WaifuAI
             grp_inference = new GroupBox();
             btSampleEditor = new Button();
             btInstructEdit = new Button();
-            ck_ragtothink = new CheckBox();
             ck_charsampler = new CheckBox();
-            ck_disablethink = new CheckBox();
             ck_forceNames = new CheckBox();
+            ck_ragtothink = new CheckBox();
+            ck_disablethink = new CheckBox();
             label5 = new Label();
             cb_instruct = new ComboBox();
             label6 = new Label();
@@ -97,6 +97,8 @@ namespace WaifuAI
             num_maxcontext = new NumericUpDown();
             label8 = new Label();
             bt_connect = new Button();
+            collapsibleGroupBox1 = new WaifuAI.Controls.CollapsibleGroupBox();
+            modernCheckBox1 = new WaifuAI.Controls.ModernCheckBox();
             statusbar.SuspendLayout();
             panRight.SuspendLayout();
             groupBox5.SuspendLayout();
@@ -110,6 +112,7 @@ namespace WaifuAI
             grp_model.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_maxresponse).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_maxcontext).BeginInit();
+            collapsibleGroupBox1.SuspendLayout();
             SuspendLayout();
             // 
             // HelptoolTip
@@ -152,6 +155,7 @@ namespace WaifuAI
             // 
             // panRight
             // 
+            panRight.Controls.Add(collapsibleGroupBox1);
             panRight.Controls.Add(button1);
             panRight.Controls.Add(groupBox5);
             panRight.Dock = DockStyle.Right;
@@ -737,19 +741,6 @@ namespace WaifuAI
             btInstructEdit.UseVisualStyleBackColor = false;
             btInstructEdit.Click += btInstructEdit_Click;
             // 
-            // ck_ragtothink
-            // 
-            ck_ragtothink.AutoSize = true;
-            ck_ragtothink.Dock = DockStyle.Bottom;
-            ck_ragtothink.Font = new Font("Segoe UI", 9F);
-            ck_ragtothink.Location = new Point(5, 222);
-            ck_ragtothink.Name = "ck_ragtothink";
-            ck_ragtothink.Size = new Size(180, 19);
-            ck_ragtothink.TabIndex = 36;
-            ck_ragtothink.Text = "Put context in think block";
-            ck_ragtothink.UseVisualStyleBackColor = true;
-            ck_ragtothink.CheckedChanged += ck_ragtothink_CheckedChanged;
-            // 
             // ck_charsampler
             // 
             ck_charsampler.AutoSize = true;
@@ -761,19 +752,6 @@ namespace WaifuAI
             ck_charsampler.TabIndex = 26;
             ck_charsampler.Text = "Use character's samplers";
             ck_charsampler.UseVisualStyleBackColor = true;
-            // 
-            // ck_disablethink
-            // 
-            ck_disablethink.AutoSize = true;
-            ck_disablethink.Dock = DockStyle.Bottom;
-            ck_disablethink.Font = new Font("Segoe UI", 9F);
-            ck_disablethink.Location = new Point(5, 241);
-            ck_disablethink.Name = "ck_disablethink";
-            ck_disablethink.Size = new Size(180, 19);
-            ck_disablethink.TabIndex = 35;
-            ck_disablethink.Text = "Disable Thinking";
-            ck_disablethink.UseVisualStyleBackColor = true;
-            ck_disablethink.CheckedChanged += ck_disablethink_CheckedChanged;
             // 
             // ck_forceNames
             // 
@@ -787,6 +765,32 @@ namespace WaifuAI
             ck_forceNames.Text = "Add names to prompt";
             ck_forceNames.UseVisualStyleBackColor = true;
             ck_forceNames.CheckedChanged += ck_forceNames_CheckedChanged;
+            // 
+            // ck_ragtothink
+            // 
+            ck_ragtothink.AutoSize = true;
+            ck_ragtothink.Dock = DockStyle.Bottom;
+            ck_ragtothink.Font = new Font("Segoe UI", 9F);
+            ck_ragtothink.Location = new Point(5, 222);
+            ck_ragtothink.Name = "ck_ragtothink";
+            ck_ragtothink.Size = new Size(180, 19);
+            ck_ragtothink.TabIndex = 36;
+            ck_ragtothink.Text = "Put context in think block";
+            ck_ragtothink.UseVisualStyleBackColor = true;
+            ck_ragtothink.CheckedChanged += ck_ragtothink_CheckedChanged;
+            // 
+            // ck_disablethink
+            // 
+            ck_disablethink.AutoSize = true;
+            ck_disablethink.Dock = DockStyle.Bottom;
+            ck_disablethink.Font = new Font("Segoe UI", 9F);
+            ck_disablethink.Location = new Point(5, 241);
+            ck_disablethink.Name = "ck_disablethink";
+            ck_disablethink.Size = new Size(180, 19);
+            ck_disablethink.TabIndex = 35;
+            ck_disablethink.Text = "Disable Thinking";
+            ck_disablethink.UseVisualStyleBackColor = true;
+            ck_disablethink.CheckedChanged += ck_disablethink_CheckedChanged;
             // 
             // label5
             // 
@@ -928,6 +932,27 @@ namespace WaifuAI
             bt_connect.UseVisualStyleBackColor = false;
             bt_connect.Click += bt_connectClick;
             // 
+            // collapsibleGroupBox1
+            // 
+            collapsibleGroupBox1.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox1.Controls.Add(modernCheckBox1);
+            collapsibleGroupBox1.Location = new Point(6, 388);
+            collapsibleGroupBox1.Name = "collapsibleGroupBox1";
+            collapsibleGroupBox1.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox1.Size = new Size(190, 160);
+            collapsibleGroupBox1.TabIndex = 27;
+            collapsibleGroupBox1.Text = "collapsibleGroupBox1";
+            // 
+            // modernCheckBox1
+            // 
+            modernCheckBox1.Font = new Font("Segoe UI", 9F);
+            modernCheckBox1.Location = new Point(15, 37);
+            modernCheckBox1.Name = "modernCheckBox1";
+            modernCheckBox1.Size = new Size(150, 26);
+            modernCheckBox1.TabIndex = 0;
+            modernCheckBox1.Text = "modernCheckBox1";
+            modernCheckBox1.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -965,6 +990,7 @@ namespace WaifuAI
             grp_model.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)num_maxresponse).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_maxcontext).EndInit();
+            collapsibleGroupBox1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -1035,5 +1061,7 @@ namespace WaifuAI
         private Button button2;
         private CheckBox ckNatMem;
         private Panel panel1;
+        private Controls.CollapsibleGroupBox collapsibleGroupBox1;
+        private Controls.ModernCheckBox modernCheckBox1;
     }
 }
