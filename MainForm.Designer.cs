@@ -38,6 +38,8 @@ namespace WaifuAI
             toolStripStatusLabel2 = new ToolStripStatusLabel();
             AutoTalkTimer = new System.Windows.Forms.Timer(components);
             panRight = new Panel();
+            collapsibleGroupBox1 = new WaifuAI.Controls.CollapsibleGroupBox();
+            modernCheckBox1 = new WaifuAI.Controls.ModernCheckBox();
             button1 = new Button();
             groupBox5 = new GroupBox();
             btChatHistory = new Button();
@@ -97,10 +99,9 @@ namespace WaifuAI
             num_maxcontext = new NumericUpDown();
             label8 = new Label();
             bt_connect = new Button();
-            collapsibleGroupBox1 = new WaifuAI.Controls.CollapsibleGroupBox();
-            modernCheckBox1 = new WaifuAI.Controls.ModernCheckBox();
             statusbar.SuspendLayout();
             panRight.SuspendLayout();
+            collapsibleGroupBox1.SuspendLayout();
             groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
             panLeft.SuspendLayout();
@@ -112,7 +113,6 @@ namespace WaifuAI
             grp_model.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)num_maxresponse).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_maxcontext).BeginInit();
-            collapsibleGroupBox1.SuspendLayout();
             SuspendLayout();
             // 
             // HelptoolTip
@@ -164,6 +164,28 @@ namespace WaifuAI
             panRight.Size = new Size(203, 877);
             panRight.TabIndex = 8;
             // 
+            // collapsibleGroupBox1
+            // 
+            collapsibleGroupBox1.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox1.Controls.Add(modernCheckBox1);
+            collapsibleGroupBox1.Font = new Font("Segoe UI", 9F);
+            collapsibleGroupBox1.Location = new Point(6, 388);
+            collapsibleGroupBox1.Name = "collapsibleGroupBox1";
+            collapsibleGroupBox1.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox1.Size = new Size(190, 160);
+            collapsibleGroupBox1.TabIndex = 27;
+            collapsibleGroupBox1.Text = "collapsibleGroupBox1";
+            // 
+            // modernCheckBox1
+            // 
+            modernCheckBox1.Font = new Font("Segoe UI", 9F);
+            modernCheckBox1.Location = new Point(15, 37);
+            modernCheckBox1.Name = "modernCheckBox1";
+            modernCheckBox1.Size = new Size(150, 26);
+            modernCheckBox1.TabIndex = 0;
+            modernCheckBox1.Text = "modernCheckBox1";
+            modernCheckBox1.UseVisualStyleBackColor = true;
+            // 
             // button1
             // 
             button1.Location = new Point(6, 359);
@@ -209,6 +231,7 @@ namespace WaifuAI
             btChatHistory.Name = "btChatHistory";
             btChatHistory.Size = new Size(178, 23);
             btChatHistory.TabIndex = 33;
+            btChatHistory.Tag = "no-theme";
             btChatHistory.Text = "Chat History Manager";
             btChatHistory.UseVisualStyleBackColor = false;
             btChatHistory.Click += btChatHistory_Click;
@@ -222,6 +245,7 @@ namespace WaifuAI
             btSysPrompt.Name = "btSysPrompt";
             btSysPrompt.Size = new Size(58, 20);
             btSysPrompt.TabIndex = 29;
+            btSysPrompt.Tag = "no-theme";
             btSysPrompt.Text = "Editor";
             btSysPrompt.UseVisualStyleBackColor = false;
             btSysPrompt.Click += btSysPrompt_Click;
@@ -230,6 +254,7 @@ namespace WaifuAI
             // 
             cb_user.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cb_user.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_user.FlatStyle = FlatStyle.Flat;
             cb_user.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             cb_user.Location = new Point(7, 150);
             cb_user.Name = "cb_user";
@@ -256,6 +281,7 @@ namespace WaifuAI
             bt_editchar.Name = "bt_editchar";
             bt_editchar.Size = new Size(58, 20);
             bt_editchar.TabIndex = 27;
+            bt_editchar.Tag = "no-theme";
             bt_editchar.Text = "Editor";
             bt_editchar.UseVisualStyleBackColor = false;
             bt_editchar.Click += bt_editchar_Click;
@@ -270,6 +296,7 @@ namespace WaifuAI
             bt_scenario.Name = "bt_scenario";
             bt_scenario.Size = new Size(178, 23);
             bt_scenario.TabIndex = 26;
+            bt_scenario.Tag = "no-theme";
             bt_scenario.Text = "Change Scenario";
             bt_scenario.UseVisualStyleBackColor = false;
             bt_scenario.Click += bt_scenario_Click;
@@ -288,6 +315,7 @@ namespace WaifuAI
             // 
             cb_bot.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cb_bot.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_bot.FlatStyle = FlatStyle.Flat;
             cb_bot.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             cb_bot.Location = new Point(7, 95);
             cb_bot.Name = "cb_bot";
@@ -317,6 +345,7 @@ namespace WaifuAI
             bt_newsession.Name = "bt_newsession";
             bt_newsession.Size = new Size(178, 23);
             bt_newsession.TabIndex = 21;
+            bt_newsession.Tag = "no-theme";
             bt_newsession.Text = "Start New Session";
             bt_newsession.UseVisualStyleBackColor = false;
             bt_newsession.Click += StartNewSession;
@@ -347,6 +376,7 @@ namespace WaifuAI
             // 
             cb_sysprompt.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cb_sysprompt.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_sysprompt.FlatStyle = FlatStyle.Flat;
             cb_sysprompt.Font = new Font("Segoe UI", 9F);
             cb_sysprompt.Location = new Point(7, 40);
             cb_sysprompt.Name = "cb_sysprompt";
@@ -376,6 +406,7 @@ namespace WaifuAI
             btVectorSearch.Name = "btVectorSearch";
             btVectorSearch.Size = new Size(174, 23);
             btVectorSearch.TabIndex = 34;
+            btVectorSearch.Tag = "no-theme";
             btVectorSearch.Text = "Vector Search";
             btVectorSearch.UseVisualStyleBackColor = false;
             btVectorSearch.Click += btVectorSearch_Click;
@@ -390,6 +421,7 @@ namespace WaifuAI
             bt_impersonate.Name = "bt_impersonate";
             bt_impersonate.Size = new Size(60, 25);
             bt_impersonate.TabIndex = 7;
+            bt_impersonate.Tag = "no-theme";
             bt_impersonate.Text = "For Me";
             bt_impersonate.UseVisualStyleBackColor = false;
             bt_impersonate.Click += Impersonate;
@@ -416,6 +448,7 @@ namespace WaifuAI
             bt_delete.Name = "bt_delete";
             bt_delete.Size = new Size(60, 25);
             bt_delete.TabIndex = 5;
+            bt_delete.Tag = "no-theme";
             bt_delete.Text = "Delete";
             bt_delete.UseVisualStyleBackColor = false;
             bt_delete.Click += DeleteLastMessage;
@@ -430,6 +463,7 @@ namespace WaifuAI
             bt_reroll.Name = "bt_reroll";
             bt_reroll.Size = new Size(60, 25);
             bt_reroll.TabIndex = 4;
+            bt_reroll.Tag = "no-theme";
             bt_reroll.Text = "ReRoll";
             bt_reroll.UseVisualStyleBackColor = false;
             bt_reroll.Click += RerollMessage;
@@ -444,6 +478,7 @@ namespace WaifuAI
             bt_send.Name = "bt_send";
             bt_send.Size = new Size(60, 86);
             bt_send.TabIndex = 3;
+            bt_send.Tag = "no-theme";
             bt_send.Text = "Send";
             bt_send.UseVisualStyleBackColor = false;
             bt_send.Click += SendMessage;
@@ -463,7 +498,6 @@ namespace WaifuAI
             // 
             // panLeft
             // 
-            panLeft.BackColor = SystemColors.Control;
             panLeft.Controls.Add(boxVLM);
             panLeft.Controls.Add(grp_settings);
             panLeft.Controls.Add(grp_inference);
@@ -517,6 +551,7 @@ namespace WaifuAI
             bt_clearimg.Name = "bt_clearimg";
             bt_clearimg.Size = new Size(175, 23);
             bt_clearimg.TabIndex = 34;
+            bt_clearimg.Tag = "no-theme";
             bt_clearimg.Text = "Clear";
             bt_clearimg.UseVisualStyleBackColor = false;
             bt_clearimg.Click += bt_clearimg_Click;
@@ -645,6 +680,7 @@ namespace WaifuAI
             button2.Name = "button2";
             button2.Size = new Size(174, 23);
             button2.TabIndex = 41;
+            button2.Tag = "no-theme";
             button2.Text = "Brain Memory Map";
             button2.UseVisualStyleBackColor = false;
             button2.Click += button2_Click;
@@ -659,6 +695,7 @@ namespace WaifuAI
             btRawLog.Name = "btRawLog";
             btRawLog.Size = new Size(174, 23);
             btRawLog.TabIndex = 40;
+            btRawLog.Tag = "no-theme";
             btRawLog.Text = "View Raw Log";
             btRawLog.UseVisualStyleBackColor = false;
             btRawLog.Click += btRawLog_Click;
@@ -673,6 +710,7 @@ namespace WaifuAI
             btWorldEditor.Name = "btWorldEditor";
             btWorldEditor.Size = new Size(174, 23);
             btWorldEditor.TabIndex = 39;
+            btWorldEditor.Tag = "no-theme";
             btWorldEditor.Text = "WorldInfo Editor";
             btWorldEditor.UseVisualStyleBackColor = false;
             btWorldEditor.Click += btWorldEditor_Click;
@@ -687,6 +725,7 @@ namespace WaifuAI
             btMainSettings.Name = "btMainSettings";
             btMainSettings.Size = new Size(174, 23);
             btMainSettings.TabIndex = 38;
+            btMainSettings.Tag = "no-theme";
             btMainSettings.Text = "General Settings";
             btMainSettings.UseVisualStyleBackColor = false;
             btMainSettings.Click += btMainSettings_Click;
@@ -724,6 +763,7 @@ namespace WaifuAI
             btSampleEditor.Name = "btSampleEditor";
             btSampleEditor.Size = new Size(62, 20);
             btSampleEditor.TabIndex = 30;
+            btSampleEditor.Tag = "no-theme";
             btSampleEditor.Text = "Editor";
             btSampleEditor.UseVisualStyleBackColor = false;
             btSampleEditor.Click += btSampleEditor_Click;
@@ -737,6 +777,7 @@ namespace WaifuAI
             btInstructEdit.Name = "btInstructEdit";
             btInstructEdit.Size = new Size(62, 20);
             btInstructEdit.TabIndex = 28;
+            btInstructEdit.Tag = "no-theme";
             btInstructEdit.Text = "Editor";
             btInstructEdit.UseVisualStyleBackColor = false;
             btInstructEdit.Click += btInstructEdit_Click;
@@ -805,6 +846,7 @@ namespace WaifuAI
             // cb_instruct
             // 
             cb_instruct.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_instruct.FlatStyle = FlatStyle.Flat;
             cb_instruct.Font = new Font("Segoe UI", 9F);
             cb_instruct.Location = new Point(5, 48);
             cb_instruct.Name = "cb_instruct";
@@ -825,6 +867,7 @@ namespace WaifuAI
             // cb_infer
             // 
             cb_infer.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_infer.FlatStyle = FlatStyle.Flat;
             cb_infer.Font = new Font("Segoe UI", 9F);
             cb_infer.Location = new Point(5, 103);
             cb_infer.Name = "cb_infer";
@@ -928,30 +971,10 @@ namespace WaifuAI
             bt_connect.Name = "bt_connect";
             bt_connect.Size = new Size(180, 23);
             bt_connect.TabIndex = 14;
+            bt_connect.Tag = "no-theme";
             bt_connect.Text = "Connect";
             bt_connect.UseVisualStyleBackColor = false;
             bt_connect.Click += bt_connectClick;
-            // 
-            // collapsibleGroupBox1
-            // 
-            collapsibleGroupBox1.BackColor = Color.FromArgb(37, 38, 42);
-            collapsibleGroupBox1.Controls.Add(modernCheckBox1);
-            collapsibleGroupBox1.Location = new Point(6, 388);
-            collapsibleGroupBox1.Name = "collapsibleGroupBox1";
-            collapsibleGroupBox1.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox1.Size = new Size(190, 160);
-            collapsibleGroupBox1.TabIndex = 27;
-            collapsibleGroupBox1.Text = "collapsibleGroupBox1";
-            // 
-            // modernCheckBox1
-            // 
-            modernCheckBox1.Font = new Font("Segoe UI", 9F);
-            modernCheckBox1.Location = new Point(15, 37);
-            modernCheckBox1.Name = "modernCheckBox1";
-            modernCheckBox1.Size = new Size(150, 26);
-            modernCheckBox1.TabIndex = 0;
-            modernCheckBox1.Text = "modernCheckBox1";
-            modernCheckBox1.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -974,6 +997,7 @@ namespace WaifuAI
             statusbar.ResumeLayout(false);
             statusbar.PerformLayout();
             panRight.ResumeLayout(false);
+            collapsibleGroupBox1.ResumeLayout(false);
             groupBox5.ResumeLayout(false);
             groupBox5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)web_chat).EndInit();
@@ -990,7 +1014,6 @@ namespace WaifuAI
             grp_model.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)num_maxresponse).EndInit();
             ((System.ComponentModel.ISupportInitialize)num_maxcontext).EndInit();
-            collapsibleGroupBox1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }

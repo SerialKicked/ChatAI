@@ -1,11 +1,12 @@
+using AngleSharp.Text;
 using LetheAISharp;
 using LetheAISharp.Agent;
 using LetheAISharp.Files;
 using LetheAISharp.LLM;
 using LetheAISharp.Memory;
 using LetheAISharp.SearchAPI;
-using AngleSharp.Text;
 using Markdig;
+using Microsoft.Extensions.Logging;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
 using System.ComponentModel;
@@ -17,13 +18,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using WaifuAI.AgentPlugins;
+using WaifuAI.Controls;
 using WaifuAI.Files;
 using WaifuAI.Game;
+using WaifuAI.GBNF;
 using WaifuAI.Plugins;
 using WaifuAI.src.forms;
 using WaifuAI.Web;
-using WaifuAI.GBNF;
-using Microsoft.Extensions.Logging;
 
 namespace WaifuAI
 {
@@ -148,6 +149,7 @@ namespace WaifuAI
             Application.AddMessageFilter(new ActivityMessageFilter());
 
             ed_input.KeyPress += Ed_input_KeyPress!;
+            ThemeManager.ApplyToForm(this);
         }
 
         /// <summary>

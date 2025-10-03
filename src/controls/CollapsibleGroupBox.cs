@@ -7,18 +7,13 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace WaifuAI.Controls
 {
-    public enum CollapseGlyphStyle
-    {
-        PlusMinus,
-        Chevron
-    }
-
     [ToolboxItem(true)]
     [DefaultProperty(nameof(Text))]
     [DefaultEvent(nameof(ExpandedChanged))]
-    public class CollapsibleGroupBox : ContainerControl
+    public class CollapsibleGroupBox : ContainerControl, IThemeAware
     {
         private const int HeaderHeightConst = 28;
+
         private Rectangle _glyphRect;
         private bool _hover;
         private bool _mouseDown;
@@ -30,13 +25,16 @@ namespace WaifuAI.Controls
 
         private bool _expanded = true;
         private int _animationDuration = 140;
+        private bool _animate = true;
 
-        private Color _headerBackColor = Color.FromArgb(45, 46, 50);
-        private Color _headerHoverColor = Color.FromArgb(55, 56, 60);
-        private Color _accentColor = Color.FromArgb(0x4D, 0xA3, 0xFF);
-        private Color _borderColor = Color.FromArgb(55, 56, 61);
-        private Color _panelBackColor = Color.FromArgb(37, 38, 42);
-        private CollapseGlyphStyle _glyphStyle = CollapseGlyphStyle.PlusMinus;
+        // Cached theme colors (reapplied on theme change)
+        private Color _headerBack;
+        private Color _headerHover;
+        private Color _panel;
+        private Color _border;
+        private Color _accent;
+        private Color _accentHover;
+        private Color _text;
 
         public CollapsibleGroupBox()
         {
@@ -46,16 +44,29 @@ namespace WaifuAI.Controls
                      ControlStyles.ResizeRedraw |
                      ControlStyles.Selectable, true);
 
-            BackColor = _panelBackColor;
             Padding = new Padding(12, HeaderHeightConst + 4, 12, 10);
             Size = new Size(300, 160);
             TabStop = true;
 
             _animTimer = new Timer { Interval = 15 };
             _animTimer.Tick += AnimTick;
+
+            // Initial theme application
+            ThemeManager.ThemeChanged += OnThemeChanged;
+            ApplyTheme(ThemeManager.CurrentTheme);
         }
 
-        // ========== Properties ==========
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                ThemeManager.ThemeChanged -= OnThemeChanged;
+                _animTimer.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        private void OnThemeChanged(object? sender, ThemeManager.Theme t) => ApplyTheme(t);
 
         [Category("Behavior")]
         [DefaultValue(true)]
@@ -73,7 +84,11 @@ namespace WaifuAI.Controls
 
         [Category("Behavior")]
         [DefaultValue(true)]
-        public bool Animate { get; set; } = true;
+        public bool Animate
+        {
+            get => _animate;
+            set => _animate = value;
+        }
 
         [Category("Behavior")]
         [DefaultValue(140)]
@@ -83,6 +98,10 @@ namespace WaifuAI.Controls
             set => _animationDuration = Math.Max(16, value);
         }
 
+        [Category("Behavior")]
+        [DefaultValue(2)]
+        public int CollapsedPaddingHeight { get; set; } = 2;
+
         [Category("Appearance")]
         public override string Text
         {
@@ -90,85 +109,24 @@ namespace WaifuAI.Controls
             set { if (base.Text != value) { base.Text = value; Invalidate(HeaderRect); } }
         }
 
-        [Category("Appearance")]
-        public Color HeaderBackColor
-        {
-            get => _headerBackColor;
-            set { if (_headerBackColor != value) { _headerBackColor = value; Invalidate(HeaderRect); } }
-        }
-        public bool ShouldSerializeHeaderBackColor() => _headerBackColor != Color.FromArgb(45, 46, 50);
-        public void ResetHeaderBackColor() => HeaderBackColor = Color.FromArgb(45, 46, 50);
-
-        [Category("Appearance")]
-        public Color HeaderHoverColor
-        {
-            get => _headerHoverColor;
-            set { if (_headerHoverColor != value) { _headerHoverColor = value; Invalidate(HeaderRect); } }
-        }
-        public bool ShouldSerializeHeaderHoverColor() => _headerHoverColor != Color.FromArgb(55, 56, 60);
-        public void ResetHeaderHoverColor() => HeaderHoverColor = Color.FromArgb(55, 56, 60);
-
-        [Category("Appearance")]
-        public Color AccentColor
-        {
-            get => _accentColor;
-            set { if (_accentColor != value) { _accentColor = value; Invalidate(_glyphRect); } }
-        }
-        public bool ShouldSerializeAccentColor() => _accentColor != Color.FromArgb(0x4D, 0xA3, 0xFF);
-        public void ResetAccentColor() => AccentColor = Color.FromArgb(0x4D, 0xA3, 0xFF);
-
-        [Category("Appearance")]
-        public Color BorderColor
-        {
-            get => _borderColor;
-            set { if (_borderColor != value) { _borderColor = value; Invalidate(); } }
-        }
-        public bool ShouldSerializeBorderColor() => _borderColor != Color.FromArgb(55, 56, 61);
-        public void ResetBorderColor() => BorderColor = Color.FromArgb(55, 56, 61);
-
-        [Category("Appearance")]
-        public Color PanelBackColor
-        {
-            get => _panelBackColor;
-            set { if (_panelBackColor != value) { _panelBackColor = value; Invalidate(); } }
-        }
-        public bool ShouldSerializePanelBackColor() => _panelBackColor != Color.FromArgb(37, 38, 42);
-        public void ResetPanelBackColor() => PanelBackColor = Color.FromArgb(37, 38, 42);
-
-        [Category("Appearance")]
-        [DefaultValue(CollapseGlyphStyle.PlusMinus)]
-        public CollapseGlyphStyle GlyphStyle
-        {
-            get => _glyphStyle;
-            set { if (_glyphStyle != value) { _glyphStyle = value; Invalidate(_glyphRect); } }
-        }
-
-        [Category("Behavior")]
-        [DefaultValue(2)]
-        public int CollapsedPaddingHeight { get; set; } = 2;
-
-        [Category("Behavior")]
-        [Description("Optional persistence key you can use externally to save/restore Expanded state.")]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string PersistenceKey { get; set; } = string.Empty;
-
-        // ========== Events ==========
-
-        [Category("Behavior")]
         public event EventHandler? ExpandedChanged;
-
-        [Category("Behavior")]
         public event EventHandler? AnimationFinished;
 
-        // ========== Public API convenience ==========
-
-        public void Collapse() => Expanded = false;
-        public void Expand() => Expanded = true;
-        public void Toggle() => Expanded = !Expanded;
-
-        // ========== Internal Helpers ==========
-
         private Rectangle HeaderRect => new(0, 0, Width - 1, HeaderHeightConst);
+
+        public void ApplyTheme(ThemeManager.Theme t)
+        {
+            _panel = t.Panel;
+            _headerBack = t.GlyphBack;        // reuse glyph background as header backdrop
+            _headerHover = t.GlyphBackHover;
+            _border = t.Border;
+            _accent = t.Accent;
+            _accentHover = t.AccentHover;
+            _text = t.TextPrimary;
+            Font = t.Base;
+            BackColor = _panel;
+            Invalidate();
+        }
 
         protected override void OnCreateControl()
         {
@@ -179,7 +137,7 @@ namespace WaifuAI.Controls
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            bool h = _glyphRect.Contains(e.Location) || HeaderRect.Contains(e.Location);
+            bool h = HeaderRect.Contains(e.Location);
             if (h != _hover)
             {
                 _hover = h;
@@ -201,18 +159,14 @@ namespace WaifuAI.Controls
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left && HeaderRect.Contains(e.Location))
-            {
                 _mouseDown = true;
-            }
             base.OnMouseDown(e);
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             if (_mouseDown && e.Button == MouseButtons.Left && HeaderRect.Contains(e.Location))
-            {
-                Toggle();
-            }
+                Expanded = !Expanded;
             _mouseDown = false;
             base.OnMouseUp(e);
         }
@@ -226,9 +180,9 @@ namespace WaifuAI.Controls
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            if (e.KeyCode is Keys.Space or Keys.Return)
+            if (e.KeyCode is Keys.Space or Keys.Enter)
             {
-                Toggle();
+                Expanded = !Expanded;
                 e.Handled = true;
             }
             base.OnKeyDown(e);
@@ -236,7 +190,7 @@ namespace WaifuAI.Controls
 
         private void BeginAnimate()
         {
-            if (!Animate || DesignMode)
+            if (!_animate || DesignMode)
             {
                 if (_expanded)
                 {
@@ -275,7 +229,7 @@ namespace WaifuAI.Controls
 
         private void AnimTick(object? sender, EventArgs e)
         {
-            double raw = _sw.Elapsed.TotalMilliseconds / AnimationDuration;
+            double raw = _sw.Elapsed.TotalMilliseconds / _animationDuration;
             if (raw >= 1) raw = 1;
             double t = raw < 0.5 ? 2 * raw * raw : -1 + (4 - 2 * raw) * raw;
 
@@ -299,81 +253,54 @@ namespace WaifuAI.Controls
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics;
-            g.Clear(PanelBackColor);
+            g.Clear(_panel);
 
-            // Header
-            using (var hb = new SolidBrush(_hover ? _headerHoverColor : _headerBackColor))
+            // Header bar
+            using (var hb = new SolidBrush(_hover ? _headerHover : _headerBack))
                 g.FillRectangle(hb, HeaderRect);
 
-            // Focus rectangle (keyboard accessibility)
-            if (Focused)
-            {
-                var focusRect = new Rectangle(2, 2, Width - 5, HeaderHeightConst - 4);
-                ControlPaint.DrawFocusRectangle(g, focusRect, Color.White, _headerHoverColor);
-            }
-
-            // Glyph
+            // Chevron glyph
             _glyphRect = new Rectangle(8, (HeaderHeightConst - 16) / 2, 16, 16);
-            DrawGlyph(g, _glyphRect);
-
-            // Text
-            TextRenderer.DrawText(g, Text, Font,
-                new Rectangle(_glyphRect.Right + 6, 0, Width - _glyphRect.Right - 12, HeaderHeightConst),
-                Color.White,
-                TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
-
-            // Border
-            using (var pen = new Pen(_borderColor))
-                g.DrawRectangle(pen, 0, 0, Width - 1, Height - 1);
-        }
-
-        private void DrawGlyph(Graphics g, Rectangle r)
-        {
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-
-            if (_glyphStyle == CollapseGlyphStyle.PlusMinus)
+            using (var p = new Pen(_hover ? _accentHover : _accent, 2f)
             {
-                using var p = new Pen(_accentColor, 2f)
-                {
-                    StartCap = System.Drawing.Drawing2D.LineCap.Round,
-                    EndCap = System.Drawing.Drawing2D.LineCap.Round
-                };
-                int cx = r.X + r.Width / 2;
-                int cy = r.Y + r.Height / 2;
-                g.DrawLine(p, cx - 5, cy, cx + 5, cy);
-                if (!Expanded)
-                    g.DrawLine(p, cx, cy - 5, cx, cy + 5);
-            }
-            else
+                StartCap = System.Drawing.Drawing2D.LineCap.Round,
+                EndCap = System.Drawing.Drawing2D.LineCap.Round
+            })
             {
-                // Chevron
-                using var p = new Pen(_accentColor, 2f)
-                {
-                    StartCap = System.Drawing.Drawing2D.LineCap.Round,
-                    EndCap = System.Drawing.Drawing2D.LineCap.Round
-                };
-                // Direction depends on state
                 if (Expanded)
                 {
-                    // Down
                     g.DrawLines(p, new[]
                     {
-                        new Point(r.X + 3, r.Y + 6),
-                        new Point(r.X + r.Width/2, r.Y + r.Height - 4),
-                        new Point(r.Right - 3, r.Y + 6)
+                        new Point(_glyphRect.X + 3, _glyphRect.Y + 6),
+                        new Point(_glyphRect.X + _glyphRect.Width/2, _glyphRect.Bottom - 4),
+                        new Point(_glyphRect.Right - 3, _glyphRect.Y + 6)
                     });
                 }
                 else
                 {
-                    // Right
                     g.DrawLines(p, new[]
                     {
-                        new Point(r.X + 5, r.Y + 3),
-                        new Point(r.Right - 5, r.Y + r.Height/2),
-                        new Point(r.X + 5, r.Bottom - 3)
+                        new Point(_glyphRect.X + 5, _glyphRect.Y + 3),
+                        new Point(_glyphRect.Right - 5, _glyphRect.Y + _glyphRect.Height/2),
+                        new Point(_glyphRect.X + 5, _glyphRect.Bottom - 3)
                     });
                 }
             }
+
+            // Text
+            TextRenderer.DrawText(g, Text, Font,
+                new Rectangle(_glyphRect.Right + 6, 0, Width - _glyphRect.Right - 12, HeaderHeightConst),
+                _text, TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+
+            if (Focused)
+                ControlPaint.DrawFocusRectangle(g,
+                    new Rectangle(2, 2, Width - 5, HeaderHeightConst - 4),
+                    _accentHover, _headerBack);
+
+            // Border
+            using (var bp = new Pen(_border))
+                g.DrawRectangle(bp, 0, 0, Width - 1, Height - 1);
         }
     }
 }
