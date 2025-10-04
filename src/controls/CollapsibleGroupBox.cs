@@ -304,8 +304,8 @@ namespace WaifuAI.Controls
             _glyphRect = new Rectangle(8, (HeaderHeightConst - 16) / 2, 16, 16);
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-            var caccent = Enabled ? _accent : ThemeManager.MutedText;
-            var caccenth = Enabled ? _accentHover : ThemeManager.Lighten(ThemeManager.MutedText, 0.5);
+            var caccent = Enabled ? _accent : ThemeManager.curthemeMutedText;
+            var caccenth = Enabled ? _accentHover : ThemeManager.Lighten(ThemeManager.curthemeMutedText, 0.5);
 
             using (var p = new Pen(_hover ? caccenth : caccent, 2f)
             {

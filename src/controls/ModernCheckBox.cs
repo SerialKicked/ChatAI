@@ -127,7 +127,7 @@ namespace WaifuAI.Controls
 
         private Color AccentEvaluated()
         {
-            if (!Enabled) return ThemeManager.MutedText;
+            if (!Enabled) return ThemeManager.curthemeMutedText;
             return _hover ? _accentHover : _accent;
         }
 

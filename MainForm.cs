@@ -249,7 +249,7 @@ namespace WaifuAI
                 bt_connect.Enabled = true;
                 bt_send.Enabled = true;
                 bt_send.Text = "Send";
-                bt_send.BackColor = Color.PaleGreen;
+                bt_send.BackColor = Color.DarkSeaGreen;
                 bt_reroll.Enabled = true;
                 bt_newsession.Enabled = true;
                 bt_impersonate.Enabled = true;

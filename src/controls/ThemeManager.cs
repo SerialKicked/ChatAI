@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Markdig.Renderers.Roundtrip.Inlines;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -55,22 +56,23 @@ namespace WaifuAI.Controls
     public static class ThemeManager
     {
         // Legacy palette fields
-        public static Color BackColor = Color.FromArgb(0x1E, 0x1F, 0x22);
-        public static Color PanelColor = Color.FromArgb(0x25, 0x26, 0x2A);
-        public static Color BorderColor = Color.FromArgb(0x37, 0x38, 0x3D);
-        public static Color AccentColor = Color.FromArgb(0x4D, 0xA3, 0xFF);
-        public static Color AccentHover = Color.FromArgb(0x60, 0xB4, 0xFF);
-        public static Color DangerColor = Color.FromArgb(0xE1, 0x63, 0x63);
-        public static Color TextColor = Color.FromArgb(0xE6, 0xE6, 0xE6);
-        public static Color MutedText = Color.FromArgb(0x9F, 0xA4, 0xAE);
-        public static Color SuccessColor = Color.FromArgb(0x57, 0xC4, 0x7B);
-        public static Color FocusOutline = Color.FromArgb(0x70, 0xB8, 0xFF);
-        public static Color GlyphBack = Color.FromArgb(45, 46, 50);
-        public static Color GlyphBackHover = Color.FromArgb(55, 56, 60);
+        public static Color curthemeBackColor { get; private set; } = Color.FromArgb(0x1E, 0x1F, 0x22);
+        public static Color curthemePanelColor { get; private set; } = Color.FromArgb(0x25, 0x26, 0x2A);
+        public static Color curthemeBorderColor { get; private set; } = Color.FromArgb(0x37, 0x38, 0x3D);
+        public static Color curthemeAccentColor { get; private set; } = Color.FromArgb(0x4D, 0xA3, 0xFF);
+        public static Color curthemeAccentHover { get; private set; } = Color.FromArgb(0x60, 0xB4, 0xFF);
+        public static Color curthemeDangerColor { get; private set; } = Color.FromArgb(0xE1, 0x63, 0x63);
+        public static Color curthemeTextColor { get; private set; } = Color.FromArgb(0xE6, 0xE6, 0xE6);
+        public static Color curthemeMutedText { get; private set; } = Color.FromArgb(0x9F, 0xA4, 0xAE);
+        public static Color curthemeSuccessColor { get; private set; } = Color.FromArgb(0x57, 0xC4, 0x7B);
+        public static Color curthemeFocusOutline { get; private set; } = Color.FromArgb(0x70, 0xB8, 0xFF);
+        public static Color curthemeGlyphBack { get; private set; } = Color.FromArgb(45, 46, 50);
+        public static Color curthemeGlyphBackHover { get; private set; } = Color.FromArgb(55, 56, 60);
 
-        public static Font BaseFont = new("Segoe UI", 9F);
-        public static Font HeaderFont = new("Segoe UI Semibold", 9.75F);
-        public static Font MonoSmall = new("Consolas", 8.5F);
+        public static Font curthemeBaseFont { get; private set; } = new("Segoe UI", 9F);
+        public static Font curthemeHeaderFont { get; private set; } = new("Segoe UI Semibold", 9.75F);
+        public static Font curthemeMonoSmall { get; private set; } = new("Consolas", 8.5F);
+        public static Font curthemeButtonFont { get; private set; } = new("Segoe UI Semibold", 9F);   
 
         public sealed record Theme(
             string Name,
@@ -88,7 +90,8 @@ namespace WaifuAI.Controls
             Color GlyphBackHover,
             Font Base,
             Font Header,
-            Font Mono
+            Font Mono,
+            Font Button
         );
 
         public static Theme CurrentTheme { get; private set; } = CreateDark();
@@ -115,22 +118,23 @@ namespace WaifuAI.Controls
         {
             CurrentTheme = t;
 
-            BackColor = t.Back;
-            PanelColor = t.Panel;
-            BorderColor = t.Border;
-            AccentColor = t.Accent;
-            AccentHover = t.AccentHover;
-            TextColor = t.TextPrimary;
-            MutedText = t.TextMuted;
-            DangerColor = t.Danger;
-            SuccessColor = t.Success;
-            FocusOutline = t.Focus;
-            GlyphBack = t.GlyphBack;
-            GlyphBackHover = t.GlyphBackHover;
+            curthemeBackColor = t.Back;
+            curthemePanelColor = t.Panel;
+            curthemeBorderColor = t.Border;
+            curthemeAccentColor = t.Accent;
+            curthemeAccentHover = t.AccentHover;
+            curthemeTextColor = t.TextPrimary;
+            curthemeMutedText = t.TextMuted;
+            curthemeDangerColor = t.Danger;
+            curthemeSuccessColor = t.Success;
+            curthemeFocusOutline = t.Focus;
+            curthemeGlyphBack = t.GlyphBack;
+            curthemeGlyphBackHover = t.GlyphBackHover;
 
-            BaseFont = t.Base;
-            HeaderFont = t.Header;
-            MonoSmall = t.Mono;
+            curthemeBaseFont = t.Base;
+            curthemeHeaderFont = t.Header;
+            curthemeMonoSmall = t.Mono;
+            curthemeButtonFont = t.Button;
 
             if (broadcast)
                 ThemeChanged?.Invoke(null, t);
@@ -144,8 +148,8 @@ namespace WaifuAI.Controls
             foreach (Control c in f.Controls)
                 CaptureExcludedRecursive(c);
 
-            f.BackColor = BackColor;
-            f.Font = BaseFont;
+            f.BackColor = curthemeBackColor;
+            f.Font = curthemeBaseFont;
             foreach (Control c in f.Controls)
                 ApplyRecursive(c);
 
@@ -163,21 +167,22 @@ namespace WaifuAI.Controls
             var accent = GetSystemAccentOrFallback(Color.FromArgb(0x4D, 0xA3, 0xFF));
             return new Theme(
                 name,
-                Back: Color.FromArgb(0x1E, 0x1F, 0x22),
-                Panel: Color.FromArgb(0x25, 0x26, 0x2A),
-                Border: Color.FromArgb(0x37, 0x38, 0x3D),
-                Accent: Color.FromArgb(0x3D, 0x9F, 0x3D),
-                AccentHover: Color.FromArgb(0x3D, 0x8F, 0x3D),
+                Back: Color.FromArgb(0x15, 0x15, 0x15),
+                Panel: Color.FromArgb(0x25, 0x25, 0x25),
+                Border: Color.FromArgb(0x40, 0x40, 0x40),
+                Accent: Color.FromArgb(0x36, 0xA0, 0x36),
+                AccentHover: Color.FromArgb(0x36, 0x36, 0x90),
                 TextPrimary: Color.FromArgb(0xE6, 0xE6, 0xE6),
-                TextMuted: Color.FromArgb(0x9F, 0xA4, 0xAE),
-                Danger: Color.FromArgb(0xE1, 0x63, 0x63),
-                Success: Color.FromArgb(0x57, 0xC4, 0x7B),
+                TextMuted: Color.FromArgb(0x9F, 0x9F, 0x9F),
+                Danger: Color.FromArgb(0xA0, 0x40, 0x40),
+                Success: Color.FromArgb(0x40, 0x40, 0xA0),
                 Focus: Color.FromArgb(0x70, 0xB8, 0xFF),
-                GlyphBack: GlyphBack,
-                GlyphBackHover: GlyphBackHover,
+                GlyphBack: Color.FromArgb(50, 50, 50),
+                GlyphBackHover: Color.FromArgb(70, 70, 70),
                 Base: new Font("Segoe UI", 9.25F),
                 Header: new Font("Segoe UI Semibold", 10F),
-                Mono: new Font("Consolas", 8.75F)
+                Mono: new Font("Consolas", 8.75F),
+                Button: new Font("Segoe UI Semibold", 9F)
             );
         }
 
@@ -200,7 +205,8 @@ namespace WaifuAI.Controls
                 GlyphBackHover: Color.FromArgb(210, 211, 213),
                 Base: new Font("Segoe UI", 9F),
                 Header: new Font("Segoe UI Semibold", 9.75F),
-                Mono: new Font("Consolas", 8.5F)
+                Mono: new Font("Consolas", 8.5F),
+                Button: new Font("Segoe UI Semibold", 9F)
             );
         }
 
@@ -230,29 +236,32 @@ namespace WaifuAI.Controls
             switch (c)
             {
                 case Panel:
-                    c.BackColor = PanelColor;
-                    c.ForeColor = TextColor;
-                    c.Font = BaseFont;
+                    c.BackColor = curthemePanelColor;
+                    c.ForeColor = curthemeTextColor;
+                    c.Font = curthemeBaseFont;
                     break;
 
                 case GroupBox gb:
-                    gb.BackColor = PanelColor;
-                    gb.ForeColor = TextColor;
-                    gb.Font = BaseFont;
+                    gb.BackColor = curthemePanelColor;
+                    gb.ForeColor = curthemeTextColor;
+                    gb.Font = curthemeBaseFont;
                     break;
 
                 case Button bt:
                     bt.FlatStyle = FlatStyle.Flat;
-                    bt.FlatAppearance.BorderColor = BorderColor;
-                    bt.BackColor = PanelColor;
-                    bt.ForeColor = TextColor;
-                    bt.Font = BaseFont;
+                    bt.FlatAppearance.BorderColor = curthemeBorderColor;
+                    bt.BackColor = curthemePanelColor;
+                    bt.ForeColor = curthemeTextColor;
+                    bt.Font = curthemeBaseFont;
                     break;
 
                 case CheckBox chk:
-                    chk.BackColor = PanelColor;
-                    chk.ForeColor = TextColor;
-                    chk.Font = BaseFont;
+                    chk.BackColor = curthemePanelColor;
+                    chk.ForeColor = curthemeTextColor;
+                    chk.FlatStyle = FlatStyle.Flat;
+                    chk.FlatAppearance.BorderColor = curthemeBorderColor;
+                    chk.FlatAppearance.BorderSize = 1;
+                    chk.Font = curthemeBaseFont;
                     break;
 
                 case ComboBox cb:
@@ -260,39 +269,39 @@ namespace WaifuAI.Controls
                     break;
 
                 case TextBox tb:
-                    tb.BackColor = PanelColor;
-                    tb.ForeColor = TextColor;
-                    tb.Font = BaseFont;
+                    tb.BackColor = curthemePanelColor;
+                    tb.ForeColor = curthemeTextColor;
+                    tb.Font = curthemeBaseFont;
                     tb.BorderStyle = BorderStyle.FixedSingle;
                     break;
 
                 case Label lbl:
                     if (lbl.BackColor != Color.Transparent)
-                        lbl.BackColor = PanelColor;
-                    lbl.ForeColor = TextColor;
+                        lbl.BackColor = curthemePanelColor;
+                    lbl.ForeColor = curthemeTextColor;
                     lbl.Font = lbl.Font.Bold || lbl.Font.Italic
-                        ? new Font(BaseFont, lbl.Font.Style)
-                        : BaseFont;
+                        ? new Font(curthemeBaseFont, lbl.Font.Style)
+                        : curthemeBaseFont;
                     break;
 
                 case ListBox lb:
-                    lb.BackColor = PanelColor;
-                    lb.ForeColor = TextColor;
-                    lb.Font = BaseFont;
+                    lb.BackColor = curthemePanelColor;
+                    lb.ForeColor = curthemeTextColor;
+                    lb.Font = curthemeBaseFont;
                     lb.BorderStyle = BorderStyle.FixedSingle;
                     break;
 
                 case ListView lv:
-                    lv.BackColor = PanelColor;
-                    lv.ForeColor = TextColor;
-                    lv.Font = BaseFont;
+                    lv.BackColor = curthemePanelColor;
+                    lv.ForeColor = curthemeTextColor;
+                    lv.Font = curthemeBaseFont;
                     lv.BorderStyle = BorderStyle.FixedSingle;
                     break;
 
                 case NumericUpDown nud:
-                    nud.BackColor = PanelColor;
-                    nud.ForeColor = TextColor;
-                    nud.Font = BaseFont;
+                    nud.BackColor = curthemePanelColor;
+                    nud.ForeColor = curthemeTextColor;
+                    nud.Font = curthemeBaseFont;
                     break;
 
                 case TabControl tc:
@@ -337,9 +346,9 @@ namespace WaifuAI.Controls
         // =========================================================
         private static void ThemeComboBox(ComboBox cb)
         {
-            cb.Font = BaseFont;
-            cb.BackColor = PanelColor;
-            cb.ForeColor = TextColor;
+            cb.Font = curthemeBaseFont;
+            cb.BackColor = curthemePanelColor;
+            cb.ForeColor = curthemeTextColor;
             cb.FlatStyle = FlatStyle.Flat;
 
             if (cb.DropDownStyle == ComboBoxStyle.DropDownList)
@@ -363,8 +372,8 @@ namespace WaifuAI.Controls
             bool selected = (e.State & DrawItemState.Selected) != 0;
             bool disabled = (e.State & DrawItemState.Disabled) != 0;
 
-            Color back = selected ? AccentColor : PanelColor;
-            Color fore = disabled ? MutedText : (selected ? Color.White : TextColor);
+            Color back = selected ? curthemeAccentColor : curthemePanelColor;
+            Color fore = disabled ? curthemeMutedText : (selected ? Color.White : curthemeTextColor);
 
             using (var b = new SolidBrush(back))
                 e.Graphics.FillRectangle(b, e.Bounds);
@@ -384,16 +393,16 @@ namespace WaifuAI.Controls
         // =========================================================
         private static void ThemeTabControl(TabControl tc)
         {
-            tc.Font = BaseFont;
-            tc.BackColor = PanelColor;
-            tc.ForeColor = TextColor;
+            tc.Font = curthemeBaseFont;
+            tc.BackColor = curthemePanelColor;
+            tc.ForeColor = curthemeTextColor;
 
             foreach (TabPage page in tc.TabPages)
             {
                 if (IsExcluded(page)) continue;
-                page.BackColor = PanelColor;
-                page.ForeColor = TextColor;
-                page.Font = BaseFont;
+                page.BackColor = curthemePanelColor;
+                page.ForeColor = curthemeTextColor;
+                page.Font = curthemeBaseFont;
             }
 
             bool shouldOwnerDraw = tc.Appearance == TabAppearance.Buttons;
@@ -444,12 +453,12 @@ namespace WaifuAI.Controls
             {
                 int headerHeight = GetHeaderHeight(tc);
                 var headerRect = new Rectangle(0, 0, tc.Width, headerHeight);
-                Color headerColor = UsePanelForHeader ? PanelColor : BackColor;
+                Color headerColor = UsePanelForHeader ? curthemePanelColor : curthemeBackColor;
 
                 using var hb = new SolidBrush(headerColor);
                 e.Graphics.FillRectangle(hb, headerRect);
 
-                using var pen = new Pen(BorderColor);
+                using var pen = new Pen(curthemeBorderColor);
                 e.Graphics.DrawLine(pen, headerRect.Left, headerRect.Bottom - 1, headerRect.Right, headerRect.Bottom - 1);
             }
 
@@ -457,9 +466,9 @@ namespace WaifuAI.Controls
             var page = tc.TabPages[e.Index];
             Rectangle r = e.Bounds;
 
-            Color tabBack = selected ? AccentColor : (UsePanelForHeader ? PanelColor : BackColor);
-            Color tabFore = selected ? Color.White : TextColor;
-            Color tabBorder = selected ? AccentHover : BorderColor;
+            Color tabBack = selected ? curthemeAccentColor : (UsePanelForHeader ? curthemePanelColor : curthemeBackColor);
+            Color tabFore = selected ? Color.White : curthemeTextColor;
+            Color tabBorder = selected ? curthemeAccentHover : curthemeBorderColor;
 
             using (var b = new SolidBrush(tabBack))
                 e.Graphics.FillRectangle(b, r);
@@ -467,7 +476,7 @@ namespace WaifuAI.Controls
             TextRenderer.DrawText(
                 e.Graphics,
                 page.Text,
-                BaseFont,
+                curthemeBaseFont,
                 r,
                 tabFore,
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);

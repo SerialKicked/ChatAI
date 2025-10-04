@@ -382,7 +382,7 @@ namespace WaifuAI.src.forms
             // 
             num_msgcount.Font = new Font("Segoe UI", 9F);
             num_msgcount.Increment = new decimal(new int[] { 20, 0, 0, 0 });
-            num_msgcount.Location = new Point(136, 98);
+            num_msgcount.Location = new Point(215, 98);
             num_msgcount.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             num_msgcount.Minimum = new decimal(new int[] { 20, 0, 0, 0 });
             num_msgcount.Name = "num_msgcount";
@@ -394,7 +394,7 @@ namespace WaifuAI.src.forms
             // 
             label30.AutoSize = true;
             label30.Font = new Font("Segoe UI", 9F);
-            label30.Location = new Point(136, 80);
+            label30.Location = new Point(197, 82);
             label30.Name = "label30";
             label30.Size = new Size(97, 15);
             label30.TabIndex = 30;
