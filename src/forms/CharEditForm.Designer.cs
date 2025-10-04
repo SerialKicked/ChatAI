@@ -1,4 +1,6 @@
-﻿namespace WaifuAI.src.forms
+﻿using WaifuAI.Controls;
+
+namespace WaifuAI.src.forms
 {
     partial class CharEditForm
     {
@@ -31,26 +33,23 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CharEditForm));
             btRegenBio = new Button();
             label13 = new Label();
-            num_selfedittokens = new NumericUpDown();
+            num_selfedittokens = new ModernNumericUpDown();
             ed_selfedit = new TextBox();
             label12 = new Label();
-            num_ptvalue = new NumericUpDown();
+            num_ptvalue = new ModernNumericUpDown();
             cb_pointsystems = new ComboBox();
             label14 = new Label();
             ed_outetts = new TextBox();
             label11 = new Label();
-            ckl_plugins = new CheckedListBox();
             label9 = new Label();
-            listCanDecay = new CheckedListBox();
-            listNoRAGMemTypes = new CheckedListBox();
             label8 = new Label();
-            num_minAFK = new NumericUpDown();
+            num_minAFK = new ModernNumericUpDown();
             label17 = new Label();
-            numKeepEurekas = new NumericUpDown();
-            numEurekaMinTime = new NumericUpDown();
+            numKeepEurekas = new ModernNumericUpDown();
+            numEurekaMinTime = new ModernNumericUpDown();
             label16 = new Label();
             label15 = new Label();
-            numEurekaMinMess = new NumericUpDown();
+            numEurekaMinMess = new ModernNumericUpDown();
             pic = new PictureBox();
             cb_icon = new ComboBox();
             label4 = new Label();
@@ -64,56 +63,52 @@
             label1 = new Label();
             ed_writingstyle = new TextBox();
             label7 = new Label();
-            ckl_samplers = new CheckedListBox();
             label5 = new Label();
-            ckl_worldinfo = new CheckedListBox();
             label6 = new Label();
             ed_sysprompt = new TextBox();
             textBox2 = new TextBox();
             label19 = new Label();
-            numAgentDelay = new NumericUpDown();
-            listAgentTasks = new CheckedListBox();
+            numAgentDelay = new ModernNumericUpDown();
             label18 = new Label();
             panel1 = new Panel();
             panel2 = new Panel();
-            cb_charlist = new WaifuAI.Controls.ModernListBox();
+            cb_charlist = new ModernListBox();
             edFilename = new TextBox();
             panel3 = new Panel();
             btSave = new Button();
             panel4 = new Panel();
-            modernTabControl1 = new WaifuAI.Controls.ModernTabControl();
+            modernTabControl1 = new ModernTabControl();
             tbGeneral = new TabPage();
             tbStyle = new TabPage();
-            collapsibleGroupBox3 = new WaifuAI.Controls.CollapsibleGroupBox();
-            collapsibleGroupBox2 = new WaifuAI.Controls.CollapsibleGroupBox();
-            collapsibleGroupBox1 = new WaifuAI.Controls.CollapsibleGroupBox();
+            collapsibleGroupBox3 = new CollapsibleGroupBox();
+            collapsibleGroupBox2 = new CollapsibleGroupBox();
+            ckl_samplers = new ModernCheckedListBox();
+            collapsibleGroupBox1 = new CollapsibleGroupBox();
+            ckl_worldinfo = new ModernCheckedListBox();
             tbPrompt = new TabPage();
             tbAgent = new TabPage();
-            collapsibleGroupBox8 = new WaifuAI.Controls.CollapsibleGroupBox();
+            collapsibleGroupBox8 = new CollapsibleGroupBox();
+            listNoRAGMemTypes = new ModernCheckedListBox();
             label23 = new Label();
-            collapsibleGroupBox7 = new WaifuAI.Controls.CollapsibleGroupBox();
+            collapsibleGroupBox7 = new CollapsibleGroupBox();
+            listCanDecay = new ModernCheckedListBox();
             label22 = new Label();
-            collapsibleGroupBox6 = new WaifuAI.Controls.CollapsibleGroupBox();
-            ckAllowEurekas = new WaifuAI.Controls.ModernCheckBox();
-            ckAgent = new WaifuAI.Controls.ModernCheckBox();
-            collapsibleGroupBox5 = new WaifuAI.Controls.CollapsibleGroupBox();
+            collapsibleGroupBox6 = new CollapsibleGroupBox();
+            ckAllowEurekas = new ModernCheckBox();
+            ckAgent = new ModernCheckBox();
+            collapsibleGroupBox5 = new CollapsibleGroupBox();
+            listAgentTasks = new ModernCheckedListBox();
             tbSettings = new TabPage();
-            collapsibleGroupBox10 = new WaifuAI.Controls.CollapsibleGroupBox();
-            collapsibleGroupBox9 = new WaifuAI.Controls.CollapsibleGroupBox();
-            collapsibleGroupBox4 = new WaifuAI.Controls.CollapsibleGroupBox();
-            ckPassword = new WaifuAI.Controls.ModernCheckBox();
-            ck_senseoftime = new WaifuAI.Controls.ModernCheckBox();
-            ck_irldates = new WaifuAI.Controls.ModernCheckBox();
-            ckMoodSystem = new WaifuAI.Controls.ModernCheckBox();
-            ck_caninitchat = new WaifuAI.Controls.ModernCheckBox();
-            ((System.ComponentModel.ISupportInitialize)num_selfedittokens).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_ptvalue).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_minAFK).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numKeepEurekas).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numEurekaMinTime).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numEurekaMinMess).BeginInit();
+            collapsibleGroupBox10 = new CollapsibleGroupBox();
+            collapsibleGroupBox9 = new CollapsibleGroupBox();
+            ckl_plugins = new ModernCheckedListBox();
+            collapsibleGroupBox4 = new CollapsibleGroupBox();
+            ckPassword = new ModernCheckBox();
+            ck_senseoftime = new ModernCheckBox();
+            ck_irldates = new ModernCheckBox();
+            ckMoodSystem = new ModernCheckBox();
+            ck_caninitchat = new ModernCheckBox();
             ((System.ComponentModel.ISupportInitialize)pic).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numAgentDelay).BeginInit();
             panel1.SuspendLayout();
             modernTabControl1.SuspendLayout();
             tbGeneral.SuspendLayout();
@@ -156,12 +151,14 @@
             // 
             // num_selfedittokens
             // 
+            num_selfedittokens.BackColor = Color.FromArgb(64, 64, 64);
             num_selfedittokens.BorderStyle = BorderStyle.FixedSingle;
             num_selfedittokens.Font = new Font("Segoe UI", 9F);
             num_selfedittokens.Increment = new decimal(new int[] { 128, 0, 0, 0 });
             num_selfedittokens.Location = new Point(681, 50);
             num_selfedittokens.Maximum = new decimal(new int[] { 2048, 0, 0, 0 });
             num_selfedittokens.Name = "num_selfedittokens";
+            num_selfedittokens.Padding = new Padding(1);
             num_selfedittokens.Size = new Size(190, 23);
             num_selfedittokens.TabIndex = 14;
             // 
@@ -183,18 +180,20 @@
             label12.Font = new Font("Segoe UI", 9F);
             label12.Location = new Point(15, 32);
             label12.Name = "label12";
-            label12.Size = new Size(600, 15);
+            label12.Size = new Size(550, 15);
             label12.TabIndex = 0;
-            label12.Text = "This is an optional field (added to the system prompt) that the character is allowed to edit after each chat session";
+            label12.Text = "Optional field (added to the system prompt) that the character is allowed to edit after each chat session";
             // 
             // num_ptvalue
             // 
+            num_ptvalue.BackColor = Color.FromArgb(64, 64, 64);
             num_ptvalue.BorderStyle = BorderStyle.FixedSingle;
             num_ptvalue.Font = new Font("Segoe UI", 9F);
             num_ptvalue.Location = new Point(305, 250);
             num_ptvalue.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
             num_ptvalue.Minimum = new decimal(new int[] { 10000000, 0, 0, int.MinValue });
             num_ptvalue.Name = "num_ptvalue";
+            num_ptvalue.Padding = new Padding(1);
             num_ptvalue.Size = new Size(120, 23);
             num_ptvalue.TabIndex = 4;
             // 
@@ -237,49 +236,15 @@
             label11.TabIndex = 1;
             label11.Text = "Voice ID for KoboldCPP's Text-To-Speech API";
             // 
-            // ckl_plugins
-            // 
-            ckl_plugins.BorderStyle = BorderStyle.FixedSingle;
-            ckl_plugins.Font = new Font("Segoe UI", 9F);
-            ckl_plugins.FormattingEnabled = true;
-            ckl_plugins.Items.AddRange(new object[] { "Assistant", "General" });
-            ckl_plugins.Location = new Point(15, 50);
-            ckl_plugins.Name = "ckl_plugins";
-            ckl_plugins.ScrollAlwaysVisible = true;
-            ckl_plugins.Size = new Size(410, 218);
-            ckl_plugins.TabIndex = 1;
-            // 
             // label9
             // 
             label9.AutoSize = true;
             label9.Font = new Font("Segoe UI", 9F);
             label9.Location = new Point(15, 32);
             label9.Name = "label9";
-            label9.Size = new Size(419, 15);
+            label9.Size = new Size(248, 15);
             label9.TabIndex = 0;
-            label9.Text = "Plugins this character has access to. Some can be toggled on/off in main chat.";
-            // 
-            // listCanDecay
-            // 
-            listCanDecay.Font = new Font("Segoe UI", 9F);
-            listCanDecay.FormattingEnabled = true;
-            listCanDecay.Items.AddRange(new object[] { "Assistant", "General" });
-            listCanDecay.Location = new Point(15, 50);
-            listCanDecay.Name = "listCanDecay";
-            listCanDecay.ScrollAlwaysVisible = true;
-            listCanDecay.Size = new Size(410, 148);
-            listCanDecay.TabIndex = 15;
-            // 
-            // listNoRAGMemTypes
-            // 
-            listNoRAGMemTypes.Font = new Font("Segoe UI", 9F);
-            listNoRAGMemTypes.FormattingEnabled = true;
-            listNoRAGMemTypes.Items.AddRange(new object[] { "Assistant", "General" });
-            listNoRAGMemTypes.Location = new Point(15, 50);
-            listNoRAGMemTypes.Name = "listNoRAGMemTypes";
-            listNoRAGMemTypes.ScrollAlwaysVisible = true;
-            listNoRAGMemTypes.Size = new Size(410, 148);
-            listNoRAGMemTypes.TabIndex = 13;
+            label9.Text = "Plugins this character has access to by default";
             // 
             // label8
             // 
@@ -293,6 +258,7 @@
             // 
             // num_minAFK
             // 
+            num_minAFK.BackColor = Color.FromArgb(64, 64, 64);
             num_minAFK.BorderStyle = BorderStyle.FixedSingle;
             num_minAFK.DecimalPlaces = 2;
             num_minAFK.Font = new Font("Segoe UI", 9F);
@@ -301,6 +267,7 @@
             num_minAFK.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             num_minAFK.Minimum = new decimal(new int[] { 25, 0, 0, 131072 });
             num_minAFK.Name = "num_minAFK";
+            num_minAFK.Padding = new Padding(1);
             num_minAFK.Size = new Size(94, 23);
             num_minAFK.TabIndex = 9;
             num_minAFK.Value = new decimal(new int[] { 125, 0, 0, 131072 });
@@ -317,22 +284,26 @@
             // 
             // numKeepEurekas
             // 
+            numKeepEurekas.BackColor = Color.FromArgb(64, 64, 64);
             numKeepEurekas.Font = new Font("Segoe UI", 9F);
             numKeepEurekas.Location = new Point(38, 186);
             numKeepEurekas.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numKeepEurekas.Name = "numKeepEurekas";
+            numKeepEurekas.Padding = new Padding(1);
             numKeepEurekas.Size = new Size(94, 23);
             numKeepEurekas.TabIndex = 16;
             numKeepEurekas.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // numEurekaMinTime
             // 
+            numEurekaMinTime.BackColor = Color.FromArgb(64, 64, 64);
             numEurekaMinTime.DecimalPlaces = 2;
             numEurekaMinTime.Font = new Font("Segoe UI", 9F);
             numEurekaMinTime.Increment = new decimal(new int[] { 25, 0, 0, 131072 });
             numEurekaMinTime.Location = new Point(38, 157);
             numEurekaMinTime.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             numEurekaMinTime.Name = "numEurekaMinTime";
+            numEurekaMinTime.Padding = new Padding(1);
             numEurekaMinTime.Size = new Size(94, 23);
             numEurekaMinTime.TabIndex = 15;
             numEurekaMinTime.Value = new decimal(new int[] { 125, 0, 0, 131072 });
@@ -359,10 +330,12 @@
             // 
             // numEurekaMinMess
             // 
+            numEurekaMinMess.BackColor = Color.FromArgb(64, 64, 64);
             numEurekaMinMess.Font = new Font("Segoe UI", 9F);
             numEurekaMinMess.Location = new Point(38, 128);
             numEurekaMinMess.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numEurekaMinMess.Name = "numEurekaMinMess";
+            numEurekaMinMess.Padding = new Padding(1);
             numEurekaMinMess.Size = new Size(94, 23);
             numEurekaMinMess.TabIndex = 11;
             numEurekaMinMess.Value = new decimal(new int[] { 1, 0, 0, 0 });
@@ -496,18 +469,6 @@
             label7.TabIndex = 0;
             label7.Text = "Optional list of writing style instructions (or dialog examples)";
             // 
-            // ckl_samplers
-            // 
-            ckl_samplers.BorderStyle = BorderStyle.FixedSingle;
-            ckl_samplers.Font = new Font("Segoe UI", 9F);
-            ckl_samplers.FormattingEnabled = true;
-            ckl_samplers.Items.AddRange(new object[] { "Assistant", "General" });
-            ckl_samplers.Location = new Point(14, 50);
-            ckl_samplers.Name = "ckl_samplers";
-            ckl_samplers.ScrollAlwaysVisible = true;
-            ckl_samplers.Size = new Size(411, 182);
-            ckl_samplers.TabIndex = 1;
-            // 
             // label5
             // 
             label5.AutoSize = true;
@@ -517,18 +478,6 @@
             label5.Size = new Size(331, 15);
             label5.TabIndex = 0;
             label5.Text = "Select favorite samplers for random sampler mode. (optional)";
-            // 
-            // ckl_worldinfo
-            // 
-            ckl_worldinfo.BorderStyle = BorderStyle.FixedSingle;
-            ckl_worldinfo.Font = new Font("Segoe UI", 9F);
-            ckl_worldinfo.FormattingEnabled = true;
-            ckl_worldinfo.Items.AddRange(new object[] { "Assistant", "General" });
-            ckl_worldinfo.Location = new Point(15, 50);
-            ckl_worldinfo.Name = "ckl_worldinfo";
-            ckl_worldinfo.ScrollAlwaysVisible = true;
-            ckl_worldinfo.Size = new Size(410, 182);
-            ckl_worldinfo.TabIndex = 1;
             // 
             // label6
             // 
@@ -578,6 +527,7 @@
             // 
             // numAgentDelay
             // 
+            numAgentDelay.BackColor = Color.FromArgb(64, 64, 64);
             numAgentDelay.DecimalPlaces = 2;
             numAgentDelay.Font = new Font("Segoe UI", 9F);
             numAgentDelay.Increment = new decimal(new int[] { 25, 0, 0, 131072 });
@@ -585,20 +535,10 @@
             numAgentDelay.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             numAgentDelay.Minimum = new decimal(new int[] { 25, 0, 0, 131072 });
             numAgentDelay.Name = "numAgentDelay";
+            numAgentDelay.Padding = new Padding(1);
             numAgentDelay.Size = new Size(94, 23);
             numAgentDelay.TabIndex = 11;
             numAgentDelay.Value = new decimal(new int[] { 125, 0, 0, 131072 });
-            // 
-            // listAgentTasks
-            // 
-            listAgentTasks.Font = new Font("Segoe UI", 9F);
-            listAgentTasks.FormattingEnabled = true;
-            listAgentTasks.Items.AddRange(new object[] { "Assistant", "General" });
-            listAgentTasks.Location = new Point(18, 50);
-            listAgentTasks.Name = "listAgentTasks";
-            listAgentTasks.ScrollAlwaysVisible = true;
-            listAgentTasks.Size = new Size(407, 238);
-            listAgentTasks.TabIndex = 1;
             // 
             // label18
             // 
@@ -774,6 +714,16 @@
             collapsibleGroupBox2.TabIndex = 1;
             collapsibleGroupBox2.Text = "Favoite Inference Settings";
             // 
+            // ckl_samplers
+            // 
+            ckl_samplers.BackColor = Color.FromArgb(64, 64, 64);
+            ckl_samplers.Font = new Font("Segoe UI", 9.25F);
+            ckl_samplers.Location = new Point(15, 50);
+            ckl_samplers.Name = "ckl_samplers";
+            ckl_samplers.Padding = new Padding(1);
+            ckl_samplers.Size = new Size(410, 194);
+            ckl_samplers.TabIndex = 1;
+            // 
             // collapsibleGroupBox1
             // 
             collapsibleGroupBox1.BackColor = Color.FromArgb(37, 38, 42);
@@ -787,6 +737,16 @@
             collapsibleGroupBox1.Size = new Size(440, 252);
             collapsibleGroupBox1.TabIndex = 0;
             collapsibleGroupBox1.Text = "World Info";
+            // 
+            // ckl_worldinfo
+            // 
+            ckl_worldinfo.BackColor = Color.FromArgb(64, 64, 64);
+            ckl_worldinfo.Font = new Font("Segoe UI", 9.25F);
+            ckl_worldinfo.Location = new Point(15, 50);
+            ckl_worldinfo.Name = "ckl_worldinfo";
+            ckl_worldinfo.Padding = new Padding(1);
+            ckl_worldinfo.Size = new Size(410, 194);
+            ckl_worldinfo.TabIndex = 1;
             // 
             // tbPrompt
             // 
@@ -820,8 +780,8 @@
             // 
             collapsibleGroupBox8.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox8.CanCollapse = false;
-            collapsibleGroupBox8.Controls.Add(label23);
             collapsibleGroupBox8.Controls.Add(listNoRAGMemTypes);
+            collapsibleGroupBox8.Controls.Add(label23);
             collapsibleGroupBox8.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             collapsibleGroupBox8.Location = new Point(12, 324);
             collapsibleGroupBox8.Name = "collapsibleGroupBox8";
@@ -829,6 +789,16 @@
             collapsibleGroupBox8.Size = new Size(440, 219);
             collapsibleGroupBox8.TabIndex = 3;
             collapsibleGroupBox8.Text = "Memories: No RAG";
+            // 
+            // listNoRAGMemTypes
+            // 
+            listNoRAGMemTypes.BackColor = Color.FromArgb(64, 64, 64);
+            listNoRAGMemTypes.Font = new Font("Segoe UI", 9.25F);
+            listNoRAGMemTypes.Location = new Point(15, 50);
+            listNoRAGMemTypes.Name = "listNoRAGMemTypes";
+            listNoRAGMemTypes.Padding = new Padding(1);
+            listNoRAGMemTypes.Size = new Size(410, 162);
+            listNoRAGMemTypes.TabIndex = 18;
             // 
             // label23
             // 
@@ -844,8 +814,8 @@
             // 
             collapsibleGroupBox7.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox7.CanCollapse = false;
-            collapsibleGroupBox7.Controls.Add(label22);
             collapsibleGroupBox7.Controls.Add(listCanDecay);
+            collapsibleGroupBox7.Controls.Add(label22);
             collapsibleGroupBox7.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             collapsibleGroupBox7.Location = new Point(458, 324);
             collapsibleGroupBox7.Name = "collapsibleGroupBox7";
@@ -853,6 +823,16 @@
             collapsibleGroupBox7.Size = new Size(440, 219);
             collapsibleGroupBox7.TabIndex = 2;
             collapsibleGroupBox7.Text = "Memories: Decay Allowed";
+            // 
+            // listCanDecay
+            // 
+            listCanDecay.BackColor = Color.FromArgb(64, 64, 64);
+            listCanDecay.Font = new Font("Segoe UI", 9.25F);
+            listCanDecay.Location = new Point(15, 50);
+            listCanDecay.Name = "listCanDecay";
+            listCanDecay.Padding = new Padding(1);
+            listCanDecay.Size = new Size(410, 162);
+            listCanDecay.TabIndex = 19;
             // 
             // label22
             // 
@@ -920,6 +900,16 @@
             collapsibleGroupBox5.TabIndex = 0;
             collapsibleGroupBox5.Text = "Background Tasks";
             // 
+            // listAgentTasks
+            // 
+            listAgentTasks.BackColor = Color.FromArgb(64, 64, 64);
+            listAgentTasks.Font = new Font("Segoe UI", 9.25F);
+            listAgentTasks.Location = new Point(15, 52);
+            listAgentTasks.Name = "listAgentTasks";
+            listAgentTasks.Padding = new Padding(1);
+            listAgentTasks.Size = new Size(410, 226);
+            listAgentTasks.TabIndex = 1;
+            // 
             // tbSettings
             // 
             tbSettings.BackColor = Color.FromArgb(37, 37, 37);
@@ -964,6 +954,16 @@
             collapsibleGroupBox9.Size = new Size(440, 287);
             collapsibleGroupBox9.TabIndex = 2;
             collapsibleGroupBox9.Text = "Context Plugins";
+            // 
+            // ckl_plugins
+            // 
+            ckl_plugins.BackColor = Color.FromArgb(64, 64, 64);
+            ckl_plugins.Font = new Font("Segoe UI", 9.25F);
+            ckl_plugins.Location = new Point(15, 50);
+            ckl_plugins.Name = "ckl_plugins";
+            ckl_plugins.Padding = new Padding(1);
+            ckl_plugins.Size = new Size(410, 226);
+            ckl_plugins.TabIndex = 1;
             // 
             // collapsibleGroupBox4
             // 
@@ -1053,14 +1053,7 @@
             MinimizeBox = false;
             Name = "CharEditForm";
             Text = "Character Editor";
-            ((System.ComponentModel.ISupportInitialize)num_selfedittokens).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_ptvalue).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_minAFK).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numKeepEurekas).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numEurekaMinTime).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numEurekaMinMess).EndInit();
             ((System.ComponentModel.ISupportInitialize)pic).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numAgentDelay).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             modernTabControl1.ResumeLayout(false);
@@ -1106,43 +1099,37 @@
         private Label label4;
         private TextBox ed_firstmessage;
         private TextBox ed_sysprompt;
-        private CheckedListBox ckl_worldinfo;
         private Label label6;
-        private CheckedListBox ckl_samplers;
         private Label label5;
         private TextBox ed_writingstyle;
         private Label label7;
-        private CheckedListBox ckl_plugins;
         private Label label9;
         private TextBox ed_outetts;
         private Label label11;
         private ComboBox cb_icon;
         private PictureBox pic;
         private Label label13;
-        private NumericUpDown num_selfedittokens;
+        private ModernNumericUpDown num_selfedittokens;
         private TextBox ed_selfedit;
         private Label label12;
         private ComboBox cb_pointsystems;
         private Label label14;
-        private NumericUpDown num_ptvalue;
+        private ModernNumericUpDown num_ptvalue;
         private Button btRegenBio;
         private Panel panel1;
         private Button btSave;
         private TextBox edFilename;
         private Label label8;
-        private NumericUpDown num_minAFK;
-        private NumericUpDown numEurekaMinTime;
+        private ModernNumericUpDown num_minAFK;
+        private ModernNumericUpDown numEurekaMinTime;
         private Label label16;
         private Label label15;
-        private NumericUpDown numEurekaMinMess;
+        private ModernNumericUpDown numEurekaMinMess;
         private Label label17;
-        private NumericUpDown numKeepEurekas;
-        private CheckedListBox listAgentTasks;
+        private ModernNumericUpDown numKeepEurekas;
         private Label label18;
         private Label label19;
-        private NumericUpDown numAgentDelay;
-        private CheckedListBox listNoRAGMemTypes;
-        private CheckedListBox listCanDecay;
+        private ModernNumericUpDown numAgentDelay;
         private Controls.ModernTabControl modernTabControl1;
         private TabPage tbGeneral;
         private TabPage tbStyle;
@@ -1172,5 +1159,11 @@
         private Panel panel2;
         private Panel panel3;
         private Panel panel4;
+        private Controls.ModernCheckedListBox listAgentTasks;
+        private Controls.ModernCheckedListBox listNoRAGMemTypes;
+        private Controls.ModernCheckedListBox listCanDecay;
+        private Controls.ModernCheckedListBox ckl_worldinfo;
+        private Controls.ModernCheckedListBox ckl_samplers;
+        private Controls.ModernCheckedListBox ckl_plugins;
     }
 }

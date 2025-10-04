@@ -30,6 +30,8 @@
         {
             modernTabControl1 = new WaifuAI.Controls.ModernTabControl();
             tabPage1 = new TabPage();
+            modernNumericUpDown2 = new WaifuAI.Controls.ModernNumericUpDown();
+            modernNumericUpDown1 = new WaifuAI.Controls.ModernNumericUpDown();
             modernCheckedListBox1 = new WaifuAI.Controls.ModernCheckedListBox();
             tabPage2 = new TabPage();
             tabPage3 = new TabPage();
@@ -64,6 +66,8 @@
             // tabPage1
             // 
             tabPage1.BackColor = Color.FromArgb(37, 37, 37);
+            tabPage1.Controls.Add(modernNumericUpDown2);
+            tabPage1.Controls.Add(modernNumericUpDown1);
             tabPage1.Controls.Add(modernCheckedListBox1);
             tabPage1.Font = new Font("Segoe UI", 9.25F);
             tabPage1.ForeColor = Color.FromArgb(230, 230, 230);
@@ -73,6 +77,28 @@
             tabPage1.Size = new Size(792, 406);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "tabPage1";
+            // 
+            // modernNumericUpDown2
+            // 
+            modernNumericUpDown2.BackColor = Color.FromArgb(64, 64, 64);
+            modernNumericUpDown2.Font = new Font("Segoe UI", 9.25F);
+            modernNumericUpDown2.Location = new Point(364, 321);
+            modernNumericUpDown2.Name = "modernNumericUpDown2";
+            modernNumericUpDown2.Padding = new Padding(1);
+            modernNumericUpDown2.Size = new Size(120, 24);
+            modernNumericUpDown2.TabIndex = 2;
+            // 
+            // modernNumericUpDown1
+            // 
+            modernNumericUpDown1.BackColor = Color.FromArgb(64, 64, 64);
+            modernNumericUpDown1.DecimalPlaces = 2;
+            modernNumericUpDown1.Font = new Font("Segoe UI", 9.25F);
+            modernNumericUpDown1.Location = new Point(203, 197);
+            modernNumericUpDown1.Name = "modernNumericUpDown1";
+            modernNumericUpDown1.Padding = new Padding(1);
+            modernNumericUpDown1.Size = new Size(174, 26);
+            modernNumericUpDown1.TabIndex = 1;
+            modernNumericUpDown1.Value = new decimal(new int[] { 5, 0, 0, 65536 });
             // 
             // modernCheckedListBox1
             // 
@@ -180,5 +206,7 @@
         private TabPage tabPage6;
         private TabPage tabPage7;
         private Controls.ModernCheckedListBox modernCheckedListBox1;
+        private Controls.ModernNumericUpDown modernNumericUpDown1;
+        private Controls.ModernNumericUpDown modernNumericUpDown2;
     }
 }

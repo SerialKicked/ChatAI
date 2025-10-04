@@ -380,11 +380,11 @@ namespace WaifuAI.Files
                 while (string.IsNullOrEmpty(password))
                 {
                     password = Interaction.InputBox($"Enter password for protected character '{Name}':", "Character Password Required", "");
-                    retries--;
                     if (retries <= 0)
                     {
                         throw new UnauthorizedAccessException("No password provided. Shutting Down.");
                     }
+                    retries--;
                 }
                 _password = password;
             }

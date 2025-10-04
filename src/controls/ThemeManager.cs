@@ -228,7 +228,7 @@ namespace WaifuAI.Controls
         // =========================================================
         // Apply recursively
         // =========================================================
-        private static void ApplyRecursive(Control c)
+        public static void ApplyRecursive(Control c)
         {
             if (IsExcluded(c))
                 return;
@@ -314,7 +314,7 @@ namespace WaifuAI.Controls
                 aware.ApplyTheme(CurrentTheme);
 
             foreach (Control child in c.Controls)
-                if (c is not Button) // Buttons don't propagate backcolor to children
+                if (c is not Button && c is not ModernNumericUpDown) // Buttons don't propagate backcolor to children
                     ApplyRecursive(child);
         }
 

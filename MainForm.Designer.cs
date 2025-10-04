@@ -1,4 +1,5 @@
 ﻿using LLama.Common;
+using WaifuAI.Controls;
 
 namespace WaifuAI
 {
@@ -65,11 +66,11 @@ namespace WaifuAI
             label6 = new Label();
             cb_infer = new ComboBox();
             label9 = new Label();
-            num_temperature = new NumericUpDown();
+            num_temperature = new ModernNumericUpDown();
             collapseModel = new WaifuAI.Controls.CollapsibleGroupBox();
-            num_maxresponse = new NumericUpDown();
+            num_maxresponse = new ModernNumericUpDown();
             label7 = new Label();
-            num_maxcontext = new NumericUpDown();
+            num_maxcontext = new ModernNumericUpDown();
             label8 = new Label();
             bt_connect = new Button();
             bt_impersonate = new Button();
@@ -102,10 +103,7 @@ namespace WaifuAI
             panel1 = new Panel();
             statusbar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictEmbed).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_temperature).BeginInit();
             collapseModel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)num_maxresponse).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)num_maxcontext).BeginInit();
             ((System.ComponentModel.ISupportInitialize)web_chat).BeginInit();
             collapsibleGroupBox1.SuspendLayout();
             panLeft.SuspendLayout();
@@ -1008,11 +1006,8 @@ namespace WaifuAI
             statusbar.ResumeLayout(false);
             statusbar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictEmbed).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_temperature).EndInit();
             collapseModel.ResumeLayout(false);
             collapseModel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)num_maxresponse).EndInit();
-            ((System.ComponentModel.ISupportInitialize)num_maxcontext).EndInit();
             ((System.ComponentModel.ISupportInitialize)web_chat).EndInit();
             collapsibleGroupBox1.ResumeLayout(false);
             collapsibleGroupBox1.PerformLayout();
@@ -1052,7 +1047,7 @@ namespace WaifuAI
         private Label label6;
         private ComboBox cb_infer;
         private Label label9;
-        private NumericUpDown num_temperature;
+        private ModernNumericUpDown num_temperature;
         private Button btInstructEdit;
         private Button btSysPrompt;
         private Button btSampleEditor;
@@ -1064,9 +1059,9 @@ namespace WaifuAI
         private Button button1;
         private Button button2;
         private Controls.CollapsibleGroupBox collapseModel;
-        private NumericUpDown num_maxresponse;
+        private ModernNumericUpDown num_maxresponse;
         private Label label7;
-        private NumericUpDown num_maxcontext;
+        private ModernNumericUpDown num_maxcontext;
         private Label label8;
         private Button bt_connect;
         private Controls.CollapsibleGroupBox collapsibleGroupBox1;
