@@ -11,6 +11,8 @@ namespace WaifuAI.Controls
     [DefaultEvent(nameof(ItemCheck))]
     public class ModernCheckedListBox : UserControl, IThemeAware
     {
+        public bool ThemeProcessInnerComponent => true;
+
         private readonly Panel _itemPanel;
         private readonly Panel _scrollPanel;
 

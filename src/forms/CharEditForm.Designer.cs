@@ -37,7 +37,7 @@ namespace WaifuAI.src.forms
             ed_selfedit = new TextBox();
             label12 = new Label();
             num_ptvalue = new ModernNumericUpDown();
-            cb_pointsystems = new ComboBox();
+            cb_pointsystems = new ModernComboBox();
             label14 = new Label();
             ed_outetts = new TextBox();
             label11 = new Label();
@@ -51,7 +51,7 @@ namespace WaifuAI.src.forms
             label15 = new Label();
             numEurekaMinMess = new ModernNumericUpDown();
             pic = new PictureBox();
-            cb_icon = new ComboBox();
+            cb_icon = new ModernComboBox();
             label4 = new Label();
             ed_firstmessage = new TextBox();
             ed_scenario = new TextBox();
@@ -199,11 +199,11 @@ namespace WaifuAI.src.forms
             // 
             // cb_pointsystems
             // 
-            cb_pointsystems.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_pointsystems.FlatStyle = FlatStyle.Flat;
-            cb_pointsystems.FormattingEnabled = true;
+            cb_pointsystems.BackColor = Color.FromArgb(64, 64, 64);
+            cb_pointsystems.Font = new Font("Segoe UI", 9.25F);
             cb_pointsystems.Location = new Point(15, 250);
             cb_pointsystems.Name = "cb_pointsystems";
+            cb_pointsystems.Padding = new Padding(1);
             cb_pointsystems.Size = new Size(284, 23);
             cb_pointsystems.TabIndex = 3;
             // 
@@ -351,11 +351,11 @@ namespace WaifuAI.src.forms
             // 
             // cb_icon
             // 
-            cb_icon.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_icon.FlatStyle = FlatStyle.Flat;
-            cb_icon.FormattingEnabled = true;
+            cb_icon.BackColor = Color.FromArgb(64, 64, 64);
+            cb_icon.Font = new Font("Segoe UI", 9.25F);
             cb_icon.Location = new Point(690, 30);
             cb_icon.Name = "cb_icon";
+            cb_icon.Padding = new Padding(1);
             cb_icon.Size = new Size(205, 23);
             cb_icon.TabIndex = 15;
             cb_icon.SelectedIndexChanged += cb_icon_SelectedIndexChanged;
@@ -1106,13 +1106,13 @@ namespace WaifuAI.src.forms
         private Label label9;
         private TextBox ed_outetts;
         private Label label11;
-        private ComboBox cb_icon;
+        private ModernComboBox cb_icon;
         private PictureBox pic;
         private Label label13;
         private ModernNumericUpDown num_selfedittokens;
         private TextBox ed_selfedit;
         private Label label12;
-        private ComboBox cb_pointsystems;
+        private ModernComboBox cb_pointsystems;
         private Label label14;
         private ModernNumericUpDown num_ptvalue;
         private Button btRegenBio;

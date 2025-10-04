@@ -42,15 +42,15 @@ namespace WaifuAI
             button1 = new Button();
             btChatHistory = new Button();
             btSysPrompt = new Button();
-            cb_user = new ComboBox();
+            cb_user = new ModernComboBox();
             label4 = new Label();
             bt_editchar = new Button();
             bt_scenario = new Button();
             label3 = new Label();
-            cb_bot = new ComboBox();
+            cb_bot = new ModernComboBox();
             bt_newsession = new Button();
             label11 = new Label();
-            cb_sysprompt = new ComboBox();
+            cb_sysprompt = new ModernComboBox();
             label1 = new Label();
             pictEmbed = new PictureBox();
             bt_clearimg = new Button();
@@ -62,9 +62,9 @@ namespace WaifuAI
             btSampleEditor = new Button();
             btInstructEdit = new Button();
             label5 = new Label();
-            cb_instruct = new ComboBox();
+            cb_instruct = new ModernComboBox();
             label6 = new Label();
-            cb_infer = new ComboBox();
+            cb_infer = new ModernComboBox();
             label9 = new Label();
             num_temperature = new ModernNumericUpDown();
             collapseModel = new WaifuAI.Controls.CollapsibleGroupBox();
@@ -202,7 +202,6 @@ namespace WaifuAI
             // 
             cb_user.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cb_user.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_user.FlatStyle = FlatStyle.Flat;
             cb_user.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             cb_user.Location = new Point(11, 166);
             cb_user.Name = "cb_user";
@@ -265,7 +264,6 @@ namespace WaifuAI
             // 
             cb_bot.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cb_bot.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_bot.FlatStyle = FlatStyle.Flat;
             cb_bot.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             cb_bot.Location = new Point(11, 111);
             cb_bot.Name = "cb_bot";
@@ -303,7 +301,6 @@ namespace WaifuAI
             // 
             cb_sysprompt.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cb_sysprompt.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_sysprompt.FlatStyle = FlatStyle.Flat;
             cb_sysprompt.Font = new Font("Segoe UI", 9F);
             cb_sysprompt.Location = new Point(11, 56);
             cb_sysprompt.Name = "cb_sysprompt";
@@ -468,7 +465,6 @@ namespace WaifuAI
             // cb_instruct
             // 
             cb_instruct.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_instruct.FlatStyle = FlatStyle.Flat;
             cb_instruct.Font = new Font("Segoe UI", 9F);
             cb_instruct.Location = new Point(11, 63);
             cb_instruct.Name = "cb_instruct";
@@ -489,7 +485,6 @@ namespace WaifuAI
             // cb_infer
             // 
             cb_infer.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_infer.FlatStyle = FlatStyle.Flat;
             cb_infer.Font = new Font("Segoe UI", 9F);
             cb_infer.Location = new Point(11, 118);
             cb_infer.Name = "cb_infer";
@@ -1036,16 +1031,16 @@ namespace WaifuAI
         private Button bt_editchar;
         private Button bt_scenario;
         private Label label3;
-        private ComboBox cb_bot;
+        private ModernComboBox cb_bot;
         private Label label4;
-        private ComboBox cb_user;
+        private ModernComboBox cb_user;
         private Button bt_newsession;
         private Label label11;
-        private ComboBox cb_sysprompt;
+        private ModernComboBox cb_sysprompt;
         private Label label5;
-        private ComboBox cb_instruct;
+        private ModernComboBox cb_instruct;
         private Label label6;
-        private ComboBox cb_infer;
+        private ModernComboBox cb_infer;
         private Label label9;
         private ModernNumericUpDown num_temperature;
         private Button btInstructEdit;

@@ -1,4 +1,6 @@
-﻿namespace WaifuAI.src.forms
+﻿using WaifuAI.Controls;
+
+namespace WaifuAI.src.forms
 {
     partial class LoginForm
     {
@@ -31,7 +33,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
             edKey = new TextBox();
             label3 = new Label();
-            cbAPI = new ComboBox();
+            cbAPI = new ModernComboBox();
             edUrl = new TextBox();
             label2 = new Label();
             label1 = new Label();
@@ -65,9 +67,7 @@
             // cbAPI
             // 
             cbAPI.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbAPI.FlatStyle = FlatStyle.Flat;
             cbAPI.Font = new Font("Segoe UI", 9F);
-            cbAPI.FormattingEnabled = true;
             cbAPI.Items.AddRange(new object[] { "KoboldAPI", "OpenAI Compatible" });
             cbAPI.Location = new Point(15, 103);
             cbAPI.Name = "cbAPI";
@@ -193,7 +193,7 @@
         }
 
         #endregion
-        private ComboBox cbAPI;
+        private ModernComboBox cbAPI;
         private TextBox edUrl;
         private Label label2;
         private Label label1;

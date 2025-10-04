@@ -51,7 +51,7 @@ namespace WaifuAI.src.forms
             ck_antislop = new ModernCheckBox();
             ck_fixasterix = new ModernCheckBox();
             label65 = new Label();
-            cb_pastsession = new ComboBox();
+            cb_pastsession = new ModernComboBox();
             num_memtokens = new ModernNumericUpDown();
             label32 = new Label();
             ck_sessionmemory = new ModernCheckBox();
@@ -61,14 +61,14 @@ namespace WaifuAI.src.forms
             label30 = new Label();
             num_fontsize = new ModernNumericUpDown();
             label29 = new Label();
-            cb_background = new ComboBox();
+            cb_background = new ModernComboBox();
             label28 = new Label();
             label4 = new Label();
             ck_searchextract = new ModernCheckBox();
             label3 = new Label();
             ed_searchkey = new TextBox();
             label2 = new Label();
-            cb_searchapi = new ComboBox();
+            cb_searchapi = new ModernComboBox();
             ck_webgrammar = new ModernCheckBox();
             ck_alwayswebsearch = new ModernCheckBox();
             ck_webkeyword = new ModernCheckBox();
@@ -85,7 +85,7 @@ namespace WaifuAI.src.forms
             label13 = new Label();
             num_ragcutoff = new ModernNumericUpDown();
             label12 = new Label();
-            cb_ragheuristic = new ComboBox();
+            cb_ragheuristic = new ModernComboBox();
             panel1 = new Panel();
             bt_Close = new Button();
             HelptoolTip = new ToolTip(components);
@@ -307,7 +307,6 @@ namespace WaifuAI.src.forms
             // cb_pastsession
             // 
             cb_pastsession.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_pastsession.FlatStyle = FlatStyle.Flat;
             cb_pastsession.Font = new Font("Segoe UI", 9F);
             cb_pastsession.Items.AddRange(new object[] { "Current session only", "Fit as much as possible, including previous sessions" });
             cb_pastsession.Location = new Point(15, 126);
@@ -414,7 +413,6 @@ namespace WaifuAI.src.forms
             // cb_background
             // 
             cb_background.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_background.FlatStyle = FlatStyle.Flat;
             cb_background.Font = new Font("Segoe UI", 9F);
             cb_background.Location = new Point(15, 50);
             cb_background.Name = "cb_background";
@@ -482,7 +480,6 @@ namespace WaifuAI.src.forms
             // cb_searchapi
             // 
             cb_searchapi.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_searchapi.FlatStyle = FlatStyle.Flat;
             cb_searchapi.Font = new Font("Segoe UI", 9F);
             cb_searchapi.Items.AddRange(new object[] { "DuckDuckGo", "Brave Search" });
             cb_searchapi.Location = new Point(14, 54);
@@ -673,7 +670,6 @@ namespace WaifuAI.src.forms
             // cb_ragheuristic
             // 
             cb_ragheuristic.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_ragheuristic.FlatStyle = FlatStyle.Flat;
             cb_ragheuristic.Font = new Font("Segoe UI", 9F);
             cb_ragheuristic.Items.AddRange(new object[] { "Simple", "Heuristic", "Exact" });
             cb_ragheuristic.Location = new Point(15, 59);
@@ -959,7 +955,7 @@ namespace WaifuAI.src.forms
         private ModernCheckBox ck_antislop;
         private ModernCheckBox ck_fixasterix;
         private Label label65;
-        private ComboBox cb_pastsession;
+        private ModernComboBox cb_pastsession;
         private ModernNumericUpDown num_memtokens;
         private Label label32;
         private ModernCheckBox ck_sessionmemory;
@@ -967,7 +963,7 @@ namespace WaifuAI.src.forms
         private Label label30;
         private ModernNumericUpDown num_fontsize;
         private Label label29;
-        private ComboBox cb_background;
+        private ModernComboBox cb_background;
         private Label label28;
         private ModernCheckBox ck_webgrammar;
         private ModernCheckBox ck_webkeyword;
@@ -982,7 +978,7 @@ namespace WaifuAI.src.forms
         private Label label13;
         private ModernNumericUpDown num_ragcutoff;
         private Label label12;
-        private ComboBox cb_ragheuristic;
+        private ModernComboBox cb_ragheuristic;
         private Panel panel1;
         private Button bt_Close;
         private ToolTip HelptoolTip;
@@ -994,7 +990,7 @@ namespace WaifuAI.src.forms
         private Label label3;
         private TextBox ed_searchkey;
         private Label label2;
-        private ComboBox cb_searchapi;
+        private ModernComboBox cb_searchapi;
         private ModernCheckBox ck_searchextract;
         private Label label4;
         private ModernCheckBox ckThirdPerson;

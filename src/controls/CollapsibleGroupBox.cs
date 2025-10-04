@@ -12,6 +12,8 @@ namespace WaifuAI.Controls
     [DefaultEvent(nameof(ExpandedChanged))]
     public class CollapsibleGroupBox : ContainerControl, IThemeAware
     {
+        public bool ThemeProcessInnerComponent => true;
+
         private const int HeaderHeightConst = 28;
 
         private Rectangle _glyphRect;
@@ -27,6 +29,7 @@ namespace WaifuAI.Controls
         private int _animationDuration = 140;
         private bool _animate = false;
         private bool _isAnimating;
+
 
         // Cached theme colors
         private Color _headerBack;
@@ -118,6 +121,7 @@ namespace WaifuAI.Controls
         public event EventHandler? AnimationFinished;
 
         private Rectangle HeaderRect => new(0, 0, Width - 1, HeaderHeightConst);
+
 
         public void ApplyTheme(ThemeManager.Theme t)
         {

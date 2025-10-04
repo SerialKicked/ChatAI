@@ -11,6 +11,8 @@ namespace WaifuAI.Controls
     [DefaultEvent(nameof(SelectedIndexChanged))]
     public class ModernListBox : UserControl, IThemeAware
     {
+        public bool ThemeProcessInnerComponent => true;
+
         private readonly Panel _itemPanel;
         private readonly Panel _scrollPanel;
 

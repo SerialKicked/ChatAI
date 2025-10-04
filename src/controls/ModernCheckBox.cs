@@ -15,6 +15,8 @@ namespace WaifuAI.Controls
     [DefaultEvent(nameof(CheckedChanged))]
     public class ModernCheckBox : CheckBox, IThemeAware
     {
+        public bool ThemeProcessInnerComponent => false;
+
         // (Animation + state fields omitted here for brevity – keep your existing ones.)
         private const int BoxSize = 18;
         private const int SwitchWidth = 42;

@@ -11,6 +11,8 @@ namespace WaifuAI.Controls
     [DefaultEvent(nameof(ValueChanged))]
     public class ModernNumericUpDown : UserControl, IThemeAware
     {
+        public bool ThemeProcessInnerComponent => false;
+
         private readonly TextBox _textBox;
         private readonly Panel _buttonPanel;
         private readonly Panel _innerPanel;
@@ -81,7 +83,7 @@ namespace WaifuAI.Controls
             _innerPanel = new Panel
             {
                 Dock = DockStyle.Fill,
-                Padding = new Padding(6, 4, 4, 4)
+                Padding = new Padding(4, 2, 2, 0)
             };
             _innerPanel.Controls.Add(_textBox);
 

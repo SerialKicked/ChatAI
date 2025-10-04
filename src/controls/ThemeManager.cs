@@ -9,6 +9,7 @@ namespace WaifuAI.Controls
 {
     public interface IThemeAware
     {
+        bool ThemeProcessInnerComponent { get; }
         void ApplyTheme(ThemeManager.Theme theme);
     }
 
@@ -313,9 +314,17 @@ namespace WaifuAI.Controls
             if (c is IThemeAware aware)
                 aware.ApplyTheme(CurrentTheme);
 
-            foreach (Control child in c.Controls)
-                if (c is not Button && c is not ModernNumericUpDown) // Buttons don't propagate backcolor to children
+            if (c is not IThemeAware ta || ta.ThemeProcessInnerComponent == true)
+            {
+                if (c is ModernComboBox t)
+                {
+                    var x = 1;
+                }
+                foreach (Control child in c.Controls)
+                {
                     ApplyRecursive(child);
+                }
+            }
         }
 
         // =========================================================

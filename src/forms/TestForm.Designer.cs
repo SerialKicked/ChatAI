@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TestForm));
             modernTabControl1 = new WaifuAI.Controls.ModernTabControl();
             tabPage1 = new TabPage();
             modernNumericUpDown2 = new WaifuAI.Controls.ModernNumericUpDown();
@@ -39,6 +40,8 @@
             tabPage5 = new TabPage();
             tabPage6 = new TabPage();
             tabPage7 = new TabPage();
+            modernComboBox1 = new WaifuAI.Controls.ModernComboBox();
+            modernComboBox2 = new WaifuAI.Controls.ModernComboBox();
             modernTabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
             SuspendLayout();
@@ -66,6 +69,8 @@
             // tabPage1
             // 
             tabPage1.BackColor = Color.FromArgb(37, 37, 37);
+            tabPage1.Controls.Add(modernComboBox2);
+            tabPage1.Controls.Add(modernComboBox1);
             tabPage1.Controls.Add(modernNumericUpDown2);
             tabPage1.Controls.Add(modernNumericUpDown1);
             tabPage1.Controls.Add(modernCheckedListBox1);
@@ -182,6 +187,27 @@
             tabPage7.TabIndex = 6;
             tabPage7.Text = "tabPage7";
             // 
+            // modernComboBox1
+            // 
+            modernComboBox1.BackColor = Color.FromArgb(64, 64, 64);
+            modernComboBox1.Font = new Font("Segoe UI", 9.25F);
+            modernComboBox1.Location = new Point(427, 93);
+            modernComboBox1.Name = "modernComboBox1";
+            modernComboBox1.Padding = new Padding(1);
+            modernComboBox1.Size = new Size(196, 27);
+            modernComboBox1.TabIndex = 3;
+            // 
+            // modernComboBox2
+            // 
+            modernComboBox2.BackColor = Color.FromArgb(64, 64, 64);
+            modernComboBox2.Font = new Font("Segoe UI", 9.25F);
+            modernComboBox2.Items.AddRange(new object[] { resources.GetObject("modernComboBox2.Items"), resources.GetObject("modernComboBox2.Items1"), resources.GetObject("modernComboBox2.Items2"), resources.GetObject("modernComboBox2.Items3"), resources.GetObject("modernComboBox2.Items4") });
+            modernComboBox2.Location = new Point(456, 193);
+            modernComboBox2.Name = "modernComboBox2";
+            modernComboBox2.Padding = new Padding(1);
+            modernComboBox2.Size = new Size(150, 24);
+            modernComboBox2.TabIndex = 4;
+            // 
             // TestForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -208,5 +234,7 @@
         private Controls.ModernCheckedListBox modernCheckedListBox1;
         private Controls.ModernNumericUpDown modernNumericUpDown1;
         private Controls.ModernNumericUpDown modernNumericUpDown2;
+        private Controls.ModernComboBox modernComboBox2;
+        private Controls.ModernComboBox modernComboBox1;
     }
 }

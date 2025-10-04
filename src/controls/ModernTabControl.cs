@@ -13,6 +13,8 @@ namespace WaifuAI.Controls
     [DefaultEvent(nameof(SelectedIndexChanged))]
     public class ModernTabControl : TabControl, IThemeAware
     {
+        public bool ThemeProcessInnerComponent => true;
+
         private const int TabHeight = 36;
         private const int TabMinWidth = 100;
         private const int TabMaxWidth = 250;
