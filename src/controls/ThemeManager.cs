@@ -247,6 +247,7 @@ namespace WaifuAI.Controls
                     gb.Font = curthemeBaseFont;
                     break;
 
+
                 case Button bt:
                     bt.FlatStyle = FlatStyle.Flat;
                     bt.FlatAppearance.BorderColor = curthemeBorderColor;
@@ -313,7 +314,8 @@ namespace WaifuAI.Controls
                 aware.ApplyTheme(CurrentTheme);
 
             foreach (Control child in c.Controls)
-                ApplyRecursive(child);
+                if (c is not Button) // Buttons don't propagate backcolor to children
+                    ApplyRecursive(child);
         }
 
         // =========================================================

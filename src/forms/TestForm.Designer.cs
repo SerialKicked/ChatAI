@@ -30,6 +30,7 @@
         {
             modernTabControl1 = new WaifuAI.Controls.ModernTabControl();
             tabPage1 = new TabPage();
+            modernCheckedListBox1 = new WaifuAI.Controls.ModernCheckedListBox();
             tabPage2 = new TabPage();
             tabPage3 = new TabPage();
             tabPage4 = new TabPage();
@@ -37,10 +38,12 @@
             tabPage6 = new TabPage();
             tabPage7 = new TabPage();
             modernTabControl1.SuspendLayout();
+            tabPage1.SuspendLayout();
             SuspendLayout();
             // 
             // modernTabControl1
             // 
+            modernTabControl1.Appearance = TabAppearance.Buttons;
             modernTabControl1.Controls.Add(tabPage1);
             modernTabControl1.Controls.Add(tabPage2);
             modernTabControl1.Controls.Add(tabPage3);
@@ -60,8 +63,9 @@
             // 
             // tabPage1
             // 
-            tabPage1.BackColor = Color.FromArgb(37, 38, 42);
-            tabPage1.Font = new Font("Segoe UI", 9F);
+            tabPage1.BackColor = Color.FromArgb(37, 37, 37);
+            tabPage1.Controls.Add(modernCheckedListBox1);
+            tabPage1.Font = new Font("Segoe UI", 9.25F);
             tabPage1.ForeColor = Color.FromArgb(230, 230, 230);
             tabPage1.Location = new Point(4, 40);
             tabPage1.Name = "tabPage1";
@@ -70,10 +74,20 @@
             tabPage1.TabIndex = 0;
             tabPage1.Text = "tabPage1";
             // 
+            // modernCheckedListBox1
+            // 
+            modernCheckedListBox1.BackColor = Color.FromArgb(64, 64, 64);
+            modernCheckedListBox1.Font = new Font("Segoe UI", 9.25F);
+            modernCheckedListBox1.Location = new Point(105, 102);
+            modernCheckedListBox1.Name = "modernCheckedListBox1";
+            modernCheckedListBox1.Padding = new Padding(1);
+            modernCheckedListBox1.Size = new Size(200, 66);
+            modernCheckedListBox1.TabIndex = 0;
+            // 
             // tabPage2
             // 
-            tabPage2.BackColor = Color.FromArgb(37, 38, 42);
-            tabPage2.Font = new Font("Segoe UI", 9F);
+            tabPage2.BackColor = Color.FromArgb(37, 37, 37);
+            tabPage2.Font = new Font("Segoe UI", 9.25F);
             tabPage2.ForeColor = Color.FromArgb(230, 230, 230);
             tabPage2.Location = new Point(4, 40);
             tabPage2.Name = "tabPage2";
@@ -84,8 +98,8 @@
             // 
             // tabPage3
             // 
-            tabPage3.BackColor = Color.FromArgb(37, 38, 42);
-            tabPage3.Font = new Font("Segoe UI", 9F);
+            tabPage3.BackColor = Color.FromArgb(37, 37, 37);
+            tabPage3.Font = new Font("Segoe UI", 9.25F);
             tabPage3.ForeColor = Color.FromArgb(230, 230, 230);
             tabPage3.Location = new Point(4, 40);
             tabPage3.Name = "tabPage3";
@@ -96,8 +110,8 @@
             // 
             // tabPage4
             // 
-            tabPage4.BackColor = Color.FromArgb(37, 38, 42);
-            tabPage4.Font = new Font("Segoe UI", 9F);
+            tabPage4.BackColor = Color.FromArgb(37, 37, 37);
+            tabPage4.Font = new Font("Segoe UI", 9.25F);
             tabPage4.ForeColor = Color.FromArgb(230, 230, 230);
             tabPage4.Location = new Point(4, 40);
             tabPage4.Name = "tabPage4";
@@ -108,8 +122,8 @@
             // 
             // tabPage5
             // 
-            tabPage5.BackColor = Color.FromArgb(37, 38, 42);
-            tabPage5.Font = new Font("Segoe UI", 9F);
+            tabPage5.BackColor = Color.FromArgb(37, 37, 37);
+            tabPage5.Font = new Font("Segoe UI", 9.25F);
             tabPage5.ForeColor = Color.FromArgb(230, 230, 230);
             tabPage5.Location = new Point(4, 40);
             tabPage5.Name = "tabPage5";
@@ -120,8 +134,8 @@
             // 
             // tabPage6
             // 
-            tabPage6.BackColor = Color.FromArgb(37, 38, 42);
-            tabPage6.Font = new Font("Segoe UI", 9F);
+            tabPage6.BackColor = Color.FromArgb(37, 37, 37);
+            tabPage6.Font = new Font("Segoe UI", 9.25F);
             tabPage6.ForeColor = Color.FromArgb(230, 230, 230);
             tabPage6.Location = new Point(4, 40);
             tabPage6.Name = "tabPage6";
@@ -132,8 +146,8 @@
             // 
             // tabPage7
             // 
-            tabPage7.BackColor = Color.FromArgb(37, 38, 42);
-            tabPage7.Font = new Font("Segoe UI", 9F);
+            tabPage7.BackColor = Color.FromArgb(37, 37, 37);
+            tabPage7.Font = new Font("Segoe UI", 9.25F);
             tabPage7.ForeColor = Color.FromArgb(230, 230, 230);
             tabPage7.Location = new Point(4, 40);
             tabPage7.Name = "tabPage7";
@@ -151,6 +165,7 @@
             Name = "TestForm";
             Text = "TestForm";
             modernTabControl1.ResumeLayout(false);
+            tabPage1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -164,5 +179,6 @@
         private TabPage tabPage5;
         private TabPage tabPage6;
         private TabPage tabPage7;
+        private Controls.ModernCheckedListBox modernCheckedListBox1;
     }
 }

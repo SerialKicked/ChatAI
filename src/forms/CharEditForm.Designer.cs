@@ -75,9 +75,12 @@
             listAgentTasks = new CheckedListBox();
             label18 = new Label();
             panel1 = new Panel();
-            btSave = new Button();
+            panel2 = new Panel();
+            cb_charlist = new WaifuAI.Controls.ModernListBox();
             edFilename = new TextBox();
-            cb_charlist = new ListBox();
+            panel3 = new Panel();
+            btSave = new Button();
+            panel4 = new Panel();
             modernTabControl1 = new WaifuAI.Controls.ModernTabControl();
             tbGeneral = new TabPage();
             tbStyle = new TabPage();
@@ -133,10 +136,9 @@
             // btRegenBio
             // 
             btRegenBio.FlatStyle = FlatStyle.Flat;
-            btRegenBio.Font = new Font("Segoe UI", 9F);
             btRegenBio.Location = new Point(681, 79);
             btRegenBio.Name = "btRegenBio";
-            btRegenBio.Size = new Size(190, 23);
+            btRegenBio.Size = new Size(190, 27);
             btRegenBio.TabIndex = 16;
             btRegenBio.Text = "Regenerate";
             btRegenBio.UseVisualStyleBackColor = true;
@@ -450,7 +452,7 @@
             ck_isuser.AutoSize = true;
             ck_isuser.Location = new Point(373, 32);
             ck_isuser.Name = "ck_isuser";
-            ck_isuser.Size = new Size(94, 19);
+            ck_isuser.Size = new Size(105, 21);
             ck_isuser.TabIndex = 8;
             ck_isuser.Text = "User Persona";
             ck_isuser.UseVisualStyleBackColor = true;
@@ -460,7 +462,7 @@
             ed_name.BorderStyle = BorderStyle.FixedSingle;
             ed_name.Location = new Point(12, 30);
             ed_name.Name = "ed_name";
-            ed_name.Size = new Size(355, 23);
+            ed_name.Size = new Size(355, 24);
             ed_name.TabIndex = 7;
             // 
             // label1
@@ -610,49 +612,83 @@
             // 
             // panel1
             // 
-            panel1.Controls.Add(btSave);
-            panel1.Controls.Add(edFilename);
+            panel1.Controls.Add(panel2);
             panel1.Controls.Add(cb_charlist);
+            panel1.Controls.Add(edFilename);
+            panel1.Controls.Add(panel3);
+            panel1.Controls.Add(btSave);
+            panel1.Controls.Add(panel4);
             panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
             panel1.Size = new Size(234, 601);
             panel1.TabIndex = 4;
             // 
+            // panel2
+            // 
+            panel2.Dock = DockStyle.Bottom;
+            panel2.Location = new Point(0, 525);
+            panel2.Margin = new Padding(8);
+            panel2.Name = "panel2";
+            panel2.Padding = new Padding(8);
+            panel2.Size = new Size(234, 10);
+            panel2.TabIndex = 48;
+            // 
+            // cb_charlist
+            // 
+            cb_charlist.AlwaysScrollbar = true;
+            cb_charlist.BackColor = Color.FromArgb(64, 64, 64);
+            cb_charlist.Dock = DockStyle.Fill;
+            cb_charlist.Font = new Font("Segoe UI", 9.25F);
+            cb_charlist.Location = new Point(0, 0);
+            cb_charlist.Name = "cb_charlist";
+            cb_charlist.Padding = new Padding(1);
+            cb_charlist.Size = new Size(234, 514);
+            cb_charlist.TabIndex = 4;
+            // 
+            // edFilename
+            // 
+            edFilename.BorderStyle = BorderStyle.FixedSingle;
+            edFilename.Dock = DockStyle.Bottom;
+            edFilename.Location = new Point(0, 535);
+            edFilename.Name = "edFilename";
+            edFilename.Size = new Size(234, 23);
+            edFilename.TabIndex = 2;
+            // 
+            // panel3
+            // 
+            panel3.Dock = DockStyle.Bottom;
+            panel3.Location = new Point(0, 558);
+            panel3.Margin = new Padding(8);
+            panel3.Name = "panel3";
+            panel3.Padding = new Padding(8);
+            panel3.Size = new Size(234, 10);
+            panel3.TabIndex = 49;
+            // 
             // btSave
             // 
-            btSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             btSave.BackColor = Color.DarkSeaGreen;
+            btSave.Dock = DockStyle.Bottom;
             btSave.FlatStyle = FlatStyle.Flat;
             btSave.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btSave.Location = new Point(3, 568);
+            btSave.Location = new Point(0, 568);
             btSave.Name = "btSave";
-            btSave.Size = new Size(228, 23);
+            btSave.Size = new Size(234, 23);
             btSave.TabIndex = 3;
             btSave.Tag = "no-theme";
             btSave.Text = "Save Character";
             btSave.UseVisualStyleBackColor = false;
             btSave.Click += bt_worldsave_Click;
             // 
-            // edFilename
+            // panel4
             // 
-            edFilename.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            edFilename.BorderStyle = BorderStyle.FixedSingle;
-            edFilename.Location = new Point(3, 539);
-            edFilename.Name = "edFilename";
-            edFilename.Size = new Size(228, 23);
-            edFilename.TabIndex = 2;
-            // 
-            // cb_charlist
-            // 
-            cb_charlist.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            cb_charlist.BorderStyle = BorderStyle.FixedSingle;
-            cb_charlist.FormattingEnabled = true;
-            cb_charlist.Location = new Point(3, 3);
-            cb_charlist.Name = "cb_charlist";
-            cb_charlist.ScrollAlwaysVisible = true;
-            cb_charlist.Size = new Size(228, 527);
-            cb_charlist.TabIndex = 1;
+            panel4.Dock = DockStyle.Bottom;
+            panel4.Location = new Point(0, 591);
+            panel4.Margin = new Padding(8);
+            panel4.Name = "panel4";
+            panel4.Padding = new Padding(8);
+            panel4.Size = new Size(234, 10);
+            panel4.TabIndex = 50;
             // 
             // modernTabControl1
             // 
@@ -673,7 +709,7 @@
             // 
             // tbGeneral
             // 
-            tbGeneral.BackColor = Color.FromArgb(37, 38, 42);
+            tbGeneral.BackColor = Color.FromArgb(37, 37, 37);
             tbGeneral.Controls.Add(ed_outetts);
             tbGeneral.Controls.Add(label4);
             tbGeneral.Controls.Add(label11);
@@ -687,7 +723,7 @@
             tbGeneral.Controls.Add(ck_isuser);
             tbGeneral.Controls.Add(label2);
             tbGeneral.Controls.Add(ed_bio);
-            tbGeneral.Font = new Font("Segoe UI", 9F);
+            tbGeneral.Font = new Font("Segoe UI", 9.25F);
             tbGeneral.ForeColor = Color.FromArgb(230, 230, 230);
             tbGeneral.Location = new Point(4, 40);
             tbGeneral.Name = "tbGeneral";
@@ -698,11 +734,11 @@
             // 
             // tbStyle
             // 
-            tbStyle.BackColor = Color.FromArgb(37, 38, 42);
+            tbStyle.BackColor = Color.FromArgb(37, 37, 37);
             tbStyle.Controls.Add(collapsibleGroupBox3);
             tbStyle.Controls.Add(collapsibleGroupBox2);
             tbStyle.Controls.Add(collapsibleGroupBox1);
-            tbStyle.Font = new Font("Segoe UI", 9F);
+            tbStyle.Font = new Font("Segoe UI", 9.25F);
             tbStyle.ForeColor = Color.FromArgb(230, 230, 230);
             tbStyle.Location = new Point(4, 40);
             tbStyle.Name = "tbStyle";
@@ -754,10 +790,10 @@
             // 
             // tbPrompt
             // 
-            tbPrompt.BackColor = Color.FromArgb(37, 38, 42);
+            tbPrompt.BackColor = Color.FromArgb(37, 37, 37);
             tbPrompt.Controls.Add(ed_sysprompt);
             tbPrompt.Controls.Add(textBox2);
-            tbPrompt.Font = new Font("Segoe UI", 9F);
+            tbPrompt.Font = new Font("Segoe UI", 9.25F);
             tbPrompt.ForeColor = Color.FromArgb(230, 230, 230);
             tbPrompt.Location = new Point(4, 40);
             tbPrompt.Name = "tbPrompt";
@@ -767,12 +803,12 @@
             // 
             // tbAgent
             // 
-            tbAgent.BackColor = Color.FromArgb(37, 38, 42);
+            tbAgent.BackColor = Color.FromArgb(37, 37, 37);
             tbAgent.Controls.Add(collapsibleGroupBox8);
             tbAgent.Controls.Add(collapsibleGroupBox7);
             tbAgent.Controls.Add(collapsibleGroupBox6);
             tbAgent.Controls.Add(collapsibleGroupBox5);
-            tbAgent.Font = new Font("Segoe UI", 9F);
+            tbAgent.Font = new Font("Segoe UI", 9.25F);
             tbAgent.ForeColor = Color.FromArgb(230, 230, 230);
             tbAgent.Location = new Point(4, 40);
             tbAgent.Name = "tbAgent";
@@ -848,7 +884,7 @@
             collapsibleGroupBox6.Padding = new Padding(12, 32, 12, 10);
             collapsibleGroupBox6.Size = new Size(440, 299);
             collapsibleGroupBox6.TabIndex = 1;
-            collapsibleGroupBox6.Text = "collapsibleGroupBox6";
+            collapsibleGroupBox6.Text = "Agent Settings";
             // 
             // ckAllowEurekas
             // 
@@ -886,11 +922,11 @@
             // 
             // tbSettings
             // 
-            tbSettings.BackColor = Color.FromArgb(37, 38, 42);
+            tbSettings.BackColor = Color.FromArgb(37, 37, 37);
             tbSettings.Controls.Add(collapsibleGroupBox10);
             tbSettings.Controls.Add(collapsibleGroupBox9);
             tbSettings.Controls.Add(collapsibleGroupBox4);
-            tbSettings.Font = new Font("Segoe UI", 9F);
+            tbSettings.Font = new Font("Segoe UI", 9.25F);
             tbSettings.ForeColor = Color.FromArgb(230, 230, 230);
             tbSettings.Location = new Point(4, 40);
             tbSettings.Name = "tbSettings";
@@ -1093,7 +1129,6 @@
         private Panel panel1;
         private Button btSave;
         private TextBox edFilename;
-        private ListBox cb_charlist;
         private Label label8;
         private NumericUpDown num_minAFK;
         private NumericUpDown numEurekaMinTime;
@@ -1133,5 +1168,9 @@
         private Controls.ModernCheckBox ckMoodSystem;
         private Controls.ModernCheckBox ck_caninitchat;
         private Controls.CollapsibleGroupBox collapsibleGroupBox10;
+        private Controls.ModernListBox cb_charlist;
+        private Panel panel2;
+        private Panel panel3;
+        private Panel panel4;
     }
 }
