@@ -36,7 +36,7 @@ namespace WaifuAI.src.forms
                 }
                 res.AppendLine();
                 res.AppendLine("Search Results:");
-                var found = await RAGEngine.Search(searchstr, 100, 1.2f);
+                var found = await LLMEngine.Bot.Brain.Search(searchstr, 100, 1.2f);
                 foreach (var item in found)
                 {
                     var distance = item.Distance.ToString("0.0000");

@@ -193,8 +193,7 @@ namespace WaifuAI
             LLMEngine.ContextPlugins.Add(new BrowsePlugin());
             LLMEngine.ContextPlugins.Add(new LocationPlugin("Locations"));
             LLMEngine.ContextPlugins.Add(new WebSearchPlugin());
-            RAGEngine.Enabled = true;
-            mck_ragenabled.Checked = RAGEngine.Enabled;
+            mck_ragenabled.Checked = LLMEngine.Settings.RAGEnabled;
             mck_worldinfo.Checked = LLMEngine.Settings.AllowWorldInfo;
             LLMEngine.OnInferenceStreamed += OnStreamMessageReceived;
             LLMEngine.OnInferenceEnded += OnStreamInferenceEnded;
@@ -299,7 +298,7 @@ namespace WaifuAI
             mck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
             mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
             mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
-            btVectorSearch.Enabled = RAGEngine.Enabled;
+            btVectorSearch.Enabled = LLMEngine.Settings.RAGEnabled;
         }
 
         /// <summary>
@@ -1050,7 +1049,7 @@ namespace WaifuAI
             mck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
             mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
             mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
-            btVectorSearch.Enabled = RAGEngine.Enabled;
+            btVectorSearch.Enabled = LLMEngine.Settings.RAGEnabled;
 
             Program.ApplyContextPluginSettings();
 
@@ -1087,8 +1086,8 @@ namespace WaifuAI
 
         private void ck_ragenabled_CheckedChanged(object sender, EventArgs e)
         {
-            RAGEngine.Enabled = mck_ragenabled.Checked;
-            btVectorSearch.Enabled = RAGEngine.Enabled;
+            LLMEngine.Settings.RAGEnabled = mck_ragenabled.Checked;
+            btVectorSearch.Enabled = LLMEngine.Settings.RAGEnabled;
         }
 
         #endregion

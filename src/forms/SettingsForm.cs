@@ -197,7 +197,7 @@ namespace WaifuAI.src.forms
                 // Context plugin settings
                 Program.ApplyContextPluginSettings();
                 // Apply RAG settings
-                RAGEngine.ApplySettings();
+                LLMEngine.Bot.Brain.ReloadMemories();
                 LLMEngine.Client?.UpdateSearchProvider();
             }
             catch (Exception ex)

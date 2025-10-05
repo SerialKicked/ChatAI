@@ -92,7 +92,7 @@ namespace WaifuAI.AgentPlugins
                     EndTime = DateTime.Now.AddDays(30),
                     Priority = 5
                 };
-                if (RAGEngine.Enabled)
+                if (LLMEngine.Settings.RAGEnabled)
                     await memunit.EmbedText().ConfigureAwait(false);
                 owner.Brain.Memorize(memunit);
                 if (ct.IsCancellationRequested)
