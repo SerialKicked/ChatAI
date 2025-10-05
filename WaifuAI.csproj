@@ -9,6 +9,7 @@
     <ApplicationIcon>w(AI)fu.ico</ApplicationIcon>
     <UseWPF>true</UseWPF>
     <NoWarn>MSB3277</NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   
   <ItemGroup>

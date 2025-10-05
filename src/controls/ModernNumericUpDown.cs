@@ -34,8 +34,8 @@ namespace WaifuAI.Controls
 
         private System.Windows.Forms.Timer? _repeatTimer;
         private bool _repeatUp;
-        private int _repeatDelay = 500;
-        private int _repeatSpeed = 50;
+        private readonly int _repeatDelay = 500;
+        private readonly int _repeatSpeed = 50;
 
         // Theme colors
         private Color _panel;
@@ -329,11 +329,11 @@ namespace WaifuAI.Controls
                 return;
 
             // Allow decimal point if decimal places > 0 and not hex
-            if (e.KeyChar == '.' && _decimalPlaces > 0 && !_hexadecimal && !_textBox.Text.Contains("."))
+            if (e.KeyChar == '.' && _decimalPlaces > 0 && !_hexadecimal && !_textBox.Text.Contains('.'))
                 return;
 
             // Allow minus sign at start for negative numbers
-            if (e.KeyChar == '-' && _textBox.SelectionStart == 0 && _minimum < 0 && !_textBox.Text.Contains("-"))
+            if (e.KeyChar == '-' && _textBox.SelectionStart == 0 && _minimum < 0 && !_textBox.Text.Contains('-'))
                 return;
 
             // Allow hex characters
@@ -458,23 +458,23 @@ namespace WaifuAI.Controls
             if (isUp)
             {
                 // Up arrow: ^
-                Point[] points = new[]
-                {
+                Point[] points =
+                [
                     new Point(cx - arrowSize, cy + 1),
                     new Point(cx, cy - arrowSize + 1),
                     new Point(cx + arrowSize, cy + 1)
-                };
+                ];
                 g.DrawLines(pen, points);
             }
             else
             {
                 // Down arrow: v
-                Point[] points = new[]
-                {
+                Point[] points =
+                [
                     new Point(cx - arrowSize, cy - 1),
                     new Point(cx, cy + arrowSize - 1),
                     new Point(cx + arrowSize, cy - 1)
-                };
+                ];
                 g.DrawLines(pen, points);
             }
         }

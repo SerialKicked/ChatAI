@@ -428,12 +428,12 @@ namespace WaifuAI.Controls
             int arrowSize = 4;
 
             // Down arrow
-            Point[] points = new[]
-            {
+            Point[] points =
+            [
                 new Point(cx - arrowSize, cy - 2),
                 new Point(cx, cy + arrowSize - 2),
                 new Point(cx + arrowSize, cy - 2)
-            };
+            ];
             g.DrawLines(pen, points);
         }
 
@@ -566,7 +566,7 @@ namespace WaifuAI.Controls
         public class ObjectCollection : System.Collections.IList
         {
             private readonly ModernComboBox _owner;
-            private readonly System.Collections.ArrayList _items = new();
+            private readonly System.Collections.ArrayList _items = [];
 
             internal ObjectCollection(ModernComboBox owner)
             {

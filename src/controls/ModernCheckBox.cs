@@ -107,11 +107,13 @@ namespace WaifuAI.Controls
             set => _animationDuration = Math.Max(16, value);
         }
 
+#pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
         public override string Text
         {
             get => base.Text;
             set { if (base.Text != value) { base.Text = value; Invalidate(); } }
         }
+#pragma warning restore CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
 
         // Theme Application
         public void ApplyTheme(ThemeManager.Theme t)

@@ -37,7 +37,7 @@ namespace WaifuAI.Controls
 
             EnumerateDescendants(form, h =>
             {
-                try { SetWindowTheme(h, "Explorer", null); } catch { }
+                try { int v = SetWindowTheme(h, "Explorer", null); } catch { }
             });
         }
 
@@ -98,10 +98,10 @@ namespace WaifuAI.Controls
         public static Theme CurrentTheme { get; private set; } = CreateDark();
         public static event EventHandler<Theme>? ThemeChanged;
 
-        private static readonly HashSet<ComboBox> OwnerDrawnComboBoxes = new();
-        private static readonly HashSet<TabControl> OwnerDrawnTabControls = new();
+        private static readonly HashSet<ComboBox> OwnerDrawnComboBoxes = [];
+        private static readonly HashSet<TabControl> OwnerDrawnTabControls = [];
 
-        private static readonly Dictionary<Control, (Color Fore, Color Back, Font? Font)> ExcludedOriginals = new();
+        private static readonly Dictionary<Control, (Color Fore, Color Back, Font? Font)> ExcludedOriginals = [];
 
         // TabControl config (applies only in Buttons mode now)
         private const bool FillHeaderBackground = true;
@@ -165,7 +165,6 @@ namespace WaifuAI.Controls
         // =========================================================
         public static Theme CreateDark(string name = "Dark")
         {
-            var accent = GetSystemAccentOrFallback(Color.FromArgb(0x4D, 0xA3, 0xFF));
             return new Theme(
                 name,
                 Back: Color.FromArgb(0x15, 0x15, 0x15),
@@ -316,10 +315,6 @@ namespace WaifuAI.Controls
 
             if (c is not IThemeAware ta || ta.ThemeProcessInnerComponent == true)
             {
-                if (c is ModernComboBox t)
-                {
-                    var x = 1;
-                }
                 foreach (Control child in c.Controls)
                 {
                     ApplyRecursive(child);
@@ -345,7 +340,7 @@ namespace WaifuAI.Controls
 
         private static bool IsExcluded(Control c)
         {
-            if (c.Tag is string ts && ts.IndexOf("no-theme", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (c.Tag is string ts && ts.Contains("no-theme", StringComparison.OrdinalIgnoreCase))
                 return true;
             if (c is IThemeExclude) return true;
             if (c.GetType().IsDefined(typeof(ThemeExcludeAttribute), true)) return true;
@@ -391,7 +386,7 @@ namespace WaifuAI.Controls
 
             if (e.Index >= 0 && e.Index < cb.Items.Count)
             {
-                string text = cb.GetItemText(cb.Items[e.Index]);
+                string text = cb.GetItemText(cb.Items[e.Index]) ?? string.Empty;
                 TextRenderer.DrawText(e.Graphics, text, cb.Font, e.Bounds, fore,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
             }

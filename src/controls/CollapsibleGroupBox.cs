@@ -114,7 +114,9 @@ namespace WaifuAI.Controls
         public override string Text
         {
             get => base.Text;
+#pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
             set { if (base.Text != value) { base.Text = value; Invalidate(HeaderRect); } }
+#pragma warning restore CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
         }
 
         public event EventHandler? ExpandedChanged;

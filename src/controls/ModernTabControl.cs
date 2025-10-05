@@ -23,10 +23,9 @@ namespace WaifuAI.Controls
         // Interaction state
         private int _hoverIndex = -1;
         private int _hoverCloseIndex = -1;
-        private bool _mouseDownOnClose;
 
         // Cache the EXACT rectangles we draw - this is the single source of truth
-        private readonly System.Collections.Generic.List<Rectangle> _drawnTabRects = new();
+        private readonly List<Rectangle> _drawnTabRects = [];
         private int _lastCalculatedWidth = 0;
 
         // Theme colors
@@ -141,7 +140,7 @@ namespace WaifuAI.Controls
         protected override void OnMouseClick(MouseEventArgs e)
         {
             // Handle tab clicks manually since we're owner-drawing
-            if (e.Button == MouseButtons.Left && !_mouseDownOnClose)
+            if (e.Button == MouseButtons.Left)
             {
                 int index = GetTabIndexAtPoint(e.Location);
                 if (index >= 0 && index < TabPages.Count)
