@@ -192,7 +192,7 @@ namespace WaifuAI.AgentPlugins
                 "{{userbio}}" + LLMEngine.NewLine + LLMEngine.NewLine;
 
             var datafound = new PromptInserts();
-            await owner.Brain.UpdateRagAndInserts(datafound, goal, 8, 1.25f).ConfigureAwait(false);
+            await owner.Brain.GetRAGandInserts(datafound, goal, 8, 1.25f).ConfigureAwait(false);
             if (datafound.Count > 0)
             {
                 sysprompt += "## Relevant Information:" + LLMEngine.NewLine + LLMEngine.NewLine;

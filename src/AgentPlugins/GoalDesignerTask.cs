@@ -68,14 +68,14 @@ namespace WaifuAI.AgentPlugins
             var req = "Based on the information provided, write a list of personal goals you want to set for yourself as {{char}}. Those have to be goals, or topics of research for you directly. They must be of interest to you, independently of {{user}}'s own goals.";
             var goallist = await GetGoalList(mainPrompt, req).ConfigureAwait(false) ?? new();
             if (goallist.Goals.Count > 2)
-                goallist.Goals = goallist.Goals.Take(2).ToList();
+                goallist.Goals = [.. goallist.Goals.Take(2)];
             allgoals.AddRange(goallist.Goals);
 
             // add user specific goals
             req = "Based on the information provided, write a list of things that you want {{user}} to do or become for you. This can also include any personal topic where you want to question or challenge {{user}}'s perspective. Order the list from most to least important.";
             goallist = await GetGoalList(mainPrompt, req).ConfigureAwait(false);
             if (goallist.Goals.Count > 2)
-                goallist.Goals = goallist.Goals.Take(2).ToList();
+                goallist.Goals = [.. goallist.Goals.Take(2)];
             allgoals.AddRange(goallist.Goals);
 
             // add goals from sessions
@@ -220,7 +220,7 @@ namespace WaifuAI.AgentPlugins
                 "{{userbio}}" + LLMEngine.NewLine + LLMEngine.NewLine;
 
             var datafound = new PromptInserts();
-            await owner.Brain.UpdateRagAndInserts(datafound, goal, 8, 1.25f).ConfigureAwait(false);
+            await owner.Brain.GetRAGandInserts(datafound, goal, 8, 1.25f).ConfigureAwait(false);
             if (datafound.Count > 0)
             {
                 sysprompt += "## Relevant Information:" + LLMEngine.NewLine + LLMEngine.NewLine;

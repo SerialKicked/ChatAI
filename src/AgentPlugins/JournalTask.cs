@@ -116,7 +116,7 @@ namespace WaifuAI.AgentPlugins
                 prompt.AppendLinuxLine($"You last spoke to {LLMEngine.User.Name} about {StringExtensions.TimeSpanToHumanString(timespansince)} ago.").AppendLinuxLine();
             }
             var recall = new PromptInserts();
-            await owner.Brain.UpdateRagAndInserts(recall, topic, 3, 1.1f);
+            await owner.Brain.GetRAGandInserts(recall, topic, 3, 1.1f);
             foreach (var item in recall)
             {
                 prompt.AppendLinuxLine(item.Content).AppendLinuxLine();

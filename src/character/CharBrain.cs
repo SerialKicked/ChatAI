@@ -1,6 +1,8 @@
 ﻿using LetheAISharp.Agent;
 using LetheAISharp.Files;
+using LetheAISharp.LLM;
 using LetheAISharp.Memory;
+using LetheAISharp;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -109,6 +111,58 @@ namespace WaifuAI.Files
             Mood.Cheer      += Delta(result.Cheer);
             Mood.Curiosity  += Delta(result.Curiosity);
             Mood.Sanity     += Delta(result.Sanity);
+        }
+
+        public override async Task<List<VaultResult>> Search(string message, int maxRes, float maxDist)
+        {
+            if (!LLMEngine.Settings.RAGEnabled)
+                return [];
+
+            var toretrieve = maxRes * 2 + 5;
+            if (toretrieve < 30)
+                toretrieve = 30;
+            var found = await base.Search(message, toretrieve, maxDist).ConfigureAwait(false);
+            if (found.Count == 0)
+                return [];
+
+            // Check if message contains the words RP or roleplay
+            var requestIsAboutRoleplay = message.Contains(" RP", StringComparison.OrdinalIgnoreCase) || message.Contains(" roleplay", StringComparison.OrdinalIgnoreCase) || message.Contains(" role play", StringComparison.OrdinalIgnoreCase);
+
+            foreach (var item in found)
+            {
+                if (item.Memory.Category == MemoryType.ChatSession && item.Memory is ChatSession session)
+                {
+                    if (session.MetaData.IsRoleplaySession)
+                    {
+                        if (requestIsAboutRoleplay)
+                            item.Distance -= 0.015f; // Boost RP sessions
+                        else
+                            item.Distance += 0.015f; // Decay RP sessions
+                    }
+                    // Mark sticky as not wanted because they are handled with different insertion method
+                    if (session.Sticky && LLMEngine.Settings.SessionMemorySystem)
+                        item.Distance += 2f;
+                }
+                var embedhelpers = MemoryUnit.EmbedHelpers[item.Memory.Category];
+                if (embedhelpers?.Count > 0)
+                {
+                    foreach (var kw in embedhelpers)
+                    {
+                        if (message.ContainsWholeWord(kw, StringComparison.OrdinalIgnoreCase))
+                        {
+                            item.Distance -= 0.015f; // Boost if the message contains one of the embed helpers for this category
+                            break;
+                        }
+                    }
+                }
+            }
+            // Remove entries with distance above limit
+            found.RemoveAll(e => e.Distance > maxDist);
+            found.Sort((a, b) => a.Distance.CompareTo(b.Distance));
+            // If we have too many results, trim the list to maxRes
+            if (found.Count > maxRes)
+                found = found.GetRange(0, maxRes);
+            return found;
         }
     }
 }
