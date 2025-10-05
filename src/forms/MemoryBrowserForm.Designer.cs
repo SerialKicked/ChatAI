@@ -6,7 +6,7 @@
 
         private System.Windows.Forms.SplitContainer splitMain;
         private System.Windows.Forms.Panel panelLeftTop;
-        private System.Windows.Forms.ComboBox cbCategory;
+        private Controls.ModernComboBox cbCategory;
         private System.Windows.Forms.Label lblCategory;
         private System.Windows.Forms.ListView listMemories;
         private System.Windows.Forms.ColumnHeader colTitle;
@@ -29,13 +29,13 @@
             colTitle = new ColumnHeader();
             colCategory = new ColumnHeader();
             colAdded = new ColumnHeader();
+            btDeleteSelected = new Button();
             panelLeftTop = new Panel();
-            cbCategory = new ComboBox();
+            cbCategory = new Controls.ModernComboBox();
             lblCategory = new Label();
             webView = new Microsoft.Web.WebView2.WinForms.WebView2();
             panelBottom = new Panel();
             btClose = new Button();
-            btDeleteSelected = new Button();
             ((System.ComponentModel.ISupportInitialize)splitMain).BeginInit();
             splitMain.Panel1.SuspendLayout();
             splitMain.Panel2.SuspendLayout();
@@ -69,10 +69,10 @@
             listMemories.Columns.AddRange(new ColumnHeader[] { colTitle, colCategory, colAdded });
             listMemories.Dock = DockStyle.Fill;
             listMemories.FullRowSelect = true;
-            listMemories.Location = new Point(0, 44);
+            listMemories.Location = new Point(0, 38);
             listMemories.MultiSelect = false;
             listMemories.Name = "listMemories";
-            listMemories.Size = new Size(400, 447);
+            listMemories.Size = new Size(400, 453);
             listMemories.TabIndex = 0;
             listMemories.UseCompatibleStateImageBehavior = false;
             listMemories.View = View.Details;
@@ -94,6 +94,22 @@
             colAdded.Text = "Added";
             colAdded.Width = 120;
             // 
+            // btDeleteSelected
+            // 
+            btDeleteSelected.BackColor = Color.Maroon;
+            btDeleteSelected.Dock = DockStyle.Bottom;
+            btDeleteSelected.FlatStyle = FlatStyle.Popup;
+            btDeleteSelected.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btDeleteSelected.ForeColor = Color.WhiteSmoke;
+            btDeleteSelected.Location = new Point(0, 491);
+            btDeleteSelected.Name = "btDeleteSelected";
+            btDeleteSelected.Size = new Size(400, 23);
+            btDeleteSelected.TabIndex = 2;
+            btDeleteSelected.Tag = "no-theme";
+            btDeleteSelected.Text = "Delete Entry";
+            btDeleteSelected.UseVisualStyleBackColor = false;
+            btDeleteSelected.Click += btDeleteSelected_Click;
+            // 
             // panelLeftTop
             // 
             panelLeftTop.Controls.Add(cbCategory);
@@ -102,7 +118,7 @@
             panelLeftTop.Location = new Point(0, 0);
             panelLeftTop.Name = "panelLeftTop";
             panelLeftTop.Padding = new Padding(8);
-            panelLeftTop.Size = new Size(400, 44);
+            panelLeftTop.Size = new Size(400, 38);
             panelLeftTop.TabIndex = 1;
             // 
             // cbCategory
@@ -149,27 +165,17 @@
             // btClose
             // 
             btClose.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            btClose.BackColor = Color.PaleGreen;
+            btClose.BackColor = Color.DarkSeaGreen;
             btClose.FlatStyle = FlatStyle.Flat;
             btClose.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btClose.Location = new Point(8, 8);
             btClose.Name = "btClose";
             btClose.Size = new Size(1056, 28);
             btClose.TabIndex = 0;
+            btClose.Tag = "no-theme";
             btClose.Text = "Close";
             btClose.UseVisualStyleBackColor = false;
             btClose.Click += btClose_Click;
-            // 
-            // btDeleteSelected
-            // 
-            btDeleteSelected.Dock = DockStyle.Bottom;
-            btDeleteSelected.Location = new Point(0, 491);
-            btDeleteSelected.Name = "btDeleteSelected";
-            btDeleteSelected.Size = new Size(400, 23);
-            btDeleteSelected.TabIndex = 2;
-            btDeleteSelected.Text = "Delete Entry";
-            btDeleteSelected.UseVisualStyleBackColor = true;
-            btDeleteSelected.Click += btDeleteSelected_Click;
             // 
             // MemoryBrowserForm
             // 

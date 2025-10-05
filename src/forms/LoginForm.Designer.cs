@@ -40,7 +40,7 @@ namespace WaifuAI.src.forms
             btCheck = new Button();
             btCancel = new Button();
             btConnect = new Button();
-            collapsibleGroupBox1 = new WaifuAI.Controls.CollapsibleGroupBox();
+            collapsibleGroupBox1 = new CollapsibleGroupBox();
             collapsibleGroupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -66,11 +66,12 @@ namespace WaifuAI.src.forms
             // 
             // cbAPI
             // 
-            cbAPI.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbAPI.BackColor = Color.FromArgb(64, 64, 64);
             cbAPI.Font = new Font("Segoe UI", 9F);
             cbAPI.Items.AddRange(new object[] { "KoboldAPI", "OpenAI Compatible" });
             cbAPI.Location = new Point(15, 103);
             cbAPI.Name = "cbAPI";
+            cbAPI.Padding = new Padding(1);
             cbAPI.Size = new Size(158, 23);
             cbAPI.TabIndex = 2;
             // 
@@ -106,12 +107,12 @@ namespace WaifuAI.src.forms
             // 
             // btCheck
             // 
-            btCheck.FlatStyle = FlatStyle.Flat;
+            btCheck.FlatStyle = FlatStyle.Popup;
             btCheck.Location = new Point(15, 136);
             btCheck.Name = "btCheck";
             btCheck.Size = new Size(111, 23);
             btCheck.TabIndex = 6;
-            btCheck.Tag = "";
+            btCheck.Tag = "no-theme";
             btCheck.Text = "Check";
             btCheck.UseVisualStyleBackColor = true;
             btCheck.Click += btCheck_Click;

@@ -1,4 +1,6 @@
-﻿namespace WaifuAI.src.forms
+﻿using WaifuAI.Controls;
+
+namespace WaifuAI.src.forms
 {
     partial class InstructForm
     {
@@ -31,16 +33,22 @@
             panel1 = new Panel();
             btSave = new Button();
             edInstruct = new TextBox();
-            listInstruct = new ListBox();
+            listInstruct = new ModernListBox();
             panContent = new Panel();
+            panel2 = new Panel();
+            panel3 = new Panel();
+            panel4 = new Panel();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
             // 
-            panel1.Controls.Add(btSave);
+            panel1.Controls.Add(panel4);
             panel1.Controls.Add(edInstruct);
+            panel1.Controls.Add(panel3);
+            panel1.Controls.Add(btSave);
             panel1.Controls.Add(listInstruct);
+            panel1.Controls.Add(panel2);
             panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
@@ -49,33 +57,37 @@
             // 
             // btSave
             // 
-            btSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btSave.BackColor = Color.DarkSeaGreen;
+            btSave.Dock = DockStyle.Bottom;
+            btSave.FlatStyle = FlatStyle.Flat;
             btSave.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btSave.Location = new Point(3, 549);
+            btSave.Location = new Point(0, 541);
             btSave.Name = "btSave";
-            btSave.Size = new Size(228, 23);
+            btSave.Size = new Size(234, 24);
             btSave.TabIndex = 3;
             btSave.Text = "Save Instruction Format";
-            btSave.UseVisualStyleBackColor = true;
+            btSave.UseVisualStyleBackColor = false;
             btSave.Click += btSave_Click;
             // 
             // edInstruct
             // 
-            edInstruct.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            edInstruct.Location = new Point(3, 520);
+            edInstruct.BorderStyle = BorderStyle.FixedSingle;
+            edInstruct.Dock = DockStyle.Bottom;
+            edInstruct.Location = new Point(0, 508);
             edInstruct.Name = "edInstruct";
-            edInstruct.Size = new Size(228, 23);
+            edInstruct.Size = new Size(234, 23);
             edInstruct.TabIndex = 2;
             // 
             // listInstruct
             // 
             listInstruct.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            listInstruct.BackColor = Color.FromArgb(64, 64, 64);
             listInstruct.BorderStyle = BorderStyle.FixedSingle;
-            listInstruct.FormattingEnabled = true;
+            listInstruct.Font = new Font("Segoe UI", 9.25F);
             listInstruct.Location = new Point(3, 3);
             listInstruct.Name = "listInstruct";
-            listInstruct.ScrollAlwaysVisible = true;
-            listInstruct.Size = new Size(228, 497);
+            listInstruct.Padding = new Padding(1);
+            listInstruct.Size = new Size(228, 482);
             listInstruct.TabIndex = 1;
             listInstruct.SelectedIndexChanged += listInstruct_SelectedIndexChanged;
             // 
@@ -87,6 +99,36 @@
             panContent.Name = "panContent";
             panContent.Size = new Size(678, 575);
             panContent.TabIndex = 2;
+            // 
+            // panel2
+            // 
+            panel2.Dock = DockStyle.Bottom;
+            panel2.Location = new Point(0, 565);
+            panel2.Margin = new Padding(8);
+            panel2.Name = "panel2";
+            panel2.Padding = new Padding(8);
+            panel2.Size = new Size(234, 10);
+            panel2.TabIndex = 49;
+            // 
+            // panel3
+            // 
+            panel3.Dock = DockStyle.Bottom;
+            panel3.Location = new Point(0, 531);
+            panel3.Margin = new Padding(8);
+            panel3.Name = "panel3";
+            panel3.Padding = new Padding(8);
+            panel3.Size = new Size(234, 10);
+            panel3.TabIndex = 50;
+            // 
+            // panel4
+            // 
+            panel4.Dock = DockStyle.Bottom;
+            panel4.Location = new Point(0, 498);
+            panel4.Margin = new Padding(8);
+            panel4.Name = "panel4";
+            panel4.Padding = new Padding(8);
+            panel4.Size = new Size(234, 10);
+            panel4.TabIndex = 51;
             // 
             // InstructForm
             // 
@@ -109,9 +151,12 @@
         #endregion
 
         private Panel panel1;
-        private ListBox listInstruct;
+        private ModernListBox listInstruct;
         private Button btSave;
         private TextBox edInstruct;
         private Panel panContent;
+        private Panel panel3;
+        private Panel panel2;
+        private Panel panel4;
     }
 }

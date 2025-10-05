@@ -20,8 +20,8 @@ namespace WaifuAI.Controls
 
         private ComboBoxStyle _dropDownStyle = ComboBoxStyle.DropDownList;
         private int _selectedIndex = -1;
-        private int _dropDownHeight = 150;
-        private int _maxDropDownItems = 8;
+        private int _dropDownHeight = 180;
+        private int _maxDropDownItems = 10;
         private bool _droppedDown = false;
 
         private bool _buttonHovered;
