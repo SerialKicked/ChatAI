@@ -1,4 +1,6 @@
-﻿namespace WaifuAI.src.forms
+﻿using WaifuAI.Controls;
+
+namespace WaifuAI.src.forms
 {
     partial class SysPromptForm
     {
@@ -29,10 +31,11 @@
         private void InitializeComponent()
         {
             PanMenu = new Panel();
-            btSave = new Button();
             edFileName = new TextBox();
-            listPrompt = new ListBox();
-            groupBox22 = new GroupBox();
+            listPrompt = new ModernListBox();
+            panel3 = new Panel();
+            btSave = new Button();
+            panel1 = new Panel();
             ed_editsys_prefix = new TextBox();
             label55 = new Label();
             ed_editsys_worldinfo = new TextBox();
@@ -41,168 +44,206 @@
             label53 = new Label();
             ed_editsys_scenario = new TextBox();
             label52 = new Label();
-            groupBox21 = new GroupBox();
             ed_editsys_prompt = new TextBox();
+            collapsibleGroupBox1 = new CollapsibleGroupBox();
+            collapsibleGroupBox2 = new CollapsibleGroupBox();
             PanMenu.SuspendLayout();
-            groupBox22.SuspendLayout();
-            groupBox21.SuspendLayout();
+            collapsibleGroupBox1.SuspendLayout();
+            collapsibleGroupBox2.SuspendLayout();
             SuspendLayout();
             // 
             // PanMenu
             // 
-            PanMenu.Controls.Add(btSave);
             PanMenu.Controls.Add(edFileName);
             PanMenu.Controls.Add(listPrompt);
+            PanMenu.Controls.Add(panel3);
+            PanMenu.Controls.Add(btSave);
+            PanMenu.Controls.Add(panel1);
             PanMenu.Dock = DockStyle.Left;
             PanMenu.Location = new Point(0, 0);
             PanMenu.Name = "PanMenu";
-            PanMenu.Size = new Size(234, 518);
+            PanMenu.Size = new Size(234, 494);
             PanMenu.TabIndex = 0;
-            // 
-            // btSave
-            // 
-            btSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            btSave.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btSave.Location = new Point(3, 492);
-            btSave.Name = "btSave";
-            btSave.Size = new Size(228, 23);
-            btSave.TabIndex = 6;
-            btSave.Text = "Save System Prompt";
-            btSave.UseVisualStyleBackColor = true;
-            btSave.Click += btSave_Click;
             // 
             // edFileName
             // 
-            edFileName.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            edFileName.Location = new Point(3, 463);
+            edFileName.Dock = DockStyle.Bottom;
+            edFileName.Location = new Point(0, 428);
             edFileName.Name = "edFileName";
             edFileName.PlaceholderText = "Filename for prompt";
-            edFileName.Size = new Size(228, 23);
+            edFileName.Size = new Size(234, 23);
             edFileName.TabIndex = 5;
             // 
             // listPrompt
             // 
-            listPrompt.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            listPrompt.BackColor = Color.FromArgb(64, 64, 64);
             listPrompt.BorderStyle = BorderStyle.FixedSingle;
-            listPrompt.FormattingEnabled = true;
-            listPrompt.Location = new Point(3, 3);
+            listPrompt.Dock = DockStyle.Top;
+            listPrompt.Font = new Font("Segoe UI", 9.25F);
+            listPrompt.Location = new Point(0, 0);
             listPrompt.Name = "listPrompt";
-            listPrompt.ScrollAlwaysVisible = true;
-            listPrompt.Size = new Size(228, 452);
+            listPrompt.Padding = new Padding(1);
+            listPrompt.Size = new Size(234, 418);
             listPrompt.TabIndex = 4;
             listPrompt.SelectedIndexChanged += listPrompt_SelectedIndexChanged;
             // 
-            // groupBox22
+            // panel3
             // 
-            groupBox22.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            groupBox22.Controls.Add(ed_editsys_prefix);
-            groupBox22.Controls.Add(label55);
-            groupBox22.Controls.Add(ed_editsys_worldinfo);
-            groupBox22.Controls.Add(label54);
-            groupBox22.Controls.Add(ed_editsys_dialogs);
-            groupBox22.Controls.Add(label53);
-            groupBox22.Controls.Add(ed_editsys_scenario);
-            groupBox22.Controls.Add(label52);
-            groupBox22.Location = new Point(862, 3);
-            groupBox22.Name = "groupBox22";
-            groupBox22.Size = new Size(369, 512);
-            groupBox22.TabIndex = 3;
-            groupBox22.TabStop = false;
-            groupBox22.Text = "Section Titles";
+            panel3.Dock = DockStyle.Bottom;
+            panel3.Location = new Point(0, 451);
+            panel3.Margin = new Padding(8);
+            panel3.Name = "panel3";
+            panel3.Padding = new Padding(8);
+            panel3.Size = new Size(234, 10);
+            panel3.TabIndex = 52;
+            // 
+            // btSave
+            // 
+            btSave.BackColor = Color.DarkSeaGreen;
+            btSave.Dock = DockStyle.Bottom;
+            btSave.FlatStyle = FlatStyle.Flat;
+            btSave.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btSave.ForeColor = Color.Black;
+            btSave.Location = new Point(0, 461);
+            btSave.Name = "btSave";
+            btSave.Size = new Size(234, 23);
+            btSave.TabIndex = 6;
+            btSave.Tag = "no-theme";
+            btSave.Text = "Save System Prompt";
+            btSave.UseVisualStyleBackColor = false;
+            btSave.Click += btSave_Click;
+            // 
+            // panel1
+            // 
+            panel1.Dock = DockStyle.Bottom;
+            panel1.Location = new Point(0, 484);
+            panel1.Margin = new Padding(8);
+            panel1.Name = "panel1";
+            panel1.Padding = new Padding(8);
+            panel1.Size = new Size(234, 10);
+            panel1.TabIndex = 53;
             // 
             // ed_editsys_prefix
             // 
-            ed_editsys_prefix.Location = new Point(6, 171);
+            ed_editsys_prefix.BorderStyle = BorderStyle.FixedSingle;
+            ed_editsys_prefix.Location = new Point(15, 196);
             ed_editsys_prefix.Name = "ed_editsys_prefix";
-            ed_editsys_prefix.Size = new Size(357, 23);
+            ed_editsys_prefix.Size = new Size(339, 24);
             ed_editsys_prefix.TabIndex = 7;
             // 
             // label55
             // 
             label55.AutoSize = true;
-            label55.Location = new Point(6, 153);
+            label55.Location = new Point(15, 176);
             label55.Name = "label55";
-            label55.Size = new Size(129, 15);
+            label55.Size = new Size(143, 17);
             label55.TabIndex = 6;
             label55.Text = "Category Section Prefix";
             // 
             // ed_editsys_worldinfo
             // 
-            ed_editsys_worldinfo.Location = new Point(6, 127);
+            ed_editsys_worldinfo.BorderStyle = BorderStyle.FixedSingle;
+            ed_editsys_worldinfo.Location = new Point(15, 149);
             ed_editsys_worldinfo.Name = "ed_editsys_worldinfo";
-            ed_editsys_worldinfo.Size = new Size(357, 23);
+            ed_editsys_worldinfo.Size = new Size(339, 24);
             ed_editsys_worldinfo.TabIndex = 5;
             // 
             // label54
             // 
             label54.AutoSize = true;
-            label54.Location = new Point(6, 109);
+            label54.Location = new Point(15, 129);
             label54.Name = "label54";
-            label54.Size = new Size(131, 15);
+            label54.Size = new Size(143, 17);
             label54.TabIndex = 4;
             label54.Text = "World Info Section Title";
             // 
             // ed_editsys_dialogs
             // 
-            ed_editsys_dialogs.Location = new Point(6, 83);
+            ed_editsys_dialogs.BorderStyle = BorderStyle.FixedSingle;
+            ed_editsys_dialogs.Location = new Point(15, 102);
             ed_editsys_dialogs.Name = "ed_editsys_dialogs";
-            ed_editsys_dialogs.Size = new Size(357, 23);
+            ed_editsys_dialogs.Size = new Size(339, 24);
             ed_editsys_dialogs.TabIndex = 3;
             // 
             // label53
             // 
             label53.AutoSize = true;
-            label53.Location = new Point(6, 65);
+            label53.Location = new Point(15, 82);
             label53.Name = "label53";
-            label53.Size = new Size(174, 15);
+            label53.Size = new Size(193, 17);
             label53.TabIndex = 2;
             label53.Text = "Example Dialogs Title (optional)";
             // 
             // ed_editsys_scenario
             // 
-            ed_editsys_scenario.Location = new Point(6, 39);
+            ed_editsys_scenario.BorderStyle = BorderStyle.FixedSingle;
+            ed_editsys_scenario.Location = new Point(15, 55);
             ed_editsys_scenario.Name = "ed_editsys_scenario";
-            ed_editsys_scenario.Size = new Size(357, 23);
+            ed_editsys_scenario.Size = new Size(339, 24);
             ed_editsys_scenario.TabIndex = 1;
             // 
             // label52
             // 
             label52.AutoSize = true;
-            label52.Location = new Point(6, 21);
+            label52.Location = new Point(15, 35);
             label52.Name = "label52";
-            label52.Size = new Size(120, 15);
+            label52.Size = new Size(132, 17);
             label52.TabIndex = 0;
             label52.Text = "Scenario Section Title";
-            // 
-            // groupBox21
-            // 
-            groupBox21.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            groupBox21.Controls.Add(ed_editsys_prompt);
-            groupBox21.Location = new Point(240, 3);
-            groupBox21.Name = "groupBox21";
-            groupBox21.Size = new Size(616, 512);
-            groupBox21.TabIndex = 2;
-            groupBox21.TabStop = false;
-            groupBox21.Text = "Main Prompt (intro, char and user bio)";
             // 
             // ed_editsys_prompt
             // 
             ed_editsys_prompt.BorderStyle = BorderStyle.FixedSingle;
-            ed_editsys_prompt.Location = new Point(6, 22);
+            ed_editsys_prompt.Location = new Point(15, 35);
             ed_editsys_prompt.Multiline = true;
             ed_editsys_prompt.Name = "ed_editsys_prompt";
             ed_editsys_prompt.ScrollBars = ScrollBars.Vertical;
-            ed_editsys_prompt.Size = new Size(604, 481);
+            ed_editsys_prompt.Size = new Size(586, 422);
             ed_editsys_prompt.TabIndex = 0;
+            // 
+            // collapsibleGroupBox1
+            // 
+            collapsibleGroupBox1.BackColor = Color.FromArgb(37, 37, 37);
+            collapsibleGroupBox1.CanCollapse = false;
+            collapsibleGroupBox1.Controls.Add(ed_editsys_prompt);
+            collapsibleGroupBox1.Font = new Font("Segoe UI", 9.25F);
+            collapsibleGroupBox1.Location = new Point(240, 12);
+            collapsibleGroupBox1.Name = "collapsibleGroupBox1";
+            collapsibleGroupBox1.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox1.Size = new Size(616, 470);
+            collapsibleGroupBox1.TabIndex = 4;
+            collapsibleGroupBox1.Text = "Main Prompt (intro, char and user bio)";
+            // 
+            // collapsibleGroupBox2
+            // 
+            collapsibleGroupBox2.BackColor = Color.FromArgb(37, 37, 37);
+            collapsibleGroupBox2.CanCollapse = false;
+            collapsibleGroupBox2.Controls.Add(ed_editsys_prefix);
+            collapsibleGroupBox2.Controls.Add(label52);
+            collapsibleGroupBox2.Controls.Add(label55);
+            collapsibleGroupBox2.Controls.Add(ed_editsys_scenario);
+            collapsibleGroupBox2.Controls.Add(ed_editsys_worldinfo);
+            collapsibleGroupBox2.Controls.Add(label53);
+            collapsibleGroupBox2.Controls.Add(label54);
+            collapsibleGroupBox2.Controls.Add(ed_editsys_dialogs);
+            collapsibleGroupBox2.Font = new Font("Segoe UI", 9.25F);
+            collapsibleGroupBox2.Location = new Point(862, 12);
+            collapsibleGroupBox2.Name = "collapsibleGroupBox2";
+            collapsibleGroupBox2.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox2.Size = new Size(369, 239);
+            collapsibleGroupBox2.TabIndex = 5;
+            collapsibleGroupBox2.Text = "Section Titles";
             // 
             // SysPromptForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1243, 518);
-            Controls.Add(groupBox22);
-            Controls.Add(groupBox21);
+            BackColor = Color.DimGray;
+            ClientSize = new Size(1243, 494);
+            Controls.Add(collapsibleGroupBox2);
+            Controls.Add(collapsibleGroupBox1);
             Controls.Add(PanMenu);
+            ForeColor = Color.WhiteSmoke;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             MinimizeBox = false;
@@ -212,10 +253,10 @@
             Text = "System Prompt Editor";
             PanMenu.ResumeLayout(false);
             PanMenu.PerformLayout();
-            groupBox22.ResumeLayout(false);
-            groupBox22.PerformLayout();
-            groupBox21.ResumeLayout(false);
-            groupBox21.PerformLayout();
+            collapsibleGroupBox1.ResumeLayout(false);
+            collapsibleGroupBox1.PerformLayout();
+            collapsibleGroupBox2.ResumeLayout(false);
+            collapsibleGroupBox2.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -224,8 +265,7 @@
         private Panel PanMenu;
         private Button btSave;
         private TextBox edFileName;
-        private ListBox listPrompt;
-        private GroupBox groupBox22;
+        private Controls.ModernListBox listPrompt;
         private TextBox ed_editsys_prefix;
         private Label label55;
         private TextBox ed_editsys_worldinfo;
@@ -234,7 +274,10 @@
         private Label label53;
         private TextBox ed_editsys_scenario;
         private Label label52;
-        private GroupBox groupBox21;
         private TextBox ed_editsys_prompt;
+        private Controls.CollapsibleGroupBox collapsibleGroupBox1;
+        private Controls.CollapsibleGroupBox collapsibleGroupBox2;
+        private Panel panel3;
+        private Panel panel1;
     }
 }

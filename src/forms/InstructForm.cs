@@ -38,6 +38,7 @@ namespace WaifuAI.src.forms
                 listInstruct.SelectedIndex = idwant;
                 SelectedInstructEditor = DataFiles.Instruct[listInstruct.SelectedItem!.ToString()!].Copy<InstructFormat>()!;
             }
+            edInstruct.Text = SelectedInstructEditor.UniqueName;
             CreateInstructControls(panContent, SelectedInstructEditor);
             disableevents = false;
         }

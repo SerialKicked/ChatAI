@@ -31,9 +31,11 @@ namespace WaifuAI.src.forms
         private void InitializeComponent()
         {
             panMenu = new Panel();
-            btSave = new Button();
             edFileName = new TextBox();
             listSampler = new ModernListBox();
+            panel3 = new Panel();
+            btSave = new Button();
+            panel1 = new Panel();
             groupBox15 = new CollapsibleGroupBox();
             num_reppenrange = new ModernNumericUpDown();
             label41 = new Label();
@@ -87,8 +89,6 @@ namespace WaifuAI.src.forms
             ck_trimstop = new ModernCheckBox();
             ck_renderspecial = new ModernCheckBox();
             ck_ignoreeos = new ModernCheckBox();
-            panel3 = new Panel();
-            panel1 = new Panel();
             panMenu.SuspendLayout();
             groupBox15.SuspendLayout();
             groupBox14.SuspendLayout();
@@ -113,22 +113,6 @@ namespace WaifuAI.src.forms
             panMenu.Size = new Size(234, 502);
             panMenu.TabIndex = 0;
             // 
-            // btSave
-            // 
-            btSave.BackColor = Color.DarkSeaGreen;
-            btSave.Dock = DockStyle.Bottom;
-            btSave.FlatStyle = FlatStyle.Flat;
-            btSave.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btSave.ForeColor = Color.Black;
-            btSave.Location = new Point(0, 469);
-            btSave.Name = "btSave";
-            btSave.Size = new Size(234, 23);
-            btSave.TabIndex = 9;
-            btSave.Tag = "no-theme";
-            btSave.Text = "Save Sampling Settings";
-            btSave.UseVisualStyleBackColor = false;
-            btSave.Click += btSave_Click;
-            // 
             // edFileName
             // 
             edFileName.Dock = DockStyle.Bottom;
@@ -151,9 +135,46 @@ namespace WaifuAI.src.forms
             listSampler.TabIndex = 7;
             listSampler.SelectedIndexChanged += listSampler_SelectedIndexChanged;
             // 
+            // panel3
+            // 
+            panel3.Dock = DockStyle.Bottom;
+            panel3.Location = new Point(0, 459);
+            panel3.Margin = new Padding(8);
+            panel3.Name = "panel3";
+            panel3.Padding = new Padding(8);
+            panel3.Size = new Size(234, 10);
+            panel3.TabIndex = 51;
+            // 
+            // btSave
+            // 
+            btSave.BackColor = Color.DarkSeaGreen;
+            btSave.Dock = DockStyle.Bottom;
+            btSave.FlatStyle = FlatStyle.Flat;
+            btSave.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btSave.ForeColor = Color.Black;
+            btSave.Location = new Point(0, 469);
+            btSave.Name = "btSave";
+            btSave.Size = new Size(234, 23);
+            btSave.TabIndex = 9;
+            btSave.Tag = "no-theme";
+            btSave.Text = "Save Sampling Settings";
+            btSave.UseVisualStyleBackColor = false;
+            btSave.Click += btSave_Click;
+            // 
+            // panel1
+            // 
+            panel1.Dock = DockStyle.Bottom;
+            panel1.Location = new Point(0, 492);
+            panel1.Margin = new Padding(8);
+            panel1.Name = "panel1";
+            panel1.Padding = new Padding(8);
+            panel1.Size = new Size(234, 10);
+            panel1.TabIndex = 52;
+            // 
             // groupBox15
             // 
             groupBox15.BackColor = Color.FromArgb(37, 37, 37);
+            groupBox15.CanCollapse = false;
             groupBox15.Controls.Add(num_reppenrange);
             groupBox15.Controls.Add(label41);
             groupBox15.Controls.Add(num_reppen);
@@ -214,6 +235,7 @@ namespace WaifuAI.src.forms
             // groupBox14
             // 
             groupBox14.BackColor = Color.FromArgb(37, 37, 37);
+            groupBox14.CanCollapse = false;
             groupBox14.Controls.Add(num_seed);
             groupBox14.Controls.Add(label39);
             groupBox14.Controls.Add(num_temp);
@@ -274,6 +296,7 @@ namespace WaifuAI.src.forms
             // groupBox13
             // 
             groupBox13.BackColor = Color.FromArgb(37, 37, 37);
+            groupBox13.CanCollapse = false;
             groupBox13.Controls.Add(num_tfs);
             groupBox13.Controls.Add(label37);
             groupBox13.Controls.Add(num_typical);
@@ -431,6 +454,7 @@ namespace WaifuAI.src.forms
             // groupBox19
             // 
             groupBox19.BackColor = Color.FromArgb(37, 37, 37);
+            groupBox19.CanCollapse = false;
             groupBox19.Controls.Add(num_xtcthres);
             groupBox19.Controls.Add(label50);
             groupBox19.Controls.Add(num_xtcprob);
@@ -491,6 +515,7 @@ namespace WaifuAI.src.forms
             // groupBox18
             // 
             groupBox18.BackColor = Color.FromArgb(37, 37, 37);
+            groupBox18.CanCollapse = false;
             groupBox18.Controls.Add(num_drymul);
             groupBox18.Controls.Add(label46);
             groupBox18.Controls.Add(num_drybase);
@@ -574,6 +599,7 @@ namespace WaifuAI.src.forms
             // groupBox17
             // 
             groupBox17.BackColor = Color.FromArgb(37, 37, 37);
+            groupBox17.CanCollapse = false;
             groupBox17.Controls.Add(num_smoothfac);
             groupBox17.Controls.Add(label59);
             groupBox17.Controls.Add(num_dynexpo);
@@ -658,6 +684,7 @@ namespace WaifuAI.src.forms
             // groupBox16
             // 
             groupBox16.BackColor = Color.FromArgb(37, 37, 37);
+            groupBox16.CanCollapse = false;
             groupBox16.Controls.Add(num_meta);
             groupBox16.Controls.Add(label42);
             groupBox16.Controls.Add(num_mtau);
@@ -741,6 +768,7 @@ namespace WaifuAI.src.forms
             // groupBox20
             // 
             groupBox20.BackColor = Color.FromArgb(37, 37, 37);
+            groupBox20.CanCollapse = false;
             groupBox20.Controls.Add(ck_trimstop);
             groupBox20.Controls.Add(ck_renderspecial);
             groupBox20.Controls.Add(ck_ignoreeos);
@@ -782,26 +810,6 @@ namespace WaifuAI.src.forms
             ck_ignoreeos.TabIndex = 16;
             ck_ignoreeos.Text = "Ignore EOS Token";
             ck_ignoreeos.UseVisualStyleBackColor = true;
-            // 
-            // panel3
-            // 
-            panel3.Dock = DockStyle.Bottom;
-            panel3.Location = new Point(0, 459);
-            panel3.Margin = new Padding(8);
-            panel3.Name = "panel3";
-            panel3.Padding = new Padding(8);
-            panel3.Size = new Size(234, 10);
-            panel3.TabIndex = 51;
-            // 
-            // panel1
-            // 
-            panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 492);
-            panel1.Margin = new Padding(8);
-            panel1.Name = "panel1";
-            panel1.Padding = new Padding(8);
-            panel1.Size = new Size(234, 10);
-            panel1.TabIndex = 52;
             // 
             // SamplerForm
             // 

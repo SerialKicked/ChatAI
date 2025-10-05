@@ -67,6 +67,7 @@ namespace WaifuAI.src.forms
             ck_ignoreeos.Checked = selected.Bypass_eos;
             ck_renderspecial.Checked = selected.Render_special;
             ck_trimstop.Checked = selected.Trim_stop;
+            edFileName.Text = selected.UniqueName;
         }
 
         private SamplerSettings SaveSamplerUIToSettiongs()

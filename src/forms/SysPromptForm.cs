@@ -50,6 +50,7 @@ namespace WaifuAI.src.forms
             ed_editsys_scenario.Text = selected.ScenarioTitle.Replace("\n", "\\n");
             ed_editsys_dialogs.Text = selected.DialogsTitle.Replace("\n", "\\n");
             ed_editsys_prefix.Text = selected.CategorySeparator.Replace("\n", "\\n");
+            edFileName.Text = selected.UniqueName;
         }
 
         private void listPrompt_SelectedIndexChanged(object sender, EventArgs e)
