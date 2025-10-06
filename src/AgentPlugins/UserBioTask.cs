@@ -54,27 +54,18 @@ namespace WaifuAI.AgentPlugins
             {
                 if (target.Sexual.Any(x => x.Equals(item, StringComparison.OrdinalIgnoreCase)))
                     continue;
-                // Call RAGEngine.GetDistanceAsync(string, string) to see if it's similar to any existing entry
-                //if (target.Sexual.Count > 0 && target.Sexual.Any(x => RAGEngine.GetDistance(x, item) < 0.03))
-                //    continue;
                 target.Sexual.Add(item);
             }
             foreach (var item in addon.UserInfo)
             {
                 if (target.UserInfo.Any(x => x.Equals(item, StringComparison.OrdinalIgnoreCase)))
                     continue;
-                // Call RAGEngine.GetDistanceAsync(string, string) to see if it's similar to any existing entry
-                //if (target.UserInfo.Count > 0 && target.UserInfo.Any(x => RAGEngine.GetDistance(x, item) < 0.03))
-                //    continue;
                 target.UserInfo.Add(item);
             }
             foreach (var item in addon.TastesAndHobbies)
             {
                 if (target.TastesAndHobbies.Any(x => x.Equals(item, StringComparison.OrdinalIgnoreCase)))
                     continue;
-                // Call RAGEngine.GetDistanceAsync(string, string) to see if it's similar to any existing entry
-                //if (target.TastesAndHobbies.Count > 0 && target.TastesAndHobbies.Any(x => RAGEngine.GetDistance(x, item) < 0.03))
-                //    continue;
                 target.TastesAndHobbies.Add(item);
             }
         }
