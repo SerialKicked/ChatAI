@@ -12,6 +12,7 @@ namespace WaifuAI.Files
 {
     public class WaifuSettings : LLMSettings
     {
+        public string Skin { get; set; } = "Dark";
         public string BotFile { get; set; } = "Assistant";
         public string UserFile { get; set; } = "User";
         public string PromptFile { get; set; } = "Standard";

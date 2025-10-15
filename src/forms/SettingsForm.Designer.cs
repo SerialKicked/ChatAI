@@ -101,6 +101,8 @@ namespace WaifuAI.src.forms
             verticalStackPanel3 = new VerticalStackPanel();
             collapsibleGroupBox6 = new CollapsibleGroupBox();
             collapsibleGroupBox5 = new CollapsibleGroupBox();
+            label5 = new Label();
+            mcbSkin = new ModernComboBox();
             panel1.SuspendLayout();
             collapsibleGroupBox1.SuspendLayout();
             verticalStackPanel1.SuspendLayout();
@@ -121,7 +123,7 @@ namespace WaifuAI.src.forms
             // ck_lastparaphfilter
             // 
             ck_lastparaphfilter.Font = new Font("Segoe UI", 9F);
-            ck_lastparaphfilter.Location = new Point(15, 348);
+            ck_lastparaphfilter.Location = new Point(15, 407);
             ck_lastparaphfilter.Name = "ck_lastparaphfilter";
             ck_lastparaphfilter.Size = new Size(330, 26);
             ck_lastparaphfilter.TabIndex = 41;
@@ -130,12 +132,14 @@ namespace WaifuAI.src.forms
             // 
             // num_removeitalicmaxword
             // 
+            num_removeitalicmaxword.BackColor = Color.FromArgb(64, 64, 64);
             num_removeitalicmaxword.CausesValidation = false;
             num_removeitalicmaxword.Font = new Font("Segoe UI", 9F);
-            num_removeitalicmaxword.Location = new Point(282, 269);
+            num_removeitalicmaxword.Location = new Point(282, 314);
             num_removeitalicmaxword.Maximum = new decimal(new int[] { 50, 0, 0, 0 });
             num_removeitalicmaxword.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             num_removeitalicmaxword.Name = "num_removeitalicmaxword";
+            num_removeitalicmaxword.Padding = new Padding(1);
             num_removeitalicmaxword.Size = new Size(67, 23);
             num_removeitalicmaxword.TabIndex = 40;
             num_removeitalicmaxword.Value = new decimal(new int[] { 1, 0, 0, 0 });
@@ -144,7 +148,7 @@ namespace WaifuAI.src.forms
             // 
             label63.AutoSize = true;
             label63.Font = new Font("Segoe UI", 9F);
-            label63.Location = new Point(211, 272);
+            label63.Location = new Point(211, 317);
             label63.Name = "label63";
             label63.Size = new Size(66, 15);
             label63.TabIndex = 39;
@@ -153,7 +157,7 @@ namespace WaifuAI.src.forms
             // ck_oneparagraph
             // 
             ck_oneparagraph.Font = new Font("Segoe UI", 9F);
-            ck_oneparagraph.Location = new Point(15, 323);
+            ck_oneparagraph.Location = new Point(15, 375);
             ck_oneparagraph.Name = "ck_oneparagraph";
             ck_oneparagraph.Size = new Size(330, 26);
             ck_oneparagraph.TabIndex = 38;
@@ -163,7 +167,7 @@ namespace WaifuAI.src.forms
             // ck_remlastsentence
             // 
             ck_remlastsentence.Font = new Font("Segoe UI", 9F);
-            ck_remlastsentence.Location = new Point(15, 298);
+            ck_remlastsentence.Location = new Point(15, 343);
             ck_remlastsentence.Name = "ck_remlastsentence";
             ck_remlastsentence.Size = new Size(330, 26);
             ck_remlastsentence.TabIndex = 37;
@@ -174,7 +178,7 @@ namespace WaifuAI.src.forms
             // 
             label62.AutoSize = true;
             label62.Font = new Font("Segoe UI", 9F);
-            label62.Location = new Point(36, 272);
+            label62.Location = new Point(36, 317);
             label62.Name = "label62";
             label62.Size = new Size(96, 15);
             label62.TabIndex = 36;
@@ -182,13 +186,15 @@ namespace WaifuAI.src.forms
             // 
             // num_italicratio
             // 
+            num_italicratio.BackColor = Color.FromArgb(64, 64, 64);
             num_italicratio.CausesValidation = false;
             num_italicratio.DecimalPlaces = 2;
             num_italicratio.Font = new Font("Segoe UI", 9F);
             num_italicratio.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_italicratio.Location = new Point(138, 269);
+            num_italicratio.Location = new Point(138, 314);
             num_italicratio.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
             num_italicratio.Name = "num_italicratio";
+            num_italicratio.Padding = new Padding(1);
             num_italicratio.Size = new Size(67, 23);
             num_italicratio.TabIndex = 35;
             num_italicratio.Value = new decimal(new int[] { 1, 0, 0, 0 });
@@ -196,7 +202,7 @@ namespace WaifuAI.src.forms
             // ck_reduceitalic
             // 
             ck_reduceitalic.Font = new Font("Segoe UI", 9F);
-            ck_reduceitalic.Location = new Point(15, 244);
+            ck_reduceitalic.Location = new Point(15, 282);
             ck_reduceitalic.Name = "ck_reduceitalic";
             ck_reduceitalic.Size = new Size(330, 26);
             ck_reduceitalic.TabIndex = 34;
@@ -206,7 +212,7 @@ namespace WaifuAI.src.forms
             // ck_noemphasisword
             // 
             ck_noemphasisword.Font = new Font("Segoe UI", 9F);
-            ck_noemphasisword.Location = new Point(15, 219);
+            ck_noemphasisword.Location = new Point(15, 250);
             ck_noemphasisword.Name = "ck_noemphasisword";
             ck_noemphasisword.Size = new Size(330, 26);
             ck_noemphasisword.TabIndex = 33;
@@ -216,7 +222,7 @@ namespace WaifuAI.src.forms
             // ck_fixquotes
             // 
             ck_fixquotes.Font = new Font("Segoe UI", 9F);
-            ck_fixquotes.Location = new Point(15, 194);
+            ck_fixquotes.Location = new Point(15, 218);
             ck_fixquotes.Name = "ck_fixquotes";
             ck_fixquotes.Size = new Size(330, 26);
             ck_fixquotes.TabIndex = 32;
@@ -226,7 +232,7 @@ namespace WaifuAI.src.forms
             // ck_noquotes
             // 
             ck_noquotes.Font = new Font("Segoe UI", 9F);
-            ck_noquotes.Location = new Point(15, 169);
+            ck_noquotes.Location = new Point(15, 186);
             ck_noquotes.Name = "ck_noquotes";
             ck_noquotes.Size = new Size(330, 26);
             ck_noquotes.TabIndex = 31;
@@ -236,7 +242,7 @@ namespace WaifuAI.src.forms
             // ck_unbold
             // 
             ck_unbold.Font = new Font("Segoe UI", 9F);
-            ck_unbold.Location = new Point(15, 144);
+            ck_unbold.Location = new Point(15, 154);
             ck_unbold.Name = "ck_unbold";
             ck_unbold.Size = new Size(330, 26);
             ck_unbold.TabIndex = 30;
@@ -247,7 +253,7 @@ namespace WaifuAI.src.forms
             // 
             label61.AutoSize = true;
             label61.Font = new Font("Segoe UI", 9F);
-            label61.Location = new Point(36, 114);
+            label61.Location = new Point(36, 128);
             label61.Name = "label61";
             label61.Size = new Size(96, 15);
             label61.TabIndex = 29;
@@ -255,20 +261,22 @@ namespace WaifuAI.src.forms
             // 
             // num_antislopchance
             // 
+            num_antislopchance.BackColor = Color.FromArgb(64, 64, 64);
             num_antislopchance.CausesValidation = false;
             num_antislopchance.DecimalPlaces = 2;
             num_antislopchance.Font = new Font("Segoe UI", 9F);
             num_antislopchance.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            num_antislopchance.Location = new Point(138, 111);
+            num_antislopchance.Location = new Point(138, 125);
             num_antislopchance.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
             num_antislopchance.Name = "num_antislopchance";
+            num_antislopchance.Padding = new Padding(1);
             num_antislopchance.Size = new Size(67, 23);
             num_antislopchance.TabIndex = 28;
             num_antislopchance.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // ed_sloplist
             // 
-            ed_sloplist.Location = new Point(36, 82);
+            ed_sloplist.Location = new Point(36, 96);
             ed_sloplist.Name = "ed_sloplist";
             ed_sloplist.PlaceholderText = "comma separated list of words to filter out";
             ed_sloplist.Size = new Size(313, 23);
@@ -277,7 +285,7 @@ namespace WaifuAI.src.forms
             // ck_antislop
             // 
             ck_antislop.Font = new Font("Segoe UI", 9F);
-            ck_antislop.Location = new Point(15, 57);
+            ck_antislop.Location = new Point(15, 64);
             ck_antislop.Name = "ck_antislop";
             ck_antislop.Size = new Size(330, 26);
             ck_antislop.TabIndex = 1;
@@ -306,26 +314,30 @@ namespace WaifuAI.src.forms
             // 
             // cb_pastsession
             // 
-            cb_pastsession.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_pastsession.BackColor = Color.FromArgb(64, 64, 64);
+            cb_pastsession.DropDownHeight = 180;
             cb_pastsession.Font = new Font("Segoe UI", 9F);
             cb_pastsession.Items.AddRange(new object[] { "Current session only", "Fit as much as possible, including previous sessions" });
             cb_pastsession.Location = new Point(15, 126);
+            cb_pastsession.MaxDropDownItems = 10;
             cb_pastsession.Name = "cb_pastsession";
+            cb_pastsession.Padding = new Padding(1);
             cb_pastsession.Size = new Size(291, 23);
             cb_pastsession.TabIndex = 33;
             // 
             // num_memtokens
             // 
+            num_memtokens.BackColor = Color.FromArgb(64, 64, 64);
             num_memtokens.Font = new Font("Segoe UI", 9F);
             num_memtokens.Increment = new decimal(new int[] { 512, 0, 0, 0 });
             num_memtokens.Location = new Point(15, 67);
             num_memtokens.Maximum = new decimal(new int[] { 128000, 0, 0, 0 });
             num_memtokens.Minimum = new decimal(new int[] { 512, 0, 0, 0 });
             num_memtokens.Name = "num_memtokens";
+            num_memtokens.Padding = new Padding(1);
             num_memtokens.Size = new Size(125, 23);
             num_memtokens.TabIndex = 27;
             num_memtokens.Value = new decimal(new int[] { 2048, 0, 0, 0 });
-            num_memtokens.ValueChanged += num_memtokens_ValueChanged;
             // 
             // label32
             // 
@@ -350,7 +362,7 @@ namespace WaifuAI.src.forms
             // ck_forcePW
             // 
             ck_forcePW.Font = new Font("Segoe UI", 9F);
-            ck_forcePW.Location = new Point(15, 159);
+            ck_forcePW.Location = new Point(15, 177);
             ck_forcePW.Name = "ck_forcePW";
             ck_forcePW.Size = new Size(279, 26);
             ck_forcePW.TabIndex = 38;
@@ -360,7 +372,7 @@ namespace WaifuAI.src.forms
             // ckShowHidden
             // 
             ckShowHidden.Font = new Font("Segoe UI", 9F);
-            ckShowHidden.Location = new Point(15, 127);
+            ckShowHidden.Location = new Point(15, 209);
             ckShowHidden.Name = "ckShowHidden";
             ckShowHidden.Size = new Size(200, 26);
             ckShowHidden.TabIndex = 31;
@@ -369,12 +381,14 @@ namespace WaifuAI.src.forms
             // 
             // num_msgcount
             // 
+            num_msgcount.BackColor = Color.FromArgb(64, 64, 64);
             num_msgcount.Font = new Font("Segoe UI", 9F);
             num_msgcount.Increment = new decimal(new int[] { 20, 0, 0, 0 });
-            num_msgcount.Location = new Point(215, 98);
+            num_msgcount.Location = new Point(118, 148);
             num_msgcount.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             num_msgcount.Minimum = new decimal(new int[] { 20, 0, 0, 0 });
             num_msgcount.Name = "num_msgcount";
+            num_msgcount.Padding = new Padding(1);
             num_msgcount.Size = new Size(79, 23);
             num_msgcount.TabIndex = 29;
             num_msgcount.Value = new decimal(new int[] { 20, 0, 0, 0 });
@@ -383,7 +397,7 @@ namespace WaifuAI.src.forms
             // 
             label30.AutoSize = true;
             label30.Font = new Font("Segoe UI", 9F);
-            label30.Location = new Point(197, 82);
+            label30.Location = new Point(118, 126);
             label30.Name = "label30";
             label30.Size = new Size(97, 15);
             label30.TabIndex = 30;
@@ -391,11 +405,13 @@ namespace WaifuAI.src.forms
             // 
             // num_fontsize
             // 
+            num_fontsize.BackColor = Color.FromArgb(64, 64, 64);
             num_fontsize.Font = new Font("Segoe UI", 9F);
-            num_fontsize.Location = new Point(15, 98);
+            num_fontsize.Location = new Point(15, 148);
             num_fontsize.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
             num_fontsize.Minimum = new decimal(new int[] { 6, 0, 0, 0 });
             num_fontsize.Name = "num_fontsize";
+            num_fontsize.Padding = new Padding(1);
             num_fontsize.Size = new Size(79, 23);
             num_fontsize.TabIndex = 27;
             num_fontsize.Value = new decimal(new int[] { 7, 0, 0, 0 });
@@ -404,7 +420,7 @@ namespace WaifuAI.src.forms
             // 
             label29.AutoSize = true;
             label29.Font = new Font("Segoe UI", 9F);
-            label29.Location = new Point(15, 80);
+            label29.Location = new Point(15, 126);
             label29.Name = "label29";
             label29.Size = new Size(54, 15);
             label29.TabIndex = 28;
@@ -412,10 +428,13 @@ namespace WaifuAI.src.forms
             // 
             // cb_background
             // 
-            cb_background.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_background.BackColor = Color.FromArgb(64, 64, 64);
+            cb_background.DropDownHeight = 180;
             cb_background.Font = new Font("Segoe UI", 9F);
             cb_background.Location = new Point(15, 50);
+            cb_background.MaxDropDownItems = 10;
             cb_background.Name = "cb_background";
+            cb_background.Padding = new Padding(1);
             cb_background.Size = new Size(278, 23);
             cb_background.TabIndex = 27;
             // 
@@ -432,8 +451,8 @@ namespace WaifuAI.src.forms
             // label4
             // 
             label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label4.Location = new Point(31, 172);
+            label4.Font = new Font("Segoe UI", 9F, FontStyle.Bold | FontStyle.Underline);
+            label4.Location = new Point(15, 178);
             label4.Name = "label4";
             label4.Size = new Size(83, 15);
             label4.TabIndex = 41;
@@ -461,10 +480,10 @@ namespace WaifuAI.src.forms
             // 
             // ed_searchkey
             // 
-            ed_searchkey.Location = new Point(15, 106);
+            ed_searchkey.Location = new Point(15, 113);
             ed_searchkey.Name = "ed_searchkey";
             ed_searchkey.PlaceholderText = "comma separated list of words to filter out";
-            ed_searchkey.Size = new Size(278, 23);
+            ed_searchkey.Size = new Size(279, 23);
             ed_searchkey.TabIndex = 38;
             // 
             // label2
@@ -479,20 +498,23 @@ namespace WaifuAI.src.forms
             // 
             // cb_searchapi
             // 
-            cb_searchapi.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_searchapi.BackColor = Color.FromArgb(64, 64, 64);
+            cb_searchapi.DropDownHeight = 180;
             cb_searchapi.Font = new Font("Segoe UI", 9F);
             cb_searchapi.Items.AddRange(new object[] { "DuckDuckGo", "Brave Search" });
-            cb_searchapi.Location = new Point(14, 54);
+            cb_searchapi.Location = new Point(15, 54);
+            cb_searchapi.MaxDropDownItems = 10;
             cb_searchapi.Name = "cb_searchapi";
-            cb_searchapi.Size = new Size(280, 23);
+            cb_searchapi.Padding = new Padding(1);
+            cb_searchapi.Size = new Size(279, 23);
             cb_searchapi.TabIndex = 36;
             // 
             // ck_webgrammar
             // 
             ck_webgrammar.Font = new Font("Segoe UI", 9F);
-            ck_webgrammar.Location = new Point(15, 226);
+            ck_webgrammar.Location = new Point(14, 232);
             ck_webgrammar.Name = "ck_webgrammar";
-            ck_webgrammar.Size = new Size(268, 26);
+            ck_webgrammar.Size = new Size(280, 26);
             ck_webgrammar.TabIndex = 33;
             ck_webgrammar.Text = "Browser - Enforce structured output";
             ck_webgrammar.UseVisualStyleBackColor = true;
@@ -500,9 +522,9 @@ namespace WaifuAI.src.forms
             // ck_alwayswebsearch
             // 
             ck_alwayswebsearch.Font = new Font("Segoe UI", 9F);
-            ck_alwayswebsearch.Location = new Point(15, 194);
+            ck_alwayswebsearch.Location = new Point(14, 200);
             ck_alwayswebsearch.Name = "ck_alwayswebsearch";
-            ck_alwayswebsearch.Size = new Size(279, 26);
+            ck_alwayswebsearch.Size = new Size(280, 26);
             ck_alwayswebsearch.TabIndex = 35;
             ck_alwayswebsearch.Text = "Live Search - Always attempt search (slow)";
             ck_alwayswebsearch.UseVisualStyleBackColor = true;
@@ -510,9 +532,9 @@ namespace WaifuAI.src.forms
             // ck_webkeyword
             // 
             ck_webkeyword.Font = new Font("Segoe UI", 9F);
-            ck_webkeyword.Location = new Point(15, 258);
+            ck_webkeyword.Location = new Point(14, 264);
             ck_webkeyword.Name = "ck_webkeyword";
-            ck_webkeyword.Size = new Size(278, 26);
+            ck_webkeyword.Size = new Size(280, 26);
             ck_webkeyword.TabIndex = 32;
             ck_webkeyword.Text = "Browser - Require keyword activation";
             ck_webkeyword.UseVisualStyleBackColor = true;
@@ -523,7 +545,7 @@ namespace WaifuAI.src.forms
             bt_chattosessions.FlatStyle = FlatStyle.Flat;
             bt_chattosessions.Font = new Font("Segoe UI", 9F);
             bt_chattosessions.ForeColor = Color.Red;
-            bt_chattosessions.Location = new Point(15, 93);
+            bt_chattosessions.Location = new Point(15, 64);
             bt_chattosessions.Name = "bt_chattosessions";
             bt_chattosessions.Size = new Size(334, 23);
             bt_chattosessions.TabIndex = 22;
@@ -538,9 +560,9 @@ namespace WaifuAI.src.forms
             bt_importworld.FlatStyle = FlatStyle.Flat;
             bt_importworld.Font = new Font("Segoe UI", 9F);
             bt_importworld.ForeColor = Color.Black;
-            bt_importworld.Location = new Point(15, 64);
+            bt_importworld.Location = new Point(185, 35);
             bt_importworld.Name = "bt_importworld";
-            bt_importworld.Size = new Size(334, 23);
+            bt_importworld.Size = new Size(164, 23);
             bt_importworld.TabIndex = 2;
             bt_importworld.Tag = "no-theme";
             bt_importworld.Text = "Import ST WorldInfo";
@@ -555,7 +577,7 @@ namespace WaifuAI.src.forms
             bt_ImportSTChat.ForeColor = Color.Black;
             bt_ImportSTChat.Location = new Point(15, 35);
             bt_ImportSTChat.Name = "bt_ImportSTChat";
-            bt_ImportSTChat.Size = new Size(334, 23);
+            bt_ImportSTChat.Size = new Size(164, 23);
             bt_ImportSTChat.TabIndex = 1;
             bt_ImportSTChat.Tag = "no-theme";
             bt_ImportSTChat.Text = "Import ST Chat";
@@ -567,17 +589,19 @@ namespace WaifuAI.src.forms
             ckThirdPerson.Font = new Font("Segoe UI", 9F);
             ckThirdPerson.Location = new Point(15, 180);
             ckThirdPerson.Name = "ckThirdPerson";
-            ckThirdPerson.Size = new Size(200, 26);
+            ckThirdPerson.Size = new Size(291, 26);
             ckThirdPerson.TabIndex = 38;
             ckThirdPerson.Text = "Convert queries to 3rd person";
             ckThirdPerson.UseVisualStyleBackColor = true;
             // 
             // num_ragM
             // 
+            num_ragM.BackColor = Color.FromArgb(64, 64, 64);
             num_ragM.Font = new Font("Segoe UI", 9F);
             num_ragM.Location = new Point(15, 147);
             num_ragM.Minimum = new decimal(new int[] { 5, 0, 0, 0 });
             num_ragM.Name = "num_ragM";
+            num_ragM.Padding = new Padding(1);
             num_ragM.Size = new Size(144, 23);
             num_ragM.TabIndex = 30;
             num_ragM.Value = new decimal(new int[] { 15, 0, 0, 0 });
@@ -604,11 +628,13 @@ namespace WaifuAI.src.forms
             // 
             // num_ragindex
             // 
+            num_ragindex.BackColor = Color.FromArgb(64, 64, 64);
             num_ragindex.Font = new Font("Segoe UI", 9F);
             num_ragindex.Location = new Point(169, 59);
             num_ragindex.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
             num_ragindex.Minimum = new decimal(new int[] { 1, 0, 0, int.MinValue });
             num_ragindex.Name = "num_ragindex";
+            num_ragindex.Padding = new Padding(1);
             num_ragindex.Size = new Size(137, 23);
             num_ragindex.TabIndex = 27;
             num_ragindex.Value = new decimal(new int[] { 1, 0, 0, 0 });
@@ -625,11 +651,13 @@ namespace WaifuAI.src.forms
             // 
             // num_ragmaxretrieve
             // 
+            num_ragmaxretrieve.BackColor = Color.FromArgb(64, 64, 64);
             num_ragmaxretrieve.Font = new Font("Segoe UI", 9F);
             num_ragmaxretrieve.Location = new Point(169, 103);
             num_ragmaxretrieve.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
             num_ragmaxretrieve.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             num_ragmaxretrieve.Name = "num_ragmaxretrieve";
+            num_ragmaxretrieve.Padding = new Padding(1);
             num_ragmaxretrieve.Size = new Size(137, 23);
             num_ragmaxretrieve.TabIndex = 25;
             num_ragmaxretrieve.Value = new decimal(new int[] { 1, 0, 0, 0 });
@@ -646,6 +674,7 @@ namespace WaifuAI.src.forms
             // 
             // num_ragcutoff
             // 
+            num_ragcutoff.BackColor = Color.FromArgb(64, 64, 64);
             num_ragcutoff.DecimalPlaces = 3;
             num_ragcutoff.Font = new Font("Segoe UI", 9F);
             num_ragcutoff.Increment = new decimal(new int[] { 5, 0, 0, 196608 });
@@ -653,6 +682,7 @@ namespace WaifuAI.src.forms
             num_ragcutoff.Maximum = new decimal(new int[] { 5, 0, 0, 65536 });
             num_ragcutoff.Minimum = new decimal(new int[] { 5, 0, 0, 196608 });
             num_ragcutoff.Name = "num_ragcutoff";
+            num_ragcutoff.Padding = new Padding(1);
             num_ragcutoff.Size = new Size(144, 23);
             num_ragcutoff.TabIndex = 23;
             num_ragcutoff.Value = new decimal(new int[] { 2, 0, 0, 65536 });
@@ -669,11 +699,14 @@ namespace WaifuAI.src.forms
             // 
             // cb_ragheuristic
             // 
-            cb_ragheuristic.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_ragheuristic.BackColor = Color.FromArgb(64, 64, 64);
+            cb_ragheuristic.DropDownHeight = 180;
             cb_ragheuristic.Font = new Font("Segoe UI", 9F);
             cb_ragheuristic.Items.AddRange(new object[] { "Simple", "Heuristic", "Exact" });
             cb_ragheuristic.Location = new Point(15, 59);
+            cb_ragheuristic.MaxDropDownItems = 10;
             cb_ragheuristic.Name = "cb_ragheuristic";
+            cb_ragheuristic.Padding = new Padding(1);
             cb_ragheuristic.Size = new Size(144, 23);
             cb_ragheuristic.TabIndex = 3;
             // 
@@ -681,7 +714,7 @@ namespace WaifuAI.src.forms
             // 
             panel1.Controls.Add(bt_Close);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 537);
+            panel1.Location = new Point(0, 572);
             panel1.Name = "panel1";
             panel1.Size = new Size(1006, 50);
             panel1.TabIndex = 31;
@@ -747,7 +780,7 @@ namespace WaifuAI.src.forms
             verticalStackPanel1.Location = new Point(0, 0);
             verticalStackPanel1.Name = "verticalStackPanel1";
             verticalStackPanel1.Padding = new Padding(0, 6, 0, 6);
-            verticalStackPanel1.Size = new Size(321, 537);
+            verticalStackPanel1.Size = new Size(321, 572);
             verticalStackPanel1.TabIndex = 34;
             // 
             // collapsibleGroupBox3
@@ -769,7 +802,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox3.Location = new Point(0, 284);
             collapsibleGroupBox3.Name = "collapsibleGroupBox3";
             collapsibleGroupBox3.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox3.Size = new Size(321, 248);
+            collapsibleGroupBox3.Size = new Size(321, 280);
             collapsibleGroupBox3.TabIndex = 35;
             collapsibleGroupBox3.Text = "Retrieval Augmented Generation";
             // 
@@ -798,7 +831,7 @@ namespace WaifuAI.src.forms
             verticalStackPanel2.Location = new Point(641, 0);
             verticalStackPanel2.Name = "verticalStackPanel2";
             verticalStackPanel2.Padding = new Padding(0, 6, 0, 6);
-            verticalStackPanel2.Size = new Size(365, 537);
+            verticalStackPanel2.Size = new Size(365, 572);
             verticalStackPanel2.TabIndex = 35;
             // 
             // collapsibleGroupBox7
@@ -809,10 +842,10 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox7.Controls.Add(bt_ImportSTChat);
             collapsibleGroupBox7.Controls.Add(bt_importworld);
             collapsibleGroupBox7.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox7.Location = new Point(0, 400);
+            collapsibleGroupBox7.Location = new Point(0, 462);
             collapsibleGroupBox7.Name = "collapsibleGroupBox7";
             collapsibleGroupBox7.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox7.Size = new Size(365, 132);
+            collapsibleGroupBox7.Size = new Size(365, 102);
             collapsibleGroupBox7.TabIndex = 1;
             collapsibleGroupBox7.Text = "Import Files";
             // 
@@ -841,7 +874,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox4.Location = new Point(0, 6);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox4.Size = new Size(365, 386);
+            collapsibleGroupBox4.Size = new Size(365, 448);
             collapsibleGroupBox4.TabIndex = 0;
             collapsibleGroupBox4.Text = "Output Formatting";
             // 
@@ -853,13 +886,15 @@ namespace WaifuAI.src.forms
             verticalStackPanel3.Location = new Point(321, 0);
             verticalStackPanel3.Name = "verticalStackPanel3";
             verticalStackPanel3.Padding = new Padding(6);
-            verticalStackPanel3.Size = new Size(320, 537);
+            verticalStackPanel3.Size = new Size(320, 572);
             verticalStackPanel3.TabIndex = 36;
             // 
             // collapsibleGroupBox6
             // 
             collapsibleGroupBox6.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox6.CanCollapse = false;
+            collapsibleGroupBox6.Controls.Add(label5);
+            collapsibleGroupBox6.Controls.Add(mcbSkin);
             collapsibleGroupBox6.Controls.Add(ck_forcePW);
             collapsibleGroupBox6.Controls.Add(label28);
             collapsibleGroupBox6.Controls.Add(ckShowHidden);
@@ -869,10 +904,10 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox6.Controls.Add(label30);
             collapsibleGroupBox6.Controls.Add(num_fontsize);
             collapsibleGroupBox6.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox6.Location = new Point(6, 313);
+            collapsibleGroupBox6.Location = new Point(6, 322);
             collapsibleGroupBox6.Name = "collapsibleGroupBox6";
             collapsibleGroupBox6.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox6.Size = new Size(308, 219);
+            collapsibleGroupBox6.Size = new Size(308, 242);
             collapsibleGroupBox6.TabIndex = 1;
             collapsibleGroupBox6.Text = "User Interface";
             // 
@@ -893,16 +928,39 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox5.Location = new Point(6, 6);
             collapsibleGroupBox5.Name = "collapsibleGroupBox5";
             collapsibleGroupBox5.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox5.Size = new Size(308, 299);
+            collapsibleGroupBox5.Size = new Size(308, 308);
             collapsibleGroupBox5.TabIndex = 0;
             collapsibleGroupBox5.Text = "Web Search";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Segoe UI", 9F);
+            label5.Location = new Point(15, 76);
+            label5.Name = "label5";
+            label5.Size = new Size(43, 15);
+            label5.TabIndex = 39;
+            label5.Text = "UI Skin";
+            // 
+            // mcbSkin
+            // 
+            mcbSkin.BackColor = Color.FromArgb(64, 64, 64);
+            mcbSkin.DropDownHeight = 180;
+            mcbSkin.Font = new Font("Segoe UI", 9F);
+            mcbSkin.Items.AddRange(new object[] { "Light", "Dark" });
+            mcbSkin.Location = new Point(15, 94);
+            mcbSkin.MaxDropDownItems = 10;
+            mcbSkin.Name = "mcbSkin";
+            mcbSkin.Padding = new Padding(1);
+            mcbSkin.Size = new Size(278, 23);
+            mcbSkin.TabIndex = 40;
             // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DimGray;
-            ClientSize = new Size(1006, 587);
+            ClientSize = new Size(1006, 622);
             Controls.Add(verticalStackPanel3);
             Controls.Add(verticalStackPanel2);
             Controls.Add(verticalStackPanel1);
@@ -915,7 +973,6 @@ namespace WaifuAI.src.forms
             Name = "SettingsForm";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Settings";
-
             panel1.ResumeLayout(false);
             collapsibleGroupBox1.ResumeLayout(false);
             verticalStackPanel1.ResumeLayout(false);
@@ -1006,5 +1063,7 @@ namespace WaifuAI.src.forms
         private Controls.VerticalStackPanel verticalStackPanel3;
         private Controls.CollapsibleGroupBox collapsibleGroupBox6;
         private Controls.CollapsibleGroupBox collapsibleGroupBox5;
+        private Label label5;
+        private ModernComboBox mcbSkin;
     }
 }

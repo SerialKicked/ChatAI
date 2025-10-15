@@ -42,7 +42,7 @@ namespace WaifuAI
         private int _afkmessagecount = 0;
         private EditMessageForm? _editMessageForm;
         private readonly Random RNG = new();
-        private RenPyDialogHandler? _renpyDialogHandler;
+        public RenPyDialogHandler? _renpyDialogHandler;
         private string ed_log = string.Empty;
 
         public static Character? Bot => LLMEngine.Bot as Character;
@@ -131,8 +131,10 @@ namespace WaifuAI
             AgentRuntime.RegisterPlugin("GoalDesignerTask", new GoalDesignerTask());
             AgentRuntime.RegisterPlugin("CustomGoalTask", new CustomGoalTask());
             AgentRuntime.RegisterPlugin("JournalTask", new JournalTask());
-            ThemeManager.ApplyDark();
-
+            if (Program.Settings.Skin == "Light")
+                ThemeManager.ApplyLight();
+            else
+                ThemeManager.ApplyDark();
             var loginForm = new LoginForm();
             ThemeManager.ApplyToForm(loginForm);
             loginForm.ShowDialog(this);

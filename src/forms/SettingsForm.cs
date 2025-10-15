@@ -10,6 +10,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using WaifuAI.Controls;
 using WaifuAI.Files;
 using WaifuAI.Plugins;
 using WaifuAI.Web;
@@ -124,6 +125,7 @@ namespace WaifuAI.src.forms
             ckShowHidden.Checked = Program.Settings.ShowHiddenMessages;
             ck_hallusafe.Checked = Program.Settings.AntiHallucinationMemoryFormat;
             ckThirdPerson.Checked = Program.Settings.RAGConvertTo3rdPerson;
+            mcbSkin.SelectedIndex = mcbSkin.Items.IndexOf(Program.Settings.Skin);
 
             Program.ApplyContextPluginSettings();
 
@@ -183,6 +185,7 @@ namespace WaifuAI.src.forms
                 Program.Settings.AlwaysForcePasswordOnBotSwitch = ck_forcePW.Checked;
                 Program.Settings.RAGConvertTo3rdPerson = ckThirdPerson.Checked;
                 Program.Settings.RAGHeuristic = (RAGSelectionHeuristic)cb_ragheuristic.SelectedIndex;
+                Program.Settings.Skin = mcbSkin.SelectedItem?.ToString() ?? "Dark";
 
                 // Search API Settings
                 if (cb_searchapi.SelectedIndex == 0)
@@ -241,13 +244,13 @@ namespace WaifuAI.src.forms
         private void bt_Close_Click(object sender, EventArgs e)
         {
             SaveSettings();
+            if (Program.Settings.Skin == "Light")
+                ThemeManager.ApplyLight();
+            else
+                ThemeManager.ApplyDark();
+            ThemeManager.ReapplyTheme(Program.BigForm!);
             this.DialogResult = DialogResult.OK;
             this.Close();
-        }
-
-        private void num_memtokens_ValueChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

@@ -182,7 +182,6 @@ namespace WaifuAI.Files
             return $"You selected *{use.Name}* ({use.Description}). Removing {use.Cost} {PointName}. You now have {PointCount} {PointName} left.";
         }
 
-
         public string ProcessCommand(string command)
         {
             var sanitized = command.Trim();
