@@ -561,6 +561,7 @@ namespace WaifuAI
             num_maxresponse.TabIndex = 18;
             num_maxresponse.ThousandsSeparator = true;
             num_maxresponse.Value = new decimal(new int[] { 512, 0, 0, 0 });
+            num_maxresponse.ValueChanged += num_maxresponse_ValueChanged;
             // 
             // label7
             // 
@@ -585,6 +586,7 @@ namespace WaifuAI
             num_maxcontext.Size = new Size(89, 23);
             num_maxcontext.TabIndex = 16;
             num_maxcontext.Value = new decimal(new int[] { 16384, 0, 0, 0 });
+            num_maxcontext.ValueChanged += num_maxcontext_ValueChanged;
             // 
             // label8
             // 

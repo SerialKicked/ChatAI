@@ -1685,10 +1685,7 @@ namespace WaifuAI
         {
             var folders = new List<string>()
             {
-                @"S:\Content\Pictures\Incest Bait",
-                @"S:\Content\Pictures\Pro Rape",
-                @"S:\Content\Pictures\Pro Dog fucking",
-                @"S:\Content\Pictures\Girls - Best"
+                @"S:\Content\Pictures\",
             };
 
             var imageFiles = new List<string>();
