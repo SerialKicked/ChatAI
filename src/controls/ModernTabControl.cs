@@ -272,10 +272,10 @@ namespace WaifuAI.Controls
                 TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.EndEllipsis);
 
             // Indicator
-            DrawTabIndicator(g, tabRect, isSelected, index);
+            DrawTabIndicator(g, tabRect, isSelected);
         }
 
-        private void DrawTabIndicator(Graphics g, Rectangle tabRect, bool isSelected, int index)
+        private void DrawTabIndicator(Graphics g, Rectangle tabRect, bool isSelected)
         {
             if (_tabStyle == ModernTabStyle.None)
                 return;

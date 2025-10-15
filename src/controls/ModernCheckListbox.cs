@@ -258,8 +258,8 @@ namespace WaifuAI.Controls
             }
         }
 
-        public CheckedIndexCollection CheckedIndices => new CheckedIndexCollection(this);
-        public CheckedItemCollection CheckedItems => new CheckedItemCollection(this);
+        public CheckedIndexCollection CheckedIndices => new(this);
+        public CheckedItemCollection CheckedItems => new(this);
 
         private void AdjustHeightToIntegral()
         {
@@ -674,18 +674,11 @@ namespace WaifuAI.Controls
 
         protected override bool IsInputKey(Keys keyData)
         {
-            switch (keyData)
+            return keyData switch
             {
-                case Keys.Up:
-                case Keys.Down:
-                case Keys.PageUp:
-                case Keys.PageDown:
-                case Keys.Home:
-                case Keys.End:
-                case Keys.Space:
-                    return true;
-            }
-            return base.IsInputKey(keyData);
+                Keys.Up or Keys.Down or Keys.PageUp or Keys.PageDown or Keys.Home or Keys.End or Keys.Space => true,
+                _ => base.IsInputKey(keyData),
+            };
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -763,7 +756,7 @@ namespace WaifuAI.Controls
         public class CheckedListBoxItemCollection : System.Collections.IList
         {
             private readonly ModernCheckedListBox _owner;
-            private readonly System.Collections.ArrayList _items = new();
+            private readonly System.Collections.ArrayList _items = [];
 
             internal CheckedListBoxItemCollection(ModernCheckedListBox owner)
             {

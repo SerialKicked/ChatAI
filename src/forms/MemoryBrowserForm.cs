@@ -15,8 +15,8 @@ namespace WaifuAI.src.forms
 {
     public partial class MemoryBrowserForm : Form
     {
-        private readonly List<MemoryUnit> _allMemories = new();
-        private readonly List<MemoryUnit> _filteredMemories = new();
+        private readonly List<MemoryUnit> _allMemories = [];
+        private readonly List<MemoryUnit> _filteredMemories = [];
 
         // Sorting state (default: sort by Added desc)
         private int _sortColumnIndex = 2;
@@ -74,7 +74,7 @@ namespace WaifuAI.src.forms
             }
 
             // Gather all memories from all categories
-            foreach (var value in Enum.GetValues(typeof(MemoryType)).Cast<MemoryType>())
+            foreach (var value in Enum.GetValues<MemoryType>().Cast<MemoryType>())
             {
                 try
                 {
@@ -93,7 +93,7 @@ namespace WaifuAI.src.forms
         {
             cbCategory.Items.Clear();
             cbCategory.Items.Add("All");
-            foreach (var value in Enum.GetValues(typeof(MemoryType)))
+            foreach (var value in Enum.GetValues<MemoryType>())
                 cbCategory.Items.Add(value);
 
             cbCategory.SelectedIndexChanged -= cbCategory_SelectedIndexChanged;
@@ -456,16 +456,10 @@ namespace WaifuAI.src.forms
         }
     }
 
-    internal sealed class MemoryListComparer : IComparer
+    internal sealed class MemoryListComparer(int columnIndex, bool ascending) : IComparer
     {
-        private readonly int _columnIndex;
-        private readonly bool _ascending;
-
-        public MemoryListComparer(int columnIndex, bool ascending)
-        {
-            _columnIndex = columnIndex;
-            _ascending = ascending;
-        }
+        private readonly int _columnIndex = columnIndex;
+        private readonly bool _ascending = ascending;
 
         public int Compare(object? x, object? y)
         {
@@ -475,7 +469,7 @@ namespace WaifuAI.src.forms
             var am = a.Tag as MemoryUnit;
             var bm = b.Tag as MemoryUnit;
 
-            int result = 0;
+            int result;
 
             switch (_columnIndex)
             {

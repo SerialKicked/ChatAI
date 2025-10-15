@@ -594,17 +594,11 @@ namespace WaifuAI.Controls
 
         protected override bool IsInputKey(Keys keyData)
         {
-            switch (keyData)
+            return keyData switch
             {
-                case Keys.Up:
-                case Keys.Down:
-                case Keys.PageUp:
-                case Keys.PageDown:
-                case Keys.Home:
-                case Keys.End:
-                    return true;
-            }
-            return base.IsInputKey(keyData);
+                Keys.Up or Keys.Down or Keys.PageUp or Keys.PageDown or Keys.Home or Keys.End => true,
+                _ => base.IsInputKey(keyData),
+            };
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -654,7 +648,7 @@ namespace WaifuAI.Controls
         public class ListBoxItemCollection : System.Collections.IList
         {
             private readonly ModernListBox _owner;
-            private readonly System.Collections.ArrayList _items = new();
+            private readonly System.Collections.ArrayList _items = [];
 
             internal ListBoxItemCollection(ModernListBox owner)
             {

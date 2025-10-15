@@ -17,15 +17,13 @@ namespace WaifuAI.Slash
     }
 
 
-    public abstract class SlashCommandInfo
+    public abstract class SlashCommandInfo(ISlashCommand owner)
     {
         public virtual string ID { get; } = string.Empty;
         public virtual string Description { get; } = string.Empty;
         public virtual string Slash { get; } = string.Empty;
 
-        protected ISlashCommand Owner = null!;
-
-        public SlashCommandInfo(ISlashCommand owner) => Owner = owner;
+        protected ISlashCommand Owner = owner;
 
         public abstract SlashReturn Execute(string userinput);
 

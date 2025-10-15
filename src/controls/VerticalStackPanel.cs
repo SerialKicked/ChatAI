@@ -333,7 +333,7 @@ namespace WaifuAI.Controls
 
         private void OnControlAdded(object? sender, ControlEventArgs e)
         {
-            if (_autoListenForSizeChanges)
+            if (_autoListenForSizeChanges && e.Control is not null)
             {
                 e.Control.SizeChanged -= Child_SizeChanged;
                 e.Control.SizeChanged += Child_SizeChanged;
@@ -343,6 +343,7 @@ namespace WaifuAI.Controls
 
         private void OnControlRemoved(object? sender, ControlEventArgs e)
         {
+            if (e.Control is null) return;
             e.Control.SizeChanged -= Child_SizeChanged;
             if (_animations.ContainsKey(e.Control))
                 _animations.Remove(e.Control);

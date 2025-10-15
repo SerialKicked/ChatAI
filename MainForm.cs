@@ -46,7 +46,7 @@ namespace WaifuAI
         public RenPyDialogHandler? _renpyDialogHandler;
         private string ed_log = string.Empty;
 
-        private List<ISlashCommand> slashCommands = [ new MainSlashCmds(), new RenpyGameCmds() ];
+        private readonly List<ISlashCommand> slashCommands = [new MainSlashCmds(), new RenpyGameCmds()];
 
         public static Character? Bot => LLMEngine.Bot as Character;
         public static Character? User => LLMEngine.User as Character;
@@ -965,7 +965,7 @@ namespace WaifuAI
 
         #region *** WebView2 Handling ***
 
-        private string InjectDialogCSS(string htmlContent)
+        private static string InjectDialogCSS(string htmlContent)
         {
             string css = $@"
     <style>
@@ -1141,7 +1141,6 @@ namespace WaifuAI
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
 
-        // Replace your existing WebEditLastMessage with this version
         private async Task WebEditLastMessage(string newMessage, Guid? messageGuid = null)
         {
             if (InvokeRequired)
