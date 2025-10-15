@@ -67,7 +67,7 @@ namespace WaifuAI
             cb_infer = new ModernComboBox();
             label9 = new Label();
             num_temperature = new ModernNumericUpDown();
-            collapseModel = new WaifuAI.Controls.CollapsibleGroupBox();
+            collapseModel = new CollapsibleGroupBox();
             num_maxresponse = new ModernNumericUpDown();
             label7 = new Label();
             num_maxcontext = new ModernNumericUpDown();
@@ -78,28 +78,27 @@ namespace WaifuAI
             bt_delete = new Button();
             bt_reroll = new Button();
             bt_send = new Button();
-            ed_input = new WaifuAI.Controls.SpellCheckedTextBox();
-            collapsibleGroupBox1 = new WaifuAI.Controls.CollapsibleGroupBox();
-            mck_charsampler = new WaifuAI.Controls.ModernCheckBox();
-            mck_forceNames = new WaifuAI.Controls.ModernCheckBox();
-            mck_ragtothink = new WaifuAI.Controls.ModernCheckBox();
-            mck_disablethink = new WaifuAI.Controls.ModernCheckBox();
-            panLeft = new WaifuAI.Controls.VerticalStackPanel();
-            cboxVLM = new WaifuAI.Controls.CollapsibleGroupBox();
-            collapsibleGroupBox2 = new WaifuAI.Controls.CollapsibleGroupBox();
-            mck_agentmode = new WaifuAI.Controls.ModernCheckBox();
-            mck_onlinerag = new WaifuAI.Controls.ModernCheckBox();
+            ed_input = new SpellCheckedTextBox();
+            collapsibleGroupBox1 = new CollapsibleGroupBox();
+            mck_charsampler = new ModernCheckBox();
+            mck_forceNames = new ModernCheckBox();
+            mck_ragtothink = new ModernCheckBox();
+            mck_disablethink = new ModernCheckBox();
+            panLeft = new VerticalStackPanel();
+            cboxVLM = new CollapsibleGroupBox();
+            collapsibleGroupBox2 = new CollapsibleGroupBox();
+            mck_agentmode = new ModernCheckBox();
+            mck_onlinerag = new ModernCheckBox();
             panel2 = new Panel();
-            mckNatMem = new WaifuAI.Controls.ModernCheckBox();
-            mck_ragenabled = new WaifuAI.Controls.ModernCheckBox();
-            mck_worldinfo = new WaifuAI.Controls.ModernCheckBox();
-            mck_sessionmemory = new WaifuAI.Controls.ModernCheckBox();
-            panRight = new WaifuAI.Controls.VerticalStackPanel();
-            button3 = new Button();
-            collapsibleGroupBox3 = new WaifuAI.Controls.CollapsibleGroupBox();
-            mck_ttstoggle = new WaifuAI.Controls.ModernCheckBox();
-            mck_senseoftime = new WaifuAI.Controls.ModernCheckBox();
-            mck_caninitchat = new WaifuAI.Controls.ModernCheckBox();
+            mckNatMem = new ModernCheckBox();
+            mck_ragenabled = new ModernCheckBox();
+            mck_worldinfo = new ModernCheckBox();
+            mck_sessionmemory = new ModernCheckBox();
+            panRight = new VerticalStackPanel();
+            collapsibleGroupBox3 = new CollapsibleGroupBox();
+            mck_ttstoggle = new ModernCheckBox();
+            mck_senseoftime = new ModernCheckBox();
+            mck_caninitchat = new ModernCheckBox();
             panel1 = new Panel();
             statusbar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictEmbed).BeginInit();
@@ -201,10 +200,13 @@ namespace WaifuAI
             // cb_user
             // 
             cb_user.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            cb_user.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_user.BackColor = Color.FromArgb(64, 64, 64);
+            cb_user.DropDownHeight = 180;
             cb_user.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             cb_user.Location = new Point(11, 166);
+            cb_user.MaxDropDownItems = 10;
             cb_user.Name = "cb_user";
+            cb_user.Padding = new Padding(1);
             cb_user.Size = new Size(178, 23);
             cb_user.TabIndex = 3;
             cb_user.SelectedIndexChanged += cb_user_SelectedIndexChanged;
@@ -263,10 +265,13 @@ namespace WaifuAI
             // cb_bot
             // 
             cb_bot.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            cb_bot.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_bot.BackColor = Color.FromArgb(64, 64, 64);
+            cb_bot.DropDownHeight = 180;
             cb_bot.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             cb_bot.Location = new Point(11, 111);
+            cb_bot.MaxDropDownItems = 10;
             cb_bot.Name = "cb_bot";
+            cb_bot.Padding = new Padding(1);
             cb_bot.Size = new Size(178, 23);
             cb_bot.TabIndex = 1;
             cb_bot.SelectedIndexChanged += cb_bot_SelectedIndexChanged;
@@ -300,10 +305,13 @@ namespace WaifuAI
             // cb_sysprompt
             // 
             cb_sysprompt.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            cb_sysprompt.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_sysprompt.BackColor = Color.FromArgb(64, 64, 64);
+            cb_sysprompt.DropDownHeight = 180;
             cb_sysprompt.Font = new Font("Segoe UI", 9F);
             cb_sysprompt.Location = new Point(11, 56);
+            cb_sysprompt.MaxDropDownItems = 10;
             cb_sysprompt.Name = "cb_sysprompt";
+            cb_sysprompt.Padding = new Padding(1);
             cb_sysprompt.Size = new Size(178, 23);
             cb_sysprompt.TabIndex = 19;
             cb_sysprompt.SelectedIndexChanged += cb_sysprompt_SelectionIndexChanged;
@@ -464,10 +472,13 @@ namespace WaifuAI
             // 
             // cb_instruct
             // 
-            cb_instruct.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_instruct.BackColor = Color.FromArgb(64, 64, 64);
+            cb_instruct.DropDownHeight = 180;
             cb_instruct.Font = new Font("Segoe UI", 9F);
             cb_instruct.Location = new Point(11, 63);
+            cb_instruct.MaxDropDownItems = 10;
             cb_instruct.Name = "cb_instruct";
+            cb_instruct.Padding = new Padding(1);
             cb_instruct.Size = new Size(180, 23);
             cb_instruct.TabIndex = 5;
             cb_instruct.SelectedIndexChanged += cb_instruct_SelectedIndexChanged;
@@ -484,10 +495,13 @@ namespace WaifuAI
             // 
             // cb_infer
             // 
-            cb_infer.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_infer.BackColor = Color.FromArgb(64, 64, 64);
+            cb_infer.DropDownHeight = 180;
             cb_infer.Font = new Font("Segoe UI", 9F);
             cb_infer.Location = new Point(11, 118);
+            cb_infer.MaxDropDownItems = 10;
             cb_infer.Name = "cb_infer";
+            cb_infer.Padding = new Padding(1);
             cb_infer.Size = new Size(180, 23);
             cb_infer.TabIndex = 7;
             cb_infer.SelectedIndexChanged += cb_infer_SelectedIndexChanged;
@@ -504,12 +518,14 @@ namespace WaifuAI
             // 
             // num_temperature
             // 
+            num_temperature.BackColor = Color.FromArgb(64, 64, 64);
             num_temperature.DecimalPlaces = 2;
             num_temperature.Font = new Font("Segoe UI", 9F);
             num_temperature.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
             num_temperature.Location = new Point(11, 165);
             num_temperature.Maximum = new decimal(new int[] { 5, 0, 0, 0 });
             num_temperature.Name = "num_temperature";
+            num_temperature.Padding = new Padding(1);
             num_temperature.Size = new Size(180, 23);
             num_temperature.TabIndex = 17;
             num_temperature.ThousandsSeparator = true;
@@ -534,11 +550,13 @@ namespace WaifuAI
             // 
             // num_maxresponse
             // 
+            num_maxresponse.BackColor = Color.FromArgb(64, 64, 64);
             num_maxresponse.Font = new Font("Segoe UI", 9F);
             num_maxresponse.Increment = new decimal(new int[] { 32, 0, 0, 0 });
             num_maxresponse.Location = new Point(106, 61);
             num_maxresponse.Maximum = new decimal(new int[] { 16384, 0, 0, 0 });
             num_maxresponse.Name = "num_maxresponse";
+            num_maxresponse.Padding = new Padding(1);
             num_maxresponse.Size = new Size(85, 23);
             num_maxresponse.TabIndex = 18;
             num_maxresponse.ThousandsSeparator = true;
@@ -556,12 +574,14 @@ namespace WaifuAI
             // 
             // num_maxcontext
             // 
+            num_maxcontext.BackColor = Color.FromArgb(64, 64, 64);
             num_maxcontext.Font = new Font("Segoe UI", 9F);
             num_maxcontext.Increment = new decimal(new int[] { 512, 0, 0, 0 });
             num_maxcontext.Location = new Point(11, 61);
             num_maxcontext.Maximum = new decimal(new int[] { 16384, 0, 0, 0 });
             num_maxcontext.Minimum = new decimal(new int[] { 1024, 0, 0, 0 });
             num_maxcontext.Name = "num_maxcontext";
+            num_maxcontext.Padding = new Padding(1);
             num_maxcontext.Size = new Size(89, 23);
             num_maxcontext.TabIndex = 16;
             num_maxcontext.Value = new decimal(new int[] { 16384, 0, 0, 0 });
@@ -886,7 +906,6 @@ namespace WaifuAI
             // 
             // panRight
             // 
-            panRight.Controls.Add(button3);
             panRight.Controls.Add(button1);
             panRight.Controls.Add(collapsibleGroupBox3);
             panRight.Dock = DockStyle.Right;
@@ -895,16 +914,6 @@ namespace WaifuAI
             panRight.Padding = new Padding(0, 6, 0, 6);
             panRight.Size = new Size(200, 1020);
             panRight.TabIndex = 29;
-            // 
-            // button3
-            // 
-            button3.Location = new Point(0, 412);
-            button3.Name = "button3";
-            button3.Size = new Size(200, 23);
-            button3.TabIndex = 28;
-            button3.Text = "button3";
-            button3.UseVisualStyleBackColor = true;
-            button3.Click += button3_Click;
             // 
             // collapsibleGroupBox3
             // 
@@ -1083,7 +1092,6 @@ namespace WaifuAI
         private Controls.ModernCheckBox mck_ttstoggle;
         private Controls.ModernCheckBox mck_senseoftime;
         private Controls.ModernCheckBox mck_caninitchat;
-        private Button button3;
         private Panel panel1;
     }
 }

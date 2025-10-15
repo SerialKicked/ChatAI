@@ -1,4 +1,5 @@
 ﻿using LetheAISharp.Files;
+using LetheAISharp.LLM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,11 @@ namespace WaifuAI.Slash
         public SlashCommandInfo(ISlashCommand owner) => Owner = owner;
 
         public abstract SlashReturn Execute(string userinput);
+
+        protected SingleMessage GetHelpMessage()
+        {
+            return new SingleMessage(AuthorRole.System, Description + LLMEngine.NewLine + Slash);
+        }
     }
 
     public interface ISlashCommand

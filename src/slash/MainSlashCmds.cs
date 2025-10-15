@@ -18,9 +18,12 @@ namespace WaifuAI.Slash
         public override string Slash => "/sys [message]";
         public override SlashReturn Execute(string userinput)
         {
-            var dialog = userinput[5..].Trim();
-            var msg = new SingleMessage(AuthorRole.System, DateTime.Now, dialog, LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName);
-            return new SlashReturn(msg, true);
+            var remainder = userinput.Length > ID.Length ? userinput[ID.Length..] : string.Empty;
+            var dialog = remainder.Trim();
+            if (string.IsNullOrWhiteSpace(dialog))
+                return new SlashReturn(GetHelpMessage(), false, false, true);
+            var msg = new SingleMessage(AuthorRole.System, dialog);
+            return new SlashReturn(msg, true, true);
         }
     }
 
@@ -28,8 +31,6 @@ namespace WaifuAI.Slash
     {
         public List<SlashCommandInfo> Commands { get; }
         public bool FirstLineOnly => false;
-
-        public RenPyDialogHandler? RenpyHandler { get; set; }
 
         public MainSlashCmds()
         {

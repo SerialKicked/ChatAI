@@ -23,6 +23,7 @@ using WaifuAI.Files;
 using WaifuAI.Game;
 using WaifuAI.GBNF;
 using WaifuAI.Plugins;
+using WaifuAI.Slash;
 using WaifuAI.src.forms;
 using WaifuAI.Web;
 
@@ -44,6 +45,8 @@ namespace WaifuAI
         private readonly Random RNG = new();
         public RenPyDialogHandler? _renpyDialogHandler;
         private string ed_log = string.Empty;
+
+        private List<ISlashCommand> slashCommands = [ new MainSlashCmds(), new RenpyGameCmds() ];
 
         public static Character? Bot => LLMEngine.Bot as Character;
         public static Character? User => LLMEngine.User as Character;
@@ -486,7 +489,7 @@ namespace WaifuAI
 
             if (!string.IsNullOrEmpty(response) && !response.StartsWith("no", StringComparison.InvariantCultureIgnoreCase))
             {
-                var msg = new SingleMessage(AuthorRole.Assistant, DateTime.Now, response, LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName);
+                var msg = new SingleMessage(AuthorRole.Assistant, response);
                 Bot.History.LogMessage(msg);
                 _afkmessagecount++;
                 await SendMessageToUI(msg);
@@ -548,48 +551,6 @@ namespace WaifuAI
             await LLMEngine.ImpersonateUser();
         }
 
-        private (SingleMessage? response, bool usercmdonly) ProcessSlashCommands(string input)
-        {
-            if (string.IsNullOrWhiteSpace(input))
-                return (null, false);
-
-            var workstring = input.Trim();
-            // with input a multi-line string, we want to check if any of the lines starts with a command "/" character and if so, remove this particular line from workstring (set it aside for processing)
-            var lines = workstring.Split(["\n"], StringSplitOptions.RemoveEmptyEntries);
-            var commands = new List<string>();
-            foreach (var line in lines)
-            {
-                if (line.StartsWith('/'))
-                {
-                    commands.Add(line);
-                }
-            }
-            var foundacommand = false;
-            StringBuilder sb = new();
-            foreach (var cmd in commands)
-            {
-                var result = Bot!.MyPoints.ProcessCommand(cmd);
-                if (!string.IsNullOrEmpty(result))
-                {
-                    foundacommand = true;
-                    sb.AppendLinuxLine(result);
-                }
-            }
-            if (!foundacommand)
-                return (null, false);
-
-            var response = sb.ToString().CleanupAndTrim();
-
-            // check if the user sent only commands or not
-            var usercmdonly = commands.Count == lines.Length;
-
-            if (!string.IsNullOrEmpty(response))
-            {
-                return (new SingleMessage(AuthorRole.System, DateTime.Now, LLMEngine.Bot.ReplaceMacros(response), LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName), usercmdonly);
-            }
-            return (null, usercmdonly);
-        }
-
         private async void SendMessage(object sender, EventArgs e)
         {
             LLMEngine.Bot.AgentSystem?.NotifyUserActivity();
@@ -605,141 +566,48 @@ namespace WaifuAI
             _postdate = DateTime.Now;
             statusbar.Items[1].Text = "Analyzing...";
             UseCharacterDefinedSampler();
-            if (!string.IsNullOrEmpty(ed_input.Text))
-            {
-                var msgtxt = ed_input.Text.ToLinuxFormat();
-                msgtxt = LLMEngine.Bot.ReplaceMacros(msgtxt);
-                var msg = new SingleMessage(AuthorRole.User, DateTime.Now, msgtxt, LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName);
 
-                if (ed_input.Text.StartsWith("/sys "))
-                {
-                    msg.Role = AuthorRole.System;
-                    // remove the /sys prefix
-                    msg.Message = msg.Message[5..].Trim();
-                    await SendMessageToUI(msg);
-                    // ready a new message for the bot's response
-                    PrepareResponse();
-                    await SendMessageToUI(
-                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName));
-                    ed_input.Text = string.Empty;
-                    await LLMEngine.SendMessageToBot(msg);
-                }
-                else if (ed_input.Text.StartsWith("/game "))
-                {
-                    // remove the /sys prefix
-                    var msgpath = msg.Message[6..].Trim();
-                    _renpyDialogHandler = new RenPyDialogHandler(msgpath, "Slay The Princess");
-                    var message = new SingleMessage(AuthorRole.System, DateTime.Now, "*Game Loaded: Slay The Princess*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName, false);
-                    await SendMessageToUI(message);
-                    LLMEngine.Bot.History.LogMessage(message);
-                    ed_input.Text = string.Empty;
-                }
-                else if (ed_input.Text.StartsWith("/continue") && _renpyDialogHandler != null)
-                {
-                    var gameinfo = _renpyDialogHandler.Continue();
-                    // check if there's something after "/continue" in ed_input.Text and if there is, store in variable
-                    var extra = string.Empty;
-                    if (ed_input.Text.Length > 9)
-                    {
-                        extra = ed_input.Text[10..].Trim();
-                    }
-
-                    msg.Role = AuthorRole.User;
-                    // remove the /sys prefix
-                    if (!string.IsNullOrEmpty(extra))
-                    {
-                        msg.Message = $"**{User?.Name ?? "User"}'s Comment**" + LLMEngine.NewLine + extra + LLMEngine.NewLine + LLMEngine.NewLine + gameinfo.ShowFullScreen();
-                    }
-                    else
-                    {
-                        msg.Message = gameinfo.ShowFullScreen();
-                    }
-                    await SendMessageToUI(msg);
-                    // ready a new message for the bot's response
-                    PrepareResponse();
-                    await SendMessageToUI(
-                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName));
-                    ed_input.Text = string.Empty;
-                    await LLMEngine.SendMessageToBot(msg);
-                }
-                else if (ed_input.Text.StartsWith("/pick ") && _renpyDialogHandler != null)
-                {
-                    var select = msg.Message[6..].Trim();
-                    var id = int.TryParse(select, out var test) ? test : 0;
-                    var gameinfo = _renpyDialogHandler.MakeChoice(id);
-
-                    msg.Role = AuthorRole.System;
-                    // remove the /sys prefix
-                    msg.Message = gameinfo;
-                    await SendMessageToUI(msg);
-                    // ready a new message for the bot's response
-                    PrepareResponse();
-                    await SendMessageToUI(
-                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName));
-                    ed_input.Text = string.Empty;
-                    await LLMEngine.SendMessageToBot(msg);
-                }
-                else if (ed_input.Text.StartsWith("/dialogs") && _renpyDialogHandler != null)
-                {
-                    var gameinfo = _renpyDialogHandler.Continue();
-                    msg.Role = AuthorRole.System;
-                    // remove the /sys prefix
-                    msg.Message = gameinfo.ShowDialogs();
-                    await SendMessageToUI(msg);
-                    // ready a new message for the bot's response
-                    PrepareResponse();
-                    await SendMessageToUI(
-                        new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName));
-                    ed_input.Text = string.Empty;
-                    await LLMEngine.SendMessageToBot(msg);
-                }
-                else
-                {
-                    var (response, usercmdonly) = ProcessSlashCommands(msgtxt);
-                    if (response != null)
-                    {
-                        if (usercmdonly)
-                        {
-                            LLMEngine.History.LogMessage(response);
-                            await SendMessageToUI(response);
-                            ed_input.Text = string.Empty;
-                            statusbar.Items[1].Text = "Ready!";
-                            return;
-                        }
-                        else
-                        {
-                            LLMEngine.History.LogMessage(msg);
-                            await SendMessageToUI(msg);
-                            await SendMessageToUI(response);
-                            PrepareResponse();
-                            await SendMessageToUI(
-                                new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName));
-                            ed_input.Text = string.Empty;
-                            await LLMEngine.SendMessageToBot(response);
-                        }
-                    }
-                    else
-                    {
-                        await SendMessageToUI(msg);
-                        // ready a new message for the bot's response
-                        PrepareResponse();
-                        await SendMessageToUI(
-                            new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName));
-                        ed_input.Text = string.Empty;
-                        await LLMEngine.SendMessageToBot(msg);
-                    }
-                }
-            }
-            else
+            if (string.IsNullOrEmpty(ed_input.Text))
             {
                 // ready a new message for the bot's response
                 PrepareResponse();
-                await SendMessageToUI(
-                    new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName));
+                await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.UniqueName + " is thinking...*"));
                 ed_input.Text = string.Empty;
                 await LLMEngine.AddBotMessage();
+                return;
+            };
+
+            var msgtxt = ed_input.Text.ToLinuxFormat();
+            msgtxt = LLMEngine.Bot.ReplaceMacros(msgtxt);
+            SlashReturn? foundslash = null;
+            foreach (var slash in slashCommands)
+            {
+                var res = slash.RunCommand(msgtxt);
+                if (res.Message != null)
+                {
+                    foundslash = res;
+                    break;
+                }
+            }
+            var msg = new SingleMessage(AuthorRole.User, msgtxt);
+            if (foundslash is not null && foundslash.ReplaceUser && foundslash.Message is not null)
+            {
+                msg = foundslash.Message;
+            }
+            await SendMessageToUI(msg);
+            if (foundslash is not null && !foundslash.ReplaceUser && foundslash.Message is not null)
+            {
+                await SendMessageToUI(foundslash.Message);
             }
 
+            if (foundslash is null || !foundslash.NoBotResponse)
+            {
+                // ready a new message for the bot's response
+                PrepareResponse();
+                await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*"));
+                ed_input.Text = string.Empty;
+                await LLMEngine.SendMessageToBot(msg);
+            }
         }
 
         private void ForceCloseEditMenu()
@@ -776,7 +644,7 @@ namespace WaifuAI
             UseCharacterDefinedSampler();
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await WebRemoveLastMessage();
-            await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, DateTime.Now, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName));
+            await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*"));
             PrepareResponse();
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await LLMEngine.RerollLastMessage();
@@ -1916,13 +1784,5 @@ namespace WaifuAI
             LLMEngine.Bot.Brain.DisableEurekas = !mckNatMem.Checked;
         }
 
-        private void button3_Click(object sender, EventArgs e)
-        {
-            using var loadingForm = new TestForm();
-            ThemeManager.ApplyToForm(loadingForm);
-            loadingForm.StartPosition = FormStartPosition.CenterParent;
-            loadingForm.ShowDialog();
-
-        }
     }
 }

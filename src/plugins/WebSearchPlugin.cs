@@ -96,7 +96,7 @@ namespace WaifuAI.Plugins
             var topicsearch = new FindSingleTopicSearchAction();
             var topics = await topicsearch.Execute(new FindResearchTopicsParams
             {
-                Messages = [ new SingleMessage(AuthorRole.User, DateTime.Now, userinput, LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName) ],
+                Messages = [ new SingleMessage(AuthorRole.User, userinput) ],
                 IncludeBios = false,
                 CustomRequest = "Review the message in the prompt above and identify the topic for which a web search would be beneficial.",
             }, CancellationToken.None);

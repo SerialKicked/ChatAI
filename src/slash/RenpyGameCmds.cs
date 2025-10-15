@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Interop;
 using WaifuAI.Game;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace WaifuAI.Slash
 {
@@ -21,9 +22,12 @@ namespace WaifuAI.Slash
         public override SlashReturn Execute(string userinput)
         {
             // remove the /sys prefix
-            var msgpath = userinput[6..].Trim();
+            var remainder = userinput.Length > ID.Length ? userinput[ID.Length..] : string.Empty;
+            var msgpath = remainder.Trim();
+            if (string.IsNullOrWhiteSpace(msgpath))
+                return new SlashReturn(GetHelpMessage(), false, false, true);
             renpyGameCmds.RenpyHandler = new RenPyDialogHandler(msgpath, "Slay The Princess");
-            var message = new SingleMessage(AuthorRole.System, DateTime.Now, "*Game Loaded: Slay The Princess*", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName, false);
+            var message = new SingleMessage(AuthorRole.System, "*Game Loaded: Slay The Princess*");
             return new SlashReturn(message, true, false);
         }
     }
@@ -49,7 +53,7 @@ namespace WaifuAI.Slash
                 message = $"**{LLMEngine.User.Name}'s Comment**" + LLMEngine.NewLine + extra + LLMEngine.NewLine + LLMEngine.NewLine;
             }
             message += gameinfo.ShowFullScreen();
-            var msg = new SingleMessage(AuthorRole.User, DateTime.Now, message, LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName);
+            var msg = new SingleMessage(AuthorRole.User, message);
             return new SlashReturn(msg, true, true);
         }
     }
@@ -64,13 +68,13 @@ namespace WaifuAI.Slash
         public override SlashReturn Execute(string userinput)
         {
             if (renpyGameCmds.RenpyHandler is null)
-                return new SlashReturn(null, false, false);
-            
-            var select = userinput[6..].Trim();
-            var id = int.TryParse(select, out var test) ? test : 0;
+                return new SlashReturn(GetHelpMessage(), false, false, true);
+            var remainder = userinput.Length > ID.Length ? userinput[ID.Length..] : string.Empty;
+            var dialog = remainder.Trim();
+            var id = int.TryParse(dialog, out var test) ? test : 0;
             var gameinfo = renpyGameCmds.RenpyHandler.MakeChoice(id);
 
-            var msg = new SingleMessage(AuthorRole.System, DateTime.Now, gameinfo, LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName);
+            var msg = new SingleMessage(AuthorRole.System, gameinfo);
             return new SlashReturn(msg, true, false);
         }
     }
@@ -88,7 +92,7 @@ namespace WaifuAI.Slash
                 return new SlashReturn(null, false, false);
 
             var gameinfo = renpyGameCmds.RenpyHandler.Continue();
-            var msg = new SingleMessage(AuthorRole.System, DateTime.Now, gameinfo.ShowDialogs(), LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName);
+            var msg = new SingleMessage(AuthorRole.System, gameinfo.ShowDialogs());
             return new SlashReturn(msg, true, false);
         }
     }

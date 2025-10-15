@@ -383,7 +383,7 @@ namespace WaifuAI.src.forms
             if (MessageBox.Show("This will delete all chat history with this character permanently. Are you sure?", "Delete All History?", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 LLMEngine.History.DeleteAll(true);
-                var message = new SingleMessage(AuthorRole.Assistant, DateTime.Now, LLMEngine.Bot.GetWelcomeLine(LLMEngine.User.Name), LLMEngine.Bot.UniqueName, LLMEngine.Bot.UniqueName);
+                var message = new SingleMessage(AuthorRole.Assistant, LLMEngine.Bot.GetWelcomeLine(LLMEngine.User.Name));
                 LLMEngine.History.LogMessage(message);
                 LoadChatHistoryTab();
                 DialogResult = DialogResult.OK;
