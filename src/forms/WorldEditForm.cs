@@ -20,7 +20,7 @@ namespace WaifuAI.src.forms
         private bool _isInitLoading = true;
 
         // Mapping between sorted UI list index and original WorldInfo.Entries index
-        private List<int> _sortedToOriginalIndexMap = [];
+        private readonly List<int> _sortedToOriginalIndexMap = [];
 
         public WorldEditForm()
         {

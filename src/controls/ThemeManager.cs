@@ -13,16 +13,16 @@ namespace WaifuAI.Controls
         void ApplyTheme(ThemeManager.Theme theme);
     }
 
-    internal static class NativeDarkMode
+    internal static partial class NativeDarkMode
     {
         private const int DWMWA_USE_IMMERSIVE_DARK_MODE_OLD = 19;
         private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
 
-        [DllImport("dwmapi.dll")]
-        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+        [LibraryImport("dwmapi.dll")]
+        private static partial int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
 
-        [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
-        private static extern int SetWindowTheme(IntPtr hWnd, string pszSubAppName, string? pszSubIdList);
+        [LibraryImport("uxtheme.dll", StringMarshalling = StringMarshalling.Utf16)]
+        private static partial int SetWindowTheme(IntPtr hWnd, string pszSubAppName, string? pszSubIdList);
 
         public static void ApplyDarkModeIfNeeded(Form form, bool dark)
         {
@@ -54,7 +54,7 @@ namespace WaifuAI.Controls
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class ThemeExcludeAttribute : Attribute { }
 
-    public static class ThemeManager
+    public static partial class ThemeManager
     {
         // Legacy palette fields
         public static Color curthemeBackColor { get; private set; } = Color.FromArgb(0x1E, 0x1F, 0x22);
@@ -538,7 +538,7 @@ namespace WaifuAI.Controls
             return fallback;
         }
 
-        [DllImport("dwmapi.dll", ExactSpelling = true, PreserveSig = true)]
-        private static extern int DwmGetColorizationColor(out uint pcrColorization, out bool pfOpaqueBlend);
+        [LibraryImport("dwmapi.dll")]
+        private static partial int DwmGetColorizationColor(out uint pcrColorization, [MarshalAs(UnmanagedType.Bool)] out bool pfOpaqueBlend);
     }
 }

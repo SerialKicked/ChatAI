@@ -8,7 +8,7 @@ namespace WaifuAI
 {
     public static class DragNDropExtension
     {
-        public static string DroppedFilePath = string.Empty;
+        public static string DroppedFilePath { get; set; } = string.Empty;
 
         /// <summary>
         /// Enables drag and drop functionality for images on a control

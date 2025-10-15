@@ -4,13 +4,15 @@ using System.Windows.Forms;
 
 namespace WaifuAI.Controls
 {
-    public static class WindowDragHelper
+    public static partial class WindowDragHelper
     {
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HTCAPTION = 2;
 
-        [DllImport("user32.dll")] private static extern bool ReleaseCapture();
-        [DllImport("user32.dll")] private static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
+        [LibraryImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool ReleaseCapture();
+        [LibraryImport("user32.dll")] private static partial IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
 
         public static void MakeDraggable(Control dragSurface, Form? targetForm = null, bool onlyLeftButton = true)
         {
