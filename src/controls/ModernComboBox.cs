@@ -26,6 +26,7 @@ namespace WaifuAI.Controls
 
         private bool _buttonHovered;
         private bool _buttonPressed;
+        private bool _isClosingDropdown = false;
 
         // Theme colors
         private Color _panel;
@@ -366,6 +367,12 @@ namespace WaifuAI.Controls
         {
             if (_dropDownStyle == ComboBoxStyle.DropDownList)
             {
+                if (_isClosingDropdown)
+                {
+                    _isClosingDropdown = false;
+                    return;
+                }
+
                 if (_droppedDown)
                     HideDropDown();
                 else
@@ -475,6 +482,12 @@ namespace WaifuAI.Controls
 
         private void ButtonPanel_Click(object? sender, EventArgs e)
         {
+            if (_isClosingDropdown)
+            {
+                _isClosingDropdown = false;
+                return;
+            }
+
             if (_droppedDown)
                 HideDropDown();
             else
@@ -483,6 +496,7 @@ namespace WaifuAI.Controls
 
         private void DropDownForm_Deactivate(object? sender, EventArgs e)
         {
+            _isClosingDropdown = true;
             HideDropDown();
         }
 

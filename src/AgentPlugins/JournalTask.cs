@@ -37,10 +37,10 @@ namespace WaifuAI.AgentPlugins
 
         public async Task Execute(BasePersona owner, AgentTaskSetting cfg, CancellationToken ct)
         {
-            var response = new JournalRecord();
             var query = await GetQueryPrompt(owner);
 
             var result = await LLMEngine.SimpleQuery(query, ct).ConfigureAwait(false);
+            JournalRecord? response;
             try
             {
                 response = JsonConvert.DeserializeObject<JournalRecord>(result);

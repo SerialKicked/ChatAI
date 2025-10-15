@@ -417,7 +417,7 @@ namespace WaifuAI.Controls
             g.FillPath(thumbBrush, thumbPath);
         }
 
-        private GraphicsPath GetRoundedRect(Rectangle rect, int radius)
+        private static GraphicsPath GetRoundedRect(Rectangle rect, int radius)
         {
             var path = new GraphicsPath();
             int diameter = radius * 2;

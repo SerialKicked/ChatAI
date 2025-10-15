@@ -48,7 +48,7 @@ namespace WaifuAI.AgentPlugins
             return true;
         }
 
-        private void Merge(UserRecord target, UserRecord addon)
+        private static void Merge(UserRecord target, UserRecord addon)
         {
             foreach (var item in addon.Sexual)
             {

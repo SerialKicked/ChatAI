@@ -201,10 +201,10 @@ namespace WaifuAI
             // 
             cb_user.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cb_user.BackColor = Color.FromArgb(64, 64, 64);
-            cb_user.DropDownHeight = 180;
+            cb_user.DropDownHeight = 620;
             cb_user.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             cb_user.Location = new Point(11, 166);
-            cb_user.MaxDropDownItems = 10;
+            cb_user.MaxDropDownItems = 25;
             cb_user.Name = "cb_user";
             cb_user.Padding = new Padding(1);
             cb_user.Size = new Size(178, 23);
@@ -266,10 +266,10 @@ namespace WaifuAI
             // 
             cb_bot.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cb_bot.BackColor = Color.FromArgb(64, 64, 64);
-            cb_bot.DropDownHeight = 180;
+            cb_bot.DropDownHeight = 620;
             cb_bot.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             cb_bot.Location = new Point(11, 111);
-            cb_bot.MaxDropDownItems = 10;
+            cb_bot.MaxDropDownItems = 25;
             cb_bot.Name = "cb_bot";
             cb_bot.Padding = new Padding(1);
             cb_bot.Size = new Size(178, 23);
@@ -306,10 +306,10 @@ namespace WaifuAI
             // 
             cb_sysprompt.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cb_sysprompt.BackColor = Color.FromArgb(64, 64, 64);
-            cb_sysprompt.DropDownHeight = 180;
+            cb_sysprompt.DropDownHeight = 620;
             cb_sysprompt.Font = new Font("Segoe UI", 9F);
             cb_sysprompt.Location = new Point(11, 56);
-            cb_sysprompt.MaxDropDownItems = 10;
+            cb_sysprompt.MaxDropDownItems = 25;
             cb_sysprompt.Name = "cb_sysprompt";
             cb_sysprompt.Padding = new Padding(1);
             cb_sysprompt.Size = new Size(178, 23);
@@ -473,10 +473,10 @@ namespace WaifuAI
             // cb_instruct
             // 
             cb_instruct.BackColor = Color.FromArgb(64, 64, 64);
-            cb_instruct.DropDownHeight = 180;
+            cb_instruct.DropDownHeight = 620;
             cb_instruct.Font = new Font("Segoe UI", 9F);
             cb_instruct.Location = new Point(11, 63);
-            cb_instruct.MaxDropDownItems = 10;
+            cb_instruct.MaxDropDownItems = 25;
             cb_instruct.Name = "cb_instruct";
             cb_instruct.Padding = new Padding(1);
             cb_instruct.Size = new Size(180, 23);
@@ -496,10 +496,10 @@ namespace WaifuAI
             // cb_infer
             // 
             cb_infer.BackColor = Color.FromArgb(64, 64, 64);
-            cb_infer.DropDownHeight = 180;
+            cb_infer.DropDownHeight = 620;
             cb_infer.Font = new Font("Segoe UI", 9F);
             cb_infer.Location = new Point(11, 118);
-            cb_infer.MaxDropDownItems = 10;
+            cb_infer.MaxDropDownItems = 25;
             cb_infer.Name = "cb_infer";
             cb_infer.Padding = new Padding(1);
             cb_infer.Size = new Size(180, 23);
