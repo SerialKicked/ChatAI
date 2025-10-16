@@ -897,7 +897,6 @@ namespace WaifuAI
             LLMEngine.Settings = Program.Settings;
             var saveinit = _isinitloading;
             _isinitloading = true;
-            LLMEngine.MaxContextLength = Program.Settings.MaxTotalTokens;
 
             // set cb_user to the Program.Settings.UserFile value if it's in the list, otherwise set index to 0.
             cb_user.SelectedIndex = cb_user.Items.Contains(Program.Settings.UserFile) ? cb_user.Items.IndexOf(Program.Settings.UserFile) : 0;

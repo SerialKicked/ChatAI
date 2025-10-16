@@ -19,7 +19,6 @@ namespace WaifuAI.Files
         public string Instruct { get; set; } = "ChatML";
         public string SamplerFile { get; set; } = "Default";
         public double Temperature { get; set; } = 0.70;
-        public int MaxTotalTokens { get; set; } = 16384;
         public int MaxMessagesOnScreen { get; set; } = 100;
         public int FontSize { get; set; } = 18;
         public bool AlwaysWebSearchQuery { get; set; } = false;
