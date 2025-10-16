@@ -1,6 +1,7 @@
 using AngleSharp.Text;
 using LetheAISharp;
 using LetheAISharp.Agent;
+using LetheAISharp.Agent.Actions;
 using LetheAISharp.Files;
 using LetheAISharp.LLM;
 using LetheAISharp.Memory;
@@ -1659,92 +1660,11 @@ namespace WaifuAI
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            var folders = new List<string>()
-            {
-                @"S:\Content\Pictures\",
-            };
-
-            var imageFiles = new List<string>();
-
-            foreach (var folder in folders)
-            {
-                imageFiles.AddRange([.. Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories)
-                    .Where(s => s.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
-                                s.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
-                                s.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
-                                s.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))]);
-            }
-
-            var imageAction = new ImageInfoAction();
-
-            var Memories = new List<MemoryUnit>();
-
-            using var loadingForm = new LoadingForm() { Owner = this, StartPosition = FormStartPosition.Manual };
-            loadingForm.CenterToParent();
-            loadingForm.Show();
-            loadingForm.BringToFront();
-            loadingForm.Refresh();
-            loadingForm.SetMax(imageFiles.Count);
-            loadingForm.SetMessage("Processing images...");
-            var mems = LLMEngine.Bot.Brain.GetMemories(MemoryType.Image);
-            foreach (var mem in mems)
-            {
-                LLMEngine.Bot.Brain.Forget(mem);
-            }
-
-
-            foreach (var imageFile in imageFiles)
-            {
-                var jsonFile = Path.ChangeExtension(imageFile, ".json");
-                loadingForm.SetMessage("Processing images: " + Environment.NewLine + imageFile);
-                loadingForm.AddProgress(1);
-                // if the json file already exists, load it instead of processing the image
-                ImageRecord? found = null;
-                if (File.Exists(jsonFile))
-                {
-                    try
-                    {
-                        found = JsonConvert.DeserializeObject<ImageRecord>(File.ReadAllText(jsonFile));
-                    }
-                    catch (Exception ex)
-                    {
-                        LLMEngine.Logger?.LogError(ex, "Error loading existing image information from {JsonFile}", jsonFile);
-                    }
-                }
-                if (found is null)
-                {
-                    var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
-                    found = await imageAction.Execute(imageFile, cts.Token);
-                    if (found is not null)
-                    {
-                        var json = JsonConvert.SerializeObject(found, Formatting.Indented);
-                        File.WriteAllText(jsonFile, json);
-                    }
-                }
-                if (found is not null)
-                {
-                    loadingForm.SetMessage("Embedding Memory: " + found.Title);
-                    var fulldesc = new StringBuilder();
-                    if (!string.IsNullOrWhiteSpace(found.Description))
-                        fulldesc.AppendLinuxLine(found.Description);
-                    if (!string.IsNullOrWhiteSpace(found.ImageText))
-                        fulldesc.AppendLinuxLine().AppendLinuxLine("The following text can be read on the image: " + found.ImageText.RemoveNewLines());
-                    if (!string.IsNullOrWhiteSpace(found.Interpretation))
-                        fulldesc.AppendLinuxLine().AppendLinuxLine(found.Description);
-
-                    var mem = new MemoryUnit
-                    {
-                        Name = found.Title,
-                        Content = fulldesc.ToString().CleanupAndTrim(),
-                        Category = MemoryType.Image,
-                        Path = imageFile,
-                        Insertion = MemoryInsertion.Trigger,
-                    };
-                    await mem.EmbedText();
-                    LLMEngine.Bot.Brain.Memorize(mem, true);
-                }
-            }
-            loadingForm.Close();
+            var builder = LLMEngine.GetPromptBuilder();
+            builder.AddMessage(AuthorRole.SysPrompt, "You're a helpful assistant who responds in JSON format. The JSON contains the response and a confidence index ranging between 0 and 10.");
+            builder.AddMessage(AuthorRole.User, "What is the capital of France?");
+            await builder.SetStructuredOutput<BasicBitch>();
+            var response = await LLMEngine.SimpleQuery(builder.PromptToQuery());
         }
 
         private void button2_Click(object sender, EventArgs e)

@@ -10,6 +10,11 @@ using System.Threading.Tasks;
 
 namespace WaifuAI.GBNF
 {
+    public class BasicBitch
+    {
+        public string Response { get; set; } = string.Empty;
+        public int Confidence { get; set; } = 0;
+    }
 
     public class UserRecord : LLMExtractableBase<UserRecord>
     {
