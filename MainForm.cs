@@ -149,7 +149,6 @@ namespace WaifuAI
 
             // Chat related events
             SetupChatMenu();
-            _isinitloading = false;
             _activityTimer.OnTrigger += OnBotInitiateConversation;
 
             // Autodetection of the user's activity (mostly for the background agent functionalities)
@@ -189,11 +188,33 @@ namespace WaifuAI
             {
                 cb_sysprompt.Items.Add(item.Value.UniqueName);
             }
-            LoadSettings();
 
-            // Show LoginForm
+            _isinitloading = true;
 
-            LLMEngine.Init();
+            // set cb_user to the Program.Settings.UserFile value if it's in the list, otherwise set index to 0.
+            cb_user.SelectedIndex = cb_user.Items.Contains(Program.Settings.UserFile) ? cb_user.Items.IndexOf(Program.Settings.UserFile) : 0;
+            // set cb_infer to the Program.Settings.InferenceFile value if it's in the list, otherwise set index to 0.
+            cb_infer.SelectedIndex = cb_infer.Items.Contains(Program.Settings.SamplerFile) ? cb_infer.Items.IndexOf(Program.Settings.SamplerFile) : 0;
+            // set cb_instruct to the Program.Settings.InstructFile value if it's in the list, otherwise set index to 0.
+            cb_instruct.SelectedIndex = cb_instruct.Items.Contains(Program.Settings.Instruct) ? cb_instruct.Items.IndexOf(Program.Settings.Instruct) : 0;
+            // set cb_bot to the Program.Settings.BotFile value if it's in the list, otherwise set index to 0.
+            cb_bot.SelectedIndex = cb_bot.Items.Contains(Program.Settings.BotFile) ? cb_bot.Items.IndexOf(Program.Settings.BotFile) : 0;
+            // set cb_sysprompt to the Program.Settings.PromptFile value if it's in the list, otherwise set index to 0.
+            cb_sysprompt.SelectedIndex = cb_sysprompt.Items.Contains(Program.Settings.PromptFile) ? cb_sysprompt.Items.IndexOf(Program.Settings.PromptFile) : 0;
+            num_maxcontext.Maximum = Program.Settings.MaxTotalTokens;
+            num_maxcontext.Value = Program.Settings.MaxTotalTokens;
+            num_maxresponse.Value = Program.Settings.MaxReplyLength;
+            num_temperature.Value = (decimal)Program.Settings.Temperature;
+            mck_sessionmemory.Checked = LLMEngine.Settings.SessionMemorySystem;
+            mck_ttstoggle.Checked = Program.Settings.UseTTS;
+            mck_disablethink.Checked = Program.Settings.DisableThinking;
+            mck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
+            mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
+            mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
+            btVectorSearch.Enabled = LLMEngine.Settings.RAGEnabled;
+
+            Program.ApplyContextPluginSettings();
+
             LLMEngine.ContextPlugins = [];
             LLMEngine.ContextPlugins.Add(new BrowsePlugin());
             LLMEngine.ContextPlugins.Add(new LocationPlugin("Locations"));
@@ -217,6 +238,8 @@ namespace WaifuAI
                 LLMEngine.VLM_AddImage(DragNDropExtension.DroppedFilePath);
                 DisplayImage(basestr);
             }, 1024);
+            _isinitloading = false;
+
         }
 
         /// <summary>
@@ -884,47 +907,6 @@ namespace WaifuAI
 
         #region *** Settings Tab Functions ***
 
-        private void LoadSettings()
-        {
-            if (!File.Exists("settings.json"))
-            {
-                Program.Settings = new WaifuSettings();
-                File.WriteAllText("settings.json", JsonConvert.SerializeObject(Program.Settings, Formatting.Indented));
-            }
-
-            var str = File.ReadAllText("settings.json");
-            Program.Settings = JsonConvert.DeserializeObject<WaifuSettings>(str)!;
-            LLMEngine.Settings = Program.Settings;
-            var saveinit = _isinitloading;
-            _isinitloading = true;
-
-            // set cb_user to the Program.Settings.UserFile value if it's in the list, otherwise set index to 0.
-            cb_user.SelectedIndex = cb_user.Items.Contains(Program.Settings.UserFile) ? cb_user.Items.IndexOf(Program.Settings.UserFile) : 0;
-            // set cb_infer to the Program.Settings.InferenceFile value if it's in the list, otherwise set index to 0.
-            cb_infer.SelectedIndex = cb_infer.Items.Contains(Program.Settings.SamplerFile) ? cb_infer.Items.IndexOf(Program.Settings.SamplerFile) : 0;
-            // set cb_instruct to the Program.Settings.InstructFile value if it's in the list, otherwise set index to 0.
-            cb_instruct.SelectedIndex = cb_instruct.Items.Contains(Program.Settings.Instruct) ? cb_instruct.Items.IndexOf(Program.Settings.Instruct) : 0;
-            // set cb_bot to the Program.Settings.BotFile value if it's in the list, otherwise set index to 0.
-            cb_bot.SelectedIndex = cb_bot.Items.Contains(Program.Settings.BotFile) ? cb_bot.Items.IndexOf(Program.Settings.BotFile) : 0;
-            // set cb_sysprompt to the Program.Settings.PromptFile value if it's in the list, otherwise set index to 0.
-            cb_sysprompt.SelectedIndex = cb_sysprompt.Items.Contains(Program.Settings.PromptFile) ? cb_sysprompt.Items.IndexOf(Program.Settings.PromptFile) : 0;
-            num_maxcontext.Maximum = Program.Settings.MaxTotalTokens;
-            num_maxcontext.Value = Program.Settings.MaxTotalTokens;
-            num_maxresponse.Value = Program.Settings.MaxReplyLength;
-            num_temperature.Value = (decimal)Program.Settings.Temperature;
-            mck_sessionmemory.Checked = LLMEngine.Settings.SessionMemorySystem;
-            mck_ttstoggle.Checked = Program.Settings.UseTTS;
-            mck_disablethink.Checked = Program.Settings.DisableThinking;
-            mck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
-            mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
-            mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
-            btVectorSearch.Enabled = LLMEngine.Settings.RAGEnabled;
-
-            Program.ApplyContextPluginSettings();
-
-            _isinitloading = saveinit;
-        }
-
         private void SaveSettings()
         {
             try
@@ -939,13 +921,9 @@ namespace WaifuAI
                 LLMEngine.Bot.AgentMode = mck_agentmode.Checked;
                 LLMEngine.Bot.Brain.DisableEurekas = !mckNatMem.Checked;
                 Program.Settings.SessionMemorySystem = mck_sessionmemory.Checked;
-
                 Program.ApplyContextPluginSettings();
-
-
                 var str = JsonConvert.SerializeObject(Program.Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
-
             }
             catch (Exception ex)
             {
