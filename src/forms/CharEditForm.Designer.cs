@@ -429,7 +429,7 @@ namespace WaifuAI.src.forms
             ck_isuser.AutoSize = true;
             ck_isuser.Location = new Point(373, 32);
             ck_isuser.Name = "ck_isuser";
-            ck_isuser.Size = new Size(105, 21);
+            ck_isuser.Size = new Size(94, 19);
             ck_isuser.TabIndex = 8;
             ck_isuser.Text = "User Persona";
             ck_isuser.UseVisualStyleBackColor = true;
@@ -439,7 +439,7 @@ namespace WaifuAI.src.forms
             ed_name.BorderStyle = BorderStyle.FixedSingle;
             ed_name.Location = new Point(12, 30);
             ed_name.Name = "ed_name";
-            ed_name.Size = new Size(355, 24);
+            ed_name.Size = new Size(355, 23);
             ed_name.TabIndex = 7;
             // 
             // label1
@@ -667,7 +667,7 @@ namespace WaifuAI.src.forms
             tbGeneral.Controls.Add(ck_isuser);
             tbGeneral.Controls.Add(label2);
             tbGeneral.Controls.Add(ed_bio);
-            tbGeneral.Font = new Font("Segoe UI", 9.25F);
+            tbGeneral.Font = new Font("Segoe UI", 9F);
             tbGeneral.ForeColor = Color.FromArgb(230, 230, 230);
             tbGeneral.Location = new Point(4, 40);
             tbGeneral.Name = "tbGeneral";
@@ -682,7 +682,7 @@ namespace WaifuAI.src.forms
             tbStyle.Controls.Add(collapsibleGroupBox3);
             tbStyle.Controls.Add(collapsibleGroupBox2);
             tbStyle.Controls.Add(collapsibleGroupBox1);
-            tbStyle.Font = new Font("Segoe UI", 9.25F);
+            tbStyle.Font = new Font("Segoe UI", 9F);
             tbStyle.ForeColor = Color.FromArgb(230, 230, 230);
             tbStyle.Location = new Point(4, 40);
             tbStyle.Name = "tbStyle";
@@ -757,7 +757,7 @@ namespace WaifuAI.src.forms
             tbPrompt.BackColor = Color.FromArgb(37, 37, 37);
             tbPrompt.Controls.Add(ed_sysprompt);
             tbPrompt.Controls.Add(textBox2);
-            tbPrompt.Font = new Font("Segoe UI", 9.25F);
+            tbPrompt.Font = new Font("Segoe UI", 9F);
             tbPrompt.ForeColor = Color.FromArgb(230, 230, 230);
             tbPrompt.Location = new Point(4, 40);
             tbPrompt.Name = "tbPrompt";
@@ -772,7 +772,7 @@ namespace WaifuAI.src.forms
             tbAgent.Controls.Add(collapsibleGroupBox7);
             tbAgent.Controls.Add(collapsibleGroupBox6);
             tbAgent.Controls.Add(collapsibleGroupBox5);
-            tbAgent.Font = new Font("Segoe UI", 9.25F);
+            tbAgent.Font = new Font("Segoe UI", 9F);
             tbAgent.ForeColor = Color.FromArgb(230, 230, 230);
             tbAgent.Location = new Point(4, 40);
             tbAgent.Name = "tbAgent";
@@ -920,7 +920,7 @@ namespace WaifuAI.src.forms
             tbSettings.Controls.Add(collapsibleGroupBox10);
             tbSettings.Controls.Add(collapsibleGroupBox9);
             tbSettings.Controls.Add(collapsibleGroupBox4);
-            tbSettings.Font = new Font("Segoe UI", 9.25F);
+            tbSettings.Font = new Font("Segoe UI", 9F);
             tbSettings.ForeColor = Color.FromArgb(230, 230, 230);
             tbSettings.Location = new Point(4, 40);
             tbSettings.Name = "tbSettings";

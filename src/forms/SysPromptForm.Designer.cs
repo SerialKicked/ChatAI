@@ -62,13 +62,13 @@ namespace WaifuAI.src.forms
             PanMenu.Dock = DockStyle.Left;
             PanMenu.Location = new Point(0, 0);
             PanMenu.Name = "PanMenu";
-            PanMenu.Size = new Size(234, 494);
+            PanMenu.Size = new Size(234, 493);
             PanMenu.TabIndex = 0;
             // 
             // edFileName
             // 
             edFileName.Dock = DockStyle.Bottom;
-            edFileName.Location = new Point(0, 428);
+            edFileName.Location = new Point(0, 427);
             edFileName.Name = "edFileName";
             edFileName.PlaceholderText = "Filename for prompt";
             edFileName.Size = new Size(234, 23);
@@ -90,7 +90,7 @@ namespace WaifuAI.src.forms
             // panel3
             // 
             panel3.Dock = DockStyle.Bottom;
-            panel3.Location = new Point(0, 451);
+            panel3.Location = new Point(0, 450);
             panel3.Margin = new Padding(8);
             panel3.Name = "panel3";
             panel3.Padding = new Padding(8);
@@ -104,7 +104,7 @@ namespace WaifuAI.src.forms
             btSave.FlatStyle = FlatStyle.Flat;
             btSave.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btSave.ForeColor = Color.Black;
-            btSave.Location = new Point(0, 461);
+            btSave.Location = new Point(0, 460);
             btSave.Name = "btSave";
             btSave.Size = new Size(234, 23);
             btSave.TabIndex = 6;
@@ -116,7 +116,7 @@ namespace WaifuAI.src.forms
             // panel1
             // 
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 484);
+            panel1.Location = new Point(0, 483);
             panel1.Margin = new Padding(8);
             panel1.Name = "panel1";
             panel1.Padding = new Padding(8);
@@ -239,7 +239,7 @@ namespace WaifuAI.src.forms
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DimGray;
-            ClientSize = new Size(1243, 494);
+            ClientSize = new Size(1243, 493);
             Controls.Add(collapsibleGroupBox2);
             Controls.Add(collapsibleGroupBox1);
             Controls.Add(PanMenu);

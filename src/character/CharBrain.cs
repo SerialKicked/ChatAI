@@ -17,7 +17,7 @@ namespace WaifuAI.Files
 {
     public class CharBrain(BasePersona basePersona) : Brain(basePersona)
     {
-        [JsonIgnore] protected new Character Owner { get; set; } = (Character)basePersona;
+        [JsonIgnore] protected new Character Owner => (Character)base.Owner;
 
         //public new AdvancedMoodState Mood { get; set; } 
 

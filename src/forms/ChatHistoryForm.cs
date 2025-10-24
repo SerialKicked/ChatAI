@@ -431,5 +431,10 @@ namespace WaifuAI.src.forms
             //}
             //MessageBox.Show(strb.ToString(), "Sentiment Analysis Results");
         }
+
+        private void lbl_sessiondata_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
