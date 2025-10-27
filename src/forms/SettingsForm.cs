@@ -126,6 +126,7 @@ namespace WaifuAI.src.forms
             ck_hallusafe.Checked = Program.Settings.AntiHallucinationMemoryFormat;
             ckThirdPerson.Checked = Program.Settings.RAGConvertTo3rdPerson;
             mcbSkin.SelectedIndex = mcbSkin.Items.IndexOf(Program.Settings.Skin);
+            mck_cutmiddle.Checked = Program.Settings.CutInTheMiddleSummaryStrategy;
 
             Program.ApplyContextPluginSettings();
 
@@ -186,6 +187,7 @@ namespace WaifuAI.src.forms
                 Program.Settings.RAGConvertTo3rdPerson = ckThirdPerson.Checked;
                 Program.Settings.RAGHeuristic = (RAGSelectionHeuristic)cb_ragheuristic.SelectedIndex;
                 Program.Settings.Skin = mcbSkin.SelectedItem?.ToString() ?? "Dark";
+                Program.Settings.CutInTheMiddleSummaryStrategy = mck_cutmiddle.Checked;
 
                 // Search API Settings
                 if (cb_searchapi.SelectedIndex == 0)
@@ -251,6 +253,11 @@ namespace WaifuAI.src.forms
             ThemeManager.ReapplyTheme(Program.BigForm!);
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        private void collapsibleGroupBox2_ExpandedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

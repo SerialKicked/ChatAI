@@ -17,12 +17,12 @@ namespace WaifuAI.AgentPlugins
     }
 
     /// <summary>
-    /// Represents an action that analyzes a session and generates a response based on the session's context and the
-    /// request provided as a parameter.
+    /// Represents an action that analyzes the mood of a session based on its transcript and context.
     /// </summary>
-    /// <remarks>This action uses a language model to process the session data and user request, generating a
-    /// response that reflects on the session. It requires specific capabilities, such as access to a language model, 
-    /// to execute successfully.</remarks>
+    /// <remarks>This action uses a language model to evaluate the mood and feelings expressed during a
+    /// session.  The analysis is returned as a <see cref="MoodAnalysis"/> object, which provides structured feedback 
+    /// on mood changes. The action requires specific agent capabilities, including having a language model loaded and a
+    /// backend with structure output functionalities.</remarks>
     public class SessionMoodCheckAction : IAgentAction<MoodAnalysis?, SessionMoodCheckParams>
     {
         public string Id => "SessionMoodCheckAction";

@@ -1660,11 +1660,11 @@ namespace WaifuAI
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            var builder = LLMEngine.GetPromptBuilder();
-            builder.AddMessage(AuthorRole.SysPrompt, "You're a helpful assistant who responds in JSON format. The JSON contains the response and a confidence index ranging between 0 and 10.");
-            builder.AddMessage(AuthorRole.User, "What is the capital of France?");
-            await builder.SetStructuredOutput<BasicBitch>();
-            var response = await LLMEngine.SimpleQuery(builder.PromptToQuery());
+            var mood = LLMEngine.Bot.Brain.Mood.Describe();
+            // show a simple message box
+            MessageBox.Show(this, $"{mood}", "Mood State", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+
         }
 
         private void button2_Click(object sender, EventArgs e)

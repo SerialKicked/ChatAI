@@ -411,7 +411,7 @@ namespace WaifuAI.src.forms
                     strb.AppendLine($"Horniness: {result.Horniness.ToString()}");
                     strb.AppendLine($"Submission: {result.Submission.ToString()}");
                     strb.AppendLine($"Energy: {result.Energy.ToString()}");
-                    strb.AppendLine($"Cheer: {result.Cheer.ToString()}");
+                    strb.AppendLine($"Cheer: {result.Happy.ToString()}");
                     strb.AppendLine($"Curiosity: {result.Curiosity.ToString()}");
                     strb.AppendLine($"Sanity: {result.Sanity.ToString()}");
                     MessageBox.Show(strb.ToString(), "Mood Analysis Results");

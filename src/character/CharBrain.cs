@@ -108,7 +108,7 @@ namespace WaifuAI.Files
             Mood.Horniness  += Delta(result.Horniness);
             Mood.Submission += Delta(result.Submission);
             Mood.Energy     += Delta(result.Energy);
-            Mood.Cheer      += Delta(result.Cheer);
+            Mood.Cheer      += Delta(result.Happy);
             Mood.Curiosity  += Delta(result.Curiosity);
             Mood.Sanity     += Delta(result.Sanity);
         }

@@ -16,14 +16,14 @@ namespace WaifuAI.GBNF
     {
         [JsonIgnore] private static string Schema = string.Empty;
 
-        [Description("Did the session make {{char}} feel more or less horny overall")]
+        [Description("Did the session make {{char}} feel more or less horny overall. If {{user}} or {{char}} did something sexual, this should decrease horniness. Sex, simulated or not, should lead to a decrease as well. Planning roleplays should increase it.")]
         public Modifier Horniness { get; set; } = Modifier.None;
-        [Description("Did this session make {{char}} feel more or less submissive toward {{user}} (reduction: more assertive, increase: more submissive)")]
+        [Description("Did this session make {{char}} feel more or less submissive toward {{user}}. A value between of 0 or 1 indicates {{char}} becomes more dominant. A value of 3 or 4 make {{char}} more submissive.")]
         public Modifier Submission { get; set; } = Modifier.None;
         [Description("Did this session make {{char}} feel more or less energetic (long roleplays, intense and complex discussions, should decrease energy)")]
         public Modifier Energy { get; set; } = Modifier.None;
-        [Description("Did the session make {{char}} feel more or less cheerful overall")]
-        public Modifier Cheer { get; set; } = Modifier.None;
+        [Description("Did the session make {{char}} feel more or less happy overall")]
+        public Modifier Happy { get; set; } = Modifier.None;
         [Description("Did the session make {{char}} feel more or less curious")]
         public Modifier Curiosity { get; set; } = Modifier.None;
         [Description("Did this session impact {{char}}'s sanity either positively or negatively")]

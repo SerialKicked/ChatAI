@@ -100,9 +100,10 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox4 = new CollapsibleGroupBox();
             verticalStackPanel3 = new VerticalStackPanel();
             collapsibleGroupBox6 = new CollapsibleGroupBox();
-            collapsibleGroupBox5 = new CollapsibleGroupBox();
             label5 = new Label();
             mcbSkin = new ModernComboBox();
+            collapsibleGroupBox5 = new CollapsibleGroupBox();
+            mck_cutmiddle = new ModernCheckBox();
             panel1.SuspendLayout();
             collapsibleGroupBox1.SuspendLayout();
             verticalStackPanel1.SuspendLayout();
@@ -799,7 +800,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox3.Controls.Add(num_ragmaxretrieve);
             collapsibleGroupBox3.Controls.Add(label14);
             collapsibleGroupBox3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox3.Location = new Point(0, 284);
+            collapsibleGroupBox3.Location = new Point(0, 322);
             collapsibleGroupBox3.Name = "collapsibleGroupBox3";
             collapsibleGroupBox3.Padding = new Padding(12, 32, 12, 10);
             collapsibleGroupBox3.Size = new Size(321, 280);
@@ -810,6 +811,7 @@ namespace WaifuAI.src.forms
             // 
             collapsibleGroupBox2.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox2.CanCollapse = false;
+            collapsibleGroupBox2.Controls.Add(mck_cutmiddle);
             collapsibleGroupBox2.Controls.Add(label65);
             collapsibleGroupBox2.Controls.Add(ck_sessionmemory);
             collapsibleGroupBox2.Controls.Add(cb_pastsession);
@@ -819,9 +821,10 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox2.Location = new Point(0, 109);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox2.Size = new Size(321, 167);
+            collapsibleGroupBox2.Size = new Size(321, 205);
             collapsibleGroupBox2.TabIndex = 34;
             collapsibleGroupBox2.Text = "Session Memory System";
+            collapsibleGroupBox2.ExpandedChanged += collapsibleGroupBox2_ExpandedChanged;
             // 
             // verticalStackPanel2
             // 
@@ -911,27 +914,6 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox6.TabIndex = 1;
             collapsibleGroupBox6.Text = "User Interface";
             // 
-            // collapsibleGroupBox5
-            // 
-            collapsibleGroupBox5.BackColor = Color.FromArgb(37, 38, 42);
-            collapsibleGroupBox5.CanCollapse = false;
-            collapsibleGroupBox5.Controls.Add(label4);
-            collapsibleGroupBox5.Controls.Add(label2);
-            collapsibleGroupBox5.Controls.Add(ck_searchextract);
-            collapsibleGroupBox5.Controls.Add(ck_webkeyword);
-            collapsibleGroupBox5.Controls.Add(label3);
-            collapsibleGroupBox5.Controls.Add(ck_alwayswebsearch);
-            collapsibleGroupBox5.Controls.Add(ed_searchkey);
-            collapsibleGroupBox5.Controls.Add(ck_webgrammar);
-            collapsibleGroupBox5.Controls.Add(cb_searchapi);
-            collapsibleGroupBox5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox5.Location = new Point(6, 6);
-            collapsibleGroupBox5.Name = "collapsibleGroupBox5";
-            collapsibleGroupBox5.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox5.Size = new Size(308, 308);
-            collapsibleGroupBox5.TabIndex = 0;
-            collapsibleGroupBox5.Text = "Web Search";
-            // 
             // label5
             // 
             label5.AutoSize = true;
@@ -954,6 +936,37 @@ namespace WaifuAI.src.forms
             mcbSkin.Padding = new Padding(1);
             mcbSkin.Size = new Size(278, 23);
             mcbSkin.TabIndex = 40;
+            // 
+            // collapsibleGroupBox5
+            // 
+            collapsibleGroupBox5.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox5.CanCollapse = false;
+            collapsibleGroupBox5.Controls.Add(label4);
+            collapsibleGroupBox5.Controls.Add(label2);
+            collapsibleGroupBox5.Controls.Add(ck_searchextract);
+            collapsibleGroupBox5.Controls.Add(ck_webkeyword);
+            collapsibleGroupBox5.Controls.Add(label3);
+            collapsibleGroupBox5.Controls.Add(ck_alwayswebsearch);
+            collapsibleGroupBox5.Controls.Add(ed_searchkey);
+            collapsibleGroupBox5.Controls.Add(ck_webgrammar);
+            collapsibleGroupBox5.Controls.Add(cb_searchapi);
+            collapsibleGroupBox5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox5.Location = new Point(6, 6);
+            collapsibleGroupBox5.Name = "collapsibleGroupBox5";
+            collapsibleGroupBox5.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox5.Size = new Size(308, 308);
+            collapsibleGroupBox5.TabIndex = 0;
+            collapsibleGroupBox5.Text = "Web Search";
+            // 
+            // mck_cutmiddle
+            // 
+            mck_cutmiddle.Font = new Font("Segoe UI", 9F);
+            mck_cutmiddle.Location = new Point(15, 155);
+            mck_cutmiddle.Name = "mck_cutmiddle";
+            mck_cutmiddle.Size = new Size(306, 26);
+            mck_cutmiddle.TabIndex = 35;
+            mck_cutmiddle.Text = "Cut overflowing sessions in the middle during summarization";
+            mck_cutmiddle.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -1065,5 +1078,6 @@ namespace WaifuAI.src.forms
         private Controls.CollapsibleGroupBox collapsibleGroupBox5;
         private Label label5;
         private ModernComboBox mcbSkin;
+        private ModernCheckBox mck_cutmiddle;
     }
 }

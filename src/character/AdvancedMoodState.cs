@@ -27,12 +27,34 @@ namespace WaifuAI.Files
             "slave collar"
         ];
 
+        private static readonly List<string> DomTriggers =
+        [
+            "chastity device",
+            "chastity cage",
+            "buttplug",
+            "mistress",
+            "mommy",
+            "caged",
+            "my ass",
+            "femboy",
+            "please",
+            "confession",
+            "may i"
+        ];
+
 
 
         public static bool IsSubmissionTrigger(string input)
         {
             var lowered = input.ToLowerInvariant();
             return SubTriggers.Any(trigger => lowered.Contains(trigger));
+        }
+        public static bool IsDomTrigger(string input)
+        {
+            var lowered = input.ToLowerInvariant();
+            if (DomTriggers == null)
+                return false;
+            return DomTriggers?.Any(trigger => lowered.Contains(trigger)) == true;
         }
     }
 
@@ -76,13 +98,13 @@ namespace WaifuAI.Files
         {
             base.Update();
             // Horniness naturally increases over time
-            Horniness += (1 - Horniness) * 0.005;
+            Horniness += (1 - Horniness) * 0.0005;
             
             // Sanity naturally recovers over time
-            Sanity += (1 - Sanity) * 0.0025;
+            Sanity += (1 - Sanity) * 0.00025;
 
             // Submission gets to a neutral state over time
-            Submission += (0.5 - Submission) * 0.005;
+            Submission += ((0.5 - Submission) * 0.0005);
 
             // Special cases based on time since last message exchanged
             var msg = LLMEngine.History.GetLastMessageFrom(AuthorRole.User);
@@ -115,37 +137,45 @@ namespace WaifuAI.Files
                 Submission += 0.01;
                 Horniness += 0.01;
             }
+            else if (AdvTriggers.IsDomTrigger(lowered) == true)
+            {
+                Submission -= 0.01;
+            }
         }
 
         protected override List<string> GetAdjectives()
         {
             var adjectives = base.GetAdjectives();
             // horniness 0.0 - 0.2 : nothing. 0.2 - 0.4 : "flirty". 0.4 - 0.6 : "horny", 0.6 - 0.8 : "lustful", 0.8 - 1.0 : "desperate"
-            if (Horniness < 0.2)
+            if (Horniness < 0.35)
             {
                 // no adjective
             }
-            else if (Horniness < 0.4)
+            else if (Horniness < 0.45)
             {
                 adjectives.Add("kinda flirty");
             }
-            else if (Horniness < 0.6)
+            else if (Horniness < 0.55)
+            {
+                adjectives.Add("flirty");
+            }
+            else if (Horniness < 0.65)
             {
                 adjectives.Add("horny");
             }
-            else if (Horniness < 0.8)
+            else if (Horniness < 0.85)
             {
                 adjectives.Add("lustful");
             }
             else
             {
-                if (Sanity < 0.5 && Submission > 0.8)
+                if (Sanity < 0.5 && Submission > 0.85)
                 {
                     adjectives.Add("like a desperate sextoy");
                 }
                 else
                 {
-                    adjectives.Add("sexually desperate");
+                    adjectives.Add("sex-starved");
                 }
             }
 
@@ -154,7 +184,7 @@ namespace WaifuAI.Files
             {
                 if (Horniness > 0.75)
                 {
-                    adjectives.Add("in a mood to break {{user}}");
+                    adjectives.Add("in a mood to use {{user}} like a toy");
                 }
                 else
                 {
