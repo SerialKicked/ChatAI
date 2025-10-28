@@ -47,7 +47,7 @@ namespace WaifuAI
         public RenPyDialogHandler? _renpyDialogHandler;
         private string ed_log = string.Empty;
 
-        private readonly List<ISlashCommand> slashCommands = [new MainSlashCmds(), new RenpyGameCmds()];
+        public readonly List<ISlashCommand> slashCommands = [new MainSlashCmds(), new RenpyGameCmds()];
 
         public static Character? Bot => LLMEngine.Bot as Character;
         public static Character? User => LLMEngine.User as Character;
