@@ -100,6 +100,8 @@ namespace WaifuAI
             mck_senseoftime = new ModernCheckBox();
             mck_caninitchat = new ModernCheckBox();
             panel1 = new Panel();
+            collapsibleMenus = new CollapsibleGroupBox();
+            btRunAgent = new Button();
             statusbar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictEmbed).BeginInit();
             collapseModel.SuspendLayout();
@@ -110,6 +112,7 @@ namespace WaifuAI
             collapsibleGroupBox2.SuspendLayout();
             panRight.SuspendLayout();
             collapsibleGroupBox3.SuspendLayout();
+            collapsibleMenus.SuspendLayout();
             SuspendLayout();
             // 
             // HelptoolTip
@@ -158,24 +161,29 @@ namespace WaifuAI
             // 
             // button1
             // 
-            button1.Location = new Point(0, 381);
+            button1.AutoSize = true;
+            button1.Dock = DockStyle.Top;
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.Font = new Font("Segoe UI", 9F);
+            button1.Location = new Point(12, 32);
             button1.Name = "button1";
-            button1.Size = new Size(200, 23);
+            button1.Size = new Size(176, 27);
             button1.TabIndex = 26;
             button1.Text = "Test Shit Button";
-            button1.UseVisualStyleBackColor = true;
+            button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
             // 
             // btChatHistory
             // 
+            btChatHistory.AutoSize = true;
             btChatHistory.BackColor = Color.DarkKhaki;
             btChatHistory.Dock = DockStyle.Bottom;
             btChatHistory.FlatStyle = FlatStyle.Flat;
             btChatHistory.Font = new Font("Segoe UI", 9F);
             btChatHistory.ForeColor = Color.Black;
-            btChatHistory.Location = new Point(8, 285);
+            btChatHistory.Location = new Point(8, 284);
             btChatHistory.Name = "btChatHistory";
-            btChatHistory.Size = new Size(184, 26);
+            btChatHistory.Size = new Size(184, 27);
             btChatHistory.TabIndex = 33;
             btChatHistory.Tag = "no-theme";
             btChatHistory.Text = "Chat History Manager";
@@ -238,6 +246,7 @@ namespace WaifuAI
             // 
             // bt_scenario
             // 
+            bt_scenario.AutoSize = true;
             bt_scenario.BackColor = Color.DarkKhaki;
             bt_scenario.Dock = DockStyle.Bottom;
             bt_scenario.FlatStyle = FlatStyle.Flat;
@@ -245,7 +254,7 @@ namespace WaifuAI
             bt_scenario.ForeColor = Color.Black;
             bt_scenario.Location = new Point(8, 311);
             bt_scenario.Name = "bt_scenario";
-            bt_scenario.Size = new Size(184, 24);
+            bt_scenario.Size = new Size(184, 27);
             bt_scenario.TabIndex = 26;
             bt_scenario.Tag = "no-theme";
             bt_scenario.Text = "Change Scenario";
@@ -278,14 +287,15 @@ namespace WaifuAI
             // 
             // bt_newsession
             // 
+            bt_newsession.AutoSize = true;
             bt_newsession.BackColor = Color.DarkSeaGreen;
             bt_newsession.Dock = DockStyle.Bottom;
             bt_newsession.FlatStyle = FlatStyle.Flat;
             bt_newsession.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_newsession.ForeColor = Color.Black;
-            bt_newsession.Location = new Point(8, 335);
+            bt_newsession.Location = new Point(8, 338);
             bt_newsession.Name = "bt_newsession";
-            bt_newsession.Size = new Size(184, 24);
+            bt_newsession.Size = new Size(184, 27);
             bt_newsession.TabIndex = 21;
             bt_newsession.Tag = "no-theme";
             bt_newsession.Text = "Start New Session";
@@ -338,12 +348,13 @@ namespace WaifuAI
             // 
             // bt_clearimg
             // 
+            bt_clearimg.AutoSize = true;
             bt_clearimg.Dock = DockStyle.Bottom;
             bt_clearimg.FlatStyle = FlatStyle.Flat;
             bt_clearimg.Location = new Point(8, 129);
             bt_clearimg.Margin = new Padding(0);
             bt_clearimg.Name = "bt_clearimg";
-            bt_clearimg.Size = new Size(184, 23);
+            bt_clearimg.Size = new Size(184, 27);
             bt_clearimg.TabIndex = 34;
             bt_clearimg.Tag = "";
             bt_clearimg.Text = "Clear";
@@ -352,14 +363,15 @@ namespace WaifuAI
             // 
             // button2
             // 
+            button2.AutoSize = true;
             button2.BackColor = Color.DarkKhaki;
             button2.Dock = DockStyle.Bottom;
             button2.FlatStyle = FlatStyle.Flat;
             button2.Font = new Font("Segoe UI", 9F);
             button2.ForeColor = Color.Black;
-            button2.Location = new Point(8, 254);
+            button2.Location = new Point(8, 225);
             button2.Name = "button2";
-            button2.Size = new Size(184, 24);
+            button2.Size = new Size(184, 27);
             button2.TabIndex = 41;
             button2.Tag = "no-theme";
             button2.Text = "Brain Memory Map";
@@ -368,14 +380,15 @@ namespace WaifuAI
             // 
             // btVectorSearch
             // 
+            btVectorSearch.AutoSize = true;
             btVectorSearch.BackColor = Color.DarkKhaki;
             btVectorSearch.Dock = DockStyle.Bottom;
             btVectorSearch.FlatStyle = FlatStyle.Flat;
             btVectorSearch.Font = new Font("Segoe UI", 9F);
             btVectorSearch.ForeColor = Color.Black;
-            btVectorSearch.Location = new Point(8, 206);
+            btVectorSearch.Location = new Point(8, 198);
             btVectorSearch.Name = "btVectorSearch";
-            btVectorSearch.Size = new Size(184, 24);
+            btVectorSearch.Size = new Size(184, 27);
             btVectorSearch.TabIndex = 34;
             btVectorSearch.Tag = "no-theme";
             btVectorSearch.Text = "Vector Search";
@@ -384,14 +397,15 @@ namespace WaifuAI
             // 
             // btRawLog
             // 
+            btRawLog.AutoSize = true;
             btRawLog.BackColor = Color.DarkKhaki;
             btRawLog.Dock = DockStyle.Bottom;
             btRawLog.FlatStyle = FlatStyle.Flat;
             btRawLog.Font = new Font("Segoe UI", 9F);
             btRawLog.ForeColor = Color.Black;
-            btRawLog.Location = new Point(8, 230);
+            btRawLog.Location = new Point(12, 96);
             btRawLog.Name = "btRawLog";
-            btRawLog.Size = new Size(184, 24);
+            btRawLog.Size = new Size(176, 27);
             btRawLog.TabIndex = 40;
             btRawLog.Tag = "no-theme";
             btRawLog.Text = "View Raw Log";
@@ -400,14 +414,15 @@ namespace WaifuAI
             // 
             // btWorldEditor
             // 
+            btWorldEditor.AutoSize = true;
             btWorldEditor.BackColor = Color.DarkSeaGreen;
             btWorldEditor.Dock = DockStyle.Bottom;
             btWorldEditor.FlatStyle = FlatStyle.Flat;
             btWorldEditor.Font = new Font("Segoe UI", 9F);
             btWorldEditor.ForeColor = Color.Black;
-            btWorldEditor.Location = new Point(8, 278);
+            btWorldEditor.Location = new Point(12, 123);
             btWorldEditor.Name = "btWorldEditor";
-            btWorldEditor.Size = new Size(184, 24);
+            btWorldEditor.Size = new Size(176, 27);
             btWorldEditor.TabIndex = 39;
             btWorldEditor.Tag = "no-theme";
             btWorldEditor.Text = "WorldInfo Editor";
@@ -416,14 +431,15 @@ namespace WaifuAI
             // 
             // btMainSettings
             // 
+            btMainSettings.AutoSize = true;
             btMainSettings.BackColor = Color.DarkSeaGreen;
             btMainSettings.Dock = DockStyle.Bottom;
             btMainSettings.FlatStyle = FlatStyle.Flat;
             btMainSettings.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btMainSettings.ForeColor = Color.Black;
-            btMainSettings.Location = new Point(8, 302);
+            btMainSettings.Location = new Point(12, 150);
             btMainSettings.Name = "btMainSettings";
-            btMainSettings.Size = new Size(184, 24);
+            btMainSettings.Size = new Size(176, 27);
             btMainSettings.TabIndex = 38;
             btMainSettings.Tag = "no-theme";
             btMainSettings.Text = "General Settings";
@@ -544,7 +560,7 @@ namespace WaifuAI
             collapseModel.Location = new Point(0, 6);
             collapseModel.Name = "collapseModel";
             collapseModel.Padding = new Padding(8, 32, 8, 8);
-            collapseModel.Size = new Size(200, 129);
+            collapseModel.Size = new Size(200, 126);
             collapseModel.TabIndex = 27;
             collapseModel.Text = "Model";
             // 
@@ -600,13 +616,14 @@ namespace WaifuAI
             // 
             // bt_connect
             // 
+            bt_connect.AutoSize = true;
             bt_connect.BackColor = Color.DarkSeaGreen;
             bt_connect.Dock = DockStyle.Bottom;
             bt_connect.FlatStyle = FlatStyle.Flat;
             bt_connect.ForeColor = Color.Black;
-            bt_connect.Location = new Point(8, 98);
+            bt_connect.Location = new Point(8, 91);
             bt_connect.Name = "bt_connect";
-            bt_connect.Size = new Size(184, 23);
+            bt_connect.Size = new Size(184, 27);
             bt_connect.TabIndex = 19;
             bt_connect.Tag = "no-theme";
             bt_connect.Text = "Connect";
@@ -719,7 +736,7 @@ namespace WaifuAI
             collapsibleGroupBox1.Controls.Add(mck_ragtothink);
             collapsibleGroupBox1.Controls.Add(mck_disablethink);
             collapsibleGroupBox1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox1.Location = new Point(0, 143);
+            collapsibleGroupBox1.Location = new Point(0, 140);
             collapsibleGroupBox1.Margin = new Padding(8);
             collapsibleGroupBox1.Name = "collapsibleGroupBox1";
             collapsibleGroupBox1.Padding = new Padding(8, 32, 8, 8);
@@ -794,10 +811,10 @@ namespace WaifuAI
             cboxVLM.Controls.Add(pictEmbed);
             cboxVLM.Controls.Add(bt_clearimg);
             cboxVLM.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            cboxVLM.Location = new Point(0, 800);
+            cboxVLM.Location = new Point(0, 723);
             cboxVLM.Name = "cboxVLM";
             cboxVLM.Padding = new Padding(8, 32, 8, 8);
-            cboxVLM.Size = new Size(200, 160);
+            cboxVLM.Size = new Size(200, 164);
             cboxVLM.TabIndex = 29;
             cboxVLM.Text = "Visual Language Models";
             // 
@@ -812,17 +829,14 @@ namespace WaifuAI
             collapsibleGroupBox2.Controls.Add(mck_worldinfo);
             collapsibleGroupBox2.Controls.Add(mck_sessionmemory);
             collapsibleGroupBox2.Controls.Add(btVectorSearch);
-            collapsibleGroupBox2.Controls.Add(btRawLog);
             collapsibleGroupBox2.Controls.Add(button2);
-            collapsibleGroupBox2.Controls.Add(btWorldEditor);
-            collapsibleGroupBox2.Controls.Add(btMainSettings);
             collapsibleGroupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox2.Location = new Point(0, 458);
+            collapsibleGroupBox2.Location = new Point(0, 455);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(8, 32, 8, 8);
-            collapsibleGroupBox2.Size = new Size(200, 334);
+            collapsibleGroupBox2.Size = new Size(200, 260);
             collapsibleGroupBox2.TabIndex = 28;
-            collapsibleGroupBox2.Text = "Memory and Settings";
+            collapsibleGroupBox2.Text = "Memory Settings";
             // 
             // mck_agentmode
             // 
@@ -908,7 +922,7 @@ namespace WaifuAI
             // 
             // panRight
             // 
-            panRight.Controls.Add(button1);
+            panRight.Controls.Add(collapsibleMenus);
             panRight.Controls.Add(collapsibleGroupBox3);
             panRight.Dock = DockStyle.Right;
             panRight.Location = new Point(1061, 0);
@@ -939,7 +953,7 @@ namespace WaifuAI
             collapsibleGroupBox3.Location = new Point(0, 6);
             collapsibleGroupBox3.Name = "collapsibleGroupBox3";
             collapsibleGroupBox3.Padding = new Padding(8, 32, 8, 8);
-            collapsibleGroupBox3.Size = new Size(200, 367);
+            collapsibleGroupBox3.Size = new Size(200, 373);
             collapsibleGroupBox3.TabIndex = 27;
             collapsibleGroupBox3.Text = "Chat Settings";
             // 
@@ -947,7 +961,7 @@ namespace WaifuAI
             // 
             mck_ttstoggle.Dock = DockStyle.Bottom;
             mck_ttstoggle.Font = new Font("Segoe UI", 9F);
-            mck_ttstoggle.Location = new Point(8, 197);
+            mck_ttstoggle.Location = new Point(8, 196);
             mck_ttstoggle.Name = "mck_ttstoggle";
             mck_ttstoggle.Size = new Size(184, 26);
             mck_ttstoggle.TabIndex = 36;
@@ -959,7 +973,7 @@ namespace WaifuAI
             // 
             mck_senseoftime.Dock = DockStyle.Bottom;
             mck_senseoftime.Font = new Font("Segoe UI", 9F);
-            mck_senseoftime.Location = new Point(8, 223);
+            mck_senseoftime.Location = new Point(8, 222);
             mck_senseoftime.Name = "mck_senseoftime";
             mck_senseoftime.Size = new Size(184, 26);
             mck_senseoftime.TabIndex = 35;
@@ -971,7 +985,7 @@ namespace WaifuAI
             // 
             mck_caninitchat.Dock = DockStyle.Bottom;
             mck_caninitchat.Font = new Font("Segoe UI", 9F);
-            mck_caninitchat.Location = new Point(8, 249);
+            mck_caninitchat.Location = new Point(8, 248);
             mck_caninitchat.Name = "mck_caninitchat";
             mck_caninitchat.Size = new Size(184, 26);
             mck_caninitchat.TabIndex = 34;
@@ -982,12 +996,42 @@ namespace WaifuAI
             // panel1
             // 
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(8, 275);
+            panel1.Location = new Point(8, 274);
             panel1.Margin = new Padding(8);
             panel1.Name = "panel1";
             panel1.Padding = new Padding(8);
             panel1.Size = new Size(184, 10);
             panel1.TabIndex = 47;
+            // 
+            // collapsibleMenus
+            // 
+            collapsibleMenus.BackColor = Color.FromArgb(37, 37, 37);
+            collapsibleMenus.Controls.Add(btRunAgent);
+            collapsibleMenus.Controls.Add(btRawLog);
+            collapsibleMenus.Controls.Add(button1);
+            collapsibleMenus.Controls.Add(btWorldEditor);
+            collapsibleMenus.Controls.Add(btMainSettings);
+            collapsibleMenus.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleMenus.Location = new Point(0, 387);
+            collapsibleMenus.Name = "collapsibleMenus";
+            collapsibleMenus.Padding = new Padding(12, 32, 12, 10);
+            collapsibleMenus.Size = new Size(200, 187);
+            collapsibleMenus.TabIndex = 28;
+            collapsibleMenus.Text = "Options and Settings";
+            // 
+            // btRunAgent
+            // 
+            btRunAgent.AutoSize = true;
+            btRunAgent.Dock = DockStyle.Top;
+            btRunAgent.FlatStyle = FlatStyle.Flat;
+            btRunAgent.Font = new Font("Segoe UI", 9F);
+            btRunAgent.Location = new Point(12, 59);
+            btRunAgent.Name = "btRunAgent";
+            btRunAgent.Size = new Size(176, 27);
+            btRunAgent.TabIndex = 41;
+            btRunAgent.Text = "Force Agent Loop";
+            btRunAgent.UseVisualStyleBackColor = false;
+            btRunAgent.Click += btRunAgent_Click;
             // 
             // MainForm
             // 
@@ -1019,10 +1063,14 @@ namespace WaifuAI
             collapsibleGroupBox1.PerformLayout();
             panLeft.ResumeLayout(false);
             cboxVLM.ResumeLayout(false);
+            cboxVLM.PerformLayout();
             collapsibleGroupBox2.ResumeLayout(false);
+            collapsibleGroupBox2.PerformLayout();
             panRight.ResumeLayout(false);
             collapsibleGroupBox3.ResumeLayout(false);
             collapsibleGroupBox3.PerformLayout();
+            collapsibleMenus.ResumeLayout(false);
+            collapsibleMenus.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -1095,5 +1143,7 @@ namespace WaifuAI
         private Controls.ModernCheckBox mck_senseoftime;
         private Controls.ModernCheckBox mck_caninitchat;
         private Panel panel1;
+        private CollapsibleGroupBox collapsibleMenus;
+        private Button btRunAgent;
     }
 }

@@ -127,6 +127,7 @@ namespace WaifuAI.src.forms
             ckThirdPerson.Checked = Program.Settings.RAGConvertTo3rdPerson;
             mcbSkin.SelectedIndex = mcbSkin.Items.IndexOf(Program.Settings.Skin);
             mck_cutmiddle.Checked = Program.Settings.CutInTheMiddleSummaryStrategy;
+            numWIEntries.Value = Program.Settings.WorldInfoMaxEntries;
 
             Program.ApplyContextPluginSettings();
 
@@ -177,6 +178,7 @@ namespace WaifuAI.src.forms
                 Program.Settings.SessionMemorySystem = ck_sessionmemory.Checked;
                 Program.Settings.RAGDistanceCutOff = (float)num_ragcutoff.Value;
                 Program.Settings.RAGMaxEntries = (int)num_ragmaxretrieve.Value;
+                Program.Settings.WorldInfoMaxEntries = (int)numWIEntries.Value;
                 Program.Settings.RAGIndex = (int)num_ragindex.Value;
                 Program.Settings.RAGMValue = (int)num_ragM.Value;
                 Program.Settings.MoveAllInsertsToSysPrompt = ck_sysrag.Checked;

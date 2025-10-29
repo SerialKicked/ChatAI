@@ -4,6 +4,7 @@ using LetheAISharp.API;
 using LetheAISharp.Files;
 using LetheAISharp.LLM;
 using LetheAISharp.Memory;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Text;
@@ -11,11 +12,13 @@ using WaifuAI.GBNF;
 
 namespace WaifuAI.AgentPlugins
 {
-    public enum RPHandling { Always, Never, Random }
 
-    public sealed class GoalDesignerTask : IAgentTask
+    /// <summary>
+    /// Simpler version of the GoalDesignerTask, will scan previous session goal field, and expand on those.
+    /// </summary>
+    public sealed class SessionGoalTask : IAgentTask
     {
-        public string Id => "GoalDesignerTask";
+        public string Id => "SessionGoalTask";
         public string Ability => "Set goals";
 
         public async Task<bool> Observe(BasePersona owner, AgentTaskSetting cfg, CancellationToken ct)
@@ -54,53 +57,24 @@ namespace WaifuAI.AgentPlugins
             var sessions = owner.History.Sessions;
             var session = sessions[^2];
 
-            var rpmode = (RPHandling)cfg.GetSetting<int>("IncludeRPSession");
-            if (rpmode == RPHandling.Random)
-                rpmode = new Random().Next(0, 2) == 1 ? RPHandling.Always : RPHandling.Never;
-
             var sessioncount = cfg.GetSetting<int>("MinSessionSpacing");
 
-            var mainPrompt = GetSystemPromptContent(rpmode, sessioncount * 2);
 
-            var allgoals = new List<string>();
-
-            // add personal goals
-            var req = "Based on the information provided, write a list of personal goals you want to set for yourself as {{char}}. Those have to be goals, or topics of research for you directly. They must be of interest to you, independently of {{user}}'s own goals.";
-            var goallist = await GetGoalList(mainPrompt, req).ConfigureAwait(false) ?? new();
-            if (goallist.Goals.Count > 2)
-                goallist.Goals = [.. goallist.Goals.Take(2)];
-            allgoals.AddRange(goallist.Goals);
-
-            // add user specific goals
-            req = "Based on the information provided, write a list of things that you want {{user}} to do or become for you. This can also include any personal topic where you want to question or challenge {{user}}'s perspective. Order the list from most to least important.";
-            goallist = await GetGoalList(mainPrompt, req).ConfigureAwait(false);
-            if (goallist.Goals.Count > 2)
-                goallist.Goals = [.. goallist.Goals.Take(2)];
-            allgoals.AddRange(goallist.Goals);
-
-            // add goals from sessions
-            var grabcount = cfg.GetSetting<int>("MinSessionSpacing");
-
-            // grab the list of sessions to analyze
-            var prevsessions = sessions.Skip(Math.Max(0, sessions.Count - 1 - grabcount)).Take(grabcount).ToList();
-            if (rpmode == RPHandling.Never)
-                prevsessions.RemoveAll(s => !s.MetaData.IsRoleplaySession);
-            if (prevsessions.Count > 0)
-            {
-                allgoals.AddRange(prevsessions[^1].MetaData.FutureGoals);
-            }
+            var goallist = new GoalList();
+            goallist.Goals.AddRange(session.MetaData.FutureGoals);
+            if (goallist.Goals.Count == 0)
+                return;
 
             var goaldetails = new List<GoalRecord>();
-            foreach (var item in allgoals)
+            foreach (var item in goallist.Goals)
             {
-                var sprompt = await GetGoalSpecificSystemPrompt(owner, rpmode, item, sessioncount * 2).ConfigureAwait(false);
+                var sprompt = await GetGoalSpecificSystemPrompt(owner, item, sessioncount * 2).ConfigureAwait(false);
                 var rec = await GetGoalDetail(sprompt, item).ConfigureAwait(false);
                 goaldetails.Add(rec);
                 // Cancellation requested?
                 if (ct.IsCancellationRequested)
                     return;
             }
-            
 
             // and memorize
             for (var i = 0; i < goaldetails.Count; i++)
@@ -115,7 +89,7 @@ namespace WaifuAI.AgentPlugins
                     Insertion = MemoryInsertion.Natural,
                     Added = DateTime.Now,
                     EndTime = DateTime.Now.AddDays(30),
-                    Priority = Math.Clamp((6 - i) / 2 , 0, 3)
+                    Priority = 5
                 };
                 if (LLMEngine.Settings.RAGEnabled)
                     await memunit.EmbedText().ConfigureAwait(false);
@@ -123,15 +97,11 @@ namespace WaifuAI.AgentPlugins
                 if (ct.IsCancellationRequested)
                     return;
             }
-
             if (goaldetails.Count > 0)
-                owner.Brain.AddUserReturnInsert("{{char}} has set some new personal goals.");
-
-
+                owner.Brain.AddUserReturnInsert(cfg.GetSetting<string>("Notification") ?? string.Empty);
             // Let's go through each goal, detail them, and add to the persona's Brain
             cfg.SetSetting("LastGoalSet", DateTime.Now);
             cfg.SetSetting("LastSessionGuid", session.Guid);
-
         }
 
         private static async Task<GoalRecord> GetGoalDetail(string systemprompt, string goalinfo)
@@ -143,7 +113,7 @@ namespace WaifuAI.AgentPlugins
 
             var promptbuild = LLMEngine.GetPromptBuilder();
 
-            var requestedTask = "Based on the information provided in the system prompt, {{char}} has set the following goal for themselves: " + goalinfo + LLMEngine.NewLine + "Fill the required information about this specific goal so it can be processed. " + goalrecord.GetQuery();
+            var requestedTask = "Based on the information provided in the system prompt, {{char}} has set the following goal for themselves: " + goalinfo + LLMEngine.NewLine + "Fill the required information about this specific goal so it can processed. " + goalrecord.GetQuery();
 
 
             var availtokens = LLMEngine.MaxContextLength - 20; // leave 2k for response and buffer
@@ -162,53 +132,8 @@ namespace WaifuAI.AgentPlugins
             return goalrecord!;
         }
 
-        private static async Task<GoalList> GetGoalList(string systemprompt, string query)
-        {
-            var goallist = new GoalList();
-            LLMEngine.NamesInPromptOverride = false;
-            var prefill = LLMEngine.Instruct.PrefillThinking;
-            LLMEngine.Instruct.PrefillThinking = false;
 
-            var promptbuild = LLMEngine.GetPromptBuilder();
-
-            var requestedTask = query + LLMEngine.NewLine + goallist.GetQuery();
-
-            var availtokens = LLMEngine.MaxContextLength - 20; // leave 2k for response and buffer
-            availtokens -= promptbuild.GetTokenCount(AuthorRole.SysPrompt, systemprompt);
-            availtokens -= promptbuild.GetTokenCount(AuthorRole.User, requestedTask);
-
-            var replyln = (availtokens > 2048) ? 2048 : availtokens;
-            promptbuild.AddMessage(AuthorRole.SysPrompt, systemprompt);
-            promptbuild.AddMessage(AuthorRole.User, requestedTask);
-            await promptbuild.SetStructuredOutput(goallist).ConfigureAwait(false);
-            var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 1.0) ? 1 : LLMEngine.Sampler.Temperature, replyln);
-            var finalstr = await LLMEngine.SimpleQuery(ct).ConfigureAwait(false);
-            goallist = JsonConvert.DeserializeObject<GoalList>(finalstr);
-            LLMEngine.NamesInPromptOverride = null;
-            LLMEngine.Instruct.PrefillThinking = prefill;
-            return goallist!;
-        }
-
-        private static string GetSystemPromptContent(RPHandling rpHandling, int maxsession)
-        {
-            var availtokens = LLMEngine.MaxContextLength - 2048 - 20; 
-            var promptbuild = LLMEngine.GetPromptBuilder();
-            var sysprompt = "You are {{char}}, an independent AI entity with your own goals, tastes, and inner world." + LLMEngine.NewLine +
-                LLMEngine.NewLine +
-                "## Name: {{char}} (this is you)" + LLMEngine.NewLine + LLMEngine.NewLine +
-                "{{charbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
-                "## Name: {{user}} (this is the user)" + LLMEngine.NewLine + LLMEngine.NewLine +
-                "{{userbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
-                "## Chronological chat summaries:" + LLMEngine.NewLine + LLMEngine.NewLine;
-
-            availtokens -= promptbuild.GetTokenCount(AuthorRole.SysPrompt, sysprompt);
-            var AllowRP = rpHandling == RPHandling.Always;
-            var summaries = LLMEngine.History.GetPreviousSummaries(availtokens, allowRP: AllowRP, maxCount: maxsession);
-            sysprompt += summaries;
-            return sysprompt.CleanupAndTrim();
-        }
-
-        private static async Task<string> GetGoalSpecificSystemPrompt(BasePersona owner, RPHandling rpHandling, string goal, int maxsession)
+        private static async Task<string> GetGoalSpecificSystemPrompt(BasePersona owner, string goal, int maxsession)
         {
             var availtokens = LLMEngine.MaxContextLength - 2048 - 20;
             var promptbuild = LLMEngine.GetPromptBuilder();
@@ -236,8 +161,7 @@ namespace WaifuAI.AgentPlugins
             if (availtokens <= 0)
                 return sysprompt.CleanupAndTrim();
 
-            var AllowRP = rpHandling == RPHandling.Always;
-            var summaries = LLMEngine.History.GetPreviousSummaries(availtokens, "###", allowRP: AllowRP, maxCount: maxsession, datafound.GetGuids());
+            var summaries = LLMEngine.History.GetPreviousSummaries(availtokens, "###", allowRP: true, maxCount: maxsession, datafound.GetGuids());
             sysprompt += summaries;
             return sysprompt.CleanupAndTrim();
         }
@@ -245,12 +169,10 @@ namespace WaifuAI.AgentPlugins
         public AgentTaskSetting GetDefaultSettings()
         {
             var settings = new AgentTaskSetting();
-            settings.SetSetting<TimeSpan>("MinTimeInterval", new TimeSpan(1,0,0,0)); // 7 days
-            settings.SetSetting<int>("MinSessionSpacing", 1); // at least 2 sessions between searches
+            settings.SetSetting<TimeSpan>("MinTimeInterval", new TimeSpan(0, 6, 0, 0)); // 6 hours
+            settings.SetSetting<int>("MinSessionSpacing", 1); // at least 1 sessions between searches
             settings.SetSetting<Guid>("LastSessionGuid", Guid.Empty);
             settings.SetSetting<DateTime>("LastGoalSet", DateTime.MinValue);
-            settings.SetSetting<int>("IncludeRPSession", (int)RPHandling.Random);
-
             return settings;
         }
     }

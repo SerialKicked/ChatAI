@@ -114,7 +114,6 @@ namespace WaifuAI
             this.Shown += async (_, __) =>
             {
                 await InitializeWebViewAsync();
-                // If you want first render on startup:
                 await LoadHistoryToUI();
             };
 
@@ -124,21 +123,23 @@ namespace WaifuAI
             HelptoolTip.SetToolTip(mck_senseoftime, "Insert day and time information to prompt when relevant to give the bot a better understanding of time.");
             HelptoolTip.SetToolTip(mck_sessionmemory, "Use a set amount of tokens (set in Program.Settings) to insert summaries of previous chat sessions with this bot." + Environment.NewLine + "This drastically increases the bot's long-term memory.");
             HelptoolTip.SetToolTip(mck_worldinfo, "Use the WorldInfo file(s) associated with this bot. WorldInfo is a list of keyword-triggered textual information that is inserted into the prompt when the conditions are met." + Environment.NewLine + "See the World Info tab for additional information.");
-
             HelptoolTip.SetToolTip(mck_charsampler, "If checked, and when using a bot persona containing a list of compatible inference Program.Settings, the inference Program.Settings will be picked at random from that list each time the bot write a new message." + Environment.NewLine + Environment.NewLine + "Will lead to a more creative and less repetitive interaction, but also less consistent.");
             HelptoolTip.SetToolTip(mck_onlinerag, "If checked, the bot may perform a web search (using DuckDuckGo) to improve its responses when asked to.");
 
-            // Load our app level agent plugins
+            // Load our agentic actions
             AgentRuntime.RegisterAction(new SessionMoodCheckAction());
             AgentRuntime.RegisterAction(new ImageInfoAction());
-
+            // Load our agentic plugins
             AgentRuntime.RegisterPlugin("GoalDesignerTask", new GoalDesignerTask());
             AgentRuntime.RegisterPlugin("CustomGoalTask", new CustomGoalTask());
             AgentRuntime.RegisterPlugin("JournalTask", new JournalTask());
+            AgentRuntime.RegisterPlugin("SessionGoalTask", new SessionGoalTask());
+            // Manage theme
             if (Program.Settings.Skin == "Light")
                 ThemeManager.ApplyLight();
             else
                 ThemeManager.ApplyDark();
+            // Load login form
             var loginForm = new LoginForm();
             ThemeManager.ApplyToForm(loginForm);
             loginForm.ShowDialog(this);
@@ -146,15 +147,11 @@ namespace WaifuAI
             {
                 MessageBox.Show("No connection with backend server. You can use the application, but you cannot chat with the AI.");
             }
-
-
             // Chat related events
             SetupChatMenu();
             _activityTimer.OnTrigger += OnBotInitiateConversation;
-
             // Autodetection of the user's activity (mostly for the background agent functionalities)
             Application.AddMessageFilter(new ActivityMessageFilter());
-
             ed_input.KeyPress += Ed_input_KeyPress!;
             ThemeManager.ApplyToForm(this);
         }
@@ -599,7 +596,8 @@ namespace WaifuAI
                 ed_input.Text = string.Empty;
                 await LLMEngine.AddBotMessage();
                 return;
-            };
+            }
+            ;
 
             var msgtxt = ed_input.Text.ToLinuxFormat();
             msgtxt = LLMEngine.Bot.ReplaceMacros(msgtxt);
@@ -1677,5 +1675,9 @@ namespace WaifuAI
             LLMEngine.Bot.Brain.DisableEurekas = !mckNatMem.Checked;
         }
 
+        private void btRunAgent_Click(object sender, EventArgs e)
+        {
+            LLMEngine.Bot.AgentSystem?.ForceRunLoop();
+        }
     }
 }

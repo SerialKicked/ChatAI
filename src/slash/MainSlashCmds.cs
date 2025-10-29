@@ -33,7 +33,7 @@ namespace WaifuAI.Slash
             }
             x.AppendLinuxLine("````");
             var msg = new SingleMessage(AuthorRole.System, x.ToString());
-            return new SlashReturn(msg, true, true, true);
+            return new SlashReturn(msg, false, true, true);
         }
     }
     internal class CmdMainSystem(ISlashCommand owner) : SlashCommandInfo(owner)
@@ -64,7 +64,7 @@ namespace WaifuAI.Slash
             if (string.IsNullOrWhiteSpace(dialog))
                 return new SlashReturn(GetHelpMessage(), false, false, true);
 
-            var res = LLMEngine.Bot.Brain.GetMemoriesByTitle(dialog);
+            var res = LLMEngine.Bot.Brain.GetMemoriesByTitle(dialog, true);
             if (res.Count == 0)
                 return new SlashReturn(null, false, false);
 

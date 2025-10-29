@@ -95,6 +95,7 @@ namespace WaifuAI.src.forms
             verticalStackPanel1 = new VerticalStackPanel();
             collapsibleGroupBox3 = new CollapsibleGroupBox();
             collapsibleGroupBox2 = new CollapsibleGroupBox();
+            mck_cutmiddle = new ModernCheckBox();
             verticalStackPanel2 = new VerticalStackPanel();
             collapsibleGroupBox7 = new CollapsibleGroupBox();
             collapsibleGroupBox4 = new CollapsibleGroupBox();
@@ -103,7 +104,8 @@ namespace WaifuAI.src.forms
             label5 = new Label();
             mcbSkin = new ModernComboBox();
             collapsibleGroupBox5 = new CollapsibleGroupBox();
-            mck_cutmiddle = new ModernCheckBox();
+            numWIEntries = new ModernNumericUpDown();
+            label6 = new Label();
             panel1.SuspendLayout();
             collapsibleGroupBox1.SuspendLayout();
             verticalStackPanel1.SuspendLayout();
@@ -788,6 +790,8 @@ namespace WaifuAI.src.forms
             // 
             collapsibleGroupBox3.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox3.CanCollapse = false;
+            collapsibleGroupBox3.Controls.Add(numWIEntries);
+            collapsibleGroupBox3.Controls.Add(label6);
             collapsibleGroupBox3.Controls.Add(ckThirdPerson);
             collapsibleGroupBox3.Controls.Add(label12);
             collapsibleGroupBox3.Controls.Add(num_ragM);
@@ -825,6 +829,16 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox2.TabIndex = 34;
             collapsibleGroupBox2.Text = "Session Memory System";
             collapsibleGroupBox2.ExpandedChanged += collapsibleGroupBox2_ExpandedChanged;
+            // 
+            // mck_cutmiddle
+            // 
+            mck_cutmiddle.Font = new Font("Segoe UI", 9F);
+            mck_cutmiddle.Location = new Point(15, 155);
+            mck_cutmiddle.Name = "mck_cutmiddle";
+            mck_cutmiddle.Size = new Size(306, 26);
+            mck_cutmiddle.TabIndex = 35;
+            mck_cutmiddle.Text = "Cut overflowing sessions in the middle during summarization";
+            mck_cutmiddle.UseVisualStyleBackColor = true;
             // 
             // verticalStackPanel2
             // 
@@ -958,15 +972,28 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox5.TabIndex = 0;
             collapsibleGroupBox5.Text = "Web Search";
             // 
-            // mck_cutmiddle
+            // numWIEntries
             // 
-            mck_cutmiddle.Font = new Font("Segoe UI", 9F);
-            mck_cutmiddle.Location = new Point(15, 155);
-            mck_cutmiddle.Name = "mck_cutmiddle";
-            mck_cutmiddle.Size = new Size(306, 26);
-            mck_cutmiddle.TabIndex = 35;
-            mck_cutmiddle.Text = "Cut overflowing sessions in the middle during summarization";
-            mck_cutmiddle.UseVisualStyleBackColor = true;
+            numWIEntries.BackColor = Color.FromArgb(64, 64, 64);
+            numWIEntries.Font = new Font("Segoe UI", 9F);
+            numWIEntries.Location = new Point(169, 147);
+            numWIEntries.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            numWIEntries.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numWIEntries.Name = "numWIEntries";
+            numWIEntries.Padding = new Padding(1);
+            numWIEntries.Size = new Size(137, 23);
+            numWIEntries.TabIndex = 39;
+            numWIEntries.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Segoe UI", 9F);
+            label6.Location = new Point(169, 129);
+            label6.Name = "label6";
+            label6.Size = new Size(123, 15);
+            label6.TabIndex = 40;
+            label6.Text = "Max WorldInfo Entries";
             // 
             // SettingsForm
             // 
@@ -1079,5 +1106,7 @@ namespace WaifuAI.src.forms
         private Label label5;
         private ModernComboBox mcbSkin;
         private ModernCheckBox mck_cutmiddle;
+        private ModernNumericUpDown numWIEntries;
+        private Label label6;
     }
 }
