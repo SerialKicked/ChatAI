@@ -95,13 +95,14 @@ namespace WaifuAI
             mck_worldinfo = new ModernCheckBox();
             mck_sessionmemory = new ModernCheckBox();
             panRight = new VerticalStackPanel();
+            collapsibleMenus = new CollapsibleGroupBox();
+            btRunAgent = new Button();
             collapsibleGroupBox3 = new CollapsibleGroupBox();
             mck_ttstoggle = new ModernCheckBox();
             mck_senseoftime = new ModernCheckBox();
             mck_caninitchat = new ModernCheckBox();
             panel1 = new Panel();
-            collapsibleMenus = new CollapsibleGroupBox();
-            btRunAgent = new Button();
+            button3 = new Button();
             statusbar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictEmbed).BeginInit();
             collapseModel.SuspendLayout();
@@ -111,8 +112,8 @@ namespace WaifuAI
             cboxVLM.SuspendLayout();
             collapsibleGroupBox2.SuspendLayout();
             panRight.SuspendLayout();
-            collapsibleGroupBox3.SuspendLayout();
             collapsibleMenus.SuspendLayout();
+            collapsibleGroupBox3.SuspendLayout();
             SuspendLayout();
             // 
             // HelptoolTip
@@ -403,7 +404,7 @@ namespace WaifuAI
             btRawLog.FlatStyle = FlatStyle.Flat;
             btRawLog.Font = new Font("Segoe UI", 9F);
             btRawLog.ForeColor = Color.Black;
-            btRawLog.Location = new Point(12, 96);
+            btRawLog.Location = new Point(12, 175);
             btRawLog.Name = "btRawLog";
             btRawLog.Size = new Size(176, 27);
             btRawLog.TabIndex = 40;
@@ -420,7 +421,7 @@ namespace WaifuAI
             btWorldEditor.FlatStyle = FlatStyle.Flat;
             btWorldEditor.Font = new Font("Segoe UI", 9F);
             btWorldEditor.ForeColor = Color.Black;
-            btWorldEditor.Location = new Point(12, 123);
+            btWorldEditor.Location = new Point(12, 202);
             btWorldEditor.Name = "btWorldEditor";
             btWorldEditor.Size = new Size(176, 27);
             btWorldEditor.TabIndex = 39;
@@ -437,7 +438,7 @@ namespace WaifuAI
             btMainSettings.FlatStyle = FlatStyle.Flat;
             btMainSettings.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btMainSettings.ForeColor = Color.Black;
-            btMainSettings.Location = new Point(12, 150);
+            btMainSettings.Location = new Point(12, 229);
             btMainSettings.Name = "btMainSettings";
             btMainSettings.Size = new Size(176, 27);
             btMainSettings.TabIndex = 38;
@@ -931,6 +932,37 @@ namespace WaifuAI
             panRight.Size = new Size(200, 1020);
             panRight.TabIndex = 29;
             // 
+            // collapsibleMenus
+            // 
+            collapsibleMenus.BackColor = Color.FromArgb(37, 37, 37);
+            collapsibleMenus.Controls.Add(button3);
+            collapsibleMenus.Controls.Add(btRunAgent);
+            collapsibleMenus.Controls.Add(btRawLog);
+            collapsibleMenus.Controls.Add(button1);
+            collapsibleMenus.Controls.Add(btWorldEditor);
+            collapsibleMenus.Controls.Add(btMainSettings);
+            collapsibleMenus.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleMenus.Location = new Point(0, 387);
+            collapsibleMenus.Name = "collapsibleMenus";
+            collapsibleMenus.Padding = new Padding(12, 32, 12, 10);
+            collapsibleMenus.Size = new Size(200, 266);
+            collapsibleMenus.TabIndex = 28;
+            collapsibleMenus.Text = "Options and Settings";
+            // 
+            // btRunAgent
+            // 
+            btRunAgent.AutoSize = true;
+            btRunAgent.Dock = DockStyle.Top;
+            btRunAgent.FlatStyle = FlatStyle.Flat;
+            btRunAgent.Font = new Font("Segoe UI", 9F);
+            btRunAgent.Location = new Point(12, 59);
+            btRunAgent.Name = "btRunAgent";
+            btRunAgent.Size = new Size(176, 27);
+            btRunAgent.TabIndex = 41;
+            btRunAgent.Text = "Force Agent Loop";
+            btRunAgent.UseVisualStyleBackColor = false;
+            btRunAgent.Click += btRunAgent_Click;
+            // 
             // collapsibleGroupBox3
             // 
             collapsibleGroupBox3.BackColor = Color.FromArgb(37, 38, 42);
@@ -1003,35 +1035,19 @@ namespace WaifuAI
             panel1.Size = new Size(184, 10);
             panel1.TabIndex = 47;
             // 
-            // collapsibleMenus
+            // button3
             // 
-            collapsibleMenus.BackColor = Color.FromArgb(37, 37, 37);
-            collapsibleMenus.Controls.Add(btRunAgent);
-            collapsibleMenus.Controls.Add(btRawLog);
-            collapsibleMenus.Controls.Add(button1);
-            collapsibleMenus.Controls.Add(btWorldEditor);
-            collapsibleMenus.Controls.Add(btMainSettings);
-            collapsibleMenus.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleMenus.Location = new Point(0, 387);
-            collapsibleMenus.Name = "collapsibleMenus";
-            collapsibleMenus.Padding = new Padding(12, 32, 12, 10);
-            collapsibleMenus.Size = new Size(200, 187);
-            collapsibleMenus.TabIndex = 28;
-            collapsibleMenus.Text = "Options and Settings";
-            // 
-            // btRunAgent
-            // 
-            btRunAgent.AutoSize = true;
-            btRunAgent.Dock = DockStyle.Top;
-            btRunAgent.FlatStyle = FlatStyle.Flat;
-            btRunAgent.Font = new Font("Segoe UI", 9F);
-            btRunAgent.Location = new Point(12, 59);
-            btRunAgent.Name = "btRunAgent";
-            btRunAgent.Size = new Size(176, 27);
-            btRunAgent.TabIndex = 41;
-            btRunAgent.Text = "Force Agent Loop";
-            btRunAgent.UseVisualStyleBackColor = false;
-            btRunAgent.Click += btRunAgent_Click;
+            button3.AutoSize = true;
+            button3.Dock = DockStyle.Top;
+            button3.FlatStyle = FlatStyle.Flat;
+            button3.Font = new Font("Segoe UI", 9F);
+            button3.Location = new Point(12, 86);
+            button3.Name = "button3";
+            button3.Size = new Size(176, 27);
+            button3.TabIndex = 42;
+            button3.Text = "Insert List";
+            button3.UseVisualStyleBackColor = false;
+            button3.Click += button3_Click;
             // 
             // MainForm
             // 
@@ -1067,10 +1083,10 @@ namespace WaifuAI
             collapsibleGroupBox2.ResumeLayout(false);
             collapsibleGroupBox2.PerformLayout();
             panRight.ResumeLayout(false);
-            collapsibleGroupBox3.ResumeLayout(false);
-            collapsibleGroupBox3.PerformLayout();
             collapsibleMenus.ResumeLayout(false);
             collapsibleMenus.PerformLayout();
+            collapsibleGroupBox3.ResumeLayout(false);
+            collapsibleGroupBox3.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -1145,5 +1161,6 @@ namespace WaifuAI
         private Panel panel1;
         private CollapsibleGroupBox collapsibleMenus;
         private Button btRunAgent;
+        private Button button3;
     }
 }

@@ -1680,5 +1680,15 @@ namespace WaifuAI
         {
             LLMEngine.Bot.AgentSystem?.ForceRunLoop();
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var build = new StringBuilder();
+            foreach (var item in LLMEngine.dataInserts)
+            {
+                build.AppendLine(item.Memory.Name + " [ " + item.Duration + " ]");
+            }
+            MessageBox.Show(build.ToString(), "Current Prompt Inserts", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }

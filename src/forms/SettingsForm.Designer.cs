@@ -94,6 +94,8 @@ namespace WaifuAI.src.forms
             ck_sysrag = new ModernCheckBox();
             verticalStackPanel1 = new VerticalStackPanel();
             collapsibleGroupBox3 = new CollapsibleGroupBox();
+            numWIEntries = new ModernNumericUpDown();
+            label6 = new Label();
             collapsibleGroupBox2 = new CollapsibleGroupBox();
             mck_cutmiddle = new ModernCheckBox();
             verticalStackPanel2 = new VerticalStackPanel();
@@ -104,8 +106,6 @@ namespace WaifuAI.src.forms
             label5 = new Label();
             mcbSkin = new ModernComboBox();
             collapsibleGroupBox5 = new CollapsibleGroupBox();
-            numWIEntries = new ModernNumericUpDown();
-            label6 = new Label();
             panel1.SuspendLayout();
             collapsibleGroupBox1.SuspendLayout();
             verticalStackPanel1.SuspendLayout();
@@ -309,7 +309,7 @@ namespace WaifuAI.src.forms
             // 
             label65.AutoSize = true;
             label65.Font = new Font("Segoe UI", 9F);
-            label65.Location = new Point(12, 108);
+            label65.Location = new Point(15, 97);
             label65.Name = "label65";
             label65.Size = new Size(135, 15);
             label65.TabIndex = 34;
@@ -321,7 +321,7 @@ namespace WaifuAI.src.forms
             cb_pastsession.DropDownHeight = 180;
             cb_pastsession.Font = new Font("Segoe UI", 9F);
             cb_pastsession.Items.AddRange(new object[] { "Current session only", "Fit as much as possible, including previous sessions" });
-            cb_pastsession.Location = new Point(15, 126);
+            cb_pastsession.Location = new Point(15, 115);
             cb_pastsession.MaxDropDownItems = 10;
             cb_pastsession.Name = "cb_pastsession";
             cb_pastsession.Padding = new Padding(1);
@@ -648,9 +648,9 @@ namespace WaifuAI.src.forms
             label14.Font = new Font("Segoe UI", 9F);
             label14.Location = new Point(169, 85);
             label14.Name = "label14";
-            label14.Size = new Size(83, 15);
+            label14.Size = new Size(109, 15);
             label14.TabIndex = 26;
-            label14.Text = "Max insertions";
+            label14.Text = "Max Session Entries";
             // 
             // num_ragmaxretrieve
             // 
@@ -807,9 +807,32 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox3.Location = new Point(0, 322);
             collapsibleGroupBox3.Name = "collapsibleGroupBox3";
             collapsibleGroupBox3.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox3.Size = new Size(321, 280);
+            collapsibleGroupBox3.Size = new Size(321, 241);
             collapsibleGroupBox3.TabIndex = 35;
             collapsibleGroupBox3.Text = "Retrieval Augmented Generation";
+            // 
+            // numWIEntries
+            // 
+            numWIEntries.BackColor = Color.FromArgb(64, 64, 64);
+            numWIEntries.Font = new Font("Segoe UI", 9F);
+            numWIEntries.Location = new Point(169, 147);
+            numWIEntries.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            numWIEntries.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numWIEntries.Name = "numWIEntries";
+            numWIEntries.Padding = new Padding(1);
+            numWIEntries.Size = new Size(137, 23);
+            numWIEntries.TabIndex = 39;
+            numWIEntries.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Segoe UI", 9F);
+            label6.Location = new Point(169, 129);
+            label6.Name = "label6";
+            label6.Size = new Size(123, 15);
+            label6.TabIndex = 40;
+            label6.Text = "Max WorldInfo Entries";
             // 
             // collapsibleGroupBox2
             // 
@@ -833,11 +856,11 @@ namespace WaifuAI.src.forms
             // mck_cutmiddle
             // 
             mck_cutmiddle.Font = new Font("Segoe UI", 9F);
-            mck_cutmiddle.Location = new Point(15, 155);
+            mck_cutmiddle.Location = new Point(15, 147);
             mck_cutmiddle.Name = "mck_cutmiddle";
             mck_cutmiddle.Size = new Size(306, 26);
             mck_cutmiddle.TabIndex = 35;
-            mck_cutmiddle.Text = "Cut overflowing sessions in the middle during summarization";
+            mck_cutmiddle.Text = "Middle-cut text overflow during summarization";
             mck_cutmiddle.UseVisualStyleBackColor = true;
             // 
             // verticalStackPanel2
@@ -971,29 +994,6 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox5.Size = new Size(308, 308);
             collapsibleGroupBox5.TabIndex = 0;
             collapsibleGroupBox5.Text = "Web Search";
-            // 
-            // numWIEntries
-            // 
-            numWIEntries.BackColor = Color.FromArgb(64, 64, 64);
-            numWIEntries.Font = new Font("Segoe UI", 9F);
-            numWIEntries.Location = new Point(169, 147);
-            numWIEntries.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
-            numWIEntries.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            numWIEntries.Name = "numWIEntries";
-            numWIEntries.Padding = new Padding(1);
-            numWIEntries.Size = new Size(137, 23);
-            numWIEntries.TabIndex = 39;
-            numWIEntries.Value = new decimal(new int[] { 1, 0, 0, 0 });
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.Font = new Font("Segoe UI", 9F);
-            label6.Location = new Point(169, 129);
-            label6.Name = "label6";
-            label6.Size = new Size(123, 15);
-            label6.TabIndex = 40;
-            label6.Text = "Max WorldInfo Entries";
             // 
             // SettingsForm
             // 

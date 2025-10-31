@@ -198,7 +198,7 @@ namespace WaifuAI.AgentPlugins
                 sysprompt += "## Relevant Information:" + LLMEngine.NewLine + LLMEngine.NewLine;
                 foreach (var item in datafound)
                 {
-                    sysprompt += item.Content.CleanupAndTrim() + LLMEngine.NewLine;
+                    sysprompt += item.ToContent().CleanupAndTrim() + LLMEngine.NewLine;
                 }
                 sysprompt += LLMEngine.NewLine;
             }

@@ -119,7 +119,7 @@ namespace WaifuAI.AgentPlugins
             await owner.Brain.GetRAGandInserts(recall, topic, 3, 1f);
             foreach (var item in recall)
             {
-                prompt.AppendLinuxLine(item.Content).AppendLinuxLine();
+                prompt.AppendLinuxLine(item.ToContent()).AppendLinuxLine();
             }
             var builder = LLMEngine.GetPromptBuilder();
             builder.AddMessage(AuthorRole.SysPrompt, prompt.ToString());

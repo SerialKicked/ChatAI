@@ -77,8 +77,6 @@ namespace WaifuAI.Files
             }
             // Load World Data
             MyWorlds = [.. DataFiles.WorldInfos.Values.Where(wi => Worlds.Contains(wi.UniqueName))];
-            foreach (var item in MyWorlds)
-                item.Reset();
         }
 
         public override void EndChat(bool backup = false)
