@@ -30,6 +30,7 @@ namespace WaifuAI.src.forms
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WorldEditForm));
             groupBox8 = new GroupBox();
+            ckSticky = new CheckBox();
             label60 = new Label();
             numWItriggerchance = new NumericUpDown();
             label27 = new Label();
@@ -65,7 +66,6 @@ namespace WaifuAI.src.forms
             bt_worldsave = new Button();
             cb_worlds = new ComboBox();
             groupBox1 = new GroupBox();
-            ckSticky = new CheckBox();
             groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numWItriggerchance).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_wentrypriority).BeginInit();
@@ -103,6 +103,16 @@ namespace WaifuAI.src.forms
             groupBox8.TabIndex = 1;
             groupBox8.TabStop = false;
             groupBox8.Text = "Entry Settings";
+            // 
+            // ckSticky
+            // 
+            ckSticky.AutoSize = true;
+            ckSticky.Location = new Point(133, 22);
+            ckSticky.Name = "ckSticky";
+            ckSticky.Size = new Size(99, 19);
+            ckSticky.TabIndex = 18;
+            ckSticky.Text = "Always Active";
+            ckSticky.UseVisualStyleBackColor = true;
             // 
             // label60
             // 
@@ -183,6 +193,7 @@ namespace WaifuAI.src.forms
             // num_wentryposition
             // 
             num_wentryposition.Location = new Point(6, 143);
+            num_wentryposition.Minimum = new decimal(new int[] { 1, 0, 0, int.MinValue });
             num_wentryposition.Name = "num_wentryposition";
             num_wentryposition.Size = new Size(110, 23);
             num_wentryposition.TabIndex = 9;
@@ -448,16 +459,6 @@ namespace WaifuAI.src.forms
             groupBox1.TabIndex = 4;
             groupBox1.TabStop = false;
             groupBox1.Text = "World Settings";
-            // 
-            // ckSticky
-            // 
-            ckSticky.AutoSize = true;
-            ckSticky.Location = new Point(133, 22);
-            ckSticky.Name = "ckSticky";
-            ckSticky.Size = new Size(99, 19);
-            ckSticky.TabIndex = 18;
-            ckSticky.Text = "Always Active";
-            ckSticky.UseVisualStyleBackColor = true;
             // 
             // WorldEditForm
             // 
