@@ -39,8 +39,6 @@ namespace WaifuAI.src.forms
             ck_wentrycasesensitive = new CheckBox();
             label25 = new Label();
             num_wentryposition = new NumericUpDown();
-            label24 = new Label();
-            cb_wentrylocation = new ComboBox();
             label23 = new Label();
             cb_wentrykwlink = new ComboBox();
             ed_wentrykw2 = new TextBox();
@@ -54,10 +52,10 @@ namespace WaifuAI.src.forms
             ed_wentryname = new TextBox();
             label19 = new Label();
             groupBox6 = new GroupBox();
-            ck_wiembed = new CheckBox();
             bt_delwentry = new Button();
             bt_addwentry = new Button();
             lb_worldentries = new ListBox();
+            ck_wiembed = new CheckBox();
             label17 = new Label();
             label16 = new Label();
             num_scandepth = new NumericUpDown();
@@ -67,6 +65,7 @@ namespace WaifuAI.src.forms
             bt_worldsave = new Button();
             cb_worlds = new ComboBox();
             groupBox1 = new GroupBox();
+            ckSticky = new CheckBox();
             groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numWItriggerchance).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_wentrypriority).BeginInit();
@@ -81,6 +80,7 @@ namespace WaifuAI.src.forms
             // 
             // groupBox8
             // 
+            groupBox8.Controls.Add(ckSticky);
             groupBox8.Controls.Add(label60);
             groupBox8.Controls.Add(numWItriggerchance);
             groupBox8.Controls.Add(label27);
@@ -90,8 +90,6 @@ namespace WaifuAI.src.forms
             groupBox8.Controls.Add(ck_wentrycasesensitive);
             groupBox8.Controls.Add(label25);
             groupBox8.Controls.Add(num_wentryposition);
-            groupBox8.Controls.Add(label24);
-            groupBox8.Controls.Add(cb_wentrylocation);
             groupBox8.Controls.Add(label23);
             groupBox8.Controls.Add(cb_wentrykwlink);
             groupBox8.Controls.Add(ed_wentrykw2);
@@ -109,7 +107,7 @@ namespace WaifuAI.src.forms
             // label60
             // 
             label60.AutoSize = true;
-            label60.Location = new Point(542, 129);
+            label60.Location = new Point(354, 125);
             label60.Name = "label60";
             label60.Size = new Size(87, 15);
             label60.TabIndex = 17;
@@ -119,7 +117,7 @@ namespace WaifuAI.src.forms
             // 
             numWItriggerchance.DecimalPlaces = 2;
             numWItriggerchance.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            numWItriggerchance.Location = new Point(542, 147);
+            numWItriggerchance.Location = new Point(354, 143);
             numWItriggerchance.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
             numWItriggerchance.Name = "numWItriggerchance";
             numWItriggerchance.Size = new Size(110, 23);
@@ -130,7 +128,7 @@ namespace WaifuAI.src.forms
             // label27
             // 
             label27.AutoSize = true;
-            label27.Location = new Point(426, 129);
+            label27.Location = new Point(238, 125);
             label27.Name = "label27";
             label27.Size = new Size(45, 15);
             label27.TabIndex = 15;
@@ -138,7 +136,8 @@ namespace WaifuAI.src.forms
             // 
             // num_wentrypriority
             // 
-            num_wentrypriority.Location = new Point(426, 147);
+            num_wentrypriority.Location = new Point(238, 143);
+            num_wentrypriority.Maximum = new decimal(new int[] { 200, 0, 0, 0 });
             num_wentrypriority.Name = "num_wentrypriority";
             num_wentrypriority.Size = new Size(110, 23);
             num_wentrypriority.TabIndex = 14;
@@ -147,7 +146,7 @@ namespace WaifuAI.src.forms
             // label26
             // 
             label26.AutoSize = true;
-            label26.Location = new Point(310, 129);
+            label26.Location = new Point(122, 125);
             label26.Name = "label26";
             label26.Size = new Size(53, 15);
             label26.TabIndex = 13;
@@ -155,7 +154,7 @@ namespace WaifuAI.src.forms
             // 
             // num_wentryduration
             // 
-            num_wentryduration.Location = new Point(310, 147);
+            num_wentryduration.Location = new Point(122, 143);
             num_wentryduration.Name = "num_wentryduration";
             num_wentryduration.Size = new Size(110, 23);
             num_wentryduration.TabIndex = 12;
@@ -175,7 +174,7 @@ namespace WaifuAI.src.forms
             // label25
             // 
             label25.AutoSize = true;
-            label25.Location = new Point(194, 129);
+            label25.Location = new Point(6, 125);
             label25.Name = "label25";
             label25.Size = new Size(35, 15);
             label25.TabIndex = 10;
@@ -183,31 +182,11 @@ namespace WaifuAI.src.forms
             // 
             // num_wentryposition
             // 
-            num_wentryposition.Location = new Point(194, 147);
+            num_wentryposition.Location = new Point(6, 143);
             num_wentryposition.Name = "num_wentryposition";
             num_wentryposition.Size = new Size(110, 23);
             num_wentryposition.TabIndex = 9;
             num_wentryposition.ValueChanged += UpdateWorldEntryEvent;
-            // 
-            // label24
-            // 
-            label24.AutoSize = true;
-            label24.Location = new Point(6, 129);
-            label24.Name = "label24";
-            label24.Size = new Size(67, 15);
-            label24.TabIndex = 8;
-            label24.Text = "Positioning";
-            // 
-            // cb_wentrylocation
-            // 
-            cb_wentrylocation.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_wentrylocation.FormattingEnabled = true;
-            cb_wentrylocation.Items.AddRange(new object[] { "System Prompt", "Chat" });
-            cb_wentrylocation.Location = new Point(6, 147);
-            cb_wentrylocation.Name = "cb_wentrylocation";
-            cb_wentrylocation.Size = new Size(182, 23);
-            cb_wentrylocation.TabIndex = 7;
-            cb_wentrylocation.SelectedIndexChanged += UpdateWorldEntryEvent;
             // 
             // label23
             // 
@@ -337,17 +316,6 @@ namespace WaifuAI.src.forms
             groupBox6.TabStop = false;
             groupBox6.Text = "World Entries";
             // 
-            // ck_wiembed
-            // 
-            ck_wiembed.AutoSize = true;
-            ck_wiembed.Location = new Point(679, 70);
-            ck_wiembed.Name = "ck_wiembed";
-            ck_wiembed.Size = new Size(150, 19);
-            ck_wiembed.TabIndex = 8;
-            ck_wiembed.Text = "Use Vector Embeddings";
-            ck_wiembed.UseVisualStyleBackColor = true;
-            ck_wiembed.CheckedChanged += ck_wiembed_CheckedChanged;
-            // 
             // bt_delwentry
             // 
             bt_delwentry.Location = new Point(143, 409);
@@ -376,6 +344,17 @@ namespace WaifuAI.src.forms
             lb_worldentries.Size = new Size(227, 379);
             lb_worldentries.TabIndex = 4;
             lb_worldentries.SelectedIndexChanged += lb_worldentries_SelectedIndexChanged;
+            // 
+            // ck_wiembed
+            // 
+            ck_wiembed.AutoSize = true;
+            ck_wiembed.Location = new Point(679, 70);
+            ck_wiembed.Name = "ck_wiembed";
+            ck_wiembed.Size = new Size(150, 19);
+            ck_wiembed.TabIndex = 8;
+            ck_wiembed.Text = "Use Vector Embeddings";
+            ck_wiembed.UseVisualStyleBackColor = true;
+            ck_wiembed.CheckedChanged += ck_wiembed_CheckedChanged;
             // 
             // label17
             // 
@@ -470,6 +449,16 @@ namespace WaifuAI.src.forms
             groupBox1.TabStop = false;
             groupBox1.Text = "World Settings";
             // 
+            // ckSticky
+            // 
+            ckSticky.AutoSize = true;
+            ckSticky.Location = new Point(133, 22);
+            ckSticky.Name = "ckSticky";
+            ckSticky.Size = new Size(99, 19);
+            ckSticky.TabIndex = 18;
+            ckSticky.Text = "Always Active";
+            ckSticky.UseVisualStyleBackColor = true;
+            // 
             // WorldEditForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -514,8 +503,6 @@ namespace WaifuAI.src.forms
         private CheckBox ck_wentrycasesensitive;
         private Label label25;
         private NumericUpDown num_wentryposition;
-        private Label label24;
-        private ComboBox cb_wentrylocation;
         private Label label23;
         private ComboBox cb_wentrykwlink;
         private TextBox ed_wentrykw2;
@@ -542,5 +529,6 @@ namespace WaifuAI.src.forms
         private Button bt_worldsave;
         private ComboBox cb_worlds;
         private GroupBox groupBox1;
+        private CheckBox ckSticky;
     }
 }

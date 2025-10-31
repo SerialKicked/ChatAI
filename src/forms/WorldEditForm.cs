@@ -128,6 +128,7 @@ namespace WaifuAI.src.forms
             ck_wentrycasesensitive.Checked = worldEntry.CaseSensitive;
             ck_wentryenabled.Checked = worldEntry.Enabled;
             numWItriggerchance.Value = (decimal)worldEntry.TriggerChance;
+            ckSticky.Checked = worldEntry.Sticky;
             _isInitLoading = sv;
         }
 
@@ -160,6 +161,7 @@ namespace WaifuAI.src.forms
             SelectedWorldEntryEditor.CaseSensitive = ck_wentrycasesensitive.Checked;
             SelectedWorldEntryEditor.Enabled = ck_wentryenabled.Checked;
             SelectedWorldEntryEditor.TriggerChance = (float)numWItriggerchance.Value;
+            SelectedWorldEntryEditor.Sticky = ckSticky.Checked;
 
             // Refresh the list to maintain alphabetical order after name changes
             var currentSelectedOriginalIndex = _sortedToOriginalIndexMap[lb_worldentries.SelectedIndex];
