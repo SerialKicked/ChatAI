@@ -134,6 +134,7 @@ namespace WaifuAI
             AgentRuntime.RegisterPlugin("CustomGoalTask", new CustomGoalTask());
             AgentRuntime.RegisterPlugin("JournalTask", new JournalTask());
             AgentRuntime.RegisterPlugin("SessionGoalTask", new SessionGoalTask());
+            AgentRuntime.RegisterPlugin("SarahDomTask", new SarahDomTask());
             // Manage theme
             if (Program.Settings.Skin == "Light")
                 ThemeManager.ApplyLight();

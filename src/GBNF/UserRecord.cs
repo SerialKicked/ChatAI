@@ -10,11 +10,6 @@ using System.Threading.Tasks;
 
 namespace WaifuAI.GBNF
 {
-    public class BasicBitch
-    {
-        public string Response { get; set; } = string.Empty;
-        public int Confidence { get; set; } = 0;
-    }
 
     public class UserRecord : LLMExtractableBase<UserRecord>
     {
@@ -36,7 +31,6 @@ namespace WaifuAI.GBNF
         [MaxLength(10)]
         [Description("A list of other facts about {{user}} not fitting in the other categories (up to 10 entries)")]
         public List<string> UserInfo { get; set; } = [];
-
 
         public override async Task<string> GetGrammar()
         {
