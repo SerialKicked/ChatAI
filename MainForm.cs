@@ -1,16 +1,13 @@
-using AngleSharp.Text;
 using LetheAISharp;
 using LetheAISharp.Agent;
 using LetheAISharp.Agent.Actions;
 using LetheAISharp.Files;
 using LetheAISharp.LLM;
 using LetheAISharp.Memory;
-using LetheAISharp.SearchAPI;
 using Markdig;
 using Microsoft.Extensions.Logging;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Media;
@@ -22,11 +19,9 @@ using WaifuAI.AgentPlugins;
 using WaifuAI.Controls;
 using WaifuAI.Files;
 using WaifuAI.Game;
-using WaifuAI.GBNF;
 using WaifuAI.Plugins;
 using WaifuAI.Slash;
 using WaifuAI.src.forms;
-using WaifuAI.Web;
 
 namespace WaifuAI
 {
@@ -129,6 +124,7 @@ namespace WaifuAI
             // Load our agentic actions
             AgentRuntime.RegisterAction(new SessionMoodCheckAction());
             AgentRuntime.RegisterAction(new ImageInfoAction());
+            AgentRuntime.RegisterAction(new PersonInfoAction());
             // Load our agentic plugins
             AgentRuntime.RegisterPlugin("GoalDesignerTask", new GoalDesignerTask());
             AgentRuntime.RegisterPlugin("CustomGoalTask", new CustomGoalTask());
@@ -1657,13 +1653,11 @@ namespace WaifuAI
             logForm.ShowDialog();
         }
 
-        private async void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
             var mood = LLMEngine.Bot.Brain.Mood.Describe();
             // show a simple message box
-            MessageBox.Show(this, $"{mood}", "Mood State", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-
+            MessageBox.Show(this, $"{LLMEngine.Bot.ReplaceMacros(mood)}", "Mood State", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -1689,6 +1683,45 @@ namespace WaifuAI
                 build.AppendLine(item.Memory.Name + " [ " + item.Duration + " ]");
             }
             MessageBox.Show(build.ToString(), "Current Prompt Inserts", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private async void button4_Click(object sender, EventArgs e)
+        {
+            var personaction = AgentRuntime.GetAction<string?, BuildInfoParam>("PersonInfoAction");
+            if (personaction != null)
+            {
+                var param = new BuildInfoParam
+                {
+                    Bot = LLMEngine.Bot,
+                    SearchString = "Amandine",
+                    EmbedSearch = false
+                };
+                var resultTask = await personaction.Execute(param, CancellationToken.None);
+                if (!string.IsNullOrEmpty(resultTask))
+                {
+                    var mem = LLMEngine.Bot.Brain.Memories.Find(e => e.Category == MemoryType.Person && e.Name.Contains("Amandine", StringComparison.InvariantCultureIgnoreCase));
+
+                    if (mem == null)
+                    {
+                        mem = new MemoryUnit()
+                        {
+                            Category = MemoryType.Person,
+                            KeyWordsMain = ["Amamdine"],
+                            Name = "Amandine",
+                        };
+                    }
+                    mem.Content = resultTask;
+                    mem.PositionIndex = -1;
+                    mem.CaseSensitive = false;
+                    mem.Enabled = true;
+                    mem.Duration = 2;
+                    mem.Insertion = MemoryInsertion.Trigger;
+                    await mem.EmbedText();
+                    LLMEngine.Bot.Brain.Memorize(mem, true);
+                    LLMEngine.Bot.Brain.ReloadMemories();
+                }
+                MessageBox.Show(resultTask ?? "No information found.", "Person Info Action Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 }
