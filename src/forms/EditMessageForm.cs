@@ -105,5 +105,20 @@ namespace WaifuAI.src.forms
                 Close();
             }
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (Message == null)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
+            else
+            {
+                LLMEngine.History.CurrentSession.Messages.Remove(Message);
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+        }
     }
 }

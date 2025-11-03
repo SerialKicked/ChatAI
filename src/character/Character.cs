@@ -44,8 +44,11 @@ namespace WaifuAI.Files
         /// <summary> Whether this character's brain and chatlog files should be encrypted at rest </summary>
         public bool Protected { get; set; } = false;
 
+        public ToggleMonitorSettings LockSettings { get; set; } = new ToggleMonitorSettings();
+
         [JsonIgnore] public PointSystem MyPoints = new();
         [JsonIgnore] private string? _password;
+        [JsonIgnore] public TimedLockPlugin LockManager { get; private set; }
 
         [JsonIgnore]
         public new CharBrain Brain
@@ -57,6 +60,11 @@ namespace WaifuAI.Files
                 return (CharBrain)base.Brain;
             }
             protected set => base.Brain = value;
+        }
+
+        public Character() : base()
+        {
+            LockManager = new TimedLockPlugin(this);
         }
 
         public override void BeginChat()

@@ -101,10 +101,14 @@ namespace WaifuAI.AgentPlugins
                 await builder.SetStructuredOutput(globalResponse);
                 var maxAvailtokens = availtokens - builder.GetTokenCount(AuthorRole.SysPrompt, intro);
 
-                var sessionaschat = session.GetRawDialogs(maxAvailtokens, true, false, false, true);
+                var sessionaschat = session.GetRawDialogs(maxAvailtokens, false, false, false, true);
                 var sessprompt = sysprompt.ToString() + sessionaschat;
 
                 var query = "Based on the information above and the chat history, write a report on {{user}}'s responses and actions. " + globalResponse.GetQuery();
+                if (previousEvalObj is not null)
+                {
+                    query = "Based on the information provided, write a new report about {{user}}. Merge the two evaluations provided into one, improving and expanding upon the previous report. Remove resolved blocks and secrets from the list. Merge similar or identical entries together. Update the analysis and conclusions accordingly. The goal is to give yourself effective directives and high quality data to further your goals. " + globalResponse.GetQuery();                
+                } 
 
                 var left = 3000 - builder.GetTokenCount(AuthorRole.User, query);
                 builder.AddMessage(AuthorRole.SysPrompt, sessprompt);
@@ -125,7 +129,7 @@ namespace WaifuAI.AgentPlugins
                     evallist.Add(globalResponse);
                 }
             }
-            if (evallist.Count > 1)
+            if (evallist.Count > 2)
             {
                 var finalres = MergeInfo(evallist, owner, cfg, ct);
                 if (finalres is not null)
@@ -141,6 +145,16 @@ namespace WaifuAI.AgentPlugins
                     LLMEngine.Instruct.PrefillThinking = prefill;
                     return;
                 }
+            }
+            else if (evallist.Count > 0)
+            {
+                var orders = FinalEval(evallist.Last(), owner, cfg, ct);
+                if (!string.IsNullOrEmpty(orders))
+                {
+                    orders = orders.RemoveThinkingBlocks();
+                    owner.Brain.AddUserReturnInsert(LLMEngine.NewLine + "{{char}}'s objectives:" + LLMEngine.NewLine + orders);
+                }
+                cfg.SetSetting("LastEval", JsonConvert.SerializeObject(evallist.Last()));
             }
 
             cfg.SetSetting("LastGuid", owner.History.Sessions[^2].Guid);
@@ -238,7 +252,7 @@ namespace WaifuAI.AgentPlugins
                     .AppendLinuxLine("# New Evaluation").AppendLinuxLine()
                     .AppendLinuxLine(EvalToString(current)).AppendLinuxLine();
 
-                var query = "Based on the information provided, write a new report about {{user}}. Merge the two evaluations provided into one, improving and expanding upon the previous report. Remove solved issues. Merge similar or identical entries. Update the analysis and conclusions accordingly. The goal is to give yourself effective directives and high quality data to further your goals." + evalres.GetQuery();
+                var query = "Based on the information provided, write a new report about {{user}}. Merge the two evaluations provided into one, improving and expanding upon the previous report. Remove solved blocks and secrets from their list. Merge similar or identical entries together. Update the analysis and conclusions accordingly. The goal is to give yourself effective directives and high quality data to further your goals." + evalres.GetQuery();
 
                 builder.AddMessage(AuthorRole.SysPrompt, intro);
                 builder.AddMessage(AuthorRole.User, sessionaschat.ToString() + query);

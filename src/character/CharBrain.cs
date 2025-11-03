@@ -1,12 +1,13 @@
-﻿using LetheAISharp.Agent;
+﻿using LetheAISharp;
+using LetheAISharp.Agent;
 using LetheAISharp.Files;
 using LetheAISharp.LLM;
 using LetheAISharp.Memory;
-using LetheAISharp;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -163,6 +164,20 @@ namespace WaifuAI.Files
             if (found.Count > maxRes)
                 found = found.GetRange(0, maxRes);
             return found;
+        }
+
+        public override SingleMessage? BuildAwayMessage()
+        {
+            var res = base.BuildAwayMessage();
+            if (Owner.LockSettings.Enabled && res is not null)
+            {
+                var infostr = Owner.LockManager.GetStatusMessage();
+                if (!string.IsNullOrEmpty(infostr))
+                {
+                    res.Message += LLMEngine.NewLine + LLMEngine.NewLine + infostr;
+                }
+            }
+            return res;
         }
     }
 }

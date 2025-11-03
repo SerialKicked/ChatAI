@@ -304,6 +304,10 @@ namespace WaifuAI.src.forms
 
             var lastTrigDt = TryGetDate(mem, "LastTrigger");
             var lastTrigStr = (lastTrigDt.HasValue && lastTrigDt.Value > DateTime.MinValue) ? lastTrigDt.Value.ToString("yyyy-MM-dd HH:mm") : "N/A";
+            var cnt = TryGetInt(mem, "TriggerCount");
+            if (cnt is null)
+                cnt = 0;
+            lastTrigStr += $" [{cnt}]";
 
             var priorityStr = TryGetInt(mem, "Priority")?.ToString() ?? "N/A";
             var insertionStr = TryGetString(mem, "Insertion") ?? "N/A";

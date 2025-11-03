@@ -52,6 +52,43 @@ namespace WaifuAI.Slash
         }
     }
 
+    internal class CmdMainLock(ISlashCommand owner) : SlashCommandInfo(owner)
+    {
+        public override string ID => "/lock";
+        public override string Description => "Core - Lock the togglable device";
+        public override string Slash => "/lock [duration in days](optional)";
+        public override SlashReturn Execute(string userinput)
+        {
+            MainForm.Bot!.LockManager.Settings.Enabled = true;
+
+            var remainder = userinput.Length > ID.Length ? userinput[ID.Length..] : string.Empty;
+            var durationstring = remainder.Trim();
+            if (string.IsNullOrWhiteSpace(durationstring))
+            {
+                MainForm.Bot.LockManager.LockItem();
+            }
+            if (!int.TryParse(durationstring, out int durationdays) || durationdays <= 0)
+                return new SlashReturn(GetHelpMessage(), false, false, true);
+            MainForm.Bot.LockManager.LockItem(new TimeSpan(durationdays,0,0,0));
+            var msg = new SingleMessage(AuthorRole.System, MainForm.Bot.LockManager.GetStatusMessage());
+            return new SlashReturn(msg, true, true, false);
+        }
+    }
+
+    internal class CmdMainUnlock(ISlashCommand owner) : SlashCommandInfo(owner)
+    {
+        public override string ID => "/unlock";
+        public override string Description => "Core - Unlock the togglable device";
+        public override string Slash => "/unlock";
+        public override SlashReturn Execute(string userinput)
+        {
+            MainForm.Bot!.LockManager.Settings.Enabled = true;
+            MainForm.Bot.LockManager.UnlockItem();
+            var msg = new SingleMessage(AuthorRole.System, MainForm.Bot.LockManager.GetStatusMessage());
+            return new SlashReturn(msg, true, true, false);
+        }
+    }
+
     internal class CmdMainRecall(ISlashCommand owner) : SlashCommandInfo(owner)
     {
         public override string ID => "/recall";
@@ -89,7 +126,7 @@ namespace WaifuAI.Slash
 
         public MainSlashCmds()
         {
-            Commands = [ new CmdMainSystem(this), new CmdMainRecall(this), new CmdMainHelp(this) ];
+            Commands = [ new CmdMainSystem(this), new CmdMainRecall(this), new CmdMainHelp(this), new CmdMainLock(this), new CmdMainLock(this) ];
         }
 
         public SlashReturn RunCommand(string userinput)

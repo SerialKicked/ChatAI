@@ -37,6 +37,7 @@ namespace WaifuAI.src.forms
         {
             ed_message = new WaifuAI.Controls.SpellCheckedTextBox();
             bt_save = new Button();
+            button1 = new Button();
             SuspendLayout();
             // 
             // ed_message
@@ -61,11 +62,25 @@ namespace WaifuAI.src.forms
             bt_save.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_save.Location = new Point(12, 281);
             bt_save.Name = "bt_save";
-            bt_save.Size = new Size(498, 23);
+            bt_save.Size = new Size(301, 23);
             bt_save.TabIndex = 1;
             bt_save.Text = "Save Message";
             bt_save.UseVisualStyleBackColor = false;
             bt_save.Click += bt_save_Click;
+            // 
+            // button1
+            // 
+            button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button1.BackColor = Color.OrangeRed;
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            button1.Location = new Point(319, 281);
+            button1.Name = "button1";
+            button1.Size = new Size(191, 23);
+            button1.TabIndex = 2;
+            button1.Text = "Delete";
+            button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
             // 
             // EditMessageForm
             // 
@@ -73,6 +88,7 @@ namespace WaifuAI.src.forms
             AutoScaleMode = AutoScaleMode.Font;
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
             ClientSize = new Size(522, 314);
+            Controls.Add(button1);
             Controls.Add(bt_save);
             Controls.Add(ed_message);
             MaximizeBox = false;
@@ -91,5 +107,6 @@ namespace WaifuAI.src.forms
 
         private WaifuAI.Controls.SpellCheckedTextBox ed_message;
         private Button bt_save;
+        private Button button1;
     }
 }

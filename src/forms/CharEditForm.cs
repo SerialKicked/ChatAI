@@ -83,7 +83,7 @@ namespace WaifuAI.src.forms
             mychar.SenseOfTime = ck_senseoftime.Checked;
             mychar.SelfEditTokens = (int)num_selfedittokens.Value;
             mychar.SelfEditField = ed_selfedit.Text.ToLinuxFormat();
-            mychar.Icon = cb_icon.Text;
+            mychar.Icon = cb_icon.SelectedText;
             mychar.Plugins = [.. ckl_plugins.CheckedItems.Cast<string>()];
             mychar.Worlds = [.. ckl_worldinfo.CheckedItems.Cast<string>()];
             mychar.AllowedSamplers = [.. ckl_samplers.CheckedItems.Cast<string>()];
@@ -206,9 +206,9 @@ namespace WaifuAI.src.forms
         private void cb_icon_SelectedIndexChanged(object sender, EventArgs e)
         {
             // load the image from the data/img folder into the picture
-            if (!File.Exists("data/img/" + cb_icon.Text))
+            if (!File.Exists("data/img/" + cb_icon.SelectedText))
                 return;
-            var img = Image.FromFile("data/img/" + cb_icon.Text);
+            var img = Image.FromFile("data/img/" + cb_icon.SelectedText);
             if (img != null)
             {
                 pic.Image = img;
