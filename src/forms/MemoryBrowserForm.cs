@@ -458,6 +458,91 @@ namespace WaifuAI.src.forms
                 MessageBox.Show(this, "Failed to delete memory: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void btEditSelected_Click(object sender, EventArgs e)
+        {
+            if (listMemories.SelectedItems.Count == 0)
+                return;
+
+            var item = listMemories.SelectedItems[0];
+            if (item.Tag is not MemoryUnit mem)
+                return;
+
+            using var editor = new MemoryEditorForm(mem);
+            ThemeManager.ApplyToForm(editor);
+            
+            if (editor.ShowDialog(this) == DialogResult.OK && editor.EditedMemory != null)
+            {
+                try
+                {
+                    // Update the memory in the brain
+                    LLMEngine.Bot.Brain.ReloadMemories();
+                    
+                    // Refresh the list
+                    ApplyFilterAndRefreshList();
+                    
+                    // Try to reselect the edited item
+                    foreach (ListViewItem lvi in listMemories.Items)
+                    {
+                        if (lvi.Tag is MemoryUnit m && m.Guid == editor.EditedMemory.Guid)
+                        {
+                            lvi.Selected = true;
+                            lvi.EnsureVisible();
+                            break;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, "Failed to update memory: " + ex.Message, "Error", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void btAddNew_Click(object sender, EventArgs e)
+        {
+            using var editor = new MemoryEditorForm();
+            ThemeManager.ApplyToForm(editor);
+            
+            if (editor.ShowDialog(this) == DialogResult.OK && editor.EditedMemory != null)
+            {
+                try
+                {
+                    // Add the new memory to the brain
+                    LLMEngine.Bot.Brain.Memorize(editor.EditedMemory, true);
+                    LLMEngine.Bot.Brain.ReloadMemories();
+
+                    // Add to our local list
+                    _allMemories.Add(editor.EditedMemory);
+                    
+                    // Refresh the list
+                    ApplyFilterAndRefreshList();
+                    
+                    // Try to select the new item
+                    foreach (ListViewItem lvi in listMemories.Items)
+                    {
+                        if (lvi.Tag is MemoryUnit m && m.Guid == editor.EditedMemory.Guid)
+                        {
+                            lvi.Selected = true;
+                            lvi.EnsureVisible();
+                            break;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, "Failed to add memory: " + ex.Message, "Error", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void listMemories_DoubleClick(object? sender, EventArgs e)
+        {
+            // Double-click to edit
+            btEditSelected_Click(sender!, e);
+        }
     }
 
     internal sealed class MemoryListComparer(int columnIndex, bool ascending) : IComparer

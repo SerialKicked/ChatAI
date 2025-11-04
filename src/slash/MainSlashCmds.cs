@@ -88,6 +88,17 @@ namespace WaifuAI.Slash
             return new SlashReturn(msg, true, true, false);
         }
     }
+    internal class CmdMainLockInfo(ISlashCommand owner) : SlashCommandInfo(owner)
+    {
+        public override string ID => "/lockinfo";
+        public override string Description => "Core - Check remaining timer on lock";
+        public override string Slash => "/lockinfo";
+        public override SlashReturn Execute(string userinput)
+        {
+            var msg = new SingleMessage(AuthorRole.System, MainForm.Bot.LockManager.GetStatusMessage());
+            return new SlashReturn(msg, true, true, false);
+        }
+    }
 
     internal class CmdMainRecall(ISlashCommand owner) : SlashCommandInfo(owner)
     {
@@ -126,15 +137,24 @@ namespace WaifuAI.Slash
 
         public MainSlashCmds()
         {
-            Commands = [ new CmdMainSystem(this), new CmdMainRecall(this), new CmdMainHelp(this), new CmdMainLock(this), new CmdMainLock(this) ];
+            Commands = 
+            [ 
+                new CmdMainSystem(this), new CmdMainRecall(this), new CmdMainHelp(this), 
+                new CmdMainLock(this), new CmdMainLock(this), new CmdMainLockInfo(this) 
+            ];
         }
 
         public SlashReturn RunCommand(string userinput)
         {
-            foreach (var item in Commands)
+            if (userinput.Length > 0)
             {
-                if (userinput.StartsWith(item.ID, StringComparison.OrdinalIgnoreCase))
-                    return item.Execute(userinput);
+                foreach (var item in Commands)
+                {
+                    // get first word only
+                    var firstword = userinput.Split(' ')[0];
+                    if (firstword.Equals(item.ID, StringComparison.OrdinalIgnoreCase))
+                        return item.Execute(userinput);
+                }
             }
             return new SlashReturn(null, false, false);
         }

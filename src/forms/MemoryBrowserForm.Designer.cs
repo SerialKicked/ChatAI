@@ -15,6 +15,9 @@
         private System.Windows.Forms.Panel panelBottom;
         private System.Windows.Forms.Button btClose;
         private Microsoft.Web.WebView2.WinForms.WebView2 webView;
+        private Button btDeleteSelected;
+        private Button btEditSelected;
+        private Button btAddNew;
 
         protected override void Dispose(bool disposing)
         {
@@ -30,6 +33,8 @@
             colCategory = new ColumnHeader();
             colAdded = new ColumnHeader();
             btDeleteSelected = new Button();
+            btEditSelected = new Button();
+            btAddNew = new Button();
             panelLeftTop = new Panel();
             cbCategory = new Controls.ModernComboBox();
             lblCategory = new Label();
@@ -55,6 +60,8 @@
             // 
             splitMain.Panel1.Controls.Add(listMemories);
             splitMain.Panel1.Controls.Add(btDeleteSelected);
+            splitMain.Panel1.Controls.Add(btEditSelected);
+            splitMain.Panel1.Controls.Add(btAddNew);
             splitMain.Panel1.Controls.Add(panelLeftTop);
             // 
             // splitMain.Panel2
@@ -72,12 +79,13 @@
             listMemories.Location = new Point(0, 38);
             listMemories.MultiSelect = false;
             listMemories.Name = "listMemories";
-            listMemories.Size = new Size(400, 453);
+            listMemories.Size = new Size(400, 422);
             listMemories.TabIndex = 0;
             listMemories.UseCompatibleStateImageBehavior = false;
             listMemories.View = View.Details;
             listMemories.ColumnClick += listMemories_ColumnClick;
             listMemories.SelectedIndexChanged += listMemories_SelectedIndexChanged;
+            listMemories.DoubleClick += listMemories_DoubleClick;
             // 
             // colTitle
             // 
@@ -109,6 +117,38 @@
             btDeleteSelected.Text = "Delete Entry";
             btDeleteSelected.UseVisualStyleBackColor = false;
             btDeleteSelected.Click += btDeleteSelected_Click;
+            // 
+            // btEditSelected
+            // 
+            btEditSelected.BackColor = Color.SteelBlue;
+            btEditSelected.Dock = DockStyle.Bottom;
+            btEditSelected.FlatStyle = FlatStyle.Popup;
+            btEditSelected.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btEditSelected.ForeColor = Color.WhiteSmoke;
+            btEditSelected.Location = new Point(0, 468);
+            btEditSelected.Name = "btEditSelected";
+            btEditSelected.Size = new Size(400, 23);
+            btEditSelected.TabIndex = 3;
+            btEditSelected.Tag = "no-theme";
+            btEditSelected.Text = "Edit Entry";
+            btEditSelected.UseVisualStyleBackColor = false;
+            btEditSelected.Click += btEditSelected_Click;
+            // 
+            // btAddNew
+            // 
+            btAddNew.BackColor = Color.DarkSeaGreen;
+            btAddNew.Dock = DockStyle.Bottom;
+            btAddNew.FlatStyle = FlatStyle.Popup;
+            btAddNew.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btAddNew.ForeColor = Color.WhiteSmoke;
+            btAddNew.Location = new Point(0, 460);
+            btAddNew.Name = "btAddNew";
+            btAddNew.Size = new Size(400, 23);
+            btAddNew.TabIndex = 4;
+            btAddNew.Tag = "no-theme";
+            btAddNew.Text = "Add New Entry";
+            btAddNew.UseVisualStyleBackColor = false;
+            btAddNew.Click += btAddNew_Click;
             // 
             // panelLeftTop
             // 
@@ -198,6 +238,5 @@
             panelBottom.ResumeLayout(false);
             ResumeLayout(false);
         }
-        private Button btDeleteSelected;
     }
 }
