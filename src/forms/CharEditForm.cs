@@ -100,6 +100,7 @@ namespace WaifuAI.src.forms
             mychar.Brain.EurekaCutOff = TimeSpan.FromDays((int)numKeepEurekas.Value);
             mychar.AgentMode = ckAgent.Checked;
             mychar.AgentTasks = [.. listAgentTasks.CheckedItems.Cast<string>()];
+            mychar.DisableBotGuidance = ckNoGuidance.Checked;
             if (mychar.AgentSystem is not null)
                 mychar.AgentSystem.Config.MinInactivityTime = TimeSpan.FromHours((double)numAgentDelay.Value);
             mychar.Brain.DisableRAG = [.. listNoRAGMemTypes.CheckedItems.Cast<string>().Select(s => Enum.Parse<MemoryType>(s))];
@@ -135,6 +136,7 @@ namespace WaifuAI.src.forms
             numKeepEurekas.Value = (decimal)selectedCharacter.Brain.EurekaCutOff.TotalDays;
             ckAgent.Checked = selectedCharacter.AgentMode;
             numAgentDelay.Value = (decimal)(selectedCharacter.AgentSystem?.Config.MinInactivityTime.TotalHours ?? 0.5);
+            ckNoGuidance.Checked = selectedCharacter.DisableBotGuidance;
 
             edFilename.Text = selectedCharacter.UniqueName;
             ckl_plugins.Items.Clear();
@@ -192,8 +194,9 @@ namespace WaifuAI.src.forms
 
             SetupCharacterEditor(NewName, false);
 
+            LLMEngine.LoadPersonas([.. DataFiles.Characters.Values]);
             // Update the sampler list in the chat menu
-            var currselection = cb_charlist.SelectedItem?.ToString() ?? "";
+            var currselection = cb_charlist.SelectedItem?.ToString() ?? string.Empty;
             cb_charlist.Items.Clear();
             foreach (var item in DataFiles.Characters)
             {
@@ -201,6 +204,7 @@ namespace WaifuAI.src.forms
             }
             var newidx = cb_charlist.Items.IndexOf(currselection);
             cb_charlist.SelectedIndex = newidx == -1 ? 0 : newidx;
+
         }
 
         private void cb_icon_SelectedIndexChanged(object sender, EventArgs e)

@@ -79,6 +79,7 @@ namespace WaifuAI.src.forms
             panel4 = new Panel();
             modernTabControl1 = new ModernTabControl();
             tbGeneral = new TabPage();
+            ckNoGuidance = new CheckBox();
             tbStyle = new TabPage();
             collapsibleGroupBox3 = new CollapsibleGroupBox();
             collapsibleGroupBox2 = new CollapsibleGroupBox();
@@ -654,6 +655,7 @@ namespace WaifuAI.src.forms
             // tbGeneral
             // 
             tbGeneral.BackColor = Color.FromArgb(37, 37, 37);
+            tbGeneral.Controls.Add(ckNoGuidance);
             tbGeneral.Controls.Add(ed_outetts);
             tbGeneral.Controls.Add(label4);
             tbGeneral.Controls.Add(label11);
@@ -675,6 +677,16 @@ namespace WaifuAI.src.forms
             tbGeneral.Size = new Size(917, 557);
             tbGeneral.TabIndex = 0;
             tbGeneral.Text = "General";
+            // 
+            // ckNoGuidance
+            // 
+            ckNoGuidance.AutoSize = true;
+            ckNoGuidance.Location = new Point(488, 31);
+            ckNoGuidance.Name = "ckNoGuidance";
+            ckNoGuidance.Size = new Size(116, 19);
+            ckNoGuidance.TabIndex = 17;
+            ckNoGuidance.Text = "No Bot Guidance";
+            ckNoGuidance.UseVisualStyleBackColor = true;
             // 
             // tbStyle
             // 
@@ -1169,5 +1181,6 @@ namespace WaifuAI.src.forms
         private Controls.ModernCheckedListBox ckl_worldinfo;
         private Controls.ModernCheckedListBox ckl_samplers;
         private Controls.ModernCheckedListBox ckl_plugins;
+        private CheckBox ckNoGuidance;
     }
 }

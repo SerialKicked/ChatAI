@@ -204,7 +204,7 @@ namespace WaifuAI.src.forms
             {
                 await web_sessioncontent.EnsureCoreWebView2Async();
             }
-            var dialogs = session.GetRawDialogs(int.MaxValue, false).Replace("\n", "\n\n");
+            var dialogs = session.GetRawDialogs(int.MaxValue, false, false, Program.Settings.ShowHiddenMessages, false).Replace("\n", "\n\n");
 
             var res = new StringBuilder();
             res.AppendLinuxLine($"## {session.Name}").AppendLinuxLine();
