@@ -37,7 +37,6 @@ namespace WaifuAI
         private TimeSpan _responselength = default;
         private readonly ActivityTimer _activityTimer = new();
         private int _afkmessagecount = 0;
-        private EditMessageForm? _editMessageForm;
         private readonly Random RNG = new();
         public RenPyDialogHandler? _renpyDialogHandler;
         private string ed_log = string.Empty;
@@ -557,7 +556,6 @@ namespace WaifuAI
 
         private async void Impersonate(object sender, EventArgs e)
         {
-            ForceCloseEditMenu();
             _activityTimer?.Reset();
             if (LLMEngine.Status == SystemStatus.Busy)
                 return;
@@ -572,7 +570,6 @@ namespace WaifuAI
         private async void SendMessage(object sender, EventArgs e)
         {
             LLMEngine.Bot.AgentSystem?.NotifyUserActivity();
-            ForceCloseEditMenu();
             _activityTimer?.Reset();
             _afkmessagecount = 0;
             if (LLMEngine.Status == SystemStatus.Busy)
@@ -629,30 +626,8 @@ namespace WaifuAI
             }
         }
 
-        private void ForceCloseEditMenu()
-        {
-            if (_editMessageForm != null && !_editMessageForm.IsDisposed)
-            {
-                if (_editMessageForm.InvokeRequired)
-                {
-                    _editMessageForm.Invoke(new Action(() =>
-                    {
-                        _editMessageForm.Close();
-                        _editMessageForm.Dispose();
-                    }));
-                }
-                else
-                {
-                    _editMessageForm.Close();
-                    _editMessageForm.Dispose();
-                }
-            }
-            _editMessageForm = null;
-        }
-
         private async void RerollMessage(object sender, EventArgs e)
         {
-            ForceCloseEditMenu();
             _afkmessagecount = 0;
             if (LLMEngine.Status == SystemStatus.Busy || LLMEngine.History.CurrentSession.Messages.Count == 0 || LLMEngine.History.LastMessage()?.Role != AuthorRole.Assistant)
                 return;
@@ -1701,15 +1676,12 @@ namespace WaifuAI
                 {
                     var mem = LLMEngine.Bot.Brain.Memories.Find(e => e.Category == MemoryType.Person && e.Name.Contains("Amandine", StringComparison.InvariantCultureIgnoreCase));
 
-                    if (mem == null)
-                    {
-                        mem = new MemoryUnit()
+                    mem ??= new MemoryUnit()
                         {
                             Category = MemoryType.Person,
                             KeyWordsMain = ["Amamdine"],
                             Name = "Amandine",
                         };
-                    }
                     mem.Content = resultTask;
                     mem.PositionIndex = -1;
                     mem.CaseSensitive = false;

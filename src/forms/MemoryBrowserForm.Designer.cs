@@ -12,7 +12,6 @@
         private System.Windows.Forms.ColumnHeader colTitle;
         private System.Windows.Forms.ColumnHeader colCategory;
         private System.Windows.Forms.ColumnHeader colAdded;
-        private System.Windows.Forms.Panel panelBottom;
         private System.Windows.Forms.Button btClose;
         private Microsoft.Web.WebView2.WinForms.WebView2 webView;
         private Button btDeleteSelected;

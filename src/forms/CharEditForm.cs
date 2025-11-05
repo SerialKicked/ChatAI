@@ -83,7 +83,7 @@ namespace WaifuAI.src.forms
             mychar.SenseOfTime = ck_senseoftime.Checked;
             mychar.SelfEditTokens = (int)num_selfedittokens.Value;
             mychar.SelfEditField = ed_selfedit.Text.ToLinuxFormat();
-            mychar.Icon = cb_icon.SelectedText;
+            mychar.Icon = cb_icon.SelectedText ?? string.Empty;
             mychar.Plugins = [.. ckl_plugins.CheckedItems.Cast<string>()];
             mychar.Worlds = [.. ckl_worldinfo.CheckedItems.Cast<string>()];
             mychar.AllowedSamplers = [.. ckl_samplers.CheckedItems.Cast<string>()];

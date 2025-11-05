@@ -95,7 +95,7 @@ namespace WaifuAI.Slash
         public override string Slash => "/lockinfo";
         public override SlashReturn Execute(string userinput)
         {
-            var msg = new SingleMessage(AuthorRole.System, MainForm.Bot.LockManager.GetStatusMessage());
+            var msg = new SingleMessage(AuthorRole.System, MainForm.Bot!.LockManager.GetStatusMessage());
             return new SlashReturn(msg, true, true, false);
         }
     }
