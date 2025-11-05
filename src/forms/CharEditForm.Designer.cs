@@ -109,6 +109,19 @@ namespace WaifuAI.src.forms
             ck_irldates = new ModernCheckBox();
             ckMoodSystem = new ModernCheckBox();
             ck_caninitchat = new ModernCheckBox();
+            tabMood = new TabPage();
+            label24 = new Label();
+            moodSanity = new ModernNumericUpDown();
+            label25 = new Label();
+            moodSub = new ModernNumericUpDown();
+            label26 = new Label();
+            moodHorny = new ModernNumericUpDown();
+            label21 = new Label();
+            moodCuriosity = new ModernNumericUpDown();
+            label20 = new Label();
+            moodCheer = new ModernNumericUpDown();
+            label10 = new Label();
+            moodEnergy = new ModernNumericUpDown();
             ((System.ComponentModel.ISupportInitialize)pic).BeginInit();
             panel1.SuspendLayout();
             modernTabControl1.SuspendLayout();
@@ -127,6 +140,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox10.SuspendLayout();
             collapsibleGroupBox9.SuspendLayout();
             collapsibleGroupBox4.SuspendLayout();
+            tabMood.SuspendLayout();
             SuspendLayout();
             // 
             // btRegenBio
@@ -643,6 +657,7 @@ namespace WaifuAI.src.forms
             modernTabControl1.Controls.Add(tbPrompt);
             modernTabControl1.Controls.Add(tbAgent);
             modernTabControl1.Controls.Add(tbSettings);
+            modernTabControl1.Controls.Add(tabMood);
             modernTabControl1.Dock = DockStyle.Fill;
             modernTabControl1.Font = new Font("Segoe UI", 9F);
             modernTabControl1.ItemSize = new Size(0, 36);
@@ -1056,6 +1071,162 @@ namespace WaifuAI.src.forms
             ck_caninitchat.Text = "Character can initiate chat (when the user is afk)";
             ck_caninitchat.UseVisualStyleBackColor = true;
             // 
+            // tabMood
+            // 
+            tabMood.BackColor = Color.FromArgb(37, 37, 37);
+            tabMood.Controls.Add(label24);
+            tabMood.Controls.Add(moodSanity);
+            tabMood.Controls.Add(label25);
+            tabMood.Controls.Add(moodSub);
+            tabMood.Controls.Add(label26);
+            tabMood.Controls.Add(moodHorny);
+            tabMood.Controls.Add(label21);
+            tabMood.Controls.Add(moodCuriosity);
+            tabMood.Controls.Add(label20);
+            tabMood.Controls.Add(moodCheer);
+            tabMood.Controls.Add(label10);
+            tabMood.Controls.Add(moodEnergy);
+            tabMood.Font = new Font("Segoe UI", 9F);
+            tabMood.ForeColor = Color.FromArgb(230, 230, 230);
+            tabMood.Location = new Point(4, 40);
+            tabMood.Name = "tabMood";
+            tabMood.Padding = new Padding(3);
+            tabMood.Size = new Size(917, 557);
+            tabMood.TabIndex = 5;
+            tabMood.Text = "Mood Values";
+            // 
+            // label24
+            // 
+            label24.AutoSize = true;
+            label24.Location = new Point(17, 237);
+            label24.Name = "label24";
+            label24.Size = new Size(39, 15);
+            label24.TabIndex = 11;
+            label24.Text = "Sanity";
+            // 
+            // moodSanity
+            // 
+            moodSanity.BackColor = Color.FromArgb(64, 64, 64);
+            moodSanity.DecimalPlaces = 5;
+            moodSanity.Font = new Font("Segoe UI", 9F);
+            moodSanity.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
+            moodSanity.Location = new Point(17, 255);
+            moodSanity.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+            moodSanity.Name = "moodSanity";
+            moodSanity.Padding = new Padding(1);
+            moodSanity.Size = new Size(120, 24);
+            moodSanity.TabIndex = 10;
+            // 
+            // label25
+            // 
+            label25.AutoSize = true;
+            label25.Location = new Point(17, 192);
+            label25.Name = "label25";
+            label25.Size = new Size(68, 15);
+            label25.TabIndex = 9;
+            label25.Text = "Submission";
+            // 
+            // moodSub
+            // 
+            moodSub.BackColor = Color.FromArgb(64, 64, 64);
+            moodSub.DecimalPlaces = 5;
+            moodSub.Font = new Font("Segoe UI", 9F);
+            moodSub.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
+            moodSub.Location = new Point(17, 210);
+            moodSub.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+            moodSub.Name = "moodSub";
+            moodSub.Padding = new Padding(1);
+            moodSub.Size = new Size(120, 24);
+            moodSub.TabIndex = 8;
+            // 
+            // label26
+            // 
+            label26.AutoSize = true;
+            label26.Location = new Point(17, 147);
+            label26.Name = "label26";
+            label26.Size = new Size(60, 15);
+            label26.TabIndex = 7;
+            label26.Text = "Horniness";
+            // 
+            // moodHorny
+            // 
+            moodHorny.BackColor = Color.FromArgb(64, 64, 64);
+            moodHorny.DecimalPlaces = 5;
+            moodHorny.Font = new Font("Segoe UI", 9F);
+            moodHorny.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
+            moodHorny.Location = new Point(17, 165);
+            moodHorny.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+            moodHorny.Name = "moodHorny";
+            moodHorny.Padding = new Padding(1);
+            moodHorny.Size = new Size(120, 24);
+            moodHorny.TabIndex = 6;
+            // 
+            // label21
+            // 
+            label21.AutoSize = true;
+            label21.Location = new Point(17, 102);
+            label21.Name = "label21";
+            label21.Size = new Size(54, 15);
+            label21.TabIndex = 5;
+            label21.Text = "Curiosity";
+            // 
+            // moodCuriosity
+            // 
+            moodCuriosity.BackColor = Color.FromArgb(64, 64, 64);
+            moodCuriosity.DecimalPlaces = 5;
+            moodCuriosity.Font = new Font("Segoe UI", 9F);
+            moodCuriosity.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
+            moodCuriosity.Location = new Point(17, 120);
+            moodCuriosity.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+            moodCuriosity.Name = "moodCuriosity";
+            moodCuriosity.Padding = new Padding(1);
+            moodCuriosity.Size = new Size(120, 24);
+            moodCuriosity.TabIndex = 4;
+            // 
+            // label20
+            // 
+            label20.AutoSize = true;
+            label20.Location = new Point(17, 57);
+            label20.Name = "label20";
+            label20.Size = new Size(38, 15);
+            label20.TabIndex = 3;
+            label20.Text = "Cheer";
+            // 
+            // moodCheer
+            // 
+            moodCheer.BackColor = Color.FromArgb(64, 64, 64);
+            moodCheer.DecimalPlaces = 5;
+            moodCheer.Font = new Font("Segoe UI", 9F);
+            moodCheer.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
+            moodCheer.Location = new Point(17, 75);
+            moodCheer.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+            moodCheer.Name = "moodCheer";
+            moodCheer.Padding = new Padding(1);
+            moodCheer.Size = new Size(120, 24);
+            moodCheer.TabIndex = 2;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Location = new Point(17, 12);
+            label10.Name = "label10";
+            label10.Size = new Size(43, 15);
+            label10.TabIndex = 1;
+            label10.Text = "Energy";
+            // 
+            // moodEnergy
+            // 
+            moodEnergy.BackColor = Color.FromArgb(64, 64, 64);
+            moodEnergy.DecimalPlaces = 5;
+            moodEnergy.Font = new Font("Segoe UI", 9F);
+            moodEnergy.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
+            moodEnergy.Location = new Point(17, 30);
+            moodEnergy.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+            moodEnergy.Name = "moodEnergy";
+            moodEnergy.Padding = new Padding(1);
+            moodEnergy.Size = new Size(120, 24);
+            moodEnergy.TabIndex = 0;
+            // 
             // CharEditForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1100,6 +1271,8 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox9.PerformLayout();
             collapsibleGroupBox4.ResumeLayout(false);
             collapsibleGroupBox4.PerformLayout();
+            tabMood.ResumeLayout(false);
+            tabMood.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -1182,5 +1355,18 @@ namespace WaifuAI.src.forms
         private Controls.ModernCheckedListBox ckl_samplers;
         private Controls.ModernCheckedListBox ckl_plugins;
         private CheckBox ckNoGuidance;
+        private TabPage tabMood;
+        private Label label10;
+        private ModernNumericUpDown moodEnergy;
+        private Label label21;
+        private ModernNumericUpDown moodCuriosity;
+        private Label label20;
+        private ModernNumericUpDown moodCheer;
+        private Label label24;
+        private ModernNumericUpDown moodSanity;
+        private Label label25;
+        private ModernNumericUpDown moodSub;
+        private Label label26;
+        private ModernNumericUpDown moodHorny;
     }
 }

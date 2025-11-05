@@ -28,6 +28,7 @@
         private void InitializeComponent()
         {
             splitMain = new SplitContainer();
+            btClose = new Button();
             listMemories = new ListView();
             colTitle = new ColumnHeader();
             colCategory = new ColumnHeader();
@@ -36,18 +37,15 @@
             btEditSelected = new Button();
             btAddNew = new Button();
             panelLeftTop = new Panel();
-            cbCategory = new Controls.ModernComboBox();
+            cbCategory = new WaifuAI.Controls.ModernComboBox();
             lblCategory = new Label();
             webView = new Microsoft.Web.WebView2.WinForms.WebView2();
-            panelBottom = new Panel();
-            btClose = new Button();
             ((System.ComponentModel.ISupportInitialize)splitMain).BeginInit();
             splitMain.Panel1.SuspendLayout();
             splitMain.Panel2.SuspendLayout();
             splitMain.SuspendLayout();
             panelLeftTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)webView).BeginInit();
-            panelBottom.SuspendLayout();
             SuspendLayout();
             // 
             // splitMain
@@ -58,6 +56,7 @@
             // 
             // splitMain.Panel1
             // 
+            splitMain.Panel1.Controls.Add(btClose);
             splitMain.Panel1.Controls.Add(listMemories);
             splitMain.Panel1.Controls.Add(btDeleteSelected);
             splitMain.Panel1.Controls.Add(btEditSelected);
@@ -67,19 +66,34 @@
             // splitMain.Panel2
             // 
             splitMain.Panel2.Controls.Add(webView);
-            splitMain.Size = new Size(1072, 514);
+            splitMain.Size = new Size(1072, 558);
             splitMain.SplitterDistance = 400;
             splitMain.TabIndex = 0;
             // 
+            // btClose
+            // 
+            btClose.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btClose.BackColor = Color.LightSlateGray;
+            btClose.FlatStyle = FlatStyle.Flat;
+            btClose.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btClose.Location = new Point(8, 517);
+            btClose.Name = "btClose";
+            btClose.Size = new Size(381, 29);
+            btClose.TabIndex = 0;
+            btClose.Tag = "no-theme";
+            btClose.Text = "Close";
+            btClose.UseVisualStyleBackColor = false;
+            btClose.Click += btClose_Click;
+            // 
             // listMemories
             // 
+            listMemories.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             listMemories.Columns.AddRange(new ColumnHeader[] { colTitle, colCategory, colAdded });
-            listMemories.Dock = DockStyle.Fill;
             listMemories.FullRowSelect = true;
             listMemories.Location = new Point(0, 38);
             listMemories.MultiSelect = false;
             listMemories.Name = "listMemories";
-            listMemories.Size = new Size(400, 422);
+            listMemories.Size = new Size(400, 444);
             listMemories.TabIndex = 0;
             listMemories.UseCompatibleStateImageBehavior = false;
             listMemories.View = View.Details;
@@ -104,14 +118,14 @@
             // 
             // btDeleteSelected
             // 
-            btDeleteSelected.BackColor = Color.Maroon;
-            btDeleteSelected.Dock = DockStyle.Bottom;
+            btDeleteSelected.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btDeleteSelected.BackColor = Color.DarkRed;
             btDeleteSelected.FlatStyle = FlatStyle.Popup;
             btDeleteSelected.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btDeleteSelected.ForeColor = Color.WhiteSmoke;
-            btDeleteSelected.Location = new Point(0, 491);
+            btDeleteSelected.ForeColor = Color.Black;
+            btDeleteSelected.Location = new Point(279, 488);
             btDeleteSelected.Name = "btDeleteSelected";
-            btDeleteSelected.Size = new Size(400, 23);
+            btDeleteSelected.Size = new Size(110, 23);
             btDeleteSelected.TabIndex = 2;
             btDeleteSelected.Tag = "no-theme";
             btDeleteSelected.Text = "Delete Entry";
@@ -120,14 +134,14 @@
             // 
             // btEditSelected
             // 
-            btEditSelected.BackColor = Color.SteelBlue;
-            btEditSelected.Dock = DockStyle.Bottom;
+            btEditSelected.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btEditSelected.BackColor = Color.DarkKhaki;
             btEditSelected.FlatStyle = FlatStyle.Popup;
             btEditSelected.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btEditSelected.ForeColor = Color.WhiteSmoke;
-            btEditSelected.Location = new Point(0, 468);
+            btEditSelected.ForeColor = Color.Black;
+            btEditSelected.Location = new Point(163, 488);
             btEditSelected.Name = "btEditSelected";
-            btEditSelected.Size = new Size(400, 23);
+            btEditSelected.Size = new Size(110, 23);
             btEditSelected.TabIndex = 3;
             btEditSelected.Tag = "no-theme";
             btEditSelected.Text = "Edit Entry";
@@ -136,14 +150,14 @@
             // 
             // btAddNew
             // 
+            btAddNew.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             btAddNew.BackColor = Color.DarkSeaGreen;
-            btAddNew.Dock = DockStyle.Bottom;
             btAddNew.FlatStyle = FlatStyle.Popup;
             btAddNew.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btAddNew.ForeColor = Color.WhiteSmoke;
-            btAddNew.Location = new Point(0, 460);
+            btAddNew.ForeColor = Color.Black;
+            btAddNew.Location = new Point(8, 488);
             btAddNew.Name = "btAddNew";
-            btAddNew.Size = new Size(400, 23);
+            btAddNew.Size = new Size(149, 23);
             btAddNew.TabIndex = 4;
             btAddNew.Tag = "no-theme";
             btAddNew.Text = "Add New Entry";
@@ -164,9 +178,13 @@
             // cbCategory
             // 
             cbCategory.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            cbCategory.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbCategory.BackColor = Color.FromArgb(64, 64, 64);
+            cbCategory.DropDownHeight = 180;
+            cbCategory.Font = new Font("Segoe UI", 9F);
             cbCategory.Location = new Point(80, 8);
+            cbCategory.MaxDropDownItems = 10;
             cbCategory.Name = "cbCategory";
+            cbCategory.Padding = new Padding(1);
             cbCategory.Size = new Size(309, 23);
             cbCategory.TabIndex = 0;
             cbCategory.SelectedIndexChanged += cbCategory_SelectedIndexChanged;
@@ -188,34 +206,9 @@
             webView.Dock = DockStyle.Fill;
             webView.Location = new Point(0, 0);
             webView.Name = "webView";
-            webView.Size = new Size(668, 514);
+            webView.Size = new Size(668, 558);
             webView.TabIndex = 0;
             webView.ZoomFactor = 1D;
-            // 
-            // panelBottom
-            // 
-            panelBottom.Controls.Add(btClose);
-            panelBottom.Dock = DockStyle.Bottom;
-            panelBottom.Location = new Point(0, 514);
-            panelBottom.Name = "panelBottom";
-            panelBottom.Padding = new Padding(8);
-            panelBottom.Size = new Size(1072, 44);
-            panelBottom.TabIndex = 1;
-            // 
-            // btClose
-            // 
-            btClose.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            btClose.BackColor = Color.DarkSeaGreen;
-            btClose.FlatStyle = FlatStyle.Flat;
-            btClose.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btClose.Location = new Point(8, 8);
-            btClose.Name = "btClose";
-            btClose.Size = new Size(1056, 28);
-            btClose.TabIndex = 0;
-            btClose.Tag = "no-theme";
-            btClose.Text = "Close";
-            btClose.UseVisualStyleBackColor = false;
-            btClose.Click += btClose_Click;
             // 
             // MemoryBrowserForm
             // 
@@ -223,7 +216,6 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1072, 558);
             Controls.Add(splitMain);
-            Controls.Add(panelBottom);
             MinimizeBox = false;
             Name = "MemoryBrowserForm";
             StartPosition = FormStartPosition.CenterParent;
@@ -235,7 +227,6 @@
             panelLeftTop.ResumeLayout(false);
             panelLeftTop.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)webView).EndInit();
-            panelBottom.ResumeLayout(false);
             ResumeLayout(false);
         }
     }

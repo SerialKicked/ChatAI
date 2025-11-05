@@ -98,6 +98,12 @@ namespace WaifuAI.src.forms
             mychar.Brain.MinMessageDelay = (int)numEurekaMinMess.Value;
             mychar.Brain.MinInsertDelay = TimeSpan.FromHours((double)numEurekaMinTime.Value);
             mychar.Brain.EurekaCutOff = TimeSpan.FromDays((int)numKeepEurekas.Value);
+            mychar.Brain.Mood.Cheer = (double)moodCheer.Value;
+            mychar.Brain.Mood.Curiosity = (double)moodCuriosity.Value;
+            mychar.Brain.Mood.Energy = (double)moodEnergy.Value;
+            mychar.Brain.Mood.Horniness = (double)moodHorny.Value;
+            mychar.Brain.Mood.Sanity = (double)moodSanity.Value;
+            mychar.Brain.Mood.Submission = (double)moodSub.Value;
             mychar.AgentMode = ckAgent.Checked;
             mychar.AgentTasks = [.. listAgentTasks.CheckedItems.Cast<string>()];
             mychar.DisableBotGuidance = ckNoGuidance.Checked;
@@ -137,6 +143,12 @@ namespace WaifuAI.src.forms
             ckAgent.Checked = selectedCharacter.AgentMode;
             numAgentDelay.Value = (decimal)(selectedCharacter.AgentSystem?.Config.MinInactivityTime.TotalHours ?? 0.5);
             ckNoGuidance.Checked = selectedCharacter.DisableBotGuidance;
+            moodCheer.Value = (decimal)selectedCharacter.Brain.Mood.Cheer;
+            moodCuriosity.Value = (decimal)selectedCharacter.Brain.Mood.Curiosity;
+            moodEnergy.Value = (decimal)selectedCharacter.Brain.Mood.Energy;
+            moodHorny.Value = (decimal)selectedCharacter.Brain.Mood.Horniness;
+            moodSanity.Value = (decimal)selectedCharacter.Brain.Mood.Sanity;
+            moodSub.Value = (decimal)selectedCharacter.Brain.Mood.Submission;
 
             edFilename.Text = selectedCharacter.UniqueName;
             ckl_plugins.Items.Clear();
