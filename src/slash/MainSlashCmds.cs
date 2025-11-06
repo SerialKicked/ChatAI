@@ -140,7 +140,7 @@ namespace WaifuAI.Slash
             Commands = 
             [ 
                 new CmdMainSystem(this), new CmdMainRecall(this), new CmdMainHelp(this), 
-                new CmdMainLock(this), new CmdMainLock(this), new CmdMainLockInfo(this) 
+                new CmdMainLock(this), new CmdMainUnlock(this), new CmdMainLockInfo(this) 
             ];
         }
 

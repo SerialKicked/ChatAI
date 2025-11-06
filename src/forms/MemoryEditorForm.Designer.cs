@@ -35,6 +35,15 @@ namespace WaifuAI.src.forms
             edPath = new TextBox();
             btBrowsePath = new Button();
             tabAdvanced = new TabPage();
+            grpKeywords = new GroupBox();
+            ckCaseSensitive = new CheckBox();
+            lblKeywordsMain = new Label();
+            edKeywordsMain = new TextBox();
+            lblKeywordsSecondary = new Label();
+            edKeywordsSecondary = new TextBox();
+            lblWordLink = new Label();
+            cbWordLink = new WaifuAI.Controls.ModernComboBox();
+            lblKeywordHelp = new Label();
             grpSettings = new GroupBox();
             lblPriority = new Label();
             numPriority = new NumericUpDown();
@@ -51,30 +60,22 @@ namespace WaifuAI.src.forms
             dtpAdded = new DateTimePicker();
             lblEndTime = new Label();
             dtpEndTime = new DateTimePicker();
-            grpKeywords = new GroupBox();
-            lblKeywordsMain = new Label();
-            edKeywordsMain = new TextBox();
-            lblKeywordsSecondary = new Label();
-            edKeywordsSecondary = new TextBox();
-            lblWordLink = new Label();
-            cbWordLink = new WaifuAI.Controls.ModernComboBox();
-            lblKeywordHelp = new Label();
             panelButtons = new Panel();
             btSave = new Button();
             btCancel = new Button();
             btGenerateEmbedding = new Button();
-            ckCaseSensitive = new CheckBox();
+            ckProtecc = new CheckBox();
             tabControl.SuspendLayout();
             tabBasic.SuspendLayout();
             grpBasicInfo.SuspendLayout();
             tabAdvanced.SuspendLayout();
+            grpKeywords.SuspendLayout();
             grpSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numPriority).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numDuration).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numPosition).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numTriggerChance).BeginInit();
             grpDates.SuspendLayout();
-            grpKeywords.SuspendLayout();
             panelButtons.SuspendLayout();
             SuspendLayout();
             // 
@@ -269,8 +270,105 @@ namespace WaifuAI.src.forms
             tabAdvanced.Text = "Advanced";
             tabAdvanced.UseVisualStyleBackColor = true;
             // 
+            // grpKeywords
+            // 
+            grpKeywords.Controls.Add(ckCaseSensitive);
+            grpKeywords.Controls.Add(lblKeywordsMain);
+            grpKeywords.Controls.Add(edKeywordsMain);
+            grpKeywords.Controls.Add(lblKeywordsSecondary);
+            grpKeywords.Controls.Add(edKeywordsSecondary);
+            grpKeywords.Controls.Add(lblWordLink);
+            grpKeywords.Controls.Add(cbWordLink);
+            grpKeywords.Controls.Add(lblKeywordHelp);
+            grpKeywords.Location = new Point(9, 241);
+            grpKeywords.Name = "grpKeywords";
+            grpKeywords.Padding = new Padding(8);
+            grpKeywords.Size = new Size(660, 281);
+            grpKeywords.TabIndex = 0;
+            grpKeywords.TabStop = false;
+            grpKeywords.Text = "Keyword Triggers";
+            // 
+            // ckCaseSensitive
+            // 
+            ckCaseSensitive.AutoSize = true;
+            ckCaseSensitive.Location = new Point(324, 176);
+            ckCaseSensitive.Name = "ckCaseSensitive";
+            ckCaseSensitive.Size = new Size(100, 19);
+            ckCaseSensitive.TabIndex = 11;
+            ckCaseSensitive.Text = "Case Sensitive";
+            ckCaseSensitive.UseVisualStyleBackColor = true;
+            // 
+            // lblKeywordsMain
+            // 
+            lblKeywordsMain.AutoSize = true;
+            lblKeywordsMain.Location = new Point(11, 27);
+            lblKeywordsMain.Name = "lblKeywordsMain";
+            lblKeywordsMain.Size = new Size(91, 15);
+            lblKeywordsMain.TabIndex = 0;
+            lblKeywordsMain.Text = "Main Keywords:";
+            // 
+            // edKeywordsMain
+            // 
+            edKeywordsMain.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            edKeywordsMain.Location = new Point(11, 45);
+            edKeywordsMain.Multiline = true;
+            edKeywordsMain.Name = "edKeywordsMain";
+            edKeywordsMain.ScrollBars = ScrollBars.Vertical;
+            edKeywordsMain.Size = new Size(638, 50);
+            edKeywordsMain.TabIndex = 1;
+            // 
+            // lblKeywordsSecondary
+            // 
+            lblKeywordsSecondary.AutoSize = true;
+            lblKeywordsSecondary.Location = new Point(11, 98);
+            lblKeywordsSecondary.Name = "lblKeywordsSecondary";
+            lblKeywordsSecondary.Size = new Size(119, 15);
+            lblKeywordsSecondary.TabIndex = 2;
+            lblKeywordsSecondary.Text = "Secondary Keywords:";
+            // 
+            // edKeywordsSecondary
+            // 
+            edKeywordsSecondary.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            edKeywordsSecondary.Location = new Point(11, 116);
+            edKeywordsSecondary.Multiline = true;
+            edKeywordsSecondary.Name = "edKeywordsSecondary";
+            edKeywordsSecondary.ScrollBars = ScrollBars.Vertical;
+            edKeywordsSecondary.Size = new Size(638, 50);
+            edKeywordsSecondary.TabIndex = 3;
+            // 
+            // lblWordLink
+            // 
+            lblWordLink.AutoSize = true;
+            lblWordLink.Location = new Point(11, 177);
+            lblWordLink.Name = "lblWordLink";
+            lblWordLink.Size = new Size(64, 15);
+            lblWordLink.TabIndex = 4;
+            lblWordLink.Text = "Word Link:";
+            // 
+            // cbWordLink
+            // 
+            cbWordLink.BackColor = Color.FromArgb(64, 64, 64);
+            cbWordLink.DropDownHeight = 180;
+            cbWordLink.Font = new Font("Segoe UI", 9F);
+            cbWordLink.Location = new Point(118, 172);
+            cbWordLink.MaxDropDownItems = 10;
+            cbWordLink.Name = "cbWordLink";
+            cbWordLink.Padding = new Padding(1);
+            cbWordLink.Size = new Size(200, 23);
+            cbWordLink.TabIndex = 5;
+            // 
+            // lblKeywordHelp
+            // 
+            lblKeywordHelp.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            lblKeywordHelp.Location = new Point(11, 205);
+            lblKeywordHelp.Name = "lblKeywordHelp";
+            lblKeywordHelp.Size = new Size(638, 68);
+            lblKeywordHelp.TabIndex = 6;
+            lblKeywordHelp.Text = resources.GetString("lblKeywordHelp.Text");
+            // 
             // grpSettings
             // 
+            grpSettings.Controls.Add(ckProtecc);
             grpSettings.Controls.Add(lblPriority);
             grpSettings.Controls.Add(numPriority);
             grpSettings.Controls.Add(lblDuration);
@@ -437,92 +535,6 @@ namespace WaifuAI.src.forms
             dtpEndTime.Size = new Size(200, 23);
             dtpEndTime.TabIndex = 3;
             // 
-            // grpKeywords
-            // 
-            grpKeywords.Controls.Add(ckCaseSensitive);
-            grpKeywords.Controls.Add(lblKeywordsMain);
-            grpKeywords.Controls.Add(edKeywordsMain);
-            grpKeywords.Controls.Add(lblKeywordsSecondary);
-            grpKeywords.Controls.Add(edKeywordsSecondary);
-            grpKeywords.Controls.Add(lblWordLink);
-            grpKeywords.Controls.Add(cbWordLink);
-            grpKeywords.Controls.Add(lblKeywordHelp);
-            grpKeywords.Location = new Point(9, 241);
-            grpKeywords.Name = "grpKeywords";
-            grpKeywords.Padding = new Padding(8);
-            grpKeywords.Size = new Size(660, 281);
-            grpKeywords.TabIndex = 0;
-            grpKeywords.TabStop = false;
-            grpKeywords.Text = "Keyword Triggers";
-            // 
-            // lblKeywordsMain
-            // 
-            lblKeywordsMain.AutoSize = true;
-            lblKeywordsMain.Location = new Point(11, 27);
-            lblKeywordsMain.Name = "lblKeywordsMain";
-            lblKeywordsMain.Size = new Size(91, 15);
-            lblKeywordsMain.TabIndex = 0;
-            lblKeywordsMain.Text = "Main Keywords:";
-            // 
-            // edKeywordsMain
-            // 
-            edKeywordsMain.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            edKeywordsMain.Location = new Point(11, 45);
-            edKeywordsMain.Multiline = true;
-            edKeywordsMain.Name = "edKeywordsMain";
-            edKeywordsMain.ScrollBars = ScrollBars.Vertical;
-            edKeywordsMain.Size = new Size(638, 50);
-            edKeywordsMain.TabIndex = 1;
-            // 
-            // lblKeywordsSecondary
-            // 
-            lblKeywordsSecondary.AutoSize = true;
-            lblKeywordsSecondary.Location = new Point(11, 98);
-            lblKeywordsSecondary.Name = "lblKeywordsSecondary";
-            lblKeywordsSecondary.Size = new Size(119, 15);
-            lblKeywordsSecondary.TabIndex = 2;
-            lblKeywordsSecondary.Text = "Secondary Keywords:";
-            // 
-            // edKeywordsSecondary
-            // 
-            edKeywordsSecondary.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            edKeywordsSecondary.Location = new Point(11, 116);
-            edKeywordsSecondary.Multiline = true;
-            edKeywordsSecondary.Name = "edKeywordsSecondary";
-            edKeywordsSecondary.ScrollBars = ScrollBars.Vertical;
-            edKeywordsSecondary.Size = new Size(638, 50);
-            edKeywordsSecondary.TabIndex = 3;
-            // 
-            // lblWordLink
-            // 
-            lblWordLink.AutoSize = true;
-            lblWordLink.Location = new Point(11, 177);
-            lblWordLink.Name = "lblWordLink";
-            lblWordLink.Size = new Size(64, 15);
-            lblWordLink.TabIndex = 4;
-            lblWordLink.Text = "Word Link:";
-            // 
-            // cbWordLink
-            // 
-            cbWordLink.BackColor = Color.FromArgb(64, 64, 64);
-            cbWordLink.DropDownHeight = 180;
-            cbWordLink.Font = new Font("Segoe UI", 9F);
-            cbWordLink.Location = new Point(118, 172);
-            cbWordLink.MaxDropDownItems = 10;
-            cbWordLink.Name = "cbWordLink";
-            cbWordLink.Padding = new Padding(1);
-            cbWordLink.Size = new Size(200, 23);
-            cbWordLink.TabIndex = 5;
-            // 
-            // lblKeywordHelp
-            // 
-            lblKeywordHelp.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            lblKeywordHelp.Location = new Point(11, 205);
-            lblKeywordHelp.Name = "lblKeywordHelp";
-            lblKeywordHelp.Size = new Size(638, 68);
-            lblKeywordHelp.TabIndex = 6;
-            lblKeywordHelp.Text = resources.GetString("lblKeywordHelp.Text");
-            // 
             // panelButtons
             // 
             panelButtons.Controls.Add(btSave);
@@ -576,15 +588,15 @@ namespace WaifuAI.src.forms
             btGenerateEmbedding.UseVisualStyleBackColor = true;
             btGenerateEmbedding.Click += btGenerateEmbedding_Click;
             // 
-            // ckCaseSensitive
+            // ckProtecc
             // 
-            ckCaseSensitive.AutoSize = true;
-            ckCaseSensitive.Location = new Point(324, 176);
-            ckCaseSensitive.Name = "ckCaseSensitive";
-            ckCaseSensitive.Size = new Size(100, 19);
-            ckCaseSensitive.TabIndex = 11;
-            ckCaseSensitive.Text = "Case Sensitive";
-            ckCaseSensitive.UseVisualStyleBackColor = true;
+            ckProtecc.AutoSize = true;
+            ckProtecc.Location = new Point(210, 100);
+            ckProtecc.Name = "ckProtecc";
+            ckProtecc.Size = new Size(77, 19);
+            ckProtecc.TabIndex = 10;
+            ckProtecc.Text = "Protected";
+            ckProtecc.UseVisualStyleBackColor = true;
             // 
             // MemoryEditorForm
             // 
@@ -603,6 +615,8 @@ namespace WaifuAI.src.forms
             grpBasicInfo.ResumeLayout(false);
             grpBasicInfo.PerformLayout();
             tabAdvanced.ResumeLayout(false);
+            grpKeywords.ResumeLayout(false);
+            grpKeywords.PerformLayout();
             grpSettings.ResumeLayout(false);
             grpSettings.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numPriority).EndInit();
@@ -611,8 +625,6 @@ namespace WaifuAI.src.forms
             ((System.ComponentModel.ISupportInitialize)numTriggerChance).EndInit();
             grpDates.ResumeLayout(false);
             grpDates.PerformLayout();
-            grpKeywords.ResumeLayout(false);
-            grpKeywords.PerformLayout();
             panelButtons.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -665,5 +677,6 @@ namespace WaifuAI.src.forms
         private Button btCancel;
         private Button btGenerateEmbedding;
         private CheckBox ckCaseSensitive;
+        private CheckBox ckProtecc;
     }
 }

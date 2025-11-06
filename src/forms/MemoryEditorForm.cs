@@ -97,6 +97,7 @@ namespace WaifuAI.src.forms
             ckEnabled.Checked = _editingMemory.Enabled;
             ckSticky.Checked = _editingMemory.Sticky;
             ckCaseSensitive.Checked = _editingMemory.CaseSensitive;
+            ckProtecc.Checked = _editingMemory.Protected;
 
             dtpAdded.Value = _editingMemory.Added;
             dtpEndTime.Value = _editingMemory.EndTime;
@@ -195,6 +196,7 @@ namespace WaifuAI.src.forms
             _editingMemory.Enabled = ckEnabled.Checked;
             _editingMemory.Sticky = ckSticky.Checked;
             _editingMemory.CaseSensitive = ckCaseSensitive.Checked;
+            _editingMemory.Protected = ckProtecc.Checked;
 
             _editingMemory.Added = dtpAdded.Value;
             _editingMemory.EndTime = dtpEndTime.Value;
