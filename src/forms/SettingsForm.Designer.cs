@@ -106,6 +106,7 @@ namespace WaifuAI.src.forms
             label5 = new Label();
             mcbSkin = new ModernComboBox();
             collapsibleGroupBox5 = new CollapsibleGroupBox();
+            ckNoPastInserts = new ModernCheckBox();
             panel1.SuspendLayout();
             collapsibleGroupBox1.SuspendLayout();
             verticalStackPanel1.SuspendLayout();
@@ -742,13 +743,14 @@ namespace WaifuAI.src.forms
             // 
             collapsibleGroupBox1.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox1.CanCollapse = false;
+            collapsibleGroupBox1.Controls.Add(ckNoPastInserts);
             collapsibleGroupBox1.Controls.Add(ck_hallusafe);
             collapsibleGroupBox1.Controls.Add(ck_sysrag);
             collapsibleGroupBox1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             collapsibleGroupBox1.Location = new Point(0, 6);
             collapsibleGroupBox1.Name = "collapsibleGroupBox1";
             collapsibleGroupBox1.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox1.Size = new Size(321, 95);
+            collapsibleGroupBox1.Size = new Size(321, 119);
             collapsibleGroupBox1.TabIndex = 33;
             collapsibleGroupBox1.Text = "Core Settings";
             // 
@@ -807,7 +809,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox3.Location = new Point(0, 322);
             collapsibleGroupBox3.Name = "collapsibleGroupBox3";
             collapsibleGroupBox3.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox3.Size = new Size(321, 241);
+            collapsibleGroupBox3.Size = new Size(321, 242);
             collapsibleGroupBox3.TabIndex = 35;
             collapsibleGroupBox3.Text = "Retrieval Augmented Generation";
             // 
@@ -845,10 +847,10 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox2.Controls.Add(label32);
             collapsibleGroupBox2.Controls.Add(num_memtokens);
             collapsibleGroupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox2.Location = new Point(0, 109);
+            collapsibleGroupBox2.Location = new Point(0, 133);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox2.Size = new Size(321, 205);
+            collapsibleGroupBox2.Size = new Size(321, 181);
             collapsibleGroupBox2.TabIndex = 34;
             collapsibleGroupBox2.Text = "Session Memory System";
             collapsibleGroupBox2.ExpandedChanged += collapsibleGroupBox2_ExpandedChanged;
@@ -995,6 +997,17 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox5.TabIndex = 0;
             collapsibleGroupBox5.Text = "Web Search";
             // 
+            // ckNoPastInserts
+            // 
+            ckNoPastInserts.Dock = DockStyle.Top;
+            ckNoPastInserts.Font = new Font("Segoe UI", 9F);
+            ckNoPastInserts.Location = new Point(12, 84);
+            ckNoPastInserts.Name = "ckNoPastInserts";
+            ckNoPastInserts.Size = new Size(297, 26);
+            ckNoPastInserts.TabIndex = 38;
+            ckNoPastInserts.Text = "Disable hidden inserts in past sessions";
+            ckNoPastInserts.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1108,5 +1121,6 @@ namespace WaifuAI.src.forms
         private ModernCheckBox mck_cutmiddle;
         private ModernNumericUpDown numWIEntries;
         private Label label6;
+        private ModernCheckBox ckNoPastInserts;
     }
 }

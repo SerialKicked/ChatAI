@@ -61,6 +61,7 @@ namespace WaifuAI.src.forms
             HelptoolTip.SetToolTip(bt_ImportSTChat, "Import a chatlog file exported from SillyTavern." + Environment.NewLine + "The chatlog will be converted to the internal format and saved to 'exported_chat.json' in this application's main folder.");
             HelptoolTip.SetToolTip(ck_forcePW, "Normally, when switching to a password-protected bot, the app will remember its password for as long as it's running, so you don't need to enter it multiple times. If checked, the application will always ask for the bot's password when switching.");
             HelptoolTip.SetToolTip(ckThirdPerson, "If checked, the bot will convert user messages to 3rd person when performing RAG searches. This tends to be more effective, especially to retrieve past sessions.");
+            HelptoolTip.SetToolTip(ckNoPastInserts, "If checked, the system will not insert date, insert memories, or udate mood information if the active chat session is not the latest. " + Environment.NewLine + "This can help reduce confusion when the bot is recalling past sessions that are not the current one.");
             HelptoolTip.IsBalloon = true;
             HelptoolTip.ToolTipIcon = ToolTipIcon.Info;
             HelptoolTip.ToolTipTitle = "Settings";
@@ -128,9 +129,9 @@ namespace WaifuAI.src.forms
             mcbSkin.SelectedIndex = mcbSkin.Items.IndexOf(Program.Settings.Skin);
             mck_cutmiddle.Checked = Program.Settings.CutInTheMiddleSummaryStrategy;
             numWIEntries.Value = Program.Settings.WorldInfoMaxEntries;
+            ckNoPastInserts.Checked = Program.Settings.DisableDateAndMoodIfNotLastSession;
 
             Program.ApplyContextPluginSettings();
-
 
             // Search API Settings
             switch (Program.Settings.WebSearchAPI)
@@ -190,6 +191,7 @@ namespace WaifuAI.src.forms
                 Program.Settings.RAGHeuristic = (RAGSelectionHeuristic)cb_ragheuristic.SelectedIndex;
                 Program.Settings.Skin = mcbSkin.SelectedItem?.ToString() ?? "Dark";
                 Program.Settings.CutInTheMiddleSummaryStrategy = mck_cutmiddle.Checked;
+                Program.Settings.DisableDateAndMoodIfNotLastSession = ckNoPastInserts.Checked;
 
                 // Search API Settings
                 if (cb_searchapi.SelectedIndex == 0)
