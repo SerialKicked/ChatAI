@@ -1,4 +1,5 @@
-﻿using LetheAISharp.LLM;
+﻿using LetheAISharp.Files;
+using LetheAISharp.LLM;
 using LetheAISharp.Memory;
 using System;
 using System.Collections.Generic;
@@ -140,6 +141,12 @@ namespace WaifuAI.Files
             else if (AdvTriggers.IsDomTrigger(lowered) == true)
             {
                 Submission -= 0.01;
+            }
+            // get last bot message
+            if (LLMEngine.History.GetLastFromInSession(AuthorRole.Assistant) is SingleMessage msg && msg.Message.Contains('?'))
+            {
+                // If the last message from the assistant was a question, decrease curiosity
+                Curiosity -= 0.01;
             }
         }
 
