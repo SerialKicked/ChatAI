@@ -605,7 +605,7 @@ namespace WaifuAI
                     break;
                 }
             }
-            var msg = new SingleMessage(AuthorRole.User, msgtxt);
+            var msg = new SingleMessage(AuthorRole.User, msgtxt, DragNDropExtension.DroppedFilePath);
             if (foundslash is not null && foundslash.ReplaceUser && foundslash.Message is not null)
             {
                 msg = foundslash.Message;
@@ -1509,6 +1509,7 @@ namespace WaifuAI
         private void bt_clearimg_Click(object sender, EventArgs e)
         {
             LLMEngine.VLM_ClearImages();
+            DragNDropExtension.DroppedFilePath = string.Empty;
             pictEmbed.Image = null;
         }
 
