@@ -114,7 +114,7 @@ namespace WaifuAI
             ed_input.SpellCheckLanguage = "en-US";
 
             HelptoolTip.SetToolTip(mck_ragenabled, "Use RAG functionalities to insert summaries of relevant previous sessions based on the user's input." + Environment.NewLine + "Configurable in the Program.Settings tab.");
-            HelptoolTip.SetToolTip(mck_senseoftime, "Insert day and time information to prompt when relevant to give the bot a better understanding of time.");
+            HelptoolTip.SetToolTip(mck_guidance, "Insert day and time information to prompt when relevant to give the bot a better understanding of time.");
             HelptoolTip.SetToolTip(mck_sessionmemory, "Use a set amount of tokens (set in Program.Settings) to insert summaries of previous chat sessions with this bot." + Environment.NewLine + "This drastically increases the bot's long-term memory.");
             HelptoolTip.SetToolTip(mck_worldinfo, "Use the WorldInfo file(s) associated with this bot. WorldInfo is a list of keyword-triggered textual information that is inserted into the prompt when the conditions are met." + Environment.NewLine + "See the World Info tab for additional information.");
             HelptoolTip.SetToolTip(mck_charsampler, "If checked, and when using a bot persona containing a list of compatible inference Program.Settings, the inference Program.Settings will be picked at random from that list each time the bot write a new message." + Environment.NewLine + Environment.NewLine + "Will lead to a more creative and less repetitive interaction, but also less consistent.");
@@ -351,7 +351,7 @@ namespace WaifuAI
             {
                 LLMEngine.Bot = DataFiles.Characters[key];
                 await LoadHistoryToUI();
-                mck_senseoftime.Checked = LLMEngine.Bot.SenseOfTime;
+                mck_guidance.Checked = !LLMEngine.Bot.DisableBotGuidance;
                 mck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
                 var searchplug = LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch");
                 if (searchplug != null)
@@ -1417,9 +1417,9 @@ namespace WaifuAI
             LLMEngine.ForceTemperature = ((double)num_temperature.Value);
         }
 
-        private void ck_senseoftime_CheckedChanged(object sender, EventArgs e)
+        private void mck_guidance_CheckedChanged(object sender, EventArgs e)
         {
-            LLMEngine.Bot.SenseOfTime = mck_senseoftime.Checked;
+            LLMEngine.Bot.DisableBotGuidance = !mck_guidance.Checked;
         }
 
         private void ck_sessionmemory_CheckedChanged(object sender, EventArgs e)
