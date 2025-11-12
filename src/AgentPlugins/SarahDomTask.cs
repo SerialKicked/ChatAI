@@ -162,7 +162,7 @@ namespace WaifuAI.AgentPlugins
             LLMEngine.Instruct.PrefillThinking = prefill;
         }
 
-        private string EvalToString(UserEval eval)
+        private static string EvalToString(UserEval eval)
         {
             var strbuild = new StringBuilder();
             strbuild.AppendLinuxLine("## Analysis").AppendLinuxLine();
@@ -187,7 +187,7 @@ namespace WaifuAI.AgentPlugins
             return strbuild.ToString();
         }
 
-        private string FinalEval(UserEval eval, BasePersona owner, AgentTaskSetting cfg, CancellationToken ct)
+        private static string FinalEval(UserEval eval, BasePersona owner, AgentTaskSetting cfg, CancellationToken ct)
         {
             var goals = cfg.GetSetting<string>("Instruction");
             var sysprompt = new StringBuilder();
@@ -205,7 +205,6 @@ namespace WaifuAI.AgentPlugins
 
 
             var builder = LLMEngine.GetPromptBuilder();
-            var evalres = new UserEval();
 
             var sessionaschat = new StringBuilder();
             sessionaschat
@@ -222,7 +221,7 @@ namespace WaifuAI.AgentPlugins
             return finalstr;
         }
 
-        private UserEval? MergeInfo(List<UserEval> evals, BasePersona owner, AgentTaskSetting cfg, CancellationToken ct)
+        private static UserEval? MergeInfo(List<UserEval> evals, BasePersona owner, AgentTaskSetting cfg, CancellationToken ct)
         {
             var goals = cfg.GetSetting<string>("Instruction");
             var sysprompt = new StringBuilder();
