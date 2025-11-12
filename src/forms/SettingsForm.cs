@@ -220,7 +220,7 @@ namespace WaifuAI.src.forms
             // Open a file selection dialog and use Tools.Import to import a chatlog from a jsonl file
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 MessageBox.Show(
-                    ImportTools.ImportChatlog(openFileDialog1.FileName, "exported_chat.json", LLMEngine.Bot.UniqueName, LLMEngine.User.UniqueName) ?
+                    ImportTools.ImportChatlog(openFileDialog1.FileName, "exported_chat.json", LLMEngine.Bot.GetIdentifier(), LLMEngine.User.UniqueName) ?
                         "Chatlog imported successfully to exported_chat.json in this application's main folder." :
                         "Something went wrong while opening or parsing the file."
                 );

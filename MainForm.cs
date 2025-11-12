@@ -385,7 +385,7 @@ namespace WaifuAI
         {
             if (!_impersonatemode && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart) && _currentgencalls == 1)
             {
-                var thoughts = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + $"*{LLMEngine.Bot.UniqueName} is thinking...*";
+                var thoughts = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + $"*{LLMEngine.Bot.GetIdentifier()} is thinking...*";
                 await WebEditLastMessage(thoughts);
             }
 
@@ -586,7 +586,7 @@ namespace WaifuAI
             {
                 // ready a new message for the bot's response
                 PrepareResponse();
-                await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.UniqueName + " is thinking...*"));
+                await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is thinking...*"));
                 ed_input.Text = string.Empty;
                 await LLMEngine.AddBotMessage();
                 return;
@@ -620,7 +620,7 @@ namespace WaifuAI
             {
                 // ready a new message for the bot's response
                 PrepareResponse();
-                await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*"));
+                await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"));
                 ed_input.Text = string.Empty;
                 await LLMEngine.SendMessageToBot(msg);
             }
@@ -638,7 +638,7 @@ namespace WaifuAI
             UseCharacterDefinedSampler();
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await WebRemoveLastMessage();
-            await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.UniqueName + " is reading your message...*"));
+            await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"));
             PrepareResponse();
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await LLMEngine.RerollLastMessage();
