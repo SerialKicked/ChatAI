@@ -40,7 +40,10 @@ namespace WaifuAI.Files
             "femboy",
             "please",
             "confession",
-            "may i"
+            "may i",
+            "you're the boss",
+            "you are the boss",
+            "you should decide"
         ];
 
 
@@ -146,7 +149,7 @@ namespace WaifuAI.Files
             if (LLMEngine.History.GetLastFromInSession(AuthorRole.Assistant) is SingleMessage msg && msg.Message.Contains('?'))
             {
                 // If the last message from the assistant was a question, decrease curiosity
-                Curiosity -= 0.01;
+                Curiosity -= 0.0025;
             }
         }
 
