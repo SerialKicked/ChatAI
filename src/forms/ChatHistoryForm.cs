@@ -27,9 +27,6 @@ namespace WaifuAI.src.forms
         private int _sortColumnIndex = 1; // Default: sort by date (column 1)
         private bool _sortAscending = false; // Default: newest first
 
-        public static Character? Bot => LLMEngine.Bot as Character;
-        public static Character? User => LLMEngine.User as Character;
-
         public static MarkdownPipeline CustomMarkDownPipeline { get; } = new MarkdownPipelineBuilder()
             .UseSoftlineBreakAsHardlineBreak().UseAdvancedExtensions()
             .UseEmojiAndSmiley()
@@ -326,10 +323,10 @@ namespace WaifuAI.src.forms
             switch (message.Role)
             {
                 case AuthorRole.User:
-                    img = (message.User as Character)?.Icon ?? User?.Icon ?? "gears.png";
+                    img = (message.User as ICharacter)?.Icon ?? MainForm.User?.Icon ?? "gears.png";
                     break;
                 case AuthorRole.Assistant:
-                    img = (message.Bot as Character)?.Icon ?? Bot?.Icon ?? "gears.png";
+                    img = (message.Bot as ICharacter)?.Icon ?? MainForm.Bot?.Icon ?? "gears.png";
                     break;
             }
 
@@ -488,7 +485,7 @@ namespace WaifuAI.src.forms
                 loadingForm.SetProgress(95);
                 DisplaySessionDetails(_selectedSession);
                 LoadChatHistoryTab();
-                (LLMEngine.Bot as Character)?.SaveChatHistory();
+                MainForm.Bot?.SaveChatHistory();
             }
             finally
             {
@@ -519,7 +516,7 @@ namespace WaifuAI.src.forms
             await _selectedSession.EmbedText();
             DisplaySessionDetails(_selectedSession);
             LoadChatHistoryTab();
-            (LLMEngine.Bot as Character)?.SaveChatHistory();
+            MainForm.Bot?.SaveChatHistory();
         }
 
         private async void btEmbedAll_Click(object sender, EventArgs e)
@@ -551,7 +548,7 @@ namespace WaifuAI.src.forms
                 };
                 await LLMEngine.History.EmbedChatSessions();
                 loadingForm.SetMessage("Saving history...");
-                (LLMEngine.Bot as Character)?.SaveChatHistory(true);
+                MainForm.Bot?.SaveChatHistory(true);
                 loadingForm.SetMessage("Brain Embedding...");
                 await LLMEngine.Bot.Brain.RegenEmbeds();
                 loadingForm.SetMessage("Loading Updated Vector Database...");

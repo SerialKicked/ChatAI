@@ -107,6 +107,10 @@ namespace WaifuAI
             mck_guidance = new ModernCheckBox();
             mck_caninitchat = new ModernCheckBox();
             panel1 = new Panel();
+            collapsibleGroupBox4 = new CollapsibleGroupBox();
+            label2 = new Label();
+            modernComboBox1 = new ModernComboBox();
+            button5 = new Button();
             statusbar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictEmbed).BeginInit();
             collapseModel.SuspendLayout();
@@ -118,6 +122,7 @@ namespace WaifuAI
             panRight.SuspendLayout();
             collapsibleMenus.SuspendLayout();
             collapsibleGroupBox3.SuspendLayout();
+            collapsibleGroupBox4.SuspendLayout();
             SuspendLayout();
             // 
             // HelptoolTip
@@ -203,7 +208,7 @@ namespace WaifuAI
             btSysPrompt.FlatStyle = FlatStyle.Flat;
             btSysPrompt.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Pixel);
             btSysPrompt.ForeColor = Color.Black;
-            btSysPrompt.Location = new Point(131, 30);
+            btSysPrompt.Location = new Point(134, 33);
             btSysPrompt.Name = "btSysPrompt";
             btSysPrompt.Size = new Size(58, 20);
             btSysPrompt.TabIndex = 29;
@@ -218,11 +223,11 @@ namespace WaifuAI
             cb_user.BackColor = Color.FromArgb(64, 64, 64);
             cb_user.DropDownHeight = 620;
             cb_user.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            cb_user.Location = new Point(11, 166);
+            cb_user.Location = new Point(8, 166);
             cb_user.MaxDropDownItems = 25;
             cb_user.Name = "cb_user";
             cb_user.Padding = new Padding(1);
-            cb_user.Size = new Size(178, 23);
+            cb_user.Size = new Size(184, 23);
             cb_user.TabIndex = 3;
             cb_user.SelectedIndexChanged += cb_user_SelectedIndexChanged;
             // 
@@ -230,7 +235,7 @@ namespace WaifuAI
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
-            label4.Location = new Point(11, 148);
+            label4.Location = new Point(8, 148);
             label4.Name = "label4";
             label4.Size = new Size(75, 15);
             label4.TabIndex = 2;
@@ -242,7 +247,7 @@ namespace WaifuAI
             bt_editchar.FlatStyle = FlatStyle.Flat;
             bt_editchar.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Pixel);
             bt_editchar.ForeColor = Color.Black;
-            bt_editchar.Location = new Point(131, 85);
+            bt_editchar.Location = new Point(134, 87);
             bt_editchar.Name = "bt_editchar";
             bt_editchar.Size = new Size(58, 20);
             bt_editchar.TabIndex = 27;
@@ -272,7 +277,7 @@ namespace WaifuAI
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
-            label3.Location = new Point(11, 90);
+            label3.Location = new Point(8, 92);
             label3.Name = "label3";
             label3.Size = new Size(69, 15);
             label3.TabIndex = 0;
@@ -284,11 +289,11 @@ namespace WaifuAI
             cb_bot.BackColor = Color.FromArgb(64, 64, 64);
             cb_bot.DropDownHeight = 620;
             cb_bot.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            cb_bot.Location = new Point(11, 111);
+            cb_bot.Location = new Point(8, 111);
             cb_bot.MaxDropDownItems = 25;
             cb_bot.Name = "cb_bot";
             cb_bot.Padding = new Padding(1);
-            cb_bot.Size = new Size(178, 23);
+            cb_bot.Size = new Size(184, 23);
             cb_bot.TabIndex = 1;
             cb_bot.SelectedIndexChanged += cb_bot_SelectedIndexChanged;
             // 
@@ -313,7 +318,7 @@ namespace WaifuAI
             // 
             label11.AutoSize = true;
             label11.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
-            label11.Location = new Point(11, 35);
+            label11.Location = new Point(8, 38);
             label11.Name = "label11";
             label11.Size = new Size(85, 15);
             label11.TabIndex = 18;
@@ -325,11 +330,11 @@ namespace WaifuAI
             cb_sysprompt.BackColor = Color.FromArgb(64, 64, 64);
             cb_sysprompt.DropDownHeight = 620;
             cb_sysprompt.Font = new Font("Segoe UI", 9F);
-            cb_sysprompt.Location = new Point(11, 56);
+            cb_sysprompt.Location = new Point(8, 56);
             cb_sysprompt.MaxDropDownItems = 25;
             cb_sysprompt.Name = "cb_sysprompt";
             cb_sysprompt.Padding = new Padding(1);
-            cb_sysprompt.Size = new Size(178, 23);
+            cb_sysprompt.Size = new Size(184, 23);
             cb_sysprompt.TabIndex = 19;
             cb_sysprompt.SelectedIndexChanged += cb_sysprompt_SelectionIndexChanged;
             // 
@@ -941,6 +946,7 @@ namespace WaifuAI
             // panRight
             // 
             panRight.Controls.Add(collapsibleMenus);
+            panRight.Controls.Add(collapsibleGroupBox4);
             panRight.Controls.Add(collapsibleGroupBox3);
             panRight.Dock = DockStyle.Right;
             panRight.Location = new Point(1061, 0);
@@ -962,7 +968,7 @@ namespace WaifuAI
             collapsibleMenus.Controls.Add(button1);
             collapsibleMenus.Controls.Add(panel4);
             collapsibleMenus.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleMenus.Location = new Point(0, 387);
+            collapsibleMenus.Location = new Point(0, 555);
             collapsibleMenus.Name = "collapsibleMenus";
             collapsibleMenus.Padding = new Padding(12, 32, 12, 10);
             collapsibleMenus.Size = new Size(200, 254);
@@ -1103,6 +1109,57 @@ namespace WaifuAI
             panel1.Size = new Size(184, 10);
             panel1.TabIndex = 47;
             // 
+            // collapsibleGroupBox4
+            // 
+            collapsibleGroupBox4.BackColor = Color.FromArgb(37, 37, 37);
+            collapsibleGroupBox4.Controls.Add(button5);
+            collapsibleGroupBox4.Controls.Add(label2);
+            collapsibleGroupBox4.Controls.Add(modernComboBox1);
+            collapsibleGroupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox4.Location = new Point(0, 387);
+            collapsibleGroupBox4.Name = "collapsibleGroupBox4";
+            collapsibleGroupBox4.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox4.Size = new Size(200, 160);
+            collapsibleGroupBox4.TabIndex = 29;
+            collapsibleGroupBox4.Text = "Group Chat";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
+            label2.Location = new Point(8, 37);
+            label2.Name = "label2";
+            label2.Size = new Size(121, 15);
+            label2.TabIndex = 2;
+            label2.Text = "Switch Active Persona";
+            // 
+            // modernComboBox1
+            // 
+            modernComboBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            modernComboBox1.BackColor = Color.FromArgb(64, 64, 64);
+            modernComboBox1.DropDownHeight = 620;
+            modernComboBox1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            modernComboBox1.Location = new Point(8, 55);
+            modernComboBox1.MaxDropDownItems = 25;
+            modernComboBox1.Name = "modernComboBox1";
+            modernComboBox1.Padding = new Padding(1);
+            modernComboBox1.Size = new Size(184, 23);
+            modernComboBox1.TabIndex = 3;
+            // 
+            // button5
+            // 
+            button5.AutoSize = true;
+            button5.Dock = DockStyle.Bottom;
+            button5.FlatStyle = FlatStyle.Flat;
+            button5.Font = new Font("Segoe UI", 9F);
+            button5.Location = new Point(12, 123);
+            button5.Name = "button5";
+            button5.Size = new Size(176, 27);
+            button5.TabIndex = 44;
+            button5.Text = "Create Test";
+            button5.UseVisualStyleBackColor = false;
+            button5.Click += button5_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1141,6 +1198,8 @@ namespace WaifuAI
             collapsibleMenus.PerformLayout();
             collapsibleGroupBox3.ResumeLayout(false);
             collapsibleGroupBox3.PerformLayout();
+            collapsibleGroupBox4.ResumeLayout(false);
+            collapsibleGroupBox4.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -1220,5 +1279,9 @@ namespace WaifuAI
         private Panel panel3;
         private Panel panel4;
         private Panel panel5;
+        private CollapsibleGroupBox collapsibleGroupBox4;
+        private Button button5;
+        private Label label2;
+        private ModernComboBox modernComboBox1;
     }
 }

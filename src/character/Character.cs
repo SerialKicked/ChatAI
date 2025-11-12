@@ -10,7 +10,7 @@ using WaifuAI.Security;
 
 namespace WaifuAI.Files
 {
-    public class Character : BasePersona
+    public class Character : BasePersona, ICharacter
     {
         [JsonIgnore] public Image Portrait => GetPortrait();
         private Image? _image = null;
@@ -46,14 +46,14 @@ namespace WaifuAI.Files
 
         public ToggleMonitorSettings LockSettings { get; set; } = new ToggleMonitorSettings();
 
-        [JsonIgnore] public PointSystem MyPoints = new();
+        [JsonIgnore] public PointSystem MyPoints { get; set; } = new();
         [JsonIgnore] private string? _password;
         [JsonIgnore] public TimedLockPlugin LockManager { get; private set; }
 
         [JsonIgnore]
         public new CharBrain Brain
         {
-            get 
+            get
             {
                 if (base.Brain is not CharBrain)
                     base.Brain = new CharBrain(this);
@@ -96,7 +96,7 @@ namespace WaifuAI.Files
                 _password = null;
         }
 
-        public override void LoadChatHistory() 
+        public override void LoadChatHistory()
         {
             var path = "data/chatlogs/";
             var filePath = System.IO.Path.Combine(path, UniqueName + ".log");
@@ -186,19 +186,19 @@ namespace WaifuAI.Files
         {
             var encPath = path + UniqueName + ".brain.enc";
             var bakPath = encPath + ".bak";
-            
+
             // Check if we need encryption (Protected flag set or .enc files exist)
             bool needsEncryption = Protected || CryptoFile.IsEncryptedFile(encPath) || CryptoFile.IsEncryptedFile(bakPath);
-            
+
             if (needsEncryption)
             {
                 EnsurePassword();
-                
+
                 if (TryLoadEncryptedBrain(encPath, path) || TryLoadEncryptedBrain(bakPath, path))
                 {
                     return;
                 }
-                
+
                 // If we get here and Protected is true but no encrypted files, it's first-time migration
                 if (Protected && File.Exists(encPath))
                 {
@@ -206,7 +206,7 @@ namespace WaifuAI.Files
                     LoadOrCreateCharBrain(path);
                     return;
                 }
-                
+
             }
 
             // Not protected or no encrypted files - use base implementation
@@ -235,16 +235,16 @@ namespace WaifuAI.Files
         private bool TryLoadEncryptedBrain(string encPath, string originalPath)
         {
             if (!CryptoFile.IsEncryptedFile(encPath)) return false;
-            
+
             try
             {
                 var decryptedBytes = CryptoFile.DecryptFile(encPath, _password!);
                 if (decryptedBytes != null)
                 {
                     // Create a temporary file with the decrypted content
-                    var tempPath = originalPath + UniqueName +".brain";
+                    var tempPath = originalPath + UniqueName + ".brain";
                     File.WriteAllBytes(tempPath, decryptedBytes);
-                    
+
                     try
                     {
                         // Use base implementation to load from temp file
@@ -269,7 +269,7 @@ namespace WaifuAI.Files
                 // Other errors - file might be corrupted
                 return false;
             }
-            
+
             return false;
         }
 
@@ -294,7 +294,7 @@ namespace WaifuAI.Files
                     var brainBytes = File.ReadAllBytes(clearBrainPath);
                     var encPath = clearBrainPath + ".enc";
                     CryptoFile.EncryptFile(encPath, brainBytes, _password!, backup);
-                    
+
                 }
                 finally
                 {
@@ -311,7 +311,7 @@ namespace WaifuAI.Files
             {
                 // Not protected - use base implementation
                 base.SaveBrain(path, backup);
-                
+
                 // Clean up any lingering encrypted files if protection is turned off
                 var encPath = path + ".enc";
                 var bakPath = encPath + ".bak";
@@ -323,7 +323,7 @@ namespace WaifuAI.Files
         private bool TryLoadEncryptedChatHistory(string encPath, string originalPath)
         {
             if (!CryptoFile.IsEncryptedFile(encPath)) return false;
-            
+
             try
             {
                 var decryptedBytes = CryptoFile.DecryptFile(encPath, _password!);
@@ -332,7 +332,7 @@ namespace WaifuAI.Files
                     // Create a temporary file with the decrypted content
                     var tempPath = originalPath + ".temp";
                     File.WriteAllBytes(tempPath, decryptedBytes);
-                    
+
                     try
                     {
                         // Use base implementation to load from temp file
@@ -340,7 +340,7 @@ namespace WaifuAI.Files
                         var dir = Path.GetDirectoryName(tempPath);
                         var fileName = Path.GetFileNameWithoutExtension(tempPath);
                         var basePath = Path.Combine(dir!, fileName.Replace(".temp", ""));
-                        
+
                         // Temporarily move temp file to expected location
                         File.Move(tempPath, basePath);
                         try
@@ -373,7 +373,7 @@ namespace WaifuAI.Files
                 // Other errors - file might be corrupted
                 return false;
             }
-            
+
             return false;
         }
 
@@ -406,6 +406,6 @@ namespace WaifuAI.Files
             return _image;
         }
 
-        
+
     }
 }

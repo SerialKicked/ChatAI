@@ -43,8 +43,8 @@ namespace WaifuAI
 
         public readonly List<ISlashCommand> slashCommands = [new MainSlashCmds(), new RenpyGameCmds()];
 
-        public static Character? Bot => LLMEngine.Bot as Character;
-        public static Character? User => LLMEngine.User as Character;
+        public static ICharacter? Bot => LLMEngine.Bot as ICharacter;
+        public static ICharacter? User => LLMEngine.User as ICharacter;
 
         /// <summary>
         /// Custom markdown pipeline with extensions
@@ -481,7 +481,7 @@ namespace WaifuAI
                     await OutputTTS(stringfix);
                 }
             }
-            (LLMEngine.Bot as Character)?.SaveChatHistory();
+            Bot?.SaveChatHistory();
         }
 
         private async void OnBotInitiateConversation(object? sender, EventArgs e)
@@ -699,10 +699,10 @@ namespace WaifuAI
                     loadingForm.SetMessage("Saving history.");
                     loadingForm.SetProgress(95);
                 }
-                (LLMEngine.Bot as Character)?.SaveChatHistory();
-                await LLMEngine.Bot.UpdateSelfEditSection();
-                if (!string.IsNullOrEmpty(LLMEngine.Bot.UniqueName))
-                    (LLMEngine.Bot as IFile).SaveToFile("data/chars/" + LLMEngine.Bot.UniqueName + ".json");
+                Bot?.SaveChatHistory();
+                await Bot?.UpdateSelfEditSection();
+                if (!string.IsNullOrEmpty(Bot?.GetIdentifier()))
+                    (Bot as IFile)?.SaveToFile("data/chars/" + Bot?.GetIdentifier() + ".json");
                 loadingForm.SetMessage("Loading new session.");
                 loadingForm.SetProgress(100);
                 LLMEngine.RemoveQuickInferenceEventHandler();
@@ -1064,10 +1064,10 @@ namespace WaifuAI
             switch (singleMessage.Role)
             {
                 case AuthorRole.User:
-                    img = (singleMessage.User as Character)!.Icon;
+                    img = (singleMessage.User as ICharacter)!.Icon;
                     break;
                 case AuthorRole.Assistant:
-                    img = (singleMessage.Bot as Character)!.Icon;
+                    img = (singleMessage.Bot as ICharacter)!.Icon;
                     break;
             }
             var html = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + singleMessage.Message, CustomMarkDownPipeline);
@@ -1486,7 +1486,7 @@ namespace WaifuAI
         {
             using var editForm = new CharEditForm();
             ThemeManager.ApplyToForm(editForm);
-            editForm.SetupCharacterEditor(Bot?.UniqueName ?? string.Empty);
+            editForm.SetupCharacterEditor(Bot?.GetIdentifier() ?? string.Empty);
             editForm.ShowDialog();
             LLMEngine.InvalidatePromptCache();
             var currbselection = cb_bot.Text;
@@ -1678,11 +1678,11 @@ namespace WaifuAI
                     var mem = LLMEngine.Bot.Brain.Memories.Find(e => e.Category == MemoryType.Person && e.Name.Contains("Amandine", StringComparison.InvariantCultureIgnoreCase));
 
                     mem ??= new MemoryUnit()
-                        {
-                            Category = MemoryType.Person,
-                            KeyWordsMain = ["Amamdine"],
-                            Name = "Amandine",
-                        };
+                    {
+                        Category = MemoryType.Person,
+                        KeyWordsMain = ["Amamdine"],
+                        Name = "Amandine",
+                    };
                     mem.Content = resultTask;
                     mem.PositionIndex = -1;
                     mem.CaseSensitive = false;
@@ -1695,6 +1695,11 @@ namespace WaifuAI
                 }
                 MessageBox.Show(resultTask ?? "No information found.", "Person Info Action Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
