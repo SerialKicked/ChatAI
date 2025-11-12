@@ -252,7 +252,7 @@ namespace WaifuAI.src.forms
             if (web_sessioncontent.CoreWebView2 == null)
             {
                 await web_sessioncontent.EnsureCoreWebView2Async();
-                web_sessioncontent.CoreWebView2.Settings.AreDevToolsEnabled = false;
+                web_sessioncontent.CoreWebView2!.Settings.AreDevToolsEnabled = false;
                 web_sessioncontent.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
                 web_sessioncontent.CoreWebView2.SetVirtualHostNameToFolderMapping(
                     "appassets.test",
