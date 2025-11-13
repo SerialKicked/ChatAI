@@ -72,9 +72,14 @@ namespace WaifuAI.Security
             var ciphertext = reader.ReadBytes(ciphertextLen);
             var tag = reader.ReadBytes(TagLen);
 
-            // Derive key
-            using var kdf = new Rfc2898DeriveBytes(password, salt, kdfIterations, HashAlgorithmName.SHA256);
-            var key = kdf.GetBytes(KeyLen);
+            // Derive key using static Pbkdf2 method
+            var key = Rfc2898DeriveBytes.Pbkdf2(
+                password,
+                salt,
+                kdfIterations,
+                HashAlgorithmName.SHA256,
+                KeyLen
+            );
 
             // Decrypt
             using var aes = new AesGcm(key, TagLen);
@@ -96,9 +101,14 @@ namespace WaifuAI.Security
             var salt = RandomNumberGenerator.GetBytes(SaltLen);
             var nonce = RandomNumberGenerator.GetBytes(NonceLen);
 
-            // Derive key
-            using var kdf = new Rfc2898DeriveBytes(password, salt, DefaultKdfIterations, HashAlgorithmName.SHA256);
-            var key = kdf.GetBytes(KeyLen);
+            // Derive key using static Pbkdf2 method
+            var key = Rfc2898DeriveBytes.Pbkdf2(
+                password,
+                salt,
+                DefaultKdfIterations,
+                HashAlgorithmName.SHA256,
+                KeyLen
+            );
 
             // Encrypt
             using var aes = new AesGcm(key, TagLen);

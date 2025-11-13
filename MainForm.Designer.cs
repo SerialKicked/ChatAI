@@ -101,7 +101,7 @@ namespace WaifuAI
             button3 = new Button();
             btRunAgent = new Button();
             panel4 = new Panel();
-            collapsibleGroupBox4 = new CollapsibleGroupBox();
+            cboxGroup = new CollapsibleGroupBox();
             cbGroupSwitch = new ModernComboBox();
             label2 = new Label();
             panel6 = new Panel();
@@ -123,7 +123,7 @@ namespace WaifuAI
             collapsibleGroupBox2.SuspendLayout();
             panRight.SuspendLayout();
             collapsibleMenus.SuspendLayout();
-            collapsibleGroupBox4.SuspendLayout();
+            cboxGroup.SuspendLayout();
             collapsibleGroupBox3.SuspendLayout();
             SuspendLayout();
             // 
@@ -948,7 +948,7 @@ namespace WaifuAI
             // panRight
             // 
             panRight.Controls.Add(collapsibleMenus);
-            panRight.Controls.Add(collapsibleGroupBox4);
+            panRight.Controls.Add(cboxGroup);
             panRight.Controls.Add(collapsibleGroupBox3);
             panRight.Dock = DockStyle.Right;
             panRight.Location = new Point(1061, 0);
@@ -1024,22 +1024,22 @@ namespace WaifuAI
             panel4.Size = new Size(184, 10);
             panel4.TabIndex = 49;
             // 
-            // collapsibleGroupBox4
+            // cboxGroup
             // 
-            collapsibleGroupBox4.BackColor = Color.FromArgb(37, 37, 37);
-            collapsibleGroupBox4.Controls.Add(cbGroupSwitch);
-            collapsibleGroupBox4.Controls.Add(label2);
-            collapsibleGroupBox4.Controls.Add(panel6);
-            collapsibleGroupBox4.Controls.Add(lstGroupMembers);
-            collapsibleGroupBox4.Controls.Add(panel7);
-            collapsibleGroupBox4.Controls.Add(ckGroupToggle);
-            collapsibleGroupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox4.Location = new Point(0, 387);
-            collapsibleGroupBox4.Name = "collapsibleGroupBox4";
-            collapsibleGroupBox4.Padding = new Padding(8, 32, 8, 8);
-            collapsibleGroupBox4.Size = new Size(200, 288);
-            collapsibleGroupBox4.TabIndex = 29;
-            collapsibleGroupBox4.Text = "Group Chat";
+            cboxGroup.BackColor = Color.FromArgb(37, 37, 37);
+            cboxGroup.Controls.Add(cbGroupSwitch);
+            cboxGroup.Controls.Add(label2);
+            cboxGroup.Controls.Add(panel6);
+            cboxGroup.Controls.Add(lstGroupMembers);
+            cboxGroup.Controls.Add(panel7);
+            cboxGroup.Controls.Add(ckGroupToggle);
+            cboxGroup.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            cboxGroup.Location = new Point(0, 387);
+            cboxGroup.Name = "cboxGroup";
+            cboxGroup.Padding = new Padding(8, 32, 8, 8);
+            cboxGroup.Size = new Size(200, 288);
+            cboxGroup.TabIndex = 29;
+            cboxGroup.Text = "Group Chat";
             // 
             // cbGroupSwitch
             // 
@@ -1221,8 +1221,8 @@ namespace WaifuAI
             panRight.ResumeLayout(false);
             collapsibleMenus.ResumeLayout(false);
             collapsibleMenus.PerformLayout();
-            collapsibleGroupBox4.ResumeLayout(false);
-            collapsibleGroupBox4.PerformLayout();
+            cboxGroup.ResumeLayout(false);
+            cboxGroup.PerformLayout();
             collapsibleGroupBox3.ResumeLayout(false);
             collapsibleGroupBox3.PerformLayout();
             ResumeLayout(false);
@@ -1303,7 +1303,7 @@ namespace WaifuAI
         private Panel panel3;
         private Panel panel4;
         private Panel panel5;
-        private CollapsibleGroupBox collapsibleGroupBox4;
+        private CollapsibleGroupBox cboxGroup;
         private Label label2;
         private ModernComboBox cbGroupSwitch;
         private ModernCheckBox ckGroupToggle;

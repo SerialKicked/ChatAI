@@ -276,6 +276,7 @@ namespace WaifuAI
                 bt_newsession.Enabled = true;
                 bt_impersonate.Enabled = true;
                 cb_bot.Enabled = true;
+                cboxGroup.Enabled = true;
                 cb_user.Enabled = true;
                 var (tokens, duration) = LLMEngine.History.GetCurrentChatSessionInfo();
                 statusbar.Items[0].Text = $"Current Session: {duration.TotalDays:F2} days ({tokens} tokens)";
@@ -290,6 +291,7 @@ namespace WaifuAI
                 bt_reroll.Enabled = false;
                 bt_newsession.Enabled = false;
                 bt_impersonate.Enabled = false;
+                cboxGroup.Enabled = false;
                 cb_bot.Enabled = false;
                 cb_user.Enabled = false;
             }
@@ -303,6 +305,7 @@ namespace WaifuAI
                 bt_reroll.Enabled = false;
                 bt_newsession.Enabled = false;
                 bt_impersonate.Enabled = false;
+                cboxGroup.Enabled = false;
                 cb_bot.Enabled = true;
                 cb_user.Enabled = true;
             }
@@ -1736,6 +1739,8 @@ namespace WaifuAI
                 }
                 _activityTimer?.Reset();
                 UpdateUIState();
+                FillGroupMemberList();
+                UpdateGroupSelection();
             }
             else
             {
@@ -1747,9 +1752,8 @@ namespace WaifuAI
                 {
                     cb_bot.SelectedItem = gobackbot?.UniqueName;
                 }
+                lstGroupMembers.Items.Clear();
             }
-            FillGroupMemberList();
-            UpdateGroupSelection();
         }
 
         private void lstGroupMembers_ItemCheck(object sender, ItemCheckEventArgs e)
