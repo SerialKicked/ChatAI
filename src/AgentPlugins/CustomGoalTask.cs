@@ -116,7 +116,7 @@ namespace WaifuAI.AgentPlugins
 
             var promptbuild = LLMEngine.GetPromptBuilder();
 
-            var requestedTask = "Based on the information provided in the system prompt, {{char}} has set the following goal for themselves: " + goalinfo + LLMEngine.NewLine + "Fill the required information about this specific goal so it can processed. " + goalrecord.GetQuery();
+            var requestedTask = "Based on the information provided in the system prompt, {{mchar}} has set the following goal for themselves: " + goalinfo + LLMEngine.NewLine + "Fill the required information about this specific goal so it can processed. " + goalrecord.GetQuery();
 
 
             var availtokens = LLMEngine.MaxContextLength - 20; // leave 2k for response and buffer
@@ -166,10 +166,10 @@ namespace WaifuAI.AgentPlugins
         {
             var availtokens = LLMEngine.MaxContextLength - 2048 - 20; 
             var promptbuild = LLMEngine.GetPromptBuilder();
-            var sysprompt = "You are {{char}}, an independent AI entity with your own goals, tastes, and inner world." + LLMEngine.NewLine +
+            var sysprompt = "You are {{mchar}}, an independent AI entity with your own goals, tastes, and inner world." + LLMEngine.NewLine +
                 LLMEngine.NewLine +
-                "## Name: {{char}} (this is you)" + LLMEngine.NewLine + LLMEngine.NewLine +
-                "{{charbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "## Name: {{mchar}} (this is you)" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "{{mcharbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
                 "## Name: {{user}} (this is the user)" + LLMEngine.NewLine + LLMEngine.NewLine +
                 "{{userbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
                 "## Chronological chat summaries:" + LLMEngine.NewLine + LLMEngine.NewLine;
@@ -184,10 +184,10 @@ namespace WaifuAI.AgentPlugins
         {
             var availtokens = LLMEngine.MaxContextLength - 2048 - 20;
             var promptbuild = LLMEngine.GetPromptBuilder();
-            var sysprompt = "You are {{char}}, and you're about to check to design personal goals based on the provided information." + LLMEngine.NewLine +
+            var sysprompt = "mYou are {{mchar}}, and you're about to check to design personal goals based on the provided information." + LLMEngine.NewLine +
                 LLMEngine.NewLine +
-                "## Name: {{char}}" + LLMEngine.NewLine + LLMEngine.NewLine +
-                "{{charbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "## Name: {{mchar}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "{{mcharbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
                 "## Name: {{user}}" + LLMEngine.NewLine + LLMEngine.NewLine +
                 "{{userbio}}" + LLMEngine.NewLine + LLMEngine.NewLine;
 
@@ -220,8 +220,8 @@ namespace WaifuAI.AgentPlugins
             settings.SetSetting<int>("MinSessionSpacing", 1); // at least 1 sessions between searches
             settings.SetSetting<Guid>("LastSessionGuid", Guid.Empty);
             settings.SetSetting<DateTime>("LastGoalSet", DateTime.MinValue);
-            settings.SetSetting<string>("Request", "As {{char}}, and based on the provided information, pick 1 to 3 topics to talk about with {{user}}. Pick something that's relevant to both your interests, but which hasn't been talked about in a while.");
-            settings.SetSetting<string>("Notification", "{{char}} picked a few new topics to talk about.");
+            settings.SetSetting<string>("Request", "As {{mchar}}, and based on the provided information, pick 1 to 3 topics to talk about with {{user}}. Pick something that's relevant to both your interests, but which hasn't been talked about in a while.");
+            settings.SetSetting<string>("Notification", "{{mchar}} picked a few new topics to talk about.");
 
             return settings;
         }

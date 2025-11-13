@@ -83,7 +83,7 @@ namespace WaifuAI.AgentPlugins
                 .AppendLinuxLine("You are an automated and uncensored system designed to analyze chat sessions in order to record accurate and detailed information about the person named {{user}}.").AppendLinuxLine()
                 //.AppendLinuxLine("## Known Facts about {{user}}").AppendLinuxLine()
                 //.AppendLinuxLine("{{userbio}}").AppendLinuxLine()
-                .AppendLinuxLine("## Chat history between {{user}} and {{char}}").AppendLinuxLine();
+                .AppendLinuxLine("## Chat history between {{user}} and {{mchar}}").AppendLinuxLine();
             var intro = sysprompt.ToString();
             var MaxAvailtokens = availtokens - builder.GetTokenCount(AuthorRole.SysPrompt, intro);
 

@@ -65,7 +65,7 @@ namespace WaifuAI.AgentPlugins
             var allgoals = new List<string>();
 
             // add personal goals
-            var req = "Based on the information provided, write a list of personal goals you want to set for yourself as {{char}}. Those have to be goals, or topics of research for you directly. They must be of interest to you, independently of {{user}}'s own goals.";
+            var req = "Based on the information provided, write a list of personal goals you want to set for yourself as {{mchar}}. Those have to be goals, or topics of research for you directly. They must be of interest to you, independently of {{user}}'s own goals.";
             var goallist = await GetGoalList(mainPrompt, req).ConfigureAwait(false) ?? new();
             if (goallist.Goals.Count > 2)
                 goallist.Goals = [.. goallist.Goals.Take(2)];
@@ -125,7 +125,7 @@ namespace WaifuAI.AgentPlugins
             }
 
             if (goaldetails.Count > 0)
-                owner.Brain.AddUserReturnInsert("{{char}} has set some new personal goals.");
+                owner.Brain.AddUserReturnInsert("{{mchar}} has set some new personal goals.");
 
 
             // Let's go through each goal, detail them, and add to the persona's Brain
@@ -143,7 +143,7 @@ namespace WaifuAI.AgentPlugins
 
             var promptbuild = LLMEngine.GetPromptBuilder();
 
-            var requestedTask = "Based on the information provided in the system prompt, {{char}} has set the following goal for themselves: " + goalinfo + LLMEngine.NewLine + "Fill the required information about this specific goal so it can be processed. " + goalrecord.GetQuery();
+            var requestedTask = "Based on the information provided in the system prompt, {{mchar}} has set the following goal for themselves: " + goalinfo + LLMEngine.NewLine + "Fill the required information about this specific goal so it can be processed. " + goalrecord.GetQuery();
 
 
             var availtokens = LLMEngine.MaxContextLength - 20; // leave 2k for response and buffer
@@ -193,10 +193,10 @@ namespace WaifuAI.AgentPlugins
         {
             var availtokens = LLMEngine.MaxContextLength - 2048 - 20; 
             var promptbuild = LLMEngine.GetPromptBuilder();
-            var sysprompt = "You are {{char}}, an independent AI entity with your own goals, tastes, and inner world." + LLMEngine.NewLine +
+            var sysprompt = "You are {{mchar}}, an independent AI entity with your own goals, tastes, and inner world." + LLMEngine.NewLine +
                 LLMEngine.NewLine +
-                "## Name: {{char}} (this is you)" + LLMEngine.NewLine + LLMEngine.NewLine +
-                "{{charbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "## Name: {{mchar}} (this is you)" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "{{mcharbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
                 "## Name: {{user}} (this is the user)" + LLMEngine.NewLine + LLMEngine.NewLine +
                 "{{userbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
                 "## Chronological chat summaries:" + LLMEngine.NewLine + LLMEngine.NewLine;
@@ -212,10 +212,10 @@ namespace WaifuAI.AgentPlugins
         {
             var availtokens = LLMEngine.MaxContextLength - 2048 - 20;
             var promptbuild = LLMEngine.GetPromptBuilder();
-            var sysprompt = "You are {{char}}, and you're about to check to design personal goals based on the provided information." + LLMEngine.NewLine +
+            var sysprompt = "You are {{mchar}}, and you're about to check to design personal goals based on the provided information." + LLMEngine.NewLine +
                 LLMEngine.NewLine +
-                "## Name: {{char}}" + LLMEngine.NewLine + LLMEngine.NewLine +
-                "{{charbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "## Name: {{mchar}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "{{mcharbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
                 "## Name: {{user}}" + LLMEngine.NewLine + LLMEngine.NewLine +
                 "{{userbio}}" + LLMEngine.NewLine + LLMEngine.NewLine;
 

@@ -19,7 +19,7 @@ namespace WaifuAI.GBNF
         [Required]
         [MinLength(0)]
         [MaxLength(3)]
-        [Description("A list of goals and pursuits that {{char}} wants to do.")]
+        [Description("A list of goals and pursuits that {{mchar}} wants to do.")]
         public List<string> Goals { get; set; } = [];
 
         public override async Task<string> GetGrammar()
@@ -38,11 +38,11 @@ namespace WaifuAI.GBNF
         [JsonIgnore] private static string Schema = string.Empty;
 
         [Required]
-        [Description("A goal {{char}} wants to set for themselves.")]
+        [Description("A goal {{mchar}} wants to set for themselves.")]
         public string GoalTitle { get; set; } = string.Empty;
 
         [Required]
-        [Description("A detailed description of what {{char}} wants to do, or get {{user}} to do.")]
+        [Description("A detailed description of what {{mchar}} wants to do, or get {{user}} to do.")]
         public string GoalDetails { get; set; } = string.Empty;
 
         [Required]
@@ -50,7 +50,7 @@ namespace WaifuAI.GBNF
         public string Reason { get; set; } = string.Empty;
 
         [Required]
-        [Description("The plan of action {{char}} wants to put in place to achieve this goal.")]
+        [Description("The plan of action {{mchar}} wants to put in place to achieve this goal.")]
         public string PlanOfAction { get; set; } = string.Empty;
 
         public override async Task<string> GetGrammar()

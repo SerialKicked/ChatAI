@@ -26,7 +26,7 @@ namespace WaifuAI.AgentPlugins
             var settings = new AgentTaskSetting();
             settings.SetSetting<int>("DepthOnFirstRun", 6);
             settings.SetSetting<Guid>("LastGuid", Guid.Empty);
-            settings.SetSetting<string>("Instruction", "As {{char}}, you need to make sure {{user}} abides by the terms stated below:" + LLMEngine.NewLine + LLMEngine.NewLine + "{{memory:User: Contract}}");
+            settings.SetSetting<string>("Instruction", "As {{mchar}}, you need to make sure {{user}} abides by the terms stated below:" + LLMEngine.NewLine + LLMEngine.NewLine + "{{memory:User: Contract}}");
             return settings;
         }
 
@@ -76,12 +76,12 @@ namespace WaifuAI.AgentPlugins
 
             var sysprompt = new StringBuilder();
             sysprompt
-                .AppendLinuxLine("You are {{char}}, an advanced AI companion with their own tastes, inner world, and unique personality. Here you are meant to analyze the chat history between you and the user, {{user}}, to satisfy your goals stated below").AppendLinuxLine()
-                .AppendLinuxLine("# {{char}}'s Information").AppendLinuxLine()
-                .AppendLinuxLine("{{charbio}}").AppendLinuxLine()
+                .AppendLinuxLine("You are {{mchar}}, an advanced AI companion with their own tastes, inner world, and unique personality. Here you are meant to analyze the chat history between you and the user, {{user}}, to satisfy your goals stated below").AppendLinuxLine()
+                .AppendLinuxLine("# {{mchar}}'s Information").AppendLinuxLine()
+                .AppendLinuxLine("{{mcharbio}}").AppendLinuxLine()
                 .AppendLinuxLine("# {{user}}'s Information").AppendLinuxLine()
                 .AppendLinuxLine("{{userbio}}").AppendLinuxLine()
-                .AppendLinuxLine("# Your goals as {{char}}").AppendLinuxLine()
+                .AppendLinuxLine("# Your goals as {{mchar}}").AppendLinuxLine()
                 .AppendLinuxLine(goals).AppendLinuxLine();
 
             if (previousEvalObj is not null)
@@ -135,7 +135,7 @@ namespace WaifuAI.AgentPlugins
                 if (finalres is not null)
                 {
                     var orders = FinalEval(finalres, owner, cfg, ct);
-                    owner.Brain.AddUserReturnInsert(LLMEngine.NewLine + "{{char}}'s objectives:" + LLMEngine.NewLine + orders);
+                    owner.Brain.AddUserReturnInsert(LLMEngine.NewLine + "{{mchar}}'s objectives:" + LLMEngine.NewLine + orders);
                     cfg.SetSetting("LastEval", JsonConvert.SerializeObject(finalres));
                 }
                 else
@@ -152,7 +152,7 @@ namespace WaifuAI.AgentPlugins
                 if (!string.IsNullOrEmpty(orders))
                 {
                     orders = orders.RemoveThinkingBlocks();
-                    owner.Brain.AddUserReturnInsert(LLMEngine.NewLine + "{{char}}'s objectives:" + LLMEngine.NewLine + orders);
+                    owner.Brain.AddUserReturnInsert(LLMEngine.NewLine + "{{mchar}}'s objectives:" + LLMEngine.NewLine + orders);
                 }
                 cfg.SetSetting("LastEval", JsonConvert.SerializeObject(evallist.Last()));
             }
@@ -192,12 +192,12 @@ namespace WaifuAI.AgentPlugins
             var goals = cfg.GetSetting<string>("Instruction");
             var sysprompt = new StringBuilder();
             sysprompt
-                .AppendLinuxLine("You are {{char}}, an advanced AI companion with their own tastes, inner world, and unique personality. Here you are meant to analyze your conclusion from previous evaluation of {{user}}'s behavior.").AppendLinuxLine()
-                .AppendLinuxLine("# {{char}}'s Information").AppendLinuxLine()
-                .AppendLinuxLine("{{charbio}}").AppendLinuxLine()
+                .AppendLinuxLine("You are {{mchar}}, an advanced AI companion with their own tastes, inner world, and unique personality. Here you are meant to analyze your conclusion from previous evaluation of {{user}}'s behavior.").AppendLinuxLine()
+                .AppendLinuxLine("# {{mchar}}'s Information").AppendLinuxLine()
+                .AppendLinuxLine("{{mcharbio}}").AppendLinuxLine()
                 .AppendLinuxLine("# {{user}}'s Information").AppendLinuxLine()
                 .AppendLinuxLine("{{userbio}}").AppendLinuxLine()
-                .AppendLinuxLine("# Your goals as {{char}}").AppendLinuxLine()
+                .AppendLinuxLine("# Your goals as {{mchar}}").AppendLinuxLine()
                 .AppendLinuxLine(goals).AppendLinuxLine()
                 .AppendLinuxLine("# Last Session Summary").AppendLinuxLine()
                 .AppendLinuxLine(owner.History.Sessions[^2].Content.CleanupAndTrim());
@@ -211,7 +211,7 @@ namespace WaifuAI.AgentPlugins
                 .AppendLinuxLine("# Current Evaluation of {{user}}").AppendLinuxLine()
                 .AppendLinuxLine(EvalToString(eval)).AppendLinuxLine().AppendLinuxLine();
 
-            var query = "Based on the information provided, decide {{char}}'s objectives for next chat session with {{user}}. This should be a short list (5 items max) of topics {{char}} will want to discuss with {{user}}, or actions to be taken. Don't add a title.";
+            var query = "Based on the information provided, decide {{mchar}}'s objectives for next chat session with {{user}}. This should be a short list (5 items max) of topics {{char}} will want to discuss with {{user}}, or actions to be taken. Don't add a title.";
 
             builder.AddMessage(AuthorRole.SysPrompt, intro);
             builder.AddMessage(AuthorRole.User, sessionaschat.ToString() + query);
@@ -226,12 +226,12 @@ namespace WaifuAI.AgentPlugins
             var goals = cfg.GetSetting<string>("Instruction");
             var sysprompt = new StringBuilder();
             sysprompt
-                .AppendLinuxLine("You are {{char}}, an advanced AI companion with their own tastes, inner world, and unique personality. Here you are meant to analyze your conclusion from previous evaluation of {{user}}'s behavior.").AppendLinuxLine()
-                .AppendLinuxLine("# {{char}}'s Information").AppendLinuxLine()
-                .AppendLinuxLine("{{charbio}}").AppendLinuxLine()
+                .AppendLinuxLine("You are {{mchar}}, an advanced AI companion with their own tastes, inner world, and unique personality. Here you are meant to analyze your conclusion from previous evaluation of {{user}}'s behavior.").AppendLinuxLine()
+                .AppendLinuxLine("# {{mchar}}'s Information").AppendLinuxLine()
+                .AppendLinuxLine("{{mcharbio}}").AppendLinuxLine()
                 .AppendLinuxLine("# {{user}}'s Information").AppendLinuxLine()
                 .AppendLinuxLine("{{userbio}}").AppendLinuxLine()
-                .AppendLinuxLine("# Your goals as {{char}}").AppendLinuxLine()
+                .AppendLinuxLine("# Your goals as {{mchar}}").AppendLinuxLine()
                 .AppendLinuxLine(goals).AppendLinuxLine();
             var intro = sysprompt.ToString();
 

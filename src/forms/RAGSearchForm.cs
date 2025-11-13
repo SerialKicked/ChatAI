@@ -14,7 +14,7 @@ namespace WaifuAI.src.forms
         {
             InitializeComponent();
             textBox1.Text = LLMEngine.History.GetLastMessageFrom(AuthorRole.User)?.Message ?? string.Empty;
-            DoSearch(textBox1.Text);
+            DoSearch(textBox1.Text); 
         }
 
         private void button1_Click(object sender, EventArgs e)

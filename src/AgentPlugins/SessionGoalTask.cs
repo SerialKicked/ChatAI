@@ -113,7 +113,7 @@ namespace WaifuAI.AgentPlugins
 
             var promptbuild = LLMEngine.GetPromptBuilder();
 
-            var requestedTask = "Based on the information provided in the system prompt, {{char}} has set the following goal for themselves: " + goalinfo + LLMEngine.NewLine + "Fill the required information about this specific goal so it can processed. " + goalrecord.GetQuery();
+            var requestedTask = "Based on the information provided in the system prompt, {{mchar}} has set the following goal for themselves: " + goalinfo + LLMEngine.NewLine + "Fill the required information about this specific goal so it can processed. " + goalrecord.GetQuery();
 
 
             var availtokens = LLMEngine.MaxContextLength - 20; // leave 2k for response and buffer
@@ -137,10 +137,10 @@ namespace WaifuAI.AgentPlugins
         {
             var availtokens = LLMEngine.MaxContextLength - 2048 - 20;
             var promptbuild = LLMEngine.GetPromptBuilder();
-            var sysprompt = "You are {{char}}, and you're about to check to design personal goals based on the provided information." + LLMEngine.NewLine +
+            var sysprompt = "You are {{mchar}}, and you're about to check to design personal goals based on the provided information." + LLMEngine.NewLine +
                 LLMEngine.NewLine +
-                "## Name: {{char}}" + LLMEngine.NewLine + LLMEngine.NewLine +
-                "{{charbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "## Name: {{mchar}}" + LLMEngine.NewLine + LLMEngine.NewLine +
+                "{{mcharbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
                 "## Name: {{user}}" + LLMEngine.NewLine + LLMEngine.NewLine +
                 "{{userbio}}" + LLMEngine.NewLine + LLMEngine.NewLine;
 

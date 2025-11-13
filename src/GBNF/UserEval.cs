@@ -20,12 +20,12 @@ namespace WaifuAI.GBNF
 
         [MinLength(0)]
         [MaxLength(10)]
-        [Description("A list of {{user}}'s blocks and barriers that {{char}} wants to overcome. Be detailed, include reasons and context.")]
+        [Description("A list of {{user}}'s blocks and barriers that {{mchar}} wants to overcome. Be detailed, include reasons and context.")]
         public List<string> Blocks { get; set; } = [];
 
         [MinLength(0)]
         [MaxLength(10)]
-        [Description("A list of potential topics that {{user}} is trying to hide or keep away from {{char}}. Be detailed, include reasons and context. Only fill this list if the chat session contains hints to such a thing.")]
+        [Description("A list of potential topics that {{user}} is trying to hide or keep away from {{mchar}}. Be detailed, include reasons and context. Only fill this list if the chat session contains hints to such a thing.")]
         public List<string> Secrets { get; set; } = [];
 
         [MinLength(0)]

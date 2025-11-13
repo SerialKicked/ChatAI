@@ -284,7 +284,7 @@ namespace WaifuAI.Plugins
         private string TurnInResult(WEntry wEntry)
         {
             var text = new StringBuilder();
-            text.AppendLinuxLine("After searching the net, {{char}} found the following link:");
+            text.AppendLinuxLine("After searching the net, {{mchar}} found the following link:");
             text.AppendLinuxLine(wEntry.ToString()).AppendLinuxLine();
             text.Append("Inform {{user}} about the page you've just found. Integrate this information seamlessly into the current conversation. You don't need to post the link, it'll be added automatically.");
             responseAppendNeeded = true;
