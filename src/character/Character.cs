@@ -182,7 +182,7 @@ namespace WaifuAI.Files
         public void ClearChatHistory(bool deletefile = true) => ClearChatHistory("data/chatlogs/", deletefile);
 
         // Override base methods to handle encryption
-        protected override void LoadBrain(string path)
+        public override void LoadBrain(string path)
         {
             var encPath = path + UniqueName + ".brain.enc";
             var bakPath = encPath + ".bak";
@@ -273,7 +273,7 @@ namespace WaifuAI.Files
             return false;
         }
 
-        protected override void SaveBrain(string path, bool backup)
+        public override void SaveBrain(string path, bool backup)
         {
             if (Protected)
             {

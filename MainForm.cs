@@ -1739,8 +1739,6 @@ namespace WaifuAI
                 }
                 _activityTimer?.Reset();
                 UpdateUIState();
-                FillGroupMemberList();
-                UpdateGroupSelection();
             }
             else
             {
@@ -1754,6 +1752,8 @@ namespace WaifuAI
                 }
                 lstGroupMembers.Items.Clear();
             }
+            FillGroupMemberList();
+            UpdateGroupSelection();
         }
 
         private void lstGroupMembers_ItemCheck(object sender, ItemCheckEventArgs e)

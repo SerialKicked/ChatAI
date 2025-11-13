@@ -71,6 +71,10 @@ namespace WaifuAI.Files
                 item.Enabled = PrimaryBot?.Plugins.Contains(item.PluginID) ?? false;
             }
             MyWorlds = PrimaryBot?.MyWorlds ?? [.. DataFiles.WorldInfos.Values.Where(wi => Worlds.Contains(wi.UniqueName))];
+            foreach (var agent in SecondaryBots)
+            {
+                agent.MyWorlds = [.. DataFiles.WorldInfos.Values.Where(wi => agent.Worlds.Contains(wi.UniqueName))];
+            }
         }
         public override void EndChat(bool backup = false)
         {
