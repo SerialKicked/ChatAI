@@ -26,7 +26,6 @@ namespace WaifuAI.Controls
 
         private bool _buttonHovered;
         private bool _buttonPressed;
-        private bool _isClosingDropdown = false;
 
         // Theme colors
         private Color _panel;
@@ -55,7 +54,7 @@ namespace WaifuAI.Controls
                 Dock = DockStyle.Fill,
                 ReadOnly = true
             };
-            _textBox.Click += TextBox_Click;
+            _textBox.MouseDown += TextBox_MouseDown;
             _textBox.KeyDown += TextBox_KeyDown;
 
             // Create dropdown button panel
@@ -69,7 +68,6 @@ namespace WaifuAI.Controls
             _buttonPanel.MouseLeave += ButtonPanel_MouseLeave;
             _buttonPanel.MouseDown += ButtonPanel_MouseDown;
             _buttonPanel.MouseUp += ButtonPanel_MouseUp;
-            _buttonPanel.Click += ButtonPanel_Click;
 
             // Container for textbox with padding
             var innerPanel = new Panel
@@ -341,7 +339,12 @@ namespace WaifuAI.Controls
             _dropDownForm.Height = height;
 
             OnDropDown(EventArgs.Empty);
-            _dropDownForm.Show();
+
+            // Show without taking focus from parent form
+            NativeMethods.ShowWindow(_dropDownForm.Handle, NativeMethods.SW_SHOWNOACTIVATE);
+            _dropDownForm.Visible = true;
+
+            // Focus list to enable keyboard nav
             _dropDownList.Focus();
         }
 
@@ -356,28 +359,21 @@ namespace WaifuAI.Controls
 
             _dropDownForm.Hide();
             OnDropDownClosed(EventArgs.Empty);
-            Focus();
         }
 
         // =========================================================
         // Events
         // =========================================================
 
-        private void TextBox_Click(object? sender, EventArgs e)
+        private void TextBox_MouseDown(object? sender, MouseEventArgs e)
         {
-            if (_dropDownStyle == ComboBoxStyle.DropDownList)
-            {
-                if (_isClosingDropdown)
-                {
-                    _isClosingDropdown = false;
-                    return;
-                }
+            if (_dropDownStyle != ComboBoxStyle.DropDownList || e.Button != MouseButtons.Left)
+                return;
 
-                if (_droppedDown)
-                    HideDropDown();
-                else
-                    ShowDropDown();
-            }
+            if (_droppedDown)
+                HideDropDown();
+            else
+                ShowDropDown();
         }
 
         private void TextBox_KeyDown(object? sender, KeyEventArgs e)
@@ -464,29 +460,11 @@ namespace WaifuAI.Controls
 
         private void ButtonPanel_MouseDown(object? sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && !_buttonPressed)
-            {
-                _buttonPressed = true;
-                _buttonPanel.Invalidate();
-            }
-        }
-
-        private void ButtonPanel_MouseUp(object? sender, MouseEventArgs e)
-        {
-            if (_buttonPressed && !_droppedDown)
-            {
-                _buttonPressed = false;
-                _buttonPanel.Invalidate();
-            }
-        }
-
-        private void ButtonPanel_Click(object? sender, EventArgs e)
-        {
-            if (_isClosingDropdown)
-            {
-                _isClosingDropdown = false;
+            if (e.Button != MouseButtons.Left)
                 return;
-            }
+
+            _buttonPressed = true;
+            _buttonPanel.Invalidate();
 
             if (_droppedDown)
                 HideDropDown();
@@ -494,9 +472,29 @@ namespace WaifuAI.Controls
                 ShowDropDown();
         }
 
+        private void ButtonPanel_MouseUp(object? sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && !_droppedDown && _buttonPressed)
+            {
+                _buttonPressed = false;
+                _buttonPanel.Invalidate();
+            }
+        }
+
         private void DropDownForm_Deactivate(object? sender, EventArgs e)
         {
-            _isClosingDropdown = true;
+            if (!_droppedDown)
+                return;
+
+            // Check if the click that caused deactivation was on our control
+            var cursorPos = Control.MousePosition;
+            var ourBounds = RectangleToScreen(ClientRectangle);
+
+            // If mouse is over our control, the click handler will manage state - ignore this deactivate
+            if (ourBounds.Contains(cursorPos))
+                return;
+
+            // Otherwise, user clicked elsewhere - close the dropdown
             HideDropDown();
         }
 
@@ -571,6 +569,18 @@ namespace WaifuAI.Controls
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        // =========================================================
+        // Native Methods for ShowNoActivate
+        // =========================================================
+
+        private static class NativeMethods
+        {
+            public const int SW_SHOWNOACTIVATE = 4;
+
+            [System.Runtime.InteropServices.DllImport("user32.dll")]
+            public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
         }
 
         // =========================================================
