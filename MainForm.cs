@@ -15,6 +15,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.TextFormatting;
 using WaifuAI.AgentPlugins;
 using WaifuAI.Controls;
 using WaifuAI.Files;
@@ -366,6 +367,16 @@ namespace WaifuAI
                 }
                 _activityTimer?.Reset();
                 UpdateUIState();
+                if (LLMEngine.Bot is not GroupChar)
+                {
+                    _isinitloading = true;
+                    cbGroupSwitch.Enabled = false;
+                    lstGroupMembers.Items.Clear();
+                    lstGroupMembers.Enabled = false;
+                    ckGroupToggle.Checked = false;
+                    _isinitloading = false;
+                }
+                FillGroupMemberList();
             }
         }
 
@@ -1661,44 +1672,114 @@ namespace WaifuAI
             MessageBox.Show(build.ToString(), "Current Prompt Inserts", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private async void button4_Click(object sender, EventArgs e)
-        {
-            var personaction = AgentRuntime.GetAction<string?, BuildInfoParam>("PersonInfoAction");
-            if (personaction != null)
-            {
-                var param = new BuildInfoParam
-                {
-                    Bot = LLMEngine.Bot,
-                    SearchString = "Amandine",
-                    EmbedSearch = false
-                };
-                var resultTask = await personaction.Execute(param, CancellationToken.None);
-                if (!string.IsNullOrEmpty(resultTask))
-                {
-                    var mem = LLMEngine.Bot.Brain.Memories.Find(e => e.Category == MemoryType.Person && e.Name.Contains("Amandine", StringComparison.InvariantCultureIgnoreCase));
 
-                    mem ??= new MemoryUnit()
-                    {
-                        Category = MemoryType.Person,
-                        KeyWordsMain = ["Amamdine"],
-                        Name = "Amandine",
-                    };
-                    mem.Content = resultTask;
-                    mem.PositionIndex = -1;
-                    mem.CaseSensitive = false;
-                    mem.Enabled = true;
-                    mem.Duration = 2;
-                    mem.Insertion = MemoryInsertion.Trigger;
-                    await mem.EmbedText();
-                    LLMEngine.Bot.Brain.Memorize(mem, true);
-                    LLMEngine.Bot.Brain.ReloadMemories();
+        private void cbGroupSwitch_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (Bot is GroupChar group)
+            {
+                var selectedName = cbGroupSwitch.SelectedItem as string;
+                var selectedChar = group.AllPersonas.Find(p => p.UniqueName == selectedName);
+                if (selectedChar != null)
+                {
+                    group.SetCurrentBot(selectedName!);
+                    LLMEngine.InvalidatePromptCache();
                 }
-                MessageBox.Show(resultTask ?? "No information found.", "Person Info Action Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
-        private void button5_Click(object sender, EventArgs e)
+        private void FillGroupMemberList()
         {
+            lstGroupMembers.Items.Clear();
+            if (Bot is GroupChar group)
+            {
+                var lst = DataFiles.Characters.Values.Where(c => !c.IsUser).OrderBy(c => c.Name).ToList();
+                if (group.PrimaryBot is not null)
+                    lst.Remove(group.PrimaryBot);
+                foreach (var persona in lst)
+                {
+                    lstGroupMembers.Items.Add(persona.UniqueName, group.SecondaryPersonaNames.Contains(persona.UniqueName));
+                }
+            }
+        }
+
+        private async void ckGroupToggle_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_isinitloading)
+                return;
+            cbGroupSwitch.Enabled = ckGroupToggle.Checked;
+            lstGroupMembers.Enabled = ckGroupToggle.Checked;
+            if (ckGroupToggle.Checked)
+            {
+                if (Bot is GroupChar)
+                    return; // Already in group mode
+                var group = new GroupChar();
+                group.SetPrimaryPersona((Character)Bot!);
+                LLMEngine.Bot = group;
+                cbGroupSwitch.Items.Clear();
+                foreach (var name in group.AllPersonas)
+                {
+                    cbGroupSwitch.Items.Add(name.UniqueName);
+                }
+                await LoadHistoryToUI();
+                mck_guidance.Checked = !LLMEngine.Bot.DisableBotGuidance;
+                mck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
+                var searchplug = LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch");
+                if (searchplug != null)
+                {
+                    mck_onlinerag.Checked = searchplug.Enabled;
+                    mck_onlinerag.Enabled = true;
+                }
+                else
+                {
+                    mck_onlinerag.Enabled = false;
+                    mck_onlinerag.Checked = false;
+                }
+                _activityTimer?.Reset();
+                UpdateUIState();
+            }
+            else
+            {
+                if (Bot is not GroupChar curGroup)
+                    return; // Already in single mode
+                var gobackbot = curGroup.PrimaryBot;
+                // set the cb_bot checkbox to the primary bot
+                if (gobackbot is not null)
+                {
+                    cb_bot.SelectedItem = gobackbot?.UniqueName;
+                }
+            }
+            FillGroupMemberList();
+            UpdateGroupSelection();
+        }
+
+        private void lstGroupMembers_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (Bot is not GroupChar group)
+                return;
+            var personaID = lstGroupMembers.Items[e.Index].ToString() ?? string.Empty;
+            if (e.NewValue == CheckState.Checked)
+            {
+                var persona = DataFiles.Characters[personaID];
+                group.AddSecondaryPersona(persona);
+            }
+            else
+            {
+                group.RemoveSecondaryPersona(personaID);
+            }
+            UpdateGroupSelection();
+            LLMEngine.InvalidatePromptCache();
+        }
+
+        private void UpdateGroupSelection()
+        {
+            cbGroupSwitch.Items.Clear();
+            if (Bot is not GroupChar group)
+                return;
+            foreach (var name in group.AllPersonas)
+            {
+                cbGroupSwitch.Items.Add(name.UniqueName);
+            }
+            cbGroupSwitch.SelectedItem = group.CurrentBotId;
 
         }
     }
