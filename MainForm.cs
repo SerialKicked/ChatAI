@@ -604,8 +604,7 @@ namespace WaifuAI
                 ed_input.Text = string.Empty;
                 await LLMEngine.AddBotMessage();
                 return;
-            }
-            ;
+            };
 
             var msgtxt = ed_input.Text.ToLinuxFormat();
             msgtxt = LLMEngine.Bot.ReplaceMacros(msgtxt);
