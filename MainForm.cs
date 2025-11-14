@@ -1736,7 +1736,7 @@ namespace WaifuAI
 
         private async void ckGroupToggle_CheckedChanged(object sender, EventArgs e)
         {
-            if (_isinitloading)
+            if (_isinitloading || Bot is not Character)
                 return;
             cbGroupSwitch.Enabled = ckGroupToggle.Checked;
             lstGroupMembers.Enabled = ckGroupToggle.Checked;

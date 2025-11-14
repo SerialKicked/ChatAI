@@ -6,6 +6,25 @@ using System.Windows.Forms;
 
 namespace WaifuAI.Controls
 {
+
+    internal sealed class DoubleBufferedPanel : Panel
+    {
+        public DoubleBufferedPanel()
+        {
+            SetStyle(ControlStyles.AllPaintingInWmPaint |
+                     ControlStyles.OptimizedDoubleBuffer |
+                     ControlStyles.ResizeRedraw |
+                     ControlStyles.UserPaint, true);
+            DoubleBuffered = true;
+            UpdateStyles();
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            e.Graphics.Clear(BackColor);
+        }
+    }
+
     [ToolboxItem(true)]
     [DefaultProperty(nameof(Items))]
     [DefaultEvent(nameof(ItemCheck))]
@@ -64,10 +83,10 @@ namespace WaifuAI.Controls
             Items = new CheckedListBoxItemCollection(this);
 
             // Create item display panel
-            _itemPanel = new Panel
+            _itemPanel = new DoubleBufferedPanel
             {
                 Dock = DockStyle.Fill,
-                BackColor = Color.Transparent
+                BackColor = ThemeManager.CurrentTheme.Panel
             };
             _itemPanel.Paint += ItemPanel_Paint;
             _itemPanel.MouseMove += ItemPanel_MouseMove;
@@ -76,7 +95,7 @@ namespace WaifuAI.Controls
             _itemPanel.MouseWheel += ItemPanel_MouseWheel;
 
             // Create custom scrollbar panel
-            _scrollPanel = new Panel
+            _scrollPanel = new DoubleBufferedPanel
             {
                 Dock = DockStyle.Right,
                 Width = ScrollBarWidth,
@@ -108,6 +127,18 @@ namespace WaifuAI.Controls
             base.Dispose(disposing);
         }
 
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            // Ensure initial scrollbar and item surface repaint after layout/handle creation.
+            BeginInvoke(new Action(() =>
+            {
+                UpdateScrollBar();
+                _itemPanel.Invalidate();
+                _scrollPanel.Invalidate();
+            }));
+        }
+
         private void OnThemeChanged(object? sender, ThemeManager.Theme t) => ApplyTheme(t);
 
         public void ApplyTheme(ThemeManager.Theme t)
@@ -130,7 +161,8 @@ namespace WaifuAI.Controls
             _itemPanel.BackColor = _panel;
             _scrollPanel.BackColor = _scrollTrack;
 
-            Invalidate();
+            _itemPanel.Invalidate();
+            _scrollPanel.Invalidate();
         }
 
         [Category("Appearance")]
@@ -145,7 +177,7 @@ namespace WaifuAI.Controls
                 {
                     _itemHeight = value;
                     UpdateScrollBar();
-                    Invalidate();
+                    _itemPanel.Invalidate();
                 }
             }
         }
@@ -193,9 +225,17 @@ namespace WaifuAI.Controls
 
                 if (_selectedIndex != value)
                 {
+                    int old = _selectedIndex;
                     _selectedIndex = value;
+
                     EnsureVisible(_selectedIndex);
-                    Invalidate();
+
+                    // Invalidate only affected rows so we repaint immediately without mouse move
+                    var oldRect = GetItemRect(old);
+                    var newRect = GetItemRect(_selectedIndex);
+                    if (!oldRect.IsEmpty) _itemPanel.Invalidate(oldRect);
+                    if (!newRect.IsEmpty) _itemPanel.Invalidate(newRect);
+
                     OnSelectedIndexChanged(EventArgs.Empty);
                 }
             }
@@ -253,7 +293,7 @@ namespace WaifuAI.Controls
                 if (args.NewValue != oldState)
                 {
                     Items[index].Checked = args.NewValue == CheckState.Checked;
-                    _itemPanel.Invalidate();
+                    _itemPanel.Invalidate(GetItemRect(index));
                 }
             }
         }
@@ -280,6 +320,8 @@ namespace WaifuAI.Controls
                 _scrollPanel.Visible = AlwaysScrollbar;
                 _scrollOffset = 0;
                 _scrollBarMaxValue = 0;
+                _itemPanel.Invalidate();
+                _scrollPanel.Invalidate();
                 return;
             }
 
@@ -304,6 +346,8 @@ namespace WaifuAI.Controls
                 CalculateScrollThumbRect();
             }
 
+            // Make sure content repaints when scrollbar visibility/geometry changes
+            _itemPanel.Invalidate();
             _scrollPanel.Invalidate();
         }
 
@@ -351,21 +395,35 @@ namespace WaifuAI.Controls
             int newHoverIndex = index;
             int newHoverCheckIndex = checkRect.Contains(e.Location) ? index : -1;
 
-            if (newHoverIndex != _hoverIndex || newHoverCheckIndex != _hoverCheckIndex)
-            {
-                _hoverIndex = newHoverIndex;
-                _hoverCheckIndex = newHoverCheckIndex;
-                _itemPanel.Invalidate();
-            }
+            if (newHoverIndex == _hoverIndex && newHoverCheckIndex == _hoverCheckIndex)
+                return;
+
+            var oldItemRect = GetItemRect(_hoverIndex);
+            var newItemRect = GetItemRect(newHoverIndex);
+
+            _hoverIndex = newHoverIndex;
+            _hoverCheckIndex = newHoverCheckIndex;
+
+            if (!oldItemRect.IsEmpty) _itemPanel.Invalidate(oldItemRect);
+            if (!newItemRect.IsEmpty) _itemPanel.Invalidate(newItemRect);
+        }
+
+        private Rectangle GetItemRect(int index)
+        {
+            if (index < 0 || index >= Items.Count) return Rectangle.Empty;
+            int y = index * _itemHeight - _scrollOffset;
+            return new Rectangle(0, y, _itemPanel.Width, _itemHeight);
         }
 
         private void ItemPanel_MouseLeave(object? sender, EventArgs e)
         {
             if (_hoverIndex != -1 || _hoverCheckIndex != -1)
             {
+                var old = GetItemRect(_hoverIndex);
                 _hoverIndex = -1;
                 _hoverCheckIndex = -1;
-                _itemPanel.Invalidate();
+                if (!old.IsEmpty) _itemPanel.Invalidate(old);
+                else _itemPanel.Invalidate();
             }
         }
 
@@ -388,7 +446,7 @@ namespace WaifuAI.Controls
                     // Select item
                     SelectedIndex = index;
                     _hoverIndex = -1; // Clear hover on click
-                    _itemPanel.Invalidate();
+                    _itemPanel.Invalidate(GetItemRect(index));
                 }
 
                 _itemPanel.Focus();
@@ -543,12 +601,14 @@ namespace WaifuAI.Controls
             {
                 _scrollOffset = itemTop;
                 CalculateScrollThumbRect();
+                _itemPanel.Invalidate();
                 _scrollPanel.Invalidate();
             }
             else if (itemBottom > viewBottom)
             {
                 _scrollOffset = Math.Min(_scrollBarMaxValue, itemBottom - _itemPanel.Height);
                 CalculateScrollThumbRect();
+                _itemPanel.Invalidate();
                 _scrollPanel.Invalidate();
             }
         }
@@ -776,7 +836,7 @@ namespace WaifuAI.Controls
                 {
                     _items[index] = value;
                     _owner.UpdateScrollBar();
-                    _owner.Invalidate();
+                    _owner._itemPanel.Invalidate();
                 }
             }
 
@@ -791,7 +851,7 @@ namespace WaifuAI.Controls
                 var wrappedItem = new CheckedListBoxItem(item, isChecked);
                 int result = _items.Add(wrappedItem);
                 _owner.UpdateScrollBar();
-                _owner.Invalidate();
+                _owner._itemPanel.Invalidate();
                 return result;
             }
 
@@ -809,7 +869,7 @@ namespace WaifuAI.Controls
                 _owner._hoverIndex = -1;
                 _owner._scrollOffset = 0;
                 _owner.UpdateScrollBar();
-                _owner.Invalidate();
+                _owner._itemPanel.Invalidate();
             }
 
             public bool Contains(object? item)
@@ -839,7 +899,7 @@ namespace WaifuAI.Controls
                 if (_owner._selectedIndex >= index)
                     _owner._selectedIndex++;
                 _owner.UpdateScrollBar();
-                _owner.Invalidate();
+                _owner._itemPanel.Invalidate();
             }
 
             void System.Collections.IList.Insert(int index, object? value)
@@ -865,7 +925,7 @@ namespace WaifuAI.Controls
                 else if (_owner._selectedIndex > index)
                     _owner._selectedIndex--;
                 _owner.UpdateScrollBar();
-                _owner.Invalidate();
+                _owner._itemPanel.Invalidate();
             }
 
             public void CopyTo(Array array, int index) => _items.CopyTo(array, index);

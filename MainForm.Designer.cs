@@ -1059,7 +1059,7 @@ namespace WaifuAI
             cbGroupSwitch.DropDownHeight = 620;
             cbGroupSwitch.Enabled = false;
             cbGroupSwitch.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            cbGroupSwitch.Location = new Point(8, 319);
+            cbGroupSwitch.Location = new Point(8, 311);
             cbGroupSwitch.MaxDropDownItems = 25;
             cbGroupSwitch.Name = "cbGroupSwitch";
             cbGroupSwitch.Padding = new Padding(1);
@@ -1072,7 +1072,7 @@ namespace WaifuAI
             label2.AutoSize = true;
             label2.Dock = DockStyle.Top;
             label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label2.Location = new Point(8, 304);
+            label2.Location = new Point(8, 296);
             label2.Name = "label2";
             label2.Size = new Size(131, 15);
             label2.TabIndex = 2;
@@ -1081,7 +1081,7 @@ namespace WaifuAI
             // panel6
             // 
             panel6.Dock = DockStyle.Top;
-            panel6.Location = new Point(8, 294);
+            panel6.Location = new Point(8, 286);
             panel6.Margin = new Padding(8);
             panel6.Name = "panel6";
             panel6.Padding = new Padding(8);
@@ -1095,10 +1095,11 @@ namespace WaifuAI
             lstGroupMembers.Dock = DockStyle.Top;
             lstGroupMembers.Enabled = false;
             lstGroupMembers.Font = new Font("Segoe UI", 9F);
+            lstGroupMembers.ItemHeight = 24;
             lstGroupMembers.Location = new Point(8, 68);
             lstGroupMembers.Name = "lstGroupMembers";
             lstGroupMembers.Padding = new Padding(1);
-            lstGroupMembers.Size = new Size(184, 226);
+            lstGroupMembers.Size = new Size(184, 218);
             lstGroupMembers.TabIndex = 46;
             lstGroupMembers.ItemCheck += lstGroupMembers_ItemCheck;
             // 
