@@ -49,7 +49,7 @@ namespace WaifuAI.AgentPlugins
 
             var promptbuild = LLMEngine.GetPromptBuilder();
 
-            var sysprompt = "You are a system designed to analyze short chat sessions and determine who should have a turn to talk next. " +
+            var sysprompt = "You are a system designed to analyze chatlogs and determine who should get a turn to talk next. " +
                 "Use the dialogs and context clues provided in the chatlog to make your choice. " + LLMEngine.NewLine + LLMEngine.NewLine +
                 "You will be provided with a chatlog and a list of participants. Respond with the number corresponding to your selection.";
             var group = param.Group;
