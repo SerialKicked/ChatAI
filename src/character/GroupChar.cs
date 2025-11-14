@@ -23,34 +23,31 @@ namespace WaifuAI.Files
         [JsonIgnore] public bool CanInitiateChat { get => CurrentBot?.CanInitiateChat ?? false; set => CurrentBot!.CanInitiateChat = value; }
 
         [JsonIgnore] public TimedLockPlugin LockManager => PrimaryBot?.LockManager ?? throw new InvalidOperationException("No primary bot set.");
-
         [JsonIgnore] public ToggleMonitorSettings LockSettings { get => PrimaryBot?.LockSettings ?? throw new InvalidOperationException("No primary bot set."); set => PrimaryBot!.LockSettings = value; }
         [JsonIgnore] public string PointSystem { get => PrimaryBot?.PointSystem ?? throw new InvalidOperationException("No primary bot set."); set => PrimaryBot!.PointSystem = value; }
         [JsonIgnore] public int PointValue { get => PrimaryBot?.PointValue ?? throw new InvalidOperationException("No primary bot set."); set => PrimaryBot!.PointValue = value; }
 
         [JsonIgnore] public Image Portrait => GetPortrait();
-
         [JsonIgnore] public bool Protected { get => PrimaryBot?.Protected ?? false; set => PrimaryBot!.Protected = value; }
         [JsonIgnore] public string TTSVoice { get => CurrentBot?.TTSVoice ?? string.Empty; set => CurrentBot!.TTSVoice = value; }
 
-        [JsonIgnore]
-        private readonly Dictionary<string, Image> portraitCache = [];
+        [JsonIgnore] private readonly Dictionary<string, Image> portraitCache = [];
+
+        [JsonIgnore] CharBrain ICharacter.Brain => PrimaryBot?.Brain ?? throw new InvalidOperationException("No primary bot set.");
 
         [JsonIgnore]
-        // If you MUST expose CharBrain at the GroupChar level for ICharacter:
-        CharBrain ICharacter.Brain => PrimaryBot?.Brain ?? throw new InvalidOperationException("No primary bot set.");
-
-        [JsonIgnore]
-        public PointSystem MyPoints 
+        public PointSystem MyPoints
         {
             get => PrimaryBot?.MyPoints ?? throw new InvalidOperationException("No primary bot set.");
             set => PrimaryBot!.MyPoints = value;
         }
 
-        public void ClearChatHistory(bool deletefile = true)
-        {
-            PrimaryBot?.ClearChatHistory(deletefile);
-        }
+        // === New helper properties for MainForm ===
+        [JsonIgnore] public bool HasQueuedResponses => _responseQueue.Count > 0;
+        [JsonIgnore] public int QueuedCount => _responseQueue.Count;
+        [JsonIgnore] public IEnumerable<string> QueuedNames => _responseQueue.Select(c => c.UniqueName);
+
+        public void ClearChatHistory(bool deletefile = true) => PrimaryBot?.ClearChatHistory(deletefile);
 
         private Image GetPortrait()
         {
@@ -70,49 +67,39 @@ namespace WaifuAI.Files
             base.BeginChat();
             if (IsUser)
                 return;
-            // Initialize plugins (refer to main bot)
+
             foreach (var item in LLMEngine.ContextPlugins)
-            {
                 item.Enabled = PrimaryBot?.Plugins.Contains(item.PluginID) ?? false;
-            }
+
             MyWorlds = PrimaryBot?.MyWorlds ?? [.. DataFiles.WorldInfos.Values.Where(wi => Worlds.Contains(wi.UniqueName))];
+
             foreach (var agent in SecondaryBots)
-            {
                 agent.MyWorlds = [.. DataFiles.WorldInfos.Values.Where(wi => agent.Worlds.Contains(wi.UniqueName))];
-            }
         }
 
         public override void EndChat(bool backup = false)
         {
-            // Save point value for primary bot
             if (PrimaryBot != null)
-            {
                 PrimaryBot.PointValue = PrimaryBot.MyPoints.PointCount;
-            }
-            base.EndChat(backup); // Saves all personas
+            base.EndChat(backup);
         }
 
 
-        /// <summary>
-        /// Gets next bot from queue or null to return control to user
-        /// </summary>
         public Character? GetNextFromQueue()
         {
-            if (_responseQueue.Count > 0 && _autoResponsesThisRound < Program.Settings.GroupChatAutoResponseLimit)
+            // Remove entries that are no longer part of the group
+            while (_responseQueue.Count > 0 && !AllPersonas.Contains(_responseQueue.Peek()))
+                _responseQueue.Dequeue();
+
+            if (_responseQueue.Count > 0 && (_autoResponsesThisRound < Program.Settings.GroupChatAutoResponseLimit || Program.Settings.GroupChatMode == GroupChatMode.RoundRobin))
             {
                 _autoResponsesThisRound++;
                 return _responseQueue.Dequeue();
             }
-            return null; // Queue exhausted or safety limit hit
+            return null;
         }
 
-        /// <summary>
-        /// Resets the auto-response counter (call when user sends message)
-        /// </summary>
-        public void ResetAutoResponseCounter()
-        {
-            _autoResponsesThisRound = 0;
-        }
+        public void ResetAutoResponseCounter() => _autoResponsesThisRound = 0;
 
         private void BuildQueue_NameDetection(string userMessage)
         {
@@ -123,52 +110,51 @@ namespace WaifuAI.Files
             {
                 var index = userMessage.IndexOf(bot.Name, StringComparison.OrdinalIgnoreCase);
                 if (index >= 0)
-                {
                     mentioned.Add((bot, index));
-                }
             }
 
-            // Enqueue in order of mention
             foreach (var (bot, _) in mentioned.OrderBy(x => x.Position))
-            {
                 _responseQueue.Enqueue(bot);
-            }
         }
 
         private void BuildQueue_RoundRobin()
         {
-            var allBots = AllPersonas.Cast<Character>().ToList();
-
-            // Queue all bots in order
-            foreach (var bot in allBots)
-            {
+            foreach (var bot in AllPersonas.Cast<Character>())
                 _responseQueue.Enqueue(bot);
-            }
-
-            // Optionally add user "turn" at the end by returning null
-            // (handled by GetNextFromQueue returning null when empty)
         }
 
         public void BuildResponseQueue(string userMessage)
         {
             _responseQueue.Clear();
+            ResetAutoResponseCounter();
 
             switch (Program.Settings.GroupChatMode)
             {
                 case GroupChatMode.NameDetection:
                     BuildQueue_NameDetection(userMessage);
                     break;
-
                 case GroupChatMode.RoundRobin:
                     BuildQueue_RoundRobin();
                     break;
-
                 case GroupChatMode.Manual:
                 default:
-                    // Queue stays empty, manual selection only
-                    break;
+                    break; // leave empty (manual)
             }
         }
 
+        // Optional helper: prime first responder (called by MainForm)
+        public Character? PrimeFirstResponder()
+        {
+            var next = GetNextFromQueue();
+            if (next != null)
+                SetCurrentBot(next.UniqueName);
+            return next;
+        }
+
+        public void ClearResponseQueue()
+        {
+            _responseQueue.Clear();
+            _autoResponsesThisRound = 0;
+        }
     }
 }

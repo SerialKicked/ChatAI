@@ -148,6 +148,16 @@ namespace WaifuAI.src.forms
             ed_searchkey.Text = Program.Settings.WebSearchBraveAPIKey;
             ck_searchextract.Checked = Program.Settings.WebSearchDetailedResults;
 
+            // enum GroupChatMode and fill group chat mode combobox
+            ckGroupRouting.Items.Clear();
+            foreach (var mode in Enum.GetValues<GroupChatMode>())
+            {
+                ckGroupRouting.Items.Add(mode.ToString());
+            }
+            ckGroupRouting.SelectedIndex = (int)Program.Settings.GroupChatMode;
+            numGroupQueue.Value = (int)Program.Settings.GroupChatAutoResponseLimit;
+
+
             _isinitloading = saveinit;
         }
 
@@ -192,6 +202,8 @@ namespace WaifuAI.src.forms
                 Program.Settings.Skin = mcbSkin.SelectedItem?.ToString() ?? "Dark";
                 Program.Settings.CutInTheMiddleSummaryStrategy = mck_cutmiddle.Checked;
                 Program.Settings.DisableDateAndMoodIfNotLastSession = ckNoPastInserts.Checked;
+                Program.Settings.GroupChatMode = (GroupChatMode)ckGroupRouting.SelectedIndex;
+                Program.Settings.GroupChatAutoResponseLimit = (int)numGroupQueue.Value;
 
                 // Search API Settings
                 if (cb_searchapi.SelectedIndex == 0)

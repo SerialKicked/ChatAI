@@ -95,6 +95,11 @@ namespace WaifuAI
             mck_worldinfo = new ModernCheckBox();
             mck_sessionmemory = new ModernCheckBox();
             panRight = new VerticalStackPanel();
+            collapsibleGroupBox4 = new CollapsibleGroupBox();
+            button3 = new Button();
+            btRunAgent = new Button();
+            button1 = new Button();
+            panel9 = new Panel();
             collapsibleMenus = new CollapsibleGroupBox();
             panel3 = new Panel();
             cboxGroup = new CollapsibleGroupBox();
@@ -109,11 +114,6 @@ namespace WaifuAI
             mck_guidance = new ModernCheckBox();
             mck_caninitchat = new ModernCheckBox();
             panel1 = new Panel();
-            collapsibleGroupBox4 = new CollapsibleGroupBox();
-            panel9 = new Panel();
-            button1 = new Button();
-            btRunAgent = new Button();
-            button3 = new Button();
             statusbar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictEmbed).BeginInit();
             collapseModel.SuspendLayout();
@@ -123,10 +123,10 @@ namespace WaifuAI
             cboxVLM.SuspendLayout();
             collapsibleGroupBox2.SuspendLayout();
             panRight.SuspendLayout();
+            collapsibleGroupBox4.SuspendLayout();
             collapsibleMenus.SuspendLayout();
             cboxGroup.SuspendLayout();
             collapsibleGroupBox3.SuspendLayout();
-            collapsibleGroupBox4.SuspendLayout();
             SuspendLayout();
             // 
             // HelptoolTip
@@ -946,6 +946,70 @@ namespace WaifuAI
             panRight.Size = new Size(200, 1012);
             panRight.TabIndex = 29;
             // 
+            // collapsibleGroupBox4
+            // 
+            collapsibleGroupBox4.BackColor = Color.FromArgb(37, 37, 37);
+            collapsibleGroupBox4.Controls.Add(button3);
+            collapsibleGroupBox4.Controls.Add(btRunAgent);
+            collapsibleGroupBox4.Controls.Add(button1);
+            collapsibleGroupBox4.Controls.Add(panel9);
+            collapsibleGroupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox4.Location = new Point(0, 866);
+            collapsibleGroupBox4.Name = "collapsibleGroupBox4";
+            collapsibleGroupBox4.Padding = new Padding(8, 32, 8, 8);
+            collapsibleGroupBox4.Size = new Size(200, 135);
+            collapsibleGroupBox4.TabIndex = 30;
+            collapsibleGroupBox4.Text = "Debug";
+            // 
+            // button3
+            // 
+            button3.AutoSize = true;
+            button3.Dock = DockStyle.Top;
+            button3.FlatStyle = FlatStyle.Flat;
+            button3.Font = new Font("Segoe UI", 9F);
+            button3.Location = new Point(8, 96);
+            button3.Name = "button3";
+            button3.Size = new Size(184, 27);
+            button3.TabIndex = 52;
+            button3.Text = "Insert List";
+            button3.UseVisualStyleBackColor = false;
+            // 
+            // btRunAgent
+            // 
+            btRunAgent.AutoSize = true;
+            btRunAgent.Dock = DockStyle.Top;
+            btRunAgent.FlatStyle = FlatStyle.Flat;
+            btRunAgent.Font = new Font("Segoe UI", 9F);
+            btRunAgent.Location = new Point(8, 69);
+            btRunAgent.Name = "btRunAgent";
+            btRunAgent.Size = new Size(184, 27);
+            btRunAgent.TabIndex = 51;
+            btRunAgent.Text = "Force Agent Loop";
+            btRunAgent.UseVisualStyleBackColor = false;
+            // 
+            // button1
+            // 
+            button1.AutoSize = true;
+            button1.Dock = DockStyle.Top;
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.Font = new Font("Segoe UI", 9F);
+            button1.Location = new Point(8, 42);
+            button1.Name = "button1";
+            button1.Size = new Size(184, 27);
+            button1.TabIndex = 50;
+            button1.Text = "Mood Info";
+            button1.UseVisualStyleBackColor = false;
+            // 
+            // panel9
+            // 
+            panel9.Dock = DockStyle.Top;
+            panel9.Location = new Point(8, 32);
+            panel9.Margin = new Padding(8);
+            panel9.Name = "panel9";
+            panel9.Padding = new Padding(8);
+            panel9.Size = new Size(184, 10);
+            panel9.TabIndex = 49;
+            // 
             // collapsibleMenus
             // 
             collapsibleMenus.BackColor = Color.FromArgb(37, 37, 37);
@@ -1132,70 +1196,6 @@ namespace WaifuAI
             panel1.Size = new Size(184, 10);
             panel1.TabIndex = 47;
             // 
-            // collapsibleGroupBox4
-            // 
-            collapsibleGroupBox4.BackColor = Color.FromArgb(37, 37, 37);
-            collapsibleGroupBox4.Controls.Add(button3);
-            collapsibleGroupBox4.Controls.Add(btRunAgent);
-            collapsibleGroupBox4.Controls.Add(button1);
-            collapsibleGroupBox4.Controls.Add(panel9);
-            collapsibleGroupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox4.Location = new Point(0, 866);
-            collapsibleGroupBox4.Name = "collapsibleGroupBox4";
-            collapsibleGroupBox4.Padding = new Padding(8, 32, 8, 8);
-            collapsibleGroupBox4.Size = new Size(200, 135);
-            collapsibleGroupBox4.TabIndex = 30;
-            collapsibleGroupBox4.Text = "Debug";
-            // 
-            // panel9
-            // 
-            panel9.Dock = DockStyle.Top;
-            panel9.Location = new Point(8, 32);
-            panel9.Margin = new Padding(8);
-            panel9.Name = "panel9";
-            panel9.Padding = new Padding(8);
-            panel9.Size = new Size(184, 10);
-            panel9.TabIndex = 49;
-            // 
-            // button1
-            // 
-            button1.AutoSize = true;
-            button1.Dock = DockStyle.Top;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Segoe UI", 9F);
-            button1.Location = new Point(8, 42);
-            button1.Name = "button1";
-            button1.Size = new Size(184, 27);
-            button1.TabIndex = 50;
-            button1.Text = "Mood Info";
-            button1.UseVisualStyleBackColor = false;
-            // 
-            // btRunAgent
-            // 
-            btRunAgent.AutoSize = true;
-            btRunAgent.Dock = DockStyle.Top;
-            btRunAgent.FlatStyle = FlatStyle.Flat;
-            btRunAgent.Font = new Font("Segoe UI", 9F);
-            btRunAgent.Location = new Point(8, 69);
-            btRunAgent.Name = "btRunAgent";
-            btRunAgent.Size = new Size(184, 27);
-            btRunAgent.TabIndex = 51;
-            btRunAgent.Text = "Force Agent Loop";
-            btRunAgent.UseVisualStyleBackColor = false;
-            // 
-            // button3
-            // 
-            button3.AutoSize = true;
-            button3.Dock = DockStyle.Top;
-            button3.FlatStyle = FlatStyle.Flat;
-            button3.Font = new Font("Segoe UI", 9F);
-            button3.Location = new Point(8, 96);
-            button3.Name = "button3";
-            button3.Size = new Size(184, 27);
-            button3.TabIndex = 52;
-            button3.Text = "Insert List";
-            button3.UseVisualStyleBackColor = false;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1230,14 +1230,14 @@ namespace WaifuAI
             collapsibleGroupBox2.ResumeLayout(false);
             collapsibleGroupBox2.PerformLayout();
             panRight.ResumeLayout(false);
+            collapsibleGroupBox4.ResumeLayout(false);
+            collapsibleGroupBox4.PerformLayout();
             collapsibleMenus.ResumeLayout(false);
             collapsibleMenus.PerformLayout();
             cboxGroup.ResumeLayout(false);
             cboxGroup.PerformLayout();
             collapsibleGroupBox3.ResumeLayout(false);
             collapsibleGroupBox3.PerformLayout();
-            collapsibleGroupBox4.ResumeLayout(false);
-            collapsibleGroupBox4.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }

@@ -39,9 +39,11 @@ namespace WaifuAI
         private readonly ActivityTimer _activityTimer = new();
         private int _afkmessagecount = 0;
         private readonly Random RNG = new();
-        public RenPyDialogHandler? _renpyDialogHandler;
         private string ed_log = string.Empty;
+        private SingleMessage? _lastUserMessageForGroupLoop;
+        private bool _suppressGroupSwitchEvent = false;
 
+        public RenPyDialogHandler? _renpyDialogHandler;
         public readonly List<ISlashCommand> slashCommands = [new MainSlashCmds(), new RenpyGameCmds()];
 
         public static ICharacter? Bot => LLMEngine.Bot as ICharacter;
@@ -325,6 +327,8 @@ namespace WaifuAI
             mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
             mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
             btVectorSearch.Enabled = LLMEngine.Settings.RAGEnabled;
+            
+            cbGroupSwitch.Enabled = LLMEngine.Status == SystemStatus.Ready;
         }
 
         /// <summary>
@@ -496,6 +500,10 @@ namespace WaifuAI
                 }
             }
             Bot?.SaveChatHistory();
+
+            // GROUP CHAT CHAIN: continue with next queued bot if any
+            if (AdvanceGroupQueue())
+                return;
         }
 
         private async void OnBotInitiateConversation(object? sender, EventArgs e)
@@ -589,6 +597,8 @@ namespace WaifuAI
             if (LLMEngine.Status == SystemStatus.Busy)
             {
                 LLMEngine.CancelGeneration();
+                if (LLMEngine.Bot is GroupChar mygroup) 
+                    mygroup.ClearResponseQueue();
                 return;
             }
             _impersonatemode = false;
@@ -618,16 +628,30 @@ namespace WaifuAI
                     break;
                 }
             }
-            var msg = new SingleMessage(AuthorRole.User, msgtxt, DragNDropExtension.DroppedFilePath);
+            var userMsg = new SingleMessage(AuthorRole.User, msgtxt, DragNDropExtension.DroppedFilePath);
             if (foundslash is not null && foundslash.ReplaceUser && foundslash.Message is not null)
             {
-                msg = foundslash.Message;
+                userMsg = foundslash.Message;
             }
-            await SendMessageToUI(msg);
+            await SendMessageToUI(userMsg);
             if (foundslash is not null && !foundslash.ReplaceUser && foundslash.Message is not null)
             {
                 await SendMessageToUI(foundslash.Message);
             }
+
+            // GROUP CHAT START: build queue & prime first responder
+            _lastUserMessageForGroupLoop = userMsg;
+            if (LLMEngine.Bot is GroupChar ggroup && (foundslash is null || !foundslash.NoBotResponse))
+            {
+                ggroup.BuildResponseQueue(msgtxt);
+                var first = ggroup.PrimeFirstResponder();
+                if (first != null)
+                {
+                    UpdateGroupSelection(); // keep UI in sync
+                    LLMEngine.InvalidatePromptCache();
+                }
+            }
+            // GROUP CHAT END
 
             if (foundslash is null || !foundslash.NoBotResponse)
             {
@@ -635,12 +659,14 @@ namespace WaifuAI
                 PrepareResponse();
                 await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"));
                 ed_input.Text = string.Empty;
-                await LLMEngine.SendMessageToBot(msg);
+                await LLMEngine.SendMessageToBot(userMsg);
             }
         }
 
         private async void RerollMessage(object sender, EventArgs e)
         {
+            if (LLMEngine.Bot is GroupChar g) 
+                g.ClearResponseQueue();
             _afkmessagecount = 0;
             if (LLMEngine.Status == SystemStatus.Busy || LLMEngine.History.CurrentSession.Messages.Count == 0 || LLMEngine.History.LastMessage()?.Role != AuthorRole.Assistant)
                 return;
@@ -778,6 +804,8 @@ namespace WaifuAI
             _impersonatemode = false;
             if (LLMEngine.Status == SystemStatus.Busy || LLMEngine.History.CurrentSession.Messages.Count == 0)
                 return;
+            if (LLMEngine.Bot is GroupChar g) 
+                g.ClearResponseQueue();
 
             var msgs = LLMEngine.History.CurrentSession.Messages;
 
@@ -1677,6 +1705,8 @@ namespace WaifuAI
 
         private void cbGroupSwitch_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_suppressGroupSwitchEvent || LLMEngine.Status == SystemStatus.Busy) 
+                return;
             if (Bot is GroupChar group)
             {
                 var selectedName = cbGroupSwitch.SelectedItem as string;
@@ -1743,6 +1773,7 @@ namespace WaifuAI
             {
                 if (Bot is not GroupChar curGroup)
                     return; // Already in single mode
+                curGroup.ClearResponseQueue();
                 var gobackbot = curGroup.PrimaryBot;
                 // set the cb_bot checkbox to the primary bot
                 if (gobackbot is not null)
@@ -1775,15 +1806,73 @@ namespace WaifuAI
 
         private void UpdateGroupSelection()
         {
-            cbGroupSwitch.Items.Clear();
-            if (Bot is not GroupChar group)
-                return;
-            foreach (var name in group.AllPersonas)
+            if (Bot is not GroupChar group) return;
+            _suppressGroupSwitchEvent = true;
+            try
             {
-                cbGroupSwitch.Items.Add(name.UniqueName);
-            }
-            cbGroupSwitch.SelectedItem = group.CurrentBotId;
+                cbGroupSwitch.Items.Clear();
+                foreach (var name in group.AllPersonas)
+                    cbGroupSwitch.Items.Add(name.UniqueName);
 
+                cbGroupSwitch.SelectedItem = group.CurrentBotId;
+            }
+            finally
+            {
+                _suppressGroupSwitchEvent = false;
+            }
+        }
+
+        // Add this helper inside MainForm (class scope)
+        private bool AdvanceGroupQueue()
+        {
+            if (LLMEngine.Bot is not GroupChar ggroup)
+                return false;
+
+            var lastUser = _lastUserMessageForGroupLoop;
+            if (lastUser is null)
+                return false;
+
+            var next = ggroup.GetNextFromQueue();
+            if (next is null)
+                return false;
+
+            ggroup.SetCurrentBot(next.UniqueName);
+
+            // UI work must happen on the UI thread.
+            BeginInvoke(new Action(async () =>
+            {
+                try
+                {
+                    DragNDropExtension.DroppedFilePath = string.Empty;
+                    LLMEngine.VLM_ClearImages();
+                    UpdateGroupSelection();
+                    LLMEngine.InvalidatePromptCache();
+                    PrepareResponse();
+                    await SendMessageToUI(new SingleMessage(
+                        AuthorRole.Assistant,
+                        "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("AdvanceGroupQueue UI block error: " + ex);
+                }
+            }));
+
+            // Fire-and-forget the actual generation. We do NOT await here, so the next
+            // OnStreamInferenceEnded after this bot finishes will run with no guard blockage.
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await LLMEngine.AddBotMessage().ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("AdvanceGroupQueue generation error: " + ex);
+                }
+            });
+
+            return true;
         }
     }
 }
