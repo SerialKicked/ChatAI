@@ -7,16 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using WaifuAI.AgentPlugins;
 using WaifuAI.Plugins;
 
 namespace WaifuAI.Files
 {
-    public enum GroupChatMode { Manual, RoundRobin, NameDetection, Mixed }
+    public enum GroupChatMode { Manual, RoundRobin, NameDetection, LLMSelection }
 
     public class GroupChar : GroupPersona<Character>, ICharacter
     {
         private Queue<Character> _responseQueue = new();
         private int _autoResponsesThisRound = 0;
+        private readonly FindGroupNextAgent findGroupNextAgent = new();
 
         [JsonIgnore] public string Icon { get => CurrentBot?.Icon ?? string.Empty; set => CurrentBot!.Icon = value; }
         [JsonIgnore] public List<string> AllowedSamplers { get => CurrentBot?.AllowedSamplers ?? []; set => CurrentBot!.AllowedSamplers = value; }
@@ -79,17 +81,25 @@ namespace WaifuAI.Files
 
         public override void EndChat(bool backup = false)
         {
-            if (PrimaryBot != null)
-                PrimaryBot.PointValue = PrimaryBot.MyPoints.PointCount;
+            PrimaryBot?.PointValue = PrimaryBot.MyPoints.PointCount;
             base.EndChat(backup);
         }
 
 
-        public Character? GetNextFromQueue()
+        public async Task<Character?> GetNextFromQueue()
         {
             // Remove entries that are no longer part of the group
             while (_responseQueue.Count > 0 && !AllPersonas.Contains(_responseQueue.Peek()))
                 _responseQueue.Dequeue();
+
+            if (Program.Settings.GroupChatMode == GroupChatMode.LLMSelection && _responseQueue.Count == 0)
+            {
+                _autoResponsesThisRound++;
+                if (_autoResponsesThisRound > Program.Settings.GroupChatAutoResponseLimit)
+                    return null;
+                var next = await LLMPickNext();
+                return (next is not null && next != LLMEngine.User) ? next : null;
+            }
 
             if (_responseQueue.Count > 0 && (_autoResponsesThisRound < Program.Settings.GroupChatAutoResponseLimit || Program.Settings.GroupChatMode == GroupChatMode.RoundRobin))
             {
@@ -123,7 +133,19 @@ namespace WaifuAI.Files
                 _responseQueue.Enqueue(bot);
         }
 
-        public void BuildResponseQueue(string userMessage)
+        public async Task<Character?> LLMPickNext(string? userMessage = null)
+        {
+            var gparams = new FindGroupNextAgentParams
+            {
+                Group = this,
+                Messages = [.. History.CurrentSession.Messages.TakeLast(6)]
+            };
+            if (userMessage is not null)
+                gparams.Messages.Add(new SingleMessage(AuthorRole.User, userMessage));
+            return await findGroupNextAgent.Execute(gparams, CancellationToken.None);
+        }
+
+        public async Task BuildResponseQueue(string userMessage)
         {
             _responseQueue.Clear();
             ResetAutoResponseCounter();
@@ -136,6 +158,13 @@ namespace WaifuAI.Files
                 case GroupChatMode.RoundRobin:
                     BuildQueue_RoundRobin();
                     break;
+                case GroupChatMode.LLMSelection:
+                    var selectedBot = await LLMPickNext(userMessage);
+                    if (selectedBot != null && selectedBot != MainForm.Bot)
+                        _responseQueue.Enqueue(selectedBot);
+                    else
+                        BuildQueue_NameDetection(userMessage); // fallback
+                    break;
                 case GroupChatMode.Manual:
                 default:
                     break; // leave empty (manual)
@@ -143,9 +172,9 @@ namespace WaifuAI.Files
         }
 
         // Optional helper: prime first responder (called by MainForm)
-        public Character? PrimeFirstResponder()
+        public async Task<Character?> PrimeFirstResponder()
         {
-            var next = GetNextFromQueue();
+            var next = await GetNextFromQueue();
             if (next != null)
                 SetCurrentBot(next.UniqueName);
             return next;

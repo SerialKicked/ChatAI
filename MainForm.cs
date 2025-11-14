@@ -127,6 +127,7 @@ namespace WaifuAI
             AgentRuntime.RegisterAction(new SessionMoodCheckAction());
             AgentRuntime.RegisterAction(new ImageInfoAction());
             AgentRuntime.RegisterAction(new PersonInfoAction());
+            AgentRuntime.RegisterAction(new FindGroupNextAgent());
             // Load our agentic plugins
             AgentRuntime.RegisterPlugin("GoalDesignerTask", new GoalDesignerTask());
             AgentRuntime.RegisterPlugin("CustomGoalTask", new CustomGoalTask());
@@ -502,7 +503,7 @@ namespace WaifuAI
             Bot?.SaveChatHistory();
 
             // GROUP CHAT CHAIN: continue with next queued bot if any
-            if (AdvanceGroupQueue())
+            if (await AdvanceGroupQueue())
                 return;
         }
 
@@ -643,8 +644,8 @@ namespace WaifuAI
             _lastUserMessageForGroupLoop = userMsg;
             if (LLMEngine.Bot is GroupChar ggroup && (foundslash is null || !foundslash.NoBotResponse))
             {
-                ggroup.BuildResponseQueue(msgtxt);
-                var first = ggroup.PrimeFirstResponder();
+                await ggroup.BuildResponseQueue(msgtxt);
+                var first = await ggroup.PrimeFirstResponder();
                 if (first != null)
                 {
                     UpdateGroupSelection(); // keep UI in sync
@@ -1495,8 +1496,7 @@ namespace WaifuAI
 
         private void ck_caninit_CheckedChanged(object sender, EventArgs e)
         {
-            if (Bot != null)
-                Bot.CanInitiateChat = mck_caninitchat.Checked;
+            Bot?.CanInitiateChat = mck_caninitchat.Checked;
         }
 
         private void AutoTalkTimer_Tick(object sender, EventArgs e)
@@ -1823,7 +1823,7 @@ namespace WaifuAI
         }
 
         // Add this helper inside MainForm (class scope)
-        private bool AdvanceGroupQueue()
+        private async Task<bool> AdvanceGroupQueue()
         {
             if (LLMEngine.Bot is not GroupChar ggroup)
                 return false;
@@ -1832,7 +1832,7 @@ namespace WaifuAI
             if (lastUser is null)
                 return false;
 
-            var next = ggroup.GetNextFromQueue();
+            var next = await ggroup.GetNextFromQueue();
             if (next is null)
                 return false;
 
