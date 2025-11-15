@@ -64,14 +64,14 @@ namespace WaifuAI.AgentPlugins
             var lstpeople = new List<Character>() { (MainForm.User as Character)! };
             lstpeople.AddRange(group.AllPersonas);
             lstpeople.Remove((Character)(messages.Last().Sender)!);
-            request.AppendLinuxLine().AppendLinuxLine("# Pick who is talking next");
+            request.AppendLinuxLine().AppendLinuxLine("# Pick who is talking next:");
             var x = 1;
             foreach (var member in lstpeople)
             {
-                request.AppendLinuxLine($"{x}. {member?.Name ?? "Unknown"}");
+                request.AppendLinuxLine($" {x} - {member?.Name ?? "Unknown"}");
                 x++;
             }
-            request.AppendLinuxLine().Append("Based on the chatlog, type the number corresponding to the person who should talk next. Input that number only, nothing else.");
+            request.AppendLinuxLine().Append("Based on the chatlog, type the number corresponding to the person who should talk next. Type that number and nothing else.");
 
             promptbuild.AddMessage(AuthorRole.SysPrompt, sysprompt);
             promptbuild.AddMessage(AuthorRole.User, request.ToString());
@@ -97,7 +97,7 @@ namespace WaifuAI.AgentPlugins
                 await Task.Delay(50, ct);
             }
 
-            if (int.TryParse(finalstr.Trim(), out int selectedindex) && selectedindex <= lstpeople.Count)
+            if (int.TryParse(finalstr.Trim(), out int selectedindex) && selectedindex <= lstpeople.Count && selectedindex > 0)
             {
                 selectedindex--;
                 return lstpeople[selectedindex];

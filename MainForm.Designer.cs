@@ -954,7 +954,7 @@ namespace WaifuAI
             collapsibleGroupBox4.Controls.Add(button1);
             collapsibleGroupBox4.Controls.Add(panel9);
             collapsibleGroupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox4.Location = new Point(0, 866);
+            collapsibleGroupBox4.Location = new Point(0, 850);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(8, 32, 8, 8);
             collapsibleGroupBox4.Size = new Size(200, 135);
@@ -973,6 +973,7 @@ namespace WaifuAI
             button3.TabIndex = 52;
             button3.Text = "Insert List";
             button3.UseVisualStyleBackColor = false;
+            button3.Click += dbgPromptInsert_Click;
             // 
             // btRunAgent
             // 
@@ -986,6 +987,7 @@ namespace WaifuAI
             btRunAgent.TabIndex = 51;
             btRunAgent.Text = "Force Agent Loop";
             btRunAgent.UseVisualStyleBackColor = false;
+            btRunAgent.Click += dbgRunAgent_Click;
             // 
             // button1
             // 
@@ -999,6 +1001,7 @@ namespace WaifuAI
             button1.TabIndex = 50;
             button1.Text = "Mood Info";
             button1.UseVisualStyleBackColor = false;
+            button1.Click += dbgMood_Click;
             // 
             // panel9
             // 
@@ -1018,7 +1021,7 @@ namespace WaifuAI
             collapsibleMenus.Controls.Add(btRawLog);
             collapsibleMenus.Controls.Add(panel3);
             collapsibleMenus.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleMenus.Location = new Point(0, 733);
+            collapsibleMenus.Location = new Point(0, 717);
             collapsibleMenus.Name = "collapsibleMenus";
             collapsibleMenus.Padding = new Padding(8, 32, 8, 8);
             collapsibleMenus.Size = new Size(200, 125);
@@ -1048,7 +1051,7 @@ namespace WaifuAI
             cboxGroup.Location = new Point(0, 369);
             cboxGroup.Name = "cboxGroup";
             cboxGroup.Padding = new Padding(8, 32, 8, 8);
-            cboxGroup.Size = new Size(200, 356);
+            cboxGroup.Size = new Size(200, 340);
             cboxGroup.TabIndex = 29;
             cboxGroup.Text = "Group Chat";
             // 

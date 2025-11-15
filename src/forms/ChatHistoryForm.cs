@@ -285,7 +285,8 @@ namespace WaifuAI.src.forms
                 }
                 sb.Append("</ul>");
             }
-            
+            if (!string.IsNullOrWhiteSpace(session.Scenario))
+                sb.Append($"<p><strong>Scenario:</strong> {session.Scenario}</p>");
             sb.Append($"<p><strong>Relevance:</strong> {session.MetaData.Relevance}</p>");
             
             if (session.Sentiments.Count > 0)

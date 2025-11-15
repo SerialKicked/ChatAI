@@ -1670,7 +1670,7 @@ namespace WaifuAI
             logForm.ShowDialog();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void dbgMood_Click(object sender, EventArgs e)
         {
             var mood = LLMEngine.Bot.Brain.Mood.Describe();
             // show a simple message box
@@ -1687,12 +1687,12 @@ namespace WaifuAI
             LLMEngine.Bot.Brain.DisableEurekas = !mckNatMem.Checked;
         }
 
-        private void btRunAgent_Click(object sender, EventArgs e)
+        private void dbgRunAgent_Click(object sender, EventArgs e)
         {
             LLMEngine.Bot.AgentSystem?.ForceRunLoop();
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void dbgPromptInsert_Click(object sender, EventArgs e)
         {
             var build = new StringBuilder();
             foreach (var item in LLMEngine.dataInserts)
