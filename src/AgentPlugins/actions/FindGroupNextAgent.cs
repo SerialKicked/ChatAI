@@ -51,7 +51,7 @@ namespace WaifuAI.AgentPlugins
 
             var sysprompt = "You are a system designed to analyze chatlogs and determine who should get a turn to talk next. " +
                 "Use the dialogs and context clues provided in the chatlog to make your choice. " + LLMEngine.NewLine + LLMEngine.NewLine +
-                "You will be provided with a chatlog and a list of participants. Respond with the number corresponding to your selection.";
+                "You will be provided with a chatlog and a list of participants. Respond with your reasoning followed by the number corresponding to your selection.";
             var group = param.Group;
             // retrieve the last 6 messages from the session
             var messages = param.Messages;
@@ -68,21 +68,24 @@ namespace WaifuAI.AgentPlugins
             var x = 1;
             foreach (var member in lstpeople)
             {
-                request.AppendLinuxLine($" {x} - {member?.Name ?? "Unknown"}");
+                request.AppendLinuxLine($"{member?.Name ?? "Unknown"} is {x}");
                 x++;
             }
-            request.AppendLinuxLine().Append("Based on the chatlog, type the number corresponding to the person who should talk next. Type that number and nothing else.");
+            request.AppendLinuxLine().Append("Based on the chatlog, determine who is meant to talk next, and type the number corresponding to that person from the list above.");
 
             promptbuild.AddMessage(AuthorRole.SysPrompt, sysprompt);
             promptbuild.AddMessage(AuthorRole.User, request.ToString());
             var query = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, replyln);
             if (query is GenerationInput llmparams)
             {
-                llmparams.Grammar = "root ::= ([0-9][0-9]?[0-9]?)";
+                llmparams.Grammar = "root ::= [^0-9]* [0-9]";
             }
 
             var finalstr = await LLMEngine.SimpleQuery(query, ct).ConfigureAwait(false);
-            finalstr.RemoveThinkingBlocks();
+            // retrieve the last character from the response as it should be the number
+            finalstr = finalstr.Trim();
+            finalstr = finalstr[^1].ToString();
+
             LLMEngine.NamesInPromptOverride = null;
             LLMEngine.Instruct.PrefillThinking = prefill;
 
