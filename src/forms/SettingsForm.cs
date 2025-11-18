@@ -118,6 +118,7 @@ namespace WaifuAI.src.forms
             num_italicratio.Value = (decimal)Program.Settings.RoleplayFormatting.RemoveItalicRatio;
             num_removeitalicmaxword.Value = Program.Settings.RoleplayFormatting.RemoveItalicMaxWords;
             ck_lastparaphfilter.Checked = Program.Settings.RoleplayFormatting.LastParagraphDeleter;
+            ckDelStartSlop.Checked = Program.Settings.RoleplayFormatting.RemoveStartingSlop;
             cb_pastsession.SelectedIndex = (int)Program.Settings.SessionHandling;
             ck_sysrag.Checked = Program.Settings.MoveAllInsertsToSysPrompt;
             ck_remlastsentence.Checked = Program.Settings.RemoveCutSentence;
@@ -182,6 +183,7 @@ namespace WaifuAI.src.forms
                 Program.Settings.RoleplayFormatting.RemoveItalicRatio = (float)num_italicratio.Value;
                 Program.Settings.RoleplayFormatting.RemoveItalicMaxWords = (int)num_removeitalicmaxword.Value;
                 Program.Settings.RoleplayFormatting.LastParagraphDeleter = ck_lastparaphfilter.Checked;
+                Program.Settings.RoleplayFormatting.RemoveStartingSlop = ckDelStartSlop.Checked;
                 Program.Settings.RemoveCutSentence = ck_remlastsentence.Checked;
                 Program.Settings.StopGenerationOnFirstParagraph = ck_oneparagraph.Checked;
                 Program.Settings.WebsitePluginUseKeywords = ck_webkeyword.Checked;

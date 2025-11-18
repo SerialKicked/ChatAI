@@ -103,6 +103,7 @@ namespace WaifuAI.src.forms
             panel8 = new Panel();
             verticalStackPanel2 = new VerticalStackPanel();
             collapsibleGroupBox4 = new CollapsibleGroupBox();
+            ckDelStartSlop = new ModernCheckBox();
             panel5 = new Panel();
             panel3 = new Panel();
             collapsibleGroupBox8 = new CollapsibleGroupBox();
@@ -144,7 +145,7 @@ namespace WaifuAI.src.forms
             // 
             ck_lastparaphfilter.Dock = DockStyle.Top;
             ck_lastparaphfilter.Font = new Font("Segoe UI", 9F);
-            ck_lastparaphfilter.Location = new Point(12, 341);
+            ck_lastparaphfilter.Location = new Point(12, 393);
             ck_lastparaphfilter.Name = "ck_lastparaphfilter";
             ck_lastparaphfilter.Size = new Size(337, 26);
             ck_lastparaphfilter.TabIndex = 41;
@@ -325,7 +326,7 @@ namespace WaifuAI.src.forms
             // 
             ck_fixasterix.Dock = DockStyle.Top;
             ck_fixasterix.Font = new Font("Segoe UI", 9F);
-            ck_fixasterix.Location = new Point(12, 367);
+            ck_fixasterix.Location = new Point(12, 341);
             ck_fixasterix.Name = "ck_fixasterix";
             ck_fixasterix.Size = new Size(337, 26);
             ck_fixasterix.TabIndex = 0;
@@ -962,8 +963,9 @@ namespace WaifuAI.src.forms
             // 
             collapsibleGroupBox4.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox4.CanCollapse = false;
-            collapsibleGroupBox4.Controls.Add(ck_fixasterix);
             collapsibleGroupBox4.Controls.Add(ck_lastparaphfilter);
+            collapsibleGroupBox4.Controls.Add(ckDelStartSlop);
+            collapsibleGroupBox4.Controls.Add(ck_fixasterix);
             collapsibleGroupBox4.Controls.Add(ck_oneparagraph);
             collapsibleGroupBox4.Controls.Add(ck_remlastsentence);
             collapsibleGroupBox4.Controls.Add(ck_unbold);
@@ -978,9 +980,20 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox4.Location = new Point(0, 143);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox4.Size = new Size(361, 400);
+            collapsibleGroupBox4.Size = new Size(361, 432);
             collapsibleGroupBox4.TabIndex = 0;
             collapsibleGroupBox4.Text = "Output Formatting";
+            // 
+            // ckDelStartSlop
+            // 
+            ckDelStartSlop.Dock = DockStyle.Top;
+            ckDelStartSlop.Font = new Font("Segoe UI", 9F);
+            ckDelStartSlop.Location = new Point(12, 367);
+            ckDelStartSlop.Name = "ckDelStartSlop";
+            ckDelStartSlop.Size = new Size(337, 26);
+            ckDelStartSlop.TabIndex = 57;
+            ckDelStartSlop.Text = "Delete starting slop";
+            ckDelStartSlop.UseVisualStyleBackColor = true;
             // 
             // panel5
             // 
@@ -1330,5 +1343,6 @@ namespace WaifuAI.src.forms
         private Label label8;
         private Panel panel6;
         private Panel panel8;
+        private ModernCheckBox ckDelStartSlop;
     }
 }

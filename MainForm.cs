@@ -402,6 +402,8 @@ namespace WaifuAI
 
         private async void OnStreamMessageReceived(object? sender, string e)
         {
+            if (string.IsNullOrEmpty(e))
+                return;
             if (!_impersonatemode && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart) && _currentgencalls == 1)
             {
                 var thoughts = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + $"*{LLMEngine.Bot.GetIdentifier()} is thinking...*";
