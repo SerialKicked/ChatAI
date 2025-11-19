@@ -602,6 +602,7 @@ namespace WaifuAI
                 LLMEngine.CancelGeneration();
                 if (LLMEngine.Bot is GroupChar mygroup) 
                     mygroup.ClearResponseQueue();
+                UpdateUIState();
                 return;
             }
             _impersonatemode = false;

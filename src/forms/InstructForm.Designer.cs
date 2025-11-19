@@ -31,13 +31,13 @@ namespace WaifuAI.src.forms
         private void InitializeComponent()
         {
             panel1 = new Panel();
-            btSave = new Button();
-            edInstruct = new TextBox();
-            listInstruct = new ModernListBox();
-            panContent = new Panel();
-            panel2 = new Panel();
-            panel3 = new Panel();
             panel4 = new Panel();
+            edInstruct = new TextBox();
+            panel3 = new Panel();
+            btSave = new Button();
+            listInstruct = new ModernListBox();
+            panel2 = new Panel();
+            panContent = new Panel();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -52,8 +52,37 @@ namespace WaifuAI.src.forms
             panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(234, 575);
+            panel1.Size = new Size(234, 738);
             panel1.TabIndex = 1;
+            // 
+            // panel4
+            // 
+            panel4.Dock = DockStyle.Bottom;
+            panel4.Location = new Point(0, 661);
+            panel4.Margin = new Padding(8);
+            panel4.Name = "panel4";
+            panel4.Padding = new Padding(8);
+            panel4.Size = new Size(234, 10);
+            panel4.TabIndex = 51;
+            // 
+            // edInstruct
+            // 
+            edInstruct.BorderStyle = BorderStyle.FixedSingle;
+            edInstruct.Dock = DockStyle.Bottom;
+            edInstruct.Location = new Point(0, 671);
+            edInstruct.Name = "edInstruct";
+            edInstruct.Size = new Size(234, 23);
+            edInstruct.TabIndex = 2;
+            // 
+            // panel3
+            // 
+            panel3.Dock = DockStyle.Bottom;
+            panel3.Location = new Point(0, 694);
+            panel3.Margin = new Padding(8);
+            panel3.Name = "panel3";
+            panel3.Padding = new Padding(8);
+            panel3.Size = new Size(234, 10);
+            panel3.TabIndex = 50;
             // 
             // btSave
             // 
@@ -61,7 +90,7 @@ namespace WaifuAI.src.forms
             btSave.Dock = DockStyle.Bottom;
             btSave.FlatStyle = FlatStyle.Flat;
             btSave.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btSave.Location = new Point(0, 541);
+            btSave.Location = new Point(0, 704);
             btSave.Name = "btSave";
             btSave.Size = new Size(234, 24);
             btSave.TabIndex = 3;
@@ -69,27 +98,28 @@ namespace WaifuAI.src.forms
             btSave.UseVisualStyleBackColor = false;
             btSave.Click += btSave_Click;
             // 
-            // edInstruct
-            // 
-            edInstruct.BorderStyle = BorderStyle.FixedSingle;
-            edInstruct.Dock = DockStyle.Bottom;
-            edInstruct.Location = new Point(0, 508);
-            edInstruct.Name = "edInstruct";
-            edInstruct.Size = new Size(234, 23);
-            edInstruct.TabIndex = 2;
-            // 
             // listInstruct
             // 
-            listInstruct.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             listInstruct.BackColor = Color.FromArgb(64, 64, 64);
             listInstruct.BorderStyle = BorderStyle.FixedSingle;
+            listInstruct.Dock = DockStyle.Fill;
             listInstruct.Font = new Font("Segoe UI", 9.25F);
-            listInstruct.Location = new Point(3, 3);
+            listInstruct.Location = new Point(0, 0);
             listInstruct.Name = "listInstruct";
             listInstruct.Padding = new Padding(1);
-            listInstruct.Size = new Size(228, 482);
+            listInstruct.Size = new Size(234, 706);
             listInstruct.TabIndex = 1;
             listInstruct.SelectedIndexChanged += listInstruct_SelectedIndexChanged;
+            // 
+            // panel2
+            // 
+            panel2.Dock = DockStyle.Bottom;
+            panel2.Location = new Point(0, 728);
+            panel2.Margin = new Padding(8);
+            panel2.Name = "panel2";
+            panel2.Padding = new Padding(8);
+            panel2.Size = new Size(234, 10);
+            panel2.TabIndex = 49;
             // 
             // panContent
             // 
@@ -97,44 +127,14 @@ namespace WaifuAI.src.forms
             panContent.Dock = DockStyle.Fill;
             panContent.Location = new Point(234, 0);
             panContent.Name = "panContent";
-            panContent.Size = new Size(678, 575);
+            panContent.Size = new Size(678, 738);
             panContent.TabIndex = 2;
-            // 
-            // panel2
-            // 
-            panel2.Dock = DockStyle.Bottom;
-            panel2.Location = new Point(0, 565);
-            panel2.Margin = new Padding(8);
-            panel2.Name = "panel2";
-            panel2.Padding = new Padding(8);
-            panel2.Size = new Size(234, 10);
-            panel2.TabIndex = 49;
-            // 
-            // panel3
-            // 
-            panel3.Dock = DockStyle.Bottom;
-            panel3.Location = new Point(0, 531);
-            panel3.Margin = new Padding(8);
-            panel3.Name = "panel3";
-            panel3.Padding = new Padding(8);
-            panel3.Size = new Size(234, 10);
-            panel3.TabIndex = 50;
-            // 
-            // panel4
-            // 
-            panel4.Dock = DockStyle.Bottom;
-            panel4.Location = new Point(0, 498);
-            panel4.Margin = new Padding(8);
-            panel4.Name = "panel4";
-            panel4.Padding = new Padding(8);
-            panel4.Size = new Size(234, 10);
-            panel4.TabIndex = 51;
             // 
             // InstructForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(912, 575);
+            ClientSize = new Size(912, 738);
             Controls.Add(panContent);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
