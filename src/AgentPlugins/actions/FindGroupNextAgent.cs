@@ -75,7 +75,7 @@ namespace WaifuAI.AgentPlugins
 
             promptbuild.AddMessage(AuthorRole.SysPrompt, sysprompt);
             promptbuild.AddMessage(AuthorRole.User, request.ToString());
-            var query = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, replyln);
+            var query = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, replyln, forceAltRoles: false);
             if (query is GenerationInput llmparams)
             {
                 llmparams.Grammar = "root ::= [^0-9]* [0-9]";

@@ -158,6 +158,14 @@ namespace WaifuAI.src.forms
             ckGroupRouting.SelectedIndex = (int)Program.Settings.GroupChatMode;
             numGroupQueue.Value = (int)Program.Settings.GroupChatAutoResponseLimit;
 
+            cbGroupSessionStrategy.Items.Clear();
+            foreach (var mode in Enum.GetValues<GroupChatPastSessionMode>())
+            {
+                cbGroupSessionStrategy.Items.Add(mode.ToString());
+            }
+            cbGroupSessionStrategy.SelectedIndex = (int)Program.Settings.GroupSecondaryPersonaSeePastSessions;
+            ckGroupAltern.Checked = Program.Settings.GroupInstructFormatAdapter;
+
 
             _isinitloading = saveinit;
         }
@@ -206,6 +214,8 @@ namespace WaifuAI.src.forms
                 Program.Settings.DisableDateAndMoodIfNotLastSession = ckNoPastInserts.Checked;
                 Program.Settings.GroupChatMode = (GroupChatMode)ckGroupRouting.SelectedIndex;
                 Program.Settings.GroupChatAutoResponseLimit = (int)numGroupQueue.Value;
+                Program.Settings.GroupSecondaryPersonaSeePastSessions = (GroupChatPastSessionMode)cbGroupSessionStrategy.SelectedIndex;
+                Program.Settings.GroupInstructFormatAdapter = ckGroupAltern.Checked;
 
                 // Search API Settings
                 if (cb_searchapi.SelectedIndex == 0)

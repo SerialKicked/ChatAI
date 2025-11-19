@@ -1533,8 +1533,8 @@ namespace WaifuAI
             editForm.SetupCharacterEditor(Bot?.GetIdentifier() ?? string.Empty);
             editForm.ShowDialog();
             LLMEngine.InvalidatePromptCache();
-            var currbselection = cb_bot.Text;
-            var curruselection = cb_user.Text;
+            var currbselection = cb_bot.SelectedText;
+            var curruselection = cb_user.SelectedText;
             cb_bot.Items.Clear();
             cb_user.Items.Clear();
             foreach (var item in DataFiles.Characters)

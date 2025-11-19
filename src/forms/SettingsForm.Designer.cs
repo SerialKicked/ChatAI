@@ -102,21 +102,25 @@ namespace WaifuAI.src.forms
             mck_cutmiddle = new ModernCheckBox();
             panel8 = new Panel();
             verticalStackPanel2 = new VerticalStackPanel();
+            collapsibleGroupBox6 = new CollapsibleGroupBox();
+            mcbSkin = new ModernComboBox();
+            label5 = new Label();
+            panel4 = new Panel();
             collapsibleGroupBox4 = new CollapsibleGroupBox();
             ckDelStartSlop = new ModernCheckBox();
             panel5 = new Panel();
             panel3 = new Panel();
             collapsibleGroupBox8 = new CollapsibleGroupBox();
+            ckGroupAltern = new ModernCheckBox();
+            cbGroupSessionStrategy = new ModernComboBox();
+            label9 = new Label();
+            panel9 = new Panel();
             numGroupQueue = new ModernNumericUpDown();
             label8 = new Label();
             panel6 = new Panel();
             ckGroupRouting = new ModernComboBox();
             label7 = new Label();
             verticalStackPanel3 = new VerticalStackPanel();
-            collapsibleGroupBox6 = new CollapsibleGroupBox();
-            mcbSkin = new ModernComboBox();
-            label5 = new Label();
-            panel4 = new Panel();
             collapsibleGroupBox5 = new CollapsibleGroupBox();
             panel2 = new Panel();
             panel7 = new Panel();
@@ -128,12 +132,12 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox2.SuspendLayout();
             panel8.SuspendLayout();
             verticalStackPanel2.SuspendLayout();
+            collapsibleGroupBox6.SuspendLayout();
             collapsibleGroupBox4.SuspendLayout();
             panel5.SuspendLayout();
             panel3.SuspendLayout();
             collapsibleGroupBox8.SuspendLayout();
             verticalStackPanel3.SuspendLayout();
-            collapsibleGroupBox6.SuspendLayout();
             collapsibleGroupBox5.SuspendLayout();
             SuspendLayout();
             // 
@@ -399,7 +403,7 @@ namespace WaifuAI.src.forms
             ck_forcePW.Font = new Font("Segoe UI", 9F);
             ck_forcePW.Location = new Point(12, 165);
             ck_forcePW.Name = "ck_forcePW";
-            ck_forcePW.Size = new Size(284, 26);
+            ck_forcePW.Size = new Size(337, 26);
             ck_forcePW.TabIndex = 38;
             ck_forcePW.Text = "Force password when switching bot";
             ck_forcePW.UseVisualStyleBackColor = true;
@@ -410,7 +414,7 @@ namespace WaifuAI.src.forms
             ckShowHidden.Font = new Font("Segoe UI", 9F);
             ckShowHidden.Location = new Point(12, 191);
             ckShowHidden.Name = "ckShowHidden";
-            ckShowHidden.Size = new Size(284, 26);
+            ckShowHidden.Size = new Size(337, 26);
             ckShowHidden.TabIndex = 31;
             ckShowHidden.Text = "Show hidden system messages";
             ckShowHidden.UseVisualStyleBackColor = true;
@@ -472,7 +476,7 @@ namespace WaifuAI.src.forms
             cb_background.MaxDropDownItems = 10;
             cb_background.Name = "cb_background";
             cb_background.Padding = new Padding(1);
-            cb_background.Size = new Size(284, 23);
+            cb_background.Size = new Size(337, 23);
             cb_background.TabIndex = 27;
             // 
             // label28
@@ -762,9 +766,9 @@ namespace WaifuAI.src.forms
             // 
             panel1.Controls.Add(bt_Close);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 615);
+            panel1.Location = new Point(0, 669);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1011, 50);
+            panel1.Size = new Size(1011, 38);
             panel1.TabIndex = 31;
             // 
             // bt_Close
@@ -774,7 +778,7 @@ namespace WaifuAI.src.forms
             bt_Close.FlatStyle = FlatStyle.Flat;
             bt_Close.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_Close.ForeColor = Color.Black;
-            bt_Close.Location = new Point(10, 15);
+            bt_Close.Location = new Point(12, 6);
             bt_Close.Name = "bt_Close";
             bt_Close.Size = new Size(989, 23);
             bt_Close.TabIndex = 1;
@@ -841,7 +845,7 @@ namespace WaifuAI.src.forms
             verticalStackPanel1.Location = new Point(0, 0);
             verticalStackPanel1.Name = "verticalStackPanel1";
             verticalStackPanel1.Padding = new Padding(0, 6, 0, 6);
-            verticalStackPanel1.Size = new Size(321, 615);
+            verticalStackPanel1.Size = new Size(321, 669);
             verticalStackPanel1.TabIndex = 34;
             // 
             // collapsibleGroupBox7
@@ -950,14 +954,72 @@ namespace WaifuAI.src.forms
             // 
             // verticalStackPanel2
             // 
+            verticalStackPanel2.Controls.Add(collapsibleGroupBox6);
             verticalStackPanel2.Controls.Add(collapsibleGroupBox4);
-            verticalStackPanel2.Controls.Add(collapsibleGroupBox8);
             verticalStackPanel2.Dock = DockStyle.Left;
             verticalStackPanel2.Location = new Point(641, 0);
             verticalStackPanel2.Name = "verticalStackPanel2";
             verticalStackPanel2.Padding = new Padding(0, 6, 0, 6);
-            verticalStackPanel2.Size = new Size(361, 615);
+            verticalStackPanel2.Size = new Size(361, 669);
             verticalStackPanel2.TabIndex = 35;
+            // 
+            // collapsibleGroupBox6
+            // 
+            collapsibleGroupBox6.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox6.CanCollapse = false;
+            collapsibleGroupBox6.Controls.Add(mcbSkin);
+            collapsibleGroupBox6.Controls.Add(ck_forcePW);
+            collapsibleGroupBox6.Controls.Add(ckShowHidden);
+            collapsibleGroupBox6.Controls.Add(num_msgcount);
+            collapsibleGroupBox6.Controls.Add(label29);
+            collapsibleGroupBox6.Controls.Add(label30);
+            collapsibleGroupBox6.Controls.Add(num_fontsize);
+            collapsibleGroupBox6.Controls.Add(label5);
+            collapsibleGroupBox6.Controls.Add(panel4);
+            collapsibleGroupBox6.Controls.Add(cb_background);
+            collapsibleGroupBox6.Controls.Add(label28);
+            collapsibleGroupBox6.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox6.Location = new Point(0, 436);
+            collapsibleGroupBox6.Name = "collapsibleGroupBox6";
+            collapsibleGroupBox6.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox6.Size = new Size(361, 227);
+            collapsibleGroupBox6.TabIndex = 1;
+            collapsibleGroupBox6.Text = "User Interface";
+            // 
+            // mcbSkin
+            // 
+            mcbSkin.BackColor = Color.FromArgb(64, 64, 64);
+            mcbSkin.Dock = DockStyle.Top;
+            mcbSkin.DropDownHeight = 180;
+            mcbSkin.Font = new Font("Segoe UI", 9F);
+            mcbSkin.Items.AddRange(new object[] { "Light", "Dark" });
+            mcbSkin.Location = new Point(12, 95);
+            mcbSkin.MaxDropDownItems = 10;
+            mcbSkin.Name = "mcbSkin";
+            mcbSkin.Padding = new Padding(1);
+            mcbSkin.Size = new Size(337, 23);
+            mcbSkin.TabIndex = 40;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Dock = DockStyle.Top;
+            label5.Font = new Font("Segoe UI", 9F);
+            label5.Location = new Point(12, 80);
+            label5.Name = "label5";
+            label5.Size = new Size(43, 15);
+            label5.TabIndex = 39;
+            label5.Text = "UI Skin";
+            // 
+            // panel4
+            // 
+            panel4.Dock = DockStyle.Top;
+            panel4.Location = new Point(12, 70);
+            panel4.Margin = new Padding(8);
+            panel4.Name = "panel4";
+            panel4.Padding = new Padding(8);
+            panel4.Size = new Size(337, 10);
+            panel4.TabIndex = 54;
             // 
             // collapsibleGroupBox4
             // 
@@ -977,10 +1039,10 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox4.Controls.Add(panel3);
             collapsibleGroupBox4.Controls.Add(ck_antislop);
             collapsibleGroupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox4.Location = new Point(0, 143);
+            collapsibleGroupBox4.Location = new Point(0, 6);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox4.Size = new Size(361, 432);
+            collapsibleGroupBox4.Size = new Size(361, 422);
             collapsibleGroupBox4.TabIndex = 0;
             collapsibleGroupBox4.Text = "Output Formatting";
             // 
@@ -1026,18 +1088,67 @@ namespace WaifuAI.src.forms
             // 
             collapsibleGroupBox8.BackColor = Color.FromArgb(37, 37, 37);
             collapsibleGroupBox8.CanCollapse = false;
+            collapsibleGroupBox8.Controls.Add(ckGroupAltern);
+            collapsibleGroupBox8.Controls.Add(cbGroupSessionStrategy);
+            collapsibleGroupBox8.Controls.Add(label9);
+            collapsibleGroupBox8.Controls.Add(panel9);
             collapsibleGroupBox8.Controls.Add(numGroupQueue);
             collapsibleGroupBox8.Controls.Add(label8);
             collapsibleGroupBox8.Controls.Add(panel6);
             collapsibleGroupBox8.Controls.Add(ckGroupRouting);
             collapsibleGroupBox8.Controls.Add(label7);
             collapsibleGroupBox8.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox8.Location = new Point(0, 6);
+            collapsibleGroupBox8.Location = new Point(6, 270);
             collapsibleGroupBox8.Name = "collapsibleGroupBox8";
             collapsibleGroupBox8.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox8.Size = new Size(361, 129);
+            collapsibleGroupBox8.Size = new Size(308, 218);
             collapsibleGroupBox8.TabIndex = 1;
             collapsibleGroupBox8.Text = "Group Chat";
+            // 
+            // ckGroupAltern
+            // 
+            ckGroupAltern.Dock = DockStyle.Top;
+            ckGroupAltern.Font = new Font("Segoe UI", 9F);
+            ckGroupAltern.Location = new Point(12, 166);
+            ckGroupAltern.Name = "ckGroupAltern";
+            ckGroupAltern.Size = new Size(284, 26);
+            ckGroupAltern.TabIndex = 61;
+            ckGroupAltern.Text = "Forced message role alternance";
+            ckGroupAltern.UseVisualStyleBackColor = true;
+            // 
+            // cbGroupSessionStrategy
+            // 
+            cbGroupSessionStrategy.BackColor = Color.FromArgb(64, 64, 64);
+            cbGroupSessionStrategy.Dock = DockStyle.Top;
+            cbGroupSessionStrategy.DropDownHeight = 180;
+            cbGroupSessionStrategy.Font = new Font("Segoe UI", 9F);
+            cbGroupSessionStrategy.Location = new Point(12, 143);
+            cbGroupSessionStrategy.MaxDropDownItems = 10;
+            cbGroupSessionStrategy.Name = "cbGroupSessionStrategy";
+            cbGroupSessionStrategy.Padding = new Padding(1);
+            cbGroupSessionStrategy.Size = new Size(284, 23);
+            cbGroupSessionStrategy.TabIndex = 59;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Dock = DockStyle.Top;
+            label9.Font = new Font("Segoe UI", 9F);
+            label9.Location = new Point(12, 128);
+            label9.Name = "label9";
+            label9.Size = new Size(117, 15);
+            label9.TabIndex = 60;
+            label9.Text = "Past Session Strategy";
+            // 
+            // panel9
+            // 
+            panel9.Dock = DockStyle.Top;
+            panel9.Location = new Point(12, 118);
+            panel9.Margin = new Padding(8);
+            panel9.Name = "panel9";
+            panel9.Padding = new Padding(8);
+            panel9.Size = new Size(284, 10);
+            panel9.TabIndex = 58;
             // 
             // numGroupQueue
             // 
@@ -1048,7 +1159,7 @@ namespace WaifuAI.src.forms
             numGroupQueue.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             numGroupQueue.Name = "numGroupQueue";
             numGroupQueue.Padding = new Padding(1);
-            numGroupQueue.Size = new Size(337, 23);
+            numGroupQueue.Size = new Size(284, 23);
             numGroupQueue.TabIndex = 56;
             numGroupQueue.Value = new decimal(new int[] { 2, 0, 0, 0 });
             // 
@@ -1070,7 +1181,7 @@ namespace WaifuAI.src.forms
             panel6.Margin = new Padding(8);
             panel6.Name = "panel6";
             panel6.Padding = new Padding(8);
-            panel6.Size = new Size(337, 10);
+            panel6.Size = new Size(284, 10);
             panel6.TabIndex = 55;
             // 
             // ckGroupRouting
@@ -1079,12 +1190,11 @@ namespace WaifuAI.src.forms
             ckGroupRouting.Dock = DockStyle.Top;
             ckGroupRouting.DropDownHeight = 180;
             ckGroupRouting.Font = new Font("Segoe UI", 9F);
-            ckGroupRouting.Items.AddRange(new object[] { "Light", "Dark" });
             ckGroupRouting.Location = new Point(12, 47);
             ckGroupRouting.MaxDropDownItems = 10;
             ckGroupRouting.Name = "ckGroupRouting";
             ckGroupRouting.Padding = new Padding(1);
-            ckGroupRouting.Size = new Size(337, 23);
+            ckGroupRouting.Size = new Size(284, 23);
             ckGroupRouting.TabIndex = 41;
             // 
             // label7
@@ -1100,72 +1210,14 @@ namespace WaifuAI.src.forms
             // 
             // verticalStackPanel3
             // 
-            verticalStackPanel3.Controls.Add(collapsibleGroupBox6);
+            verticalStackPanel3.Controls.Add(collapsibleGroupBox8);
             verticalStackPanel3.Controls.Add(collapsibleGroupBox5);
             verticalStackPanel3.Dock = DockStyle.Left;
             verticalStackPanel3.Location = new Point(321, 0);
             verticalStackPanel3.Name = "verticalStackPanel3";
             verticalStackPanel3.Padding = new Padding(6);
-            verticalStackPanel3.Size = new Size(320, 615);
+            verticalStackPanel3.Size = new Size(320, 669);
             verticalStackPanel3.TabIndex = 36;
-            // 
-            // collapsibleGroupBox6
-            // 
-            collapsibleGroupBox6.BackColor = Color.FromArgb(37, 38, 42);
-            collapsibleGroupBox6.CanCollapse = false;
-            collapsibleGroupBox6.Controls.Add(mcbSkin);
-            collapsibleGroupBox6.Controls.Add(ck_forcePW);
-            collapsibleGroupBox6.Controls.Add(ckShowHidden);
-            collapsibleGroupBox6.Controls.Add(num_msgcount);
-            collapsibleGroupBox6.Controls.Add(label29);
-            collapsibleGroupBox6.Controls.Add(label30);
-            collapsibleGroupBox6.Controls.Add(num_fontsize);
-            collapsibleGroupBox6.Controls.Add(label5);
-            collapsibleGroupBox6.Controls.Add(panel4);
-            collapsibleGroupBox6.Controls.Add(cb_background);
-            collapsibleGroupBox6.Controls.Add(label28);
-            collapsibleGroupBox6.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox6.Location = new Point(6, 270);
-            collapsibleGroupBox6.Name = "collapsibleGroupBox6";
-            collapsibleGroupBox6.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox6.Size = new Size(308, 227);
-            collapsibleGroupBox6.TabIndex = 1;
-            collapsibleGroupBox6.Text = "User Interface";
-            // 
-            // mcbSkin
-            // 
-            mcbSkin.BackColor = Color.FromArgb(64, 64, 64);
-            mcbSkin.Dock = DockStyle.Top;
-            mcbSkin.DropDownHeight = 180;
-            mcbSkin.Font = new Font("Segoe UI", 9F);
-            mcbSkin.Items.AddRange(new object[] { "Light", "Dark" });
-            mcbSkin.Location = new Point(12, 95);
-            mcbSkin.MaxDropDownItems = 10;
-            mcbSkin.Name = "mcbSkin";
-            mcbSkin.Padding = new Padding(1);
-            mcbSkin.Size = new Size(284, 23);
-            mcbSkin.TabIndex = 40;
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Dock = DockStyle.Top;
-            label5.Font = new Font("Segoe UI", 9F);
-            label5.Location = new Point(12, 80);
-            label5.Name = "label5";
-            label5.Size = new Size(43, 15);
-            label5.TabIndex = 39;
-            label5.Text = "UI Skin";
-            // 
-            // panel4
-            // 
-            panel4.Dock = DockStyle.Top;
-            panel4.Location = new Point(12, 70);
-            panel4.Margin = new Padding(8);
-            panel4.Name = "panel4";
-            panel4.Padding = new Padding(8);
-            panel4.Size = new Size(284, 10);
-            panel4.TabIndex = 54;
             // 
             // collapsibleGroupBox5
             // 
@@ -1215,7 +1267,7 @@ namespace WaifuAI.src.forms
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DimGray;
-            ClientSize = new Size(1011, 665);
+            ClientSize = new Size(1011, 707);
             Controls.Add(verticalStackPanel2);
             Controls.Add(verticalStackPanel3);
             Controls.Add(verticalStackPanel1);
@@ -1239,6 +1291,8 @@ namespace WaifuAI.src.forms
             panel8.ResumeLayout(false);
             panel8.PerformLayout();
             verticalStackPanel2.ResumeLayout(false);
+            collapsibleGroupBox6.ResumeLayout(false);
+            collapsibleGroupBox6.PerformLayout();
             collapsibleGroupBox4.ResumeLayout(false);
             panel5.ResumeLayout(false);
             panel5.PerformLayout();
@@ -1247,8 +1301,6 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox8.ResumeLayout(false);
             collapsibleGroupBox8.PerformLayout();
             verticalStackPanel3.ResumeLayout(false);
-            collapsibleGroupBox6.ResumeLayout(false);
-            collapsibleGroupBox6.PerformLayout();
             collapsibleGroupBox5.ResumeLayout(false);
             collapsibleGroupBox5.PerformLayout();
             ResumeLayout(false);
@@ -1344,5 +1396,9 @@ namespace WaifuAI.src.forms
         private Panel panel6;
         private Panel panel8;
         private ModernCheckBox ckDelStartSlop;
+        private ModernCheckBox ckGroupAltern;
+        private ModernComboBox cbGroupSessionStrategy;
+        private Label label9;
+        private Panel panel9;
     }
 }
