@@ -166,9 +166,9 @@ namespace WaifuAI.Files
             return found;
         }
 
-        public override SingleMessage? BuildAwayMessage()
+        public override SingleMessage? BuildAwayMessage(bool forced = false)
         {
-            var res = base.BuildAwayMessage();
+            var res = base.BuildAwayMessage(forced);
             if (Owner.LockSettings.Enabled && res is not null)
             {
                 var infostr = Owner.LockManager.GetStatusMessage();

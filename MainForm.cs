@@ -328,7 +328,7 @@ namespace WaifuAI
             mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
             mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
             btVectorSearch.Enabled = LLMEngine.Settings.RAGEnabled;
-            
+
             cbGroupSwitch.Enabled = LLMEngine.Status == SystemStatus.Ready;
         }
 
@@ -600,7 +600,7 @@ namespace WaifuAI
             if (LLMEngine.Status == SystemStatus.Busy)
             {
                 LLMEngine.CancelGeneration();
-                if (LLMEngine.Bot is GroupChar mygroup) 
+                if (LLMEngine.Bot is GroupChar mygroup)
                     mygroup.ClearResponseQueue();
                 UpdateUIState();
                 return;
@@ -618,7 +618,8 @@ namespace WaifuAI
                 ed_input.Text = string.Empty;
                 await LLMEngine.AddBotMessage();
                 return;
-            };
+            }
+            ;
 
             var msgtxt = ed_input.Text.ToLinuxFormat();
             msgtxt = LLMEngine.Bot.ReplaceMacros(msgtxt);
@@ -669,7 +670,7 @@ namespace WaifuAI
 
         private async void RerollMessage(object sender, EventArgs e)
         {
-            if (LLMEngine.Bot is GroupChar g) 
+            if (LLMEngine.Bot is GroupChar g)
                 g.ClearResponseQueue();
             _afkmessagecount = 0;
             if (LLMEngine.Status == SystemStatus.Busy || LLMEngine.History.CurrentSession.Messages.Count == 0 || LLMEngine.History.LastMessage()?.Role != AuthorRole.Assistant)
@@ -808,7 +809,7 @@ namespace WaifuAI
             _impersonatemode = false;
             if (LLMEngine.Status == SystemStatus.Busy || LLMEngine.History.CurrentSession.Messages.Count == 0)
                 return;
-            if (LLMEngine.Bot is GroupChar g) 
+            if (LLMEngine.Bot is GroupChar g)
                 g.ClearResponseQueue();
 
             var msgs = LLMEngine.History.CurrentSession.Messages;
@@ -1633,7 +1634,8 @@ namespace WaifuAI
             settingsForm.StartPosition = FormStartPosition.CenterParent;
             settingsForm.ShowDialog();
             LLMEngine.InvalidatePromptCache();
-            await WebChatLoad();
+            if (LLMEngine.Status == SystemStatus.Ready)
+                await WebChatLoad();
         }
 
         private void btWorldEditor_Click(object sender, EventArgs e)
@@ -1708,7 +1710,7 @@ namespace WaifuAI
 
         private void cbGroupSwitch_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_suppressGroupSwitchEvent || LLMEngine.Status == SystemStatus.Busy) 
+            if (_suppressGroupSwitchEvent || LLMEngine.Status == SystemStatus.Busy)
                 return;
             if (Bot is GroupChar group)
             {
@@ -1876,6 +1878,17 @@ namespace WaifuAI
             });
 
             return true;
+        }
+
+        private async void button4_Click(object sender, EventArgs e)
+        {
+            var msg = Bot.Brain.BuildAwayMessage(true);
+            if (msg is null)
+                return;
+            LLMEngine.History.LogMessage(msg);
+            await LoadHistoryToUI();
+
+
         }
     }
 }

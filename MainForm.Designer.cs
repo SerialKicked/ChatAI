@@ -96,6 +96,7 @@ namespace WaifuAI
             mck_sessionmemory = new ModernCheckBox();
             panRight = new VerticalStackPanel();
             collapsibleGroupBox4 = new CollapsibleGroupBox();
+            button4 = new Button();
             button3 = new Button();
             btRunAgent = new Button();
             button1 = new Button();
@@ -949,6 +950,7 @@ namespace WaifuAI
             // collapsibleGroupBox4
             // 
             collapsibleGroupBox4.BackColor = Color.FromArgb(37, 37, 37);
+            collapsibleGroupBox4.Controls.Add(button4);
             collapsibleGroupBox4.Controls.Add(button3);
             collapsibleGroupBox4.Controls.Add(btRunAgent);
             collapsibleGroupBox4.Controls.Add(button1);
@@ -957,9 +959,23 @@ namespace WaifuAI
             collapsibleGroupBox4.Location = new Point(0, 850);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(8, 32, 8, 8);
-            collapsibleGroupBox4.Size = new Size(200, 135);
+            collapsibleGroupBox4.Size = new Size(200, 159);
             collapsibleGroupBox4.TabIndex = 30;
             collapsibleGroupBox4.Text = "Debug";
+            // 
+            // button4
+            // 
+            button4.AutoSize = true;
+            button4.Dock = DockStyle.Top;
+            button4.FlatStyle = FlatStyle.Flat;
+            button4.Font = new Font("Segoe UI", 9F);
+            button4.Location = new Point(8, 123);
+            button4.Name = "button4";
+            button4.Size = new Size(184, 27);
+            button4.TabIndex = 53;
+            button4.Text = "Force AFK insert";
+            button4.UseVisualStyleBackColor = false;
+            button4.Click += button4_Click;
             // 
             // button3
             // 
@@ -1328,5 +1344,6 @@ namespace WaifuAI
         private Button button3;
         private Button btRunAgent;
         private Button button1;
+        private Button button4;
     }
 }

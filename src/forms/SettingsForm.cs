@@ -75,11 +75,8 @@ namespace WaifuAI.src.forms
             {
                 Program.Settings = new WaifuSettings();
                 File.WriteAllText("settings.json", JsonConvert.SerializeObject(Program.Settings, Formatting.Indented));
+                LLMEngine.Settings = Program.Settings;
             }
-
-            var str = File.ReadAllText("settings.json");
-            Program.Settings = JsonConvert.DeserializeObject<WaifuSettings>(str)!;
-            LLMEngine.Settings = Program.Settings;
 
             var saveinit = _isinitloading;
             _isinitloading = true;
