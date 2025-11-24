@@ -79,6 +79,8 @@ namespace WaifuAI.src.forms
             panel4 = new Panel();
             modernTabControl1 = new ModernTabControl();
             tbGeneral = new TabPage();
+            label27 = new Label();
+            edMiniBio = new TextBox();
             ckNoGuidance = new CheckBox();
             tbStyle = new TabPage();
             collapsibleGroupBox3 = new CollapsibleGroupBox();
@@ -100,6 +102,16 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox5 = new CollapsibleGroupBox();
             listAgentTasks = new ModernCheckedListBox();
             tbSettings = new TabPage();
+            collapsibleGroupBox11 = new CollapsibleGroupBox();
+            ckTimerActive = new ModernCheckBox();
+            ckTimerAutoExpire = new ModernCheckBox();
+            label30 = new Label();
+            edTimerExpired = new TextBox();
+            label29 = new Label();
+            edTimerOff = new TextBox();
+            label28 = new Label();
+            edTimerOn = new TextBox();
+            ckTimerEnable = new ModernCheckBox();
             collapsibleGroupBox10 = new CollapsibleGroupBox();
             collapsibleGroupBox9 = new CollapsibleGroupBox();
             ckl_plugins = new ModernCheckedListBox();
@@ -137,6 +149,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox6.SuspendLayout();
             collapsibleGroupBox5.SuspendLayout();
             tbSettings.SuspendLayout();
+            collapsibleGroupBox11.SuspendLayout();
             collapsibleGroupBox10.SuspendLayout();
             collapsibleGroupBox9.SuspendLayout();
             collapsibleGroupBox4.SuspendLayout();
@@ -146,7 +159,7 @@ namespace WaifuAI.src.forms
             // btRegenBio
             // 
             btRegenBio.FlatStyle = FlatStyle.Flat;
-            btRegenBio.Location = new Point(681, 79);
+            btRegenBio.Location = new Point(235, 271);
             btRegenBio.Name = "btRegenBio";
             btRegenBio.Size = new Size(190, 27);
             btRegenBio.TabIndex = 16;
@@ -158,7 +171,7 @@ namespace WaifuAI.src.forms
             // 
             label13.AutoSize = true;
             label13.Font = new Font("Segoe UI", 9F);
-            label13.Location = new Point(679, 32);
+            label13.Location = new Point(15, 257);
             label13.Name = "label13";
             label13.Size = new Size(170, 15);
             label13.TabIndex = 15;
@@ -170,7 +183,7 @@ namespace WaifuAI.src.forms
             num_selfedittokens.BorderStyle = BorderStyle.FixedSingle;
             num_selfedittokens.Font = new Font("Segoe UI", 9F);
             num_selfedittokens.Increment = new decimal(new int[] { 128, 0, 0, 0 });
-            num_selfedittokens.Location = new Point(681, 50);
+            num_selfedittokens.Location = new Point(15, 275);
             num_selfedittokens.Maximum = new decimal(new int[] { 2048, 0, 0, 0 });
             num_selfedittokens.Name = "num_selfedittokens";
             num_selfedittokens.Padding = new Padding(1);
@@ -186,7 +199,7 @@ namespace WaifuAI.src.forms
             ed_selfedit.Name = "ed_selfedit";
             ed_selfedit.ReadOnly = true;
             ed_selfedit.ScrollBars = ScrollBars.Vertical;
-            ed_selfedit.Size = new Size(660, 171);
+            ed_selfedit.Size = new Size(410, 204);
             ed_selfedit.TabIndex = 13;
             // 
             // label12
@@ -195,9 +208,9 @@ namespace WaifuAI.src.forms
             label12.Font = new Font("Segoe UI", 9F);
             label12.Location = new Point(15, 32);
             label12.Name = "label12";
-            label12.Size = new Size(550, 15);
+            label12.Size = new Size(373, 15);
             label12.TabIndex = 0;
-            label12.Text = "Optional field (added to the system prompt) that the character is allowed to edit after each chat session";
+            label12.Text = "Optional system prompt field (char allowed to edit after each session)";
             // 
             // num_ptvalue
             // 
@@ -238,7 +251,7 @@ namespace WaifuAI.src.forms
             // 
             ed_outetts.BorderStyle = BorderStyle.FixedSingle;
             ed_outetts.Font = new Font("Segoe UI", 9F);
-            ed_outetts.Location = new Point(12, 525);
+            ed_outetts.Location = new Point(12, 589);
             ed_outetts.Name = "ed_outetts";
             ed_outetts.Size = new Size(455, 23);
             ed_outetts.TabIndex = 2;
@@ -247,7 +260,7 @@ namespace WaifuAI.src.forms
             // 
             label11.AutoSize = true;
             label11.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label11.Location = new Point(12, 507);
+            label11.Location = new Point(12, 571);
             label11.Name = "label11";
             label11.Size = new Size(257, 15);
             label11.TabIndex = 1;
@@ -383,7 +396,7 @@ namespace WaifuAI.src.forms
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label4.Location = new Point(488, 303);
+            label4.Location = new Point(488, 431);
             label4.Name = "label4";
             label4.Size = new Size(283, 15);
             label4.TabIndex = 14;
@@ -392,28 +405,28 @@ namespace WaifuAI.src.forms
             // ed_firstmessage
             // 
             ed_firstmessage.BorderStyle = BorderStyle.FixedSingle;
-            ed_firstmessage.Location = new Point(488, 321);
+            ed_firstmessage.Location = new Point(488, 449);
             ed_firstmessage.Multiline = true;
             ed_firstmessage.Name = "ed_firstmessage";
             ed_firstmessage.ScrollBars = ScrollBars.Vertical;
-            ed_firstmessage.Size = new Size(407, 175);
+            ed_firstmessage.Size = new Size(407, 119);
             ed_firstmessage.TabIndex = 13;
             // 
             // ed_scenario
             // 
             ed_scenario.BorderStyle = BorderStyle.FixedSingle;
-            ed_scenario.Location = new Point(12, 321);
+            ed_scenario.Location = new Point(12, 449);
             ed_scenario.Multiline = true;
             ed_scenario.Name = "ed_scenario";
             ed_scenario.ScrollBars = ScrollBars.Vertical;
-            ed_scenario.Size = new Size(455, 175);
+            ed_scenario.Size = new Size(455, 119);
             ed_scenario.TabIndex = 12;
             // 
             // label3
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label3.Location = new Point(12, 303);
+            label3.Location = new Point(12, 431);
             label3.Name = "label3";
             label3.Size = new Size(100, 15);
             label3.TabIndex = 11;
@@ -426,7 +439,7 @@ namespace WaifuAI.src.forms
             ed_bio.Multiline = true;
             ed_bio.Name = "ed_bio";
             ed_bio.ScrollBars = ScrollBars.Vertical;
-            ed_bio.Size = new Size(883, 217);
+            ed_bio.Size = new Size(883, 267);
             ed_bio.TabIndex = 10;
             // 
             // label2
@@ -510,6 +523,7 @@ namespace WaifuAI.src.forms
             // 
             // ed_sysprompt
             // 
+            ed_sysprompt.BackColor = Color.Gray;
             ed_sysprompt.BorderStyle = BorderStyle.FixedSingle;
             ed_sysprompt.Dock = DockStyle.Fill;
             ed_sysprompt.Location = new Point(0, 139);
@@ -517,14 +531,15 @@ namespace WaifuAI.src.forms
             ed_sysprompt.Name = "ed_sysprompt";
             ed_sysprompt.PlaceholderText = "Optional System Prompt";
             ed_sysprompt.ScrollBars = ScrollBars.Vertical;
-            ed_sysprompt.Size = new Size(917, 418);
+            ed_sysprompt.Size = new Size(917, 479);
             ed_sysprompt.TabIndex = 13;
             // 
             // textBox2
             // 
-            textBox2.BackColor = SystemColors.Info;
+            textBox2.BackColor = Color.SlateGray;
             textBox2.BorderStyle = BorderStyle.FixedSingle;
             textBox2.Dock = DockStyle.Top;
+            textBox2.ForeColor = Color.Black;
             textBox2.Location = new Point(0, 0);
             textBox2.Multiline = true;
             textBox2.Name = "textBox2";
@@ -580,13 +595,13 @@ namespace WaifuAI.src.forms
             panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(234, 601);
+            panel1.Size = new Size(234, 662);
             panel1.TabIndex = 4;
             // 
             // panel2
             // 
             panel2.Dock = DockStyle.Bottom;
-            panel2.Location = new Point(0, 525);
+            panel2.Location = new Point(0, 586);
             panel2.Margin = new Padding(8);
             panel2.Name = "panel2";
             panel2.Padding = new Padding(8);
@@ -602,14 +617,14 @@ namespace WaifuAI.src.forms
             cb_charlist.Location = new Point(0, 0);
             cb_charlist.Name = "cb_charlist";
             cb_charlist.Padding = new Padding(1);
-            cb_charlist.Size = new Size(234, 514);
+            cb_charlist.Size = new Size(234, 578);
             cb_charlist.TabIndex = 4;
             // 
             // edFilename
             // 
             edFilename.BorderStyle = BorderStyle.FixedSingle;
             edFilename.Dock = DockStyle.Bottom;
-            edFilename.Location = new Point(0, 535);
+            edFilename.Location = new Point(0, 596);
             edFilename.Name = "edFilename";
             edFilename.Size = new Size(234, 23);
             edFilename.TabIndex = 2;
@@ -617,7 +632,7 @@ namespace WaifuAI.src.forms
             // panel3
             // 
             panel3.Dock = DockStyle.Bottom;
-            panel3.Location = new Point(0, 558);
+            panel3.Location = new Point(0, 619);
             panel3.Margin = new Padding(8);
             panel3.Name = "panel3";
             panel3.Padding = new Padding(8);
@@ -630,7 +645,7 @@ namespace WaifuAI.src.forms
             btSave.Dock = DockStyle.Bottom;
             btSave.FlatStyle = FlatStyle.Flat;
             btSave.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btSave.Location = new Point(0, 568);
+            btSave.Location = new Point(0, 629);
             btSave.Name = "btSave";
             btSave.Size = new Size(234, 23);
             btSave.TabIndex = 3;
@@ -642,7 +657,7 @@ namespace WaifuAI.src.forms
             // panel4
             // 
             panel4.Dock = DockStyle.Bottom;
-            panel4.Location = new Point(0, 591);
+            panel4.Location = new Point(0, 652);
             panel4.Margin = new Padding(8);
             panel4.Name = "panel4";
             panel4.Padding = new Padding(8);
@@ -664,12 +679,14 @@ namespace WaifuAI.src.forms
             modernTabControl1.Location = new Point(234, 0);
             modernTabControl1.Name = "modernTabControl1";
             modernTabControl1.SelectedIndex = 0;
-            modernTabControl1.Size = new Size(925, 601);
+            modernTabControl1.Size = new Size(925, 662);
             modernTabControl1.TabIndex = 5;
             // 
             // tbGeneral
             // 
             tbGeneral.BackColor = Color.FromArgb(37, 37, 37);
+            tbGeneral.Controls.Add(label27);
+            tbGeneral.Controls.Add(edMiniBio);
             tbGeneral.Controls.Add(ckNoGuidance);
             tbGeneral.Controls.Add(ed_outetts);
             tbGeneral.Controls.Add(label4);
@@ -689,9 +706,30 @@ namespace WaifuAI.src.forms
             tbGeneral.Location = new Point(4, 40);
             tbGeneral.Name = "tbGeneral";
             tbGeneral.Padding = new Padding(3);
-            tbGeneral.Size = new Size(917, 557);
+            tbGeneral.Size = new Size(917, 618);
             tbGeneral.TabIndex = 0;
             tbGeneral.Text = "General";
+            // 
+            // label27
+            // 
+            label27.AutoSize = true;
+            label27.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label27.Location = new Point(12, 344);
+            label27.Name = "label27";
+            label27.Size = new Size(301, 15);
+            label27.TabIndex = 19;
+            label27.Text = "Mini Bio (used for group chat and /charlist command)";
+            // 
+            // edMiniBio
+            // 
+            edMiniBio.BorderStyle = BorderStyle.FixedSingle;
+            edMiniBio.Location = new Point(12, 362);
+            edMiniBio.Multiline = true;
+            edMiniBio.Name = "edMiniBio";
+            edMiniBio.ScrollBars = ScrollBars.Vertical;
+            edMiniBio.Size = new Size(883, 66);
+            edMiniBio.TabIndex = 18;
+            edMiniBio.TextChanged += textBox1_TextChanged;
             // 
             // ckNoGuidance
             // 
@@ -713,7 +751,7 @@ namespace WaifuAI.src.forms
             tbStyle.ForeColor = Color.FromArgb(230, 230, 230);
             tbStyle.Location = new Point(4, 40);
             tbStyle.Name = "tbStyle";
-            tbStyle.Size = new Size(917, 557);
+            tbStyle.Size = new Size(917, 618);
             tbStyle.TabIndex = 1;
             tbStyle.Text = "Style";
             // 
@@ -724,7 +762,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox3.Controls.Add(ed_writingstyle);
             collapsibleGroupBox3.Controls.Add(label7);
             collapsibleGroupBox3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox3.Location = new Point(12, 277);
+            collapsibleGroupBox3.Location = new Point(12, 337);
             collapsibleGroupBox3.Name = "collapsibleGroupBox3";
             collapsibleGroupBox3.Padding = new Padding(12, 32, 12, 10);
             collapsibleGroupBox3.Size = new Size(886, 252);
@@ -741,7 +779,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox2.Location = new Point(458, 19);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox2.Size = new Size(440, 252);
+            collapsibleGroupBox2.Size = new Size(440, 312);
             collapsibleGroupBox2.TabIndex = 1;
             collapsibleGroupBox2.Text = "Favoite Inference Settings";
             // 
@@ -752,7 +790,7 @@ namespace WaifuAI.src.forms
             ckl_samplers.Location = new Point(15, 50);
             ckl_samplers.Name = "ckl_samplers";
             ckl_samplers.Padding = new Padding(1);
-            ckl_samplers.Size = new Size(410, 194);
+            ckl_samplers.Size = new Size(410, 258);
             ckl_samplers.TabIndex = 1;
             // 
             // collapsibleGroupBox1
@@ -765,7 +803,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox1.Location = new Point(12, 19);
             collapsibleGroupBox1.Name = "collapsibleGroupBox1";
             collapsibleGroupBox1.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox1.Size = new Size(440, 252);
+            collapsibleGroupBox1.Size = new Size(440, 312);
             collapsibleGroupBox1.TabIndex = 0;
             collapsibleGroupBox1.Text = "World Info";
             // 
@@ -776,7 +814,7 @@ namespace WaifuAI.src.forms
             ckl_worldinfo.Location = new Point(15, 50);
             ckl_worldinfo.Name = "ckl_worldinfo";
             ckl_worldinfo.Padding = new Padding(1);
-            ckl_worldinfo.Size = new Size(410, 194);
+            ckl_worldinfo.Size = new Size(410, 258);
             ckl_worldinfo.TabIndex = 1;
             // 
             // tbPrompt
@@ -788,7 +826,7 @@ namespace WaifuAI.src.forms
             tbPrompt.ForeColor = Color.FromArgb(230, 230, 230);
             tbPrompt.Location = new Point(4, 40);
             tbPrompt.Name = "tbPrompt";
-            tbPrompt.Size = new Size(917, 557);
+            tbPrompt.Size = new Size(917, 618);
             tbPrompt.TabIndex = 2;
             tbPrompt.Text = "System Prompt";
             // 
@@ -803,7 +841,7 @@ namespace WaifuAI.src.forms
             tbAgent.ForeColor = Color.FromArgb(230, 230, 230);
             tbAgent.Location = new Point(4, 40);
             tbAgent.Name = "tbAgent";
-            tbAgent.Size = new Size(917, 557);
+            tbAgent.Size = new Size(917, 618);
             tbAgent.TabIndex = 3;
             tbAgent.Text = "Background Agent";
             // 
@@ -817,7 +855,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox8.Location = new Point(12, 324);
             collapsibleGroupBox8.Name = "collapsibleGroupBox8";
             collapsibleGroupBox8.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox8.Size = new Size(440, 219);
+            collapsibleGroupBox8.Size = new Size(440, 288);
             collapsibleGroupBox8.TabIndex = 3;
             collapsibleGroupBox8.Text = "Memories: No RAG";
             // 
@@ -828,7 +866,7 @@ namespace WaifuAI.src.forms
             listNoRAGMemTypes.Location = new Point(15, 50);
             listNoRAGMemTypes.Name = "listNoRAGMemTypes";
             listNoRAGMemTypes.Padding = new Padding(1);
-            listNoRAGMemTypes.Size = new Size(410, 162);
+            listNoRAGMemTypes.Size = new Size(410, 226);
             listNoRAGMemTypes.TabIndex = 18;
             // 
             // label23
@@ -851,7 +889,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox7.Location = new Point(458, 324);
             collapsibleGroupBox7.Name = "collapsibleGroupBox7";
             collapsibleGroupBox7.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox7.Size = new Size(440, 219);
+            collapsibleGroupBox7.Size = new Size(440, 288);
             collapsibleGroupBox7.TabIndex = 2;
             collapsibleGroupBox7.Text = "Memories: Decay Allowed";
             // 
@@ -862,7 +900,7 @@ namespace WaifuAI.src.forms
             listCanDecay.Location = new Point(15, 50);
             listCanDecay.Name = "listCanDecay";
             listCanDecay.Padding = new Padding(1);
-            listCanDecay.Size = new Size(410, 162);
+            listCanDecay.Size = new Size(410, 226);
             listCanDecay.TabIndex = 19;
             // 
             // label22
@@ -944,6 +982,7 @@ namespace WaifuAI.src.forms
             // tbSettings
             // 
             tbSettings.BackColor = Color.FromArgb(37, 37, 37);
+            tbSettings.Controls.Add(collapsibleGroupBox11);
             tbSettings.Controls.Add(collapsibleGroupBox10);
             tbSettings.Controls.Add(collapsibleGroupBox9);
             tbSettings.Controls.Add(collapsibleGroupBox4);
@@ -951,9 +990,117 @@ namespace WaifuAI.src.forms
             tbSettings.ForeColor = Color.FromArgb(230, 230, 230);
             tbSettings.Location = new Point(4, 40);
             tbSettings.Name = "tbSettings";
-            tbSettings.Size = new Size(917, 557);
+            tbSettings.Size = new Size(917, 618);
             tbSettings.TabIndex = 4;
             tbSettings.Text = "Settings";
+            // 
+            // collapsibleGroupBox11
+            // 
+            collapsibleGroupBox11.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox11.CanCollapse = false;
+            collapsibleGroupBox11.Controls.Add(ckTimerActive);
+            collapsibleGroupBox11.Controls.Add(ckTimerAutoExpire);
+            collapsibleGroupBox11.Controls.Add(label30);
+            collapsibleGroupBox11.Controls.Add(edTimerExpired);
+            collapsibleGroupBox11.Controls.Add(label29);
+            collapsibleGroupBox11.Controls.Add(edTimerOff);
+            collapsibleGroupBox11.Controls.Add(label28);
+            collapsibleGroupBox11.Controls.Add(edTimerOn);
+            collapsibleGroupBox11.Controls.Add(ckTimerEnable);
+            collapsibleGroupBox11.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox11.Location = new Point(458, 312);
+            collapsibleGroupBox11.Name = "collapsibleGroupBox11";
+            collapsibleGroupBox11.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox11.Size = new Size(440, 298);
+            collapsibleGroupBox11.TabIndex = 4;
+            collapsibleGroupBox11.Text = "Timer Plugin";
+            // 
+            // ckTimerActive
+            // 
+            ckTimerActive.Font = new Font("Segoe UI", 9F);
+            ckTimerActive.Location = new Point(15, 234);
+            ckTimerActive.Name = "ckTimerActive";
+            ckTimerActive.Size = new Size(410, 26);
+            ckTimerActive.TabIndex = 11;
+            ckTimerActive.Text = "Timer Active";
+            ckTimerActive.UseVisualStyleBackColor = true;
+            // 
+            // ckTimerAutoExpire
+            // 
+            ckTimerAutoExpire.Font = new Font("Segoe UI", 9F);
+            ckTimerAutoExpire.Location = new Point(15, 204);
+            ckTimerAutoExpire.Name = "ckTimerAutoExpire";
+            ckTimerAutoExpire.Size = new Size(410, 26);
+            ckTimerAutoExpire.TabIndex = 10;
+            ckTimerAutoExpire.Text = "Automatic timer expiration on duration over";
+            ckTimerAutoExpire.UseVisualStyleBackColor = true;
+            // 
+            // label30
+            // 
+            label30.AutoSize = true;
+            label30.Font = new Font("Segoe UI", 9F);
+            label30.Location = new Point(15, 157);
+            label30.Name = "label30";
+            label30.Size = new Size(158, 15);
+            label30.TabIndex = 9;
+            label30.Text = "Satus Message: Time expired";
+            // 
+            // edTimerExpired
+            // 
+            edTimerExpired.BorderStyle = BorderStyle.FixedSingle;
+            edTimerExpired.Font = new Font("Segoe UI", 9F);
+            edTimerExpired.Location = new Point(15, 175);
+            edTimerExpired.Name = "edTimerExpired";
+            edTimerExpired.Size = new Size(410, 23);
+            edTimerExpired.TabIndex = 8;
+            // 
+            // label29
+            // 
+            label29.AutoSize = true;
+            label29.Font = new Font("Segoe UI", 9F);
+            label29.Location = new Point(15, 113);
+            label29.Name = "label29";
+            label29.Size = new Size(176, 15);
+            label29.TabIndex = 7;
+            label29.Text = "Status Message: Timenr inactive";
+            // 
+            // edTimerOff
+            // 
+            edTimerOff.BorderStyle = BorderStyle.FixedSingle;
+            edTimerOff.Font = new Font("Segoe UI", 9F);
+            edTimerOff.Location = new Point(15, 131);
+            edTimerOff.Name = "edTimerOff";
+            edTimerOff.Size = new Size(410, 23);
+            edTimerOff.TabIndex = 6;
+            // 
+            // label28
+            // 
+            label28.AutoSize = true;
+            label28.Font = new Font("Segoe UI", 9F);
+            label28.Location = new Point(15, 69);
+            label28.Name = "label28";
+            label28.Size = new Size(170, 15);
+            label28.TabIndex = 5;
+            label28.Text = "Status Message: Timer running";
+            // 
+            // edTimerOn
+            // 
+            edTimerOn.BorderStyle = BorderStyle.FixedSingle;
+            edTimerOn.Font = new Font("Segoe UI", 9F);
+            edTimerOn.Location = new Point(15, 87);
+            edTimerOn.Name = "edTimerOn";
+            edTimerOn.Size = new Size(410, 23);
+            edTimerOn.TabIndex = 4;
+            // 
+            // ckTimerEnable
+            // 
+            ckTimerEnable.Font = new Font("Segoe UI", 9F);
+            ckTimerEnable.Location = new Point(15, 35);
+            ckTimerEnable.Name = "ckTimerEnable";
+            ckTimerEnable.Size = new Size(410, 26);
+            ckTimerEnable.TabIndex = 1;
+            ckTimerEnable.Text = "Enabled";
+            ckTimerEnable.UseVisualStyleBackColor = true;
             // 
             // collapsibleGroupBox10
             // 
@@ -968,7 +1115,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox10.Location = new Point(12, 312);
             collapsibleGroupBox10.Name = "collapsibleGroupBox10";
             collapsibleGroupBox10.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox10.Size = new Size(886, 234);
+            collapsibleGroupBox10.Size = new Size(440, 298);
             collapsibleGroupBox10.TabIndex = 3;
             collapsibleGroupBox10.Text = "Character's Personal Field";
             // 
@@ -1091,7 +1238,7 @@ namespace WaifuAI.src.forms
             tabMood.Location = new Point(4, 40);
             tabMood.Name = "tabMood";
             tabMood.Padding = new Padding(3);
-            tabMood.Size = new Size(917, 557);
+            tabMood.Size = new Size(917, 618);
             tabMood.TabIndex = 5;
             tabMood.Text = "Mood Values";
             // 
@@ -1231,7 +1378,7 @@ namespace WaifuAI.src.forms
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1159, 601);
+            ClientSize = new Size(1159, 662);
             Controls.Add(modernTabControl1);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -1265,6 +1412,8 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox5.ResumeLayout(false);
             collapsibleGroupBox5.PerformLayout();
             tbSettings.ResumeLayout(false);
+            collapsibleGroupBox11.ResumeLayout(false);
+            collapsibleGroupBox11.PerformLayout();
             collapsibleGroupBox10.ResumeLayout(false);
             collapsibleGroupBox10.PerformLayout();
             collapsibleGroupBox9.ResumeLayout(false);
@@ -1368,5 +1517,17 @@ namespace WaifuAI.src.forms
         private ModernNumericUpDown moodSub;
         private Label label26;
         private ModernNumericUpDown moodHorny;
+        private Label label27;
+        private TextBox edMiniBio;
+        private CollapsibleGroupBox collapsibleGroupBox11;
+        private Label label28;
+        private TextBox edTimerOn;
+        private ModernCheckBox ckTimerEnable;
+        private Label label30;
+        private TextBox edTimerExpired;
+        private Label label29;
+        private TextBox edTimerOff;
+        private ModernCheckBox ckTimerAutoExpire;
+        private ModernCheckBox ckTimerActive;
     }
 }

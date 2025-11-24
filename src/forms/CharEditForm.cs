@@ -107,10 +107,17 @@ namespace WaifuAI.src.forms
             mychar.AgentMode = ckAgent.Checked;
             mychar.AgentTasks = [.. listAgentTasks.CheckedItems.Cast<string>()];
             mychar.DisableBotGuidance = ckNoGuidance.Checked;
+            mychar.MiniBio = edMiniBio.Text.ToLinuxFormat();
             if (mychar.AgentSystem is not null)
                 mychar.AgentSystem.Config.MinInactivityTime = TimeSpan.FromHours((double)numAgentDelay.Value);
             mychar.Brain.DisableRAG = [.. listNoRAGMemTypes.CheckedItems.Cast<string>().Select(s => Enum.Parse<MemoryType>(s))];
             mychar.Brain.DecayableMemories = [.. listCanDecay.CheckedItems.Cast<string>().Select(s => Enum.Parse<MemoryType>(s))];
+            mychar.LockSettings.Enabled = ckTimerEnable.Checked;
+            mychar.LockSettings.StatusUnlockedMessage = edTimerOff.Text.ToLinuxFormat();
+            mychar.LockSettings.StatusLockedMessage = edTimerOn.Text.ToLinuxFormat();
+            mychar.LockSettings.StatusLockOverMessage = edTimerExpired.Text.ToLinuxFormat();
+            mychar.LockSettings.IsLocked = ckTimerActive.Checked;
+            mychar.LockSettings.AutomaticUnlockOnDurationEnd = ckTimerAutoExpire.Checked;
 
             return mychar;
         }
@@ -149,6 +156,14 @@ namespace WaifuAI.src.forms
             moodHorny.Value = (decimal)selectedCharacter.Brain.Mood.Horniness;
             moodSanity.Value = (decimal)selectedCharacter.Brain.Mood.Sanity;
             moodSub.Value = (decimal)selectedCharacter.Brain.Mood.Submission;
+            edMiniBio.Text = selectedCharacter.MiniBio.ToWinFormat();
+            edTimerExpired.Text = selectedCharacter.LockSettings.StatusLockOverMessage.ToWinFormat();
+            edTimerOff.Text = selectedCharacter.LockSettings.StatusUnlockedMessage.ToWinFormat();
+            edTimerOn.Text = selectedCharacter.LockSettings.StatusLockedMessage.ToWinFormat();
+            ckTimerActive.Checked = selectedCharacter.LockSettings.IsLocked;
+            ckTimerAutoExpire.Checked = selectedCharacter.LockSettings.AutomaticUnlockOnDurationEnd;
+            ckTimerEnable.Checked = selectedCharacter.LockSettings.Enabled;
+
 
             edFilename.Text = selectedCharacter.UniqueName;
             ckl_plugins.Items.Clear();
@@ -257,5 +272,9 @@ namespace WaifuAI.src.forms
             SelectedCharacter.Protected = ckPassword.Checked;
         }
 
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

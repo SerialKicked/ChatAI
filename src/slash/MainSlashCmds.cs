@@ -36,6 +36,33 @@ namespace WaifuAI.Slash
             return new SlashReturn(msg, false, true, true);
         }
     }
+
+
+    internal class CmdMainCharList(ISlashCommand owner) : SlashCommandInfo(owner)
+    {
+        public override string ID => "/charlist";
+        public override string Description => "Core - List available characters";
+        public override string Slash => "/charlist";
+        public override SlashReturn Execute(string userinput)
+        {
+            var listchar = new StringBuilder("**Character List**");
+            listchar.AppendLinuxLine();
+            foreach (var charac in DataFiles.Characters)
+            {
+                var sel = charac.Value;
+                if (sel.IsUser)
+                    continue;
+                var bio = !string.IsNullOrWhiteSpace(sel.MiniBio) ? sel.MiniBio : sel.GetBio(LLMEngine.User.Name);
+                bio = bio.RemoveNewLines().CleanupAndTrim();
+                
+                listchar.AppendLinuxLine($"- **{sel.Name}**: {sel.ReplaceMacros(bio)}");
+            }
+
+            var msg = new SingleMessage(AuthorRole.System, listchar.ToString());
+            return new SlashReturn(msg, true, false, true);
+        }
+    }
+
     internal class CmdMainSystem(ISlashCommand owner) : SlashCommandInfo(owner)
     {
         public override string ID => "/sys";
@@ -74,6 +101,7 @@ namespace WaifuAI.Slash
             return new SlashReturn(msg, true, true, false);
         }
     }
+
 
     internal class CmdMainUnlock(ISlashCommand owner) : SlashCommandInfo(owner)
     {
@@ -139,7 +167,7 @@ namespace WaifuAI.Slash
         {
             Commands = 
             [ 
-                new CmdMainSystem(this), new CmdMainRecall(this), new CmdMainHelp(this), 
+                new CmdMainSystem(this), new CmdMainRecall(this), new CmdMainHelp(this), new CmdMainCharList(this),
                 new CmdMainLock(this), new CmdMainUnlock(this), new CmdMainLockInfo(this) 
             ];
         }

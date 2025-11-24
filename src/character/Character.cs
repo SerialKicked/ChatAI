@@ -22,6 +22,8 @@ namespace WaifuAI.Files
         /// </summary>
         public bool CanInitiateChat { get; set; } = false;
 
+        public string MiniBio { get; set; } = string.Empty;
+
         /// <summary> Icon to be displayed in chat </summary>
         public string Icon { get; set; } = string.Empty;
 

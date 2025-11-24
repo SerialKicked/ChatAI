@@ -642,6 +642,8 @@ namespace WaifuAI
             if (foundslash is not null && !foundslash.ReplaceUser && foundslash.Message is not null)
             {
                 await SendMessageToUI(foundslash.Message);
+                if (foundslash.LogToHistory)
+                    LLMEngine.History.LogMessage(foundslash.Message);
             }
 
             // GROUP CHAT START: build queue & prime first responder
