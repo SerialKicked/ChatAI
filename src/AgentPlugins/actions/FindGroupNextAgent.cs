@@ -84,6 +84,8 @@ namespace WaifuAI.AgentPlugins
             var finalstr = await LLMEngine.SimpleQuery(query, ct).ConfigureAwait(false);
             // retrieve the last character from the response as it should be the number
             finalstr = finalstr.Trim();
+            if (string.IsNullOrWhiteSpace(finalstr))
+                return null;
             finalstr = finalstr[^1].ToString();
 
             LLMEngine.NamesInPromptOverride = null;

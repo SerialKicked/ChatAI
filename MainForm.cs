@@ -1743,7 +1743,7 @@ namespace WaifuAI
 
         private async void ckGroupToggle_CheckedChanged(object sender, EventArgs e)
         {
-            if (_isinitloading || Bot is not Character)
+            if (_isinitloading || Bot is null)
                 return;
             cbGroupSwitch.Enabled = ckGroupToggle.Checked;
             lstGroupMembers.Enabled = ckGroupToggle.Checked;
@@ -1786,6 +1786,7 @@ namespace WaifuAI
                 if (gobackbot is not null)
                 {
                     cb_bot.SelectedItem = gobackbot?.UniqueName;
+                    cb_bot_SelectedIndexChanged(cb_bot, new EventArgs());
                 }
                 lstGroupMembers.Items.Clear();
             }
