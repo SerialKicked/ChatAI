@@ -17,6 +17,7 @@ namespace WaifuAI.AgentPlugins
     {
         public GroupChar Group { get; set; } = new GroupChar();
         public List<SingleMessage> Messages { get; set; } = [];
+        public bool AllowFullAnalysis { get; set; } = true;
     }
 
     /// <summary>
@@ -51,7 +52,7 @@ namespace WaifuAI.AgentPlugins
 
             var sysprompt = "You are a system designed to analyze chatlogs and determine who should get a turn to talk next. " +
                 "Use the dialogs and context clues provided in the chatlog to make your choice. " + LLMEngine.NewLine + LLMEngine.NewLine +
-                "You will be provided with a chatlog and a list of participants. Respond with your reasoning followed by the number corresponding to your selection.";
+                "You will be provided with a chatlog and a list of participants. Respond with a short reasoning followed by the number corresponding to your selection.";
             var group = param.Group;
             // retrieve the last 6 messages from the session
             var messages = param.Messages;
@@ -76,17 +77,26 @@ namespace WaifuAI.AgentPlugins
             promptbuild.AddMessage(AuthorRole.SysPrompt, sysprompt);
             promptbuild.AddMessage(AuthorRole.User, request.ToString());
             var query = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, replyln, forceAltRoles: false);
-            if (query is GenerationInput llmparams)
+            if (query is GenerationInput llmparams && !param.AllowFullAnalysis)
             {
                 llmparams.Grammar = "root ::= [^0-9]* [0-9]";
             }
 
             var finalstr = await LLMEngine.SimpleQuery(query, ct).ConfigureAwait(false);
-            // retrieve the last character from the response as it should be the number
             finalstr = finalstr.Trim();
             if (string.IsNullOrWhiteSpace(finalstr))
                 return null;
-            finalstr = finalstr[^1].ToString();
+            if (param.AllowFullAnalysis)
+            {
+                // retrieve the last number from the response
+                var numbers = finalstr.Where(c => char.IsDigit(c)).ToArray();
+                finalstr = numbers.Length > 0 ? numbers[^1].ToString() : string.Empty;
+            }
+            else
+            {
+                // retrieve the last character from the response as it should be the number
+                finalstr = finalstr[^1].ToString();
+            }
 
             LLMEngine.NamesInPromptOverride = null;
             LLMEngine.Instruct.PrefillThinking = prefill;

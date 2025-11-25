@@ -138,7 +138,8 @@ namespace WaifuAI.Files
             var gparams = new FindGroupNextAgentParams
             {
                 Group = this,
-                Messages = [.. History.CurrentSession.Messages.TakeLast(6)]
+                Messages = [.. History.CurrentSession.Messages.TakeLast(6)],
+                AllowFullAnalysis = true
             };
             if (userMessage is not null)
                 gparams.Messages.Add(new SingleMessage(AuthorRole.User, userMessage));
