@@ -20,8 +20,6 @@ namespace WaifuAI.Files
     {
         [JsonIgnore] protected new Character Owner => (Character)base.Owner;
 
-        //public new AdvancedMoodState Mood { get; set; } 
-
         [JsonIgnore]
         public new AdvancedMoodState Mood
         {

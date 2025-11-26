@@ -1,4 +1,4 @@
-﻿using LetheAISharp.Files;
+﻿using LetheAISharp.LLM;
 using WaifuAI.Plugins;
 
 namespace WaifuAI.Files

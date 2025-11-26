@@ -98,6 +98,7 @@ namespace WaifuAI.src.forms
             mychar.Brain.MinMessageDelay = (int)numEurekaMinMess.Value;
             mychar.Brain.MinInsertDelay = TimeSpan.FromHours((double)numEurekaMinTime.Value);
             mychar.Brain.EurekaCutOff = TimeSpan.FromDays((int)numKeepEurekas.Value);
+            mychar.Brain.StaticMood = ckStaticMood.Checked;
             mychar.Brain.Mood.Cheer = (double)moodCheer.Value;
             mychar.Brain.Mood.Curiosity = (double)moodCuriosity.Value;
             mychar.Brain.Mood.Energy = (double)moodEnergy.Value;
@@ -163,6 +164,7 @@ namespace WaifuAI.src.forms
             ckTimerActive.Checked = selectedCharacter.LockSettings.IsLocked;
             ckTimerAutoExpire.Checked = selectedCharacter.LockSettings.AutomaticUnlockOnDurationEnd;
             ckTimerEnable.Checked = selectedCharacter.LockSettings.Enabled;
+            ckStaticMood.Checked = selectedCharacter.Brain.StaticMood;
 
 
             edFilename.Text = selectedCharacter.UniqueName;

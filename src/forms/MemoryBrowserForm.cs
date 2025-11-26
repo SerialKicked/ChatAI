@@ -57,6 +57,7 @@ namespace WaifuAI.src.forms
             if (e.KeyCode == Keys.Escape)
             {
                 DialogResult = DialogResult.Cancel;
+                LLMEngine.Bot.Brain.ReloadMemories();
                 Close();
             }
         }
@@ -433,6 +434,7 @@ namespace WaifuAI.src.forms
         private void btClose_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
+            LLMEngine.Bot.Brain.ReloadMemories();
             Close();
         }
 

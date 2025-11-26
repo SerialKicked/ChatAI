@@ -122,6 +122,7 @@ namespace WaifuAI.src.forms
             ckMoodSystem = new ModernCheckBox();
             ck_caninitchat = new ModernCheckBox();
             tabMood = new TabPage();
+            ckStaticMood = new ModernCheckBox();
             label24 = new Label();
             moodSanity = new ModernNumericUpDown();
             label25 = new Label();
@@ -1221,6 +1222,7 @@ namespace WaifuAI.src.forms
             // tabMood
             // 
             tabMood.BackColor = Color.FromArgb(37, 37, 37);
+            tabMood.Controls.Add(ckStaticMood);
             tabMood.Controls.Add(label24);
             tabMood.Controls.Add(moodSanity);
             tabMood.Controls.Add(label25);
@@ -1242,10 +1244,20 @@ namespace WaifuAI.src.forms
             tabMood.TabIndex = 5;
             tabMood.Text = "Mood Values";
             // 
+            // ckStaticMood
+            // 
+            ckStaticMood.Font = new Font("Segoe UI", 9F);
+            ckStaticMood.Location = new Point(20, 17);
+            ckStaticMood.Name = "ckStaticMood";
+            ckStaticMood.Size = new Size(150, 26);
+            ckStaticMood.TabIndex = 12;
+            ckStaticMood.Text = "Static Mood Values";
+            ckStaticMood.UseVisualStyleBackColor = true;
+            // 
             // label24
             // 
             label24.AutoSize = true;
-            label24.Location = new Point(17, 237);
+            label24.Location = new Point(20, 282);
             label24.Name = "label24";
             label24.Size = new Size(39, 15);
             label24.TabIndex = 11;
@@ -1257,7 +1269,7 @@ namespace WaifuAI.src.forms
             moodSanity.DecimalPlaces = 5;
             moodSanity.Font = new Font("Segoe UI", 9F);
             moodSanity.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
-            moodSanity.Location = new Point(17, 255);
+            moodSanity.Location = new Point(20, 300);
             moodSanity.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
             moodSanity.Name = "moodSanity";
             moodSanity.Padding = new Padding(1);
@@ -1267,7 +1279,7 @@ namespace WaifuAI.src.forms
             // label25
             // 
             label25.AutoSize = true;
-            label25.Location = new Point(17, 192);
+            label25.Location = new Point(20, 237);
             label25.Name = "label25";
             label25.Size = new Size(68, 15);
             label25.TabIndex = 9;
@@ -1279,7 +1291,7 @@ namespace WaifuAI.src.forms
             moodSub.DecimalPlaces = 5;
             moodSub.Font = new Font("Segoe UI", 9F);
             moodSub.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
-            moodSub.Location = new Point(17, 210);
+            moodSub.Location = new Point(20, 255);
             moodSub.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
             moodSub.Name = "moodSub";
             moodSub.Padding = new Padding(1);
@@ -1289,7 +1301,7 @@ namespace WaifuAI.src.forms
             // label26
             // 
             label26.AutoSize = true;
-            label26.Location = new Point(17, 147);
+            label26.Location = new Point(20, 192);
             label26.Name = "label26";
             label26.Size = new Size(60, 15);
             label26.TabIndex = 7;
@@ -1301,7 +1313,7 @@ namespace WaifuAI.src.forms
             moodHorny.DecimalPlaces = 5;
             moodHorny.Font = new Font("Segoe UI", 9F);
             moodHorny.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
-            moodHorny.Location = new Point(17, 165);
+            moodHorny.Location = new Point(20, 210);
             moodHorny.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
             moodHorny.Name = "moodHorny";
             moodHorny.Padding = new Padding(1);
@@ -1311,7 +1323,7 @@ namespace WaifuAI.src.forms
             // label21
             // 
             label21.AutoSize = true;
-            label21.Location = new Point(17, 102);
+            label21.Location = new Point(20, 147);
             label21.Name = "label21";
             label21.Size = new Size(54, 15);
             label21.TabIndex = 5;
@@ -1323,7 +1335,7 @@ namespace WaifuAI.src.forms
             moodCuriosity.DecimalPlaces = 5;
             moodCuriosity.Font = new Font("Segoe UI", 9F);
             moodCuriosity.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
-            moodCuriosity.Location = new Point(17, 120);
+            moodCuriosity.Location = new Point(20, 165);
             moodCuriosity.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
             moodCuriosity.Name = "moodCuriosity";
             moodCuriosity.Padding = new Padding(1);
@@ -1333,7 +1345,7 @@ namespace WaifuAI.src.forms
             // label20
             // 
             label20.AutoSize = true;
-            label20.Location = new Point(17, 57);
+            label20.Location = new Point(20, 102);
             label20.Name = "label20";
             label20.Size = new Size(38, 15);
             label20.TabIndex = 3;
@@ -1345,7 +1357,7 @@ namespace WaifuAI.src.forms
             moodCheer.DecimalPlaces = 5;
             moodCheer.Font = new Font("Segoe UI", 9F);
             moodCheer.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
-            moodCheer.Location = new Point(17, 75);
+            moodCheer.Location = new Point(20, 120);
             moodCheer.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
             moodCheer.Name = "moodCheer";
             moodCheer.Padding = new Padding(1);
@@ -1355,7 +1367,7 @@ namespace WaifuAI.src.forms
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(17, 12);
+            label10.Location = new Point(20, 57);
             label10.Name = "label10";
             label10.Size = new Size(43, 15);
             label10.TabIndex = 1;
@@ -1367,7 +1379,7 @@ namespace WaifuAI.src.forms
             moodEnergy.DecimalPlaces = 5;
             moodEnergy.Font = new Font("Segoe UI", 9F);
             moodEnergy.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
-            moodEnergy.Location = new Point(17, 30);
+            moodEnergy.Location = new Point(20, 75);
             moodEnergy.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
             moodEnergy.Name = "moodEnergy";
             moodEnergy.Padding = new Padding(1);
@@ -1529,5 +1541,6 @@ namespace WaifuAI.src.forms
         private TextBox edTimerOff;
         private ModernCheckBox ckTimerAutoExpire;
         private ModernCheckBox ckTimerActive;
+        private ModernCheckBox ckStaticMood;
     }
 }
