@@ -24,7 +24,7 @@ namespace WaifuAI.AgentPlugins
             // Just a small delay so i don't have to remove async and do Task.ResultFrom everywhere. It's not like we're on a timer anyway.
             await Task.Delay(10, ct).ConfigureAwait(false);
 
-            if (LLMEngine.Status != SystemStatus.Ready || !LLMEngine.SupportsSchema || LLMEngine.MaxContextLength < 8000)
+            if (LLMEngine.Status != SystemStatus.Ready || !LLMEngine.SupportsSchema || LLMEngine.MaxContextLength < 8000 || owner.History.Sessions.Count < 2)
                 return false;
 
             var MinTimeInterval = cfg.GetSetting<TimeSpan>("TriggerInterval");
@@ -170,7 +170,7 @@ namespace WaifuAI.AgentPlugins
             if (goals.Count > 0)
             {
                 prompt.AppendLinuxLine("You have the following current goals:");
-                foreach (var g in goals.OrderBy(g => g.Priority).Take(5))
+                foreach (var g in goals.OrderBy(g => g.Priority).Take(3))
                 {
                     prompt.AppendLinuxLine($"- {g.Name}");
                 }

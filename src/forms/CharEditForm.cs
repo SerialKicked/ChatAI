@@ -119,6 +119,7 @@ namespace WaifuAI.src.forms
             mychar.LockSettings.StatusLockOverMessage = edTimerExpired.Text.ToLinuxFormat();
             mychar.LockSettings.IsLocked = ckTimerActive.Checked;
             mychar.LockSettings.AutomaticUnlockOnDurationEnd = ckTimerAutoExpire.Checked;
+            mychar.LockSettings.ShowLockDuration = ckTimerAddDuration.Checked;
 
             return mychar;
         }
@@ -164,6 +165,7 @@ namespace WaifuAI.src.forms
             ckTimerActive.Checked = selectedCharacter.LockSettings.IsLocked;
             ckTimerAutoExpire.Checked = selectedCharacter.LockSettings.AutomaticUnlockOnDurationEnd;
             ckTimerEnable.Checked = selectedCharacter.LockSettings.Enabled;
+            ckTimerAddDuration.Checked = selectedCharacter.LockSettings.ShowLockDuration;
             ckStaticMood.Checked = selectedCharacter.Brain.StaticMood;
 
 

@@ -342,8 +342,7 @@ namespace WaifuAI
             AutoTalkTimer.Stop();
             SaveSettings();
             LLMEngine.Bot.EndChat(backup: true);
-            if (!string.IsNullOrEmpty(LLMEngine.Bot.UniqueName))
-                (LLMEngine.Bot as IFile).SaveToFile("data/chars/" + LLMEngine.Bot.UniqueName + ".json");
+            LLMEngine.Bot.SaveToFile("data/chars/");
         }
 
         /// <summary>
@@ -745,10 +744,9 @@ namespace WaifuAI
                     loadingForm.SetMessage("Saving history.");
                     loadingForm.SetProgress(95);
                 }
-                Bot?.SaveChatHistory();
-                await Bot?.UpdateSelfEditSection();
-                if (!string.IsNullOrEmpty(Bot?.GetIdentifier()))
-                    (Bot as IFile)?.SaveToFile("data/chars/" + Bot?.GetIdentifier() + ".json");
+                Bot.SaveChatHistory();
+                await Bot.UpdateSelfEditSection();
+                Bot.SaveToFile("data/chars");
                 loadingForm.SetMessage("Loading new session.");
                 loadingForm.SetProgress(100);
                 LLMEngine.RemoveQuickInferenceEventHandler();

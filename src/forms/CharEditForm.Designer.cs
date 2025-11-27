@@ -103,6 +103,7 @@ namespace WaifuAI.src.forms
             listAgentTasks = new ModernCheckedListBox();
             tbSettings = new TabPage();
             collapsibleGroupBox11 = new CollapsibleGroupBox();
+            ckTimerAddDuration = new ModernCheckBox();
             ckTimerActive = new ModernCheckBox();
             ckTimerAutoExpire = new ModernCheckBox();
             label30 = new Label();
@@ -999,6 +1000,7 @@ namespace WaifuAI.src.forms
             // 
             collapsibleGroupBox11.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox11.CanCollapse = false;
+            collapsibleGroupBox11.Controls.Add(ckTimerAddDuration);
             collapsibleGroupBox11.Controls.Add(ckTimerActive);
             collapsibleGroupBox11.Controls.Add(ckTimerAutoExpire);
             collapsibleGroupBox11.Controls.Add(label30);
@@ -1015,6 +1017,16 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox11.Size = new Size(440, 298);
             collapsibleGroupBox11.TabIndex = 4;
             collapsibleGroupBox11.Text = "Timer Plugin";
+            // 
+            // ckTimerAddDuration
+            // 
+            ckTimerAddDuration.Font = new Font("Segoe UI", 9F);
+            ckTimerAddDuration.Location = new Point(15, 266);
+            ckTimerAddDuration.Name = "ckTimerAddDuration";
+            ckTimerAddDuration.Size = new Size(410, 26);
+            ckTimerAddDuration.TabIndex = 12;
+            ckTimerAddDuration.Text = "Insert time spent in message";
+            ckTimerAddDuration.UseVisualStyleBackColor = true;
             // 
             // ckTimerActive
             // 
@@ -1542,5 +1554,6 @@ namespace WaifuAI.src.forms
         private ModernCheckBox ckTimerAutoExpire;
         private ModernCheckBox ckTimerActive;
         private ModernCheckBox ckStaticMood;
+        private ModernCheckBox ckTimerAddDuration;
     }
 }

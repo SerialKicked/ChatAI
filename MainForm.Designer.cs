@@ -956,7 +956,7 @@ namespace WaifuAI
             collapsibleGroupBox4.Controls.Add(button1);
             collapsibleGroupBox4.Controls.Add(panel9);
             collapsibleGroupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox4.Location = new Point(0, 850);
+            collapsibleGroupBox4.Location = new Point(0, 831);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(8, 32, 8, 8);
             collapsibleGroupBox4.Size = new Size(200, 159);
@@ -1037,7 +1037,7 @@ namespace WaifuAI
             collapsibleMenus.Controls.Add(btRawLog);
             collapsibleMenus.Controls.Add(panel3);
             collapsibleMenus.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleMenus.Location = new Point(0, 717);
+            collapsibleMenus.Location = new Point(0, 698);
             collapsibleMenus.Name = "collapsibleMenus";
             collapsibleMenus.Padding = new Padding(8, 32, 8, 8);
             collapsibleMenus.Size = new Size(200, 125);
@@ -1067,7 +1067,7 @@ namespace WaifuAI
             cboxGroup.Location = new Point(0, 369);
             cboxGroup.Name = "cboxGroup";
             cboxGroup.Padding = new Padding(8, 32, 8, 8);
-            cboxGroup.Size = new Size(200, 340);
+            cboxGroup.Size = new Size(200, 321);
             cboxGroup.TabIndex = 29;
             cboxGroup.Text = "Group Chat";
             // 
@@ -1078,7 +1078,7 @@ namespace WaifuAI
             cbGroupSwitch.DropDownHeight = 620;
             cbGroupSwitch.Enabled = false;
             cbGroupSwitch.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            cbGroupSwitch.Location = new Point(8, 311);
+            cbGroupSwitch.Location = new Point(8, 287);
             cbGroupSwitch.MaxDropDownItems = 25;
             cbGroupSwitch.Name = "cbGroupSwitch";
             cbGroupSwitch.Padding = new Padding(1);
@@ -1091,7 +1091,7 @@ namespace WaifuAI
             label2.AutoSize = true;
             label2.Dock = DockStyle.Top;
             label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            label2.Location = new Point(8, 296);
+            label2.Location = new Point(8, 272);
             label2.Name = "label2";
             label2.Size = new Size(131, 15);
             label2.TabIndex = 2;
@@ -1100,7 +1100,7 @@ namespace WaifuAI
             // panel6
             // 
             panel6.Dock = DockStyle.Top;
-            panel6.Location = new Point(8, 286);
+            panel6.Location = new Point(8, 262);
             panel6.Margin = new Padding(8);
             panel6.Name = "panel6";
             panel6.Padding = new Padding(8);
@@ -1118,7 +1118,7 @@ namespace WaifuAI
             lstGroupMembers.Location = new Point(8, 68);
             lstGroupMembers.Name = "lstGroupMembers";
             lstGroupMembers.Padding = new Padding(1);
-            lstGroupMembers.Size = new Size(184, 218);
+            lstGroupMembers.Size = new Size(184, 194);
             lstGroupMembers.TabIndex = 46;
             lstGroupMembers.ItemCheck += lstGroupMembers_ItemCheck;
             // 

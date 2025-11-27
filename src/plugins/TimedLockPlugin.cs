@@ -26,6 +26,7 @@ namespace WaifuAI.Plugins
         public string StatusUnlockedMessage { get; set; } = "The keypad is unlocked.";
         public string StatusLockOverMessage { get; set; } = "The keypad's lock duration has expired and should now be unlocked.";
         public bool IsLocked { get; set; } = false;
+        public bool ShowLockDuration { get; set; } = false;
         public bool AutomaticUnlockOnDurationEnd { get; set; } = false;
         public TimeSpan LockDuration { get; set; } = TimeSpan.Zero;
         public DateTime StateStartDate { get; set; } = DateTime.MinValue;
@@ -101,6 +102,12 @@ namespace WaifuAI.Plugins
             }
             else
             {
+                if (Settings.ShowLockDuration)
+                {
+                    var lockedDuration = DateTime.UtcNow - Settings.StateStartDate;
+                    return Owner.ReplaceMacros($"{Settings.StatusLockedMessage} Has been locked for: {StringExtensions.TimeSpanToHumanString(lockedDuration)}. Time remaining: {StringExtensions.TimeSpanToHumanString(timeLeft)}.");
+                }
+
                 return Owner.ReplaceMacros($"{Settings.StatusLockedMessage} Time remaining: {StringExtensions.TimeSpanToHumanString(timeLeft)}.");
             }
         }
