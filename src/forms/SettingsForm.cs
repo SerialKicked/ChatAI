@@ -162,6 +162,7 @@ namespace WaifuAI.src.forms
             }
             cbGroupSessionStrategy.SelectedIndex = (int)Program.Settings.GroupSecondaryPersonaSeePastSessions;
             ckGroupAltern.Checked = Program.Settings.GroupInstructFormatAdapter;
+            ckDetailedSum.Checked = Program.Settings.SessionDetailedSummary;
 
 
             _isinitloading = saveinit;
@@ -194,6 +195,7 @@ namespace WaifuAI.src.forms
                 Program.Settings.WebsitePluginUseKeywords = ck_webkeyword.Checked;
                 Program.Settings.WebsitePluginGrammar = ck_webgrammar.Checked;
                 Program.Settings.SessionMemorySystem = ck_sessionmemory.Checked;
+                Program.Settings.SessionDetailedSummary = ckDetailedSum.Checked;
                 Program.Settings.RAGDistanceCutOff = (float)num_ragcutoff.Value;
                 Program.Settings.RAGMaxEntries = (int)num_ragmaxretrieve.Value;
                 Program.Settings.WorldInfoMaxEntries = (int)numWIEntries.Value;

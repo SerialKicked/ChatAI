@@ -141,6 +141,8 @@ namespace WaifuAI.Files
                     // Mark sticky as not wanted because they are handled with different insertion method
                     if (session.Sticky && LLMEngine.Settings.SessionMemorySystem)
                         item.Distance += 2f;
+                    if (session.MetaData.Keywords.Any(kw => message.ContainsWholeWord(kw, StringComparison.OrdinalIgnoreCase)))
+                        item.Distance -= 0.01f; // Boost if the message contains one of the session keywords
                 }
                 var embedhelpers = MemoryUnit.EmbedHelpers[item.Memory.Category];
 

@@ -124,6 +124,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox5 = new CollapsibleGroupBox();
             panel2 = new Panel();
             panel7 = new Panel();
+            ckDetailedSum = new ModernCheckBox();
             panel1.SuspendLayout();
             collapsibleGroupBox1.SuspendLayout();
             verticalStackPanel1.SuspendLayout();
@@ -798,7 +799,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox1.Location = new Point(0, 6);
             collapsibleGroupBox1.Name = "collapsibleGroupBox1";
             collapsibleGroupBox1.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox1.Size = new Size(321, 116);
+            collapsibleGroupBox1.Size = new Size(321, 119);
             collapsibleGroupBox1.TabIndex = 33;
             collapsibleGroupBox1.Text = "Core Settings";
             // 
@@ -856,7 +857,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox7.Controls.Add(bt_ImportSTChat);
             collapsibleGroupBox7.Controls.Add(bt_importworld);
             collapsibleGroupBox7.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox7.Location = new Point(0, 517);
+            collapsibleGroupBox7.Location = new Point(0, 549);
             collapsibleGroupBox7.Name = "collapsibleGroupBox7";
             collapsibleGroupBox7.Padding = new Padding(12, 32, 12, 10);
             collapsibleGroupBox7.Size = new Size(321, 98);
@@ -881,7 +882,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox3.Controls.Add(num_ragmaxretrieve);
             collapsibleGroupBox3.Controls.Add(label14);
             collapsibleGroupBox3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox3.Location = new Point(0, 302);
+            collapsibleGroupBox3.Location = new Point(0, 334);
             collapsibleGroupBox3.Name = "collapsibleGroupBox3";
             collapsibleGroupBox3.Padding = new Padding(12, 32, 12, 10);
             collapsibleGroupBox3.Size = new Size(321, 207);
@@ -915,16 +916,17 @@ namespace WaifuAI.src.forms
             // 
             collapsibleGroupBox2.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox2.CanCollapse = false;
+            collapsibleGroupBox2.Controls.Add(ckDetailedSum);
             collapsibleGroupBox2.Controls.Add(mck_cutmiddle);
             collapsibleGroupBox2.Controls.Add(cb_pastsession);
             collapsibleGroupBox2.Controls.Add(label65);
             collapsibleGroupBox2.Controls.Add(panel8);
             collapsibleGroupBox2.Controls.Add(ck_sessionmemory);
             collapsibleGroupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox2.Location = new Point(0, 130);
+            collapsibleGroupBox2.Location = new Point(0, 133);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox2.Size = new Size(321, 164);
+            collapsibleGroupBox2.Size = new Size(321, 193);
             collapsibleGroupBox2.TabIndex = 34;
             collapsibleGroupBox2.Text = "Session Memory System";
             collapsibleGroupBox2.ExpandedChanged += collapsibleGroupBox2_ExpandedChanged;
@@ -1262,6 +1264,17 @@ namespace WaifuAI.src.forms
             panel7.Size = new Size(284, 10);
             panel7.TabIndex = 51;
             // 
+            // ckDetailedSum
+            // 
+            ckDetailedSum.Dock = DockStyle.Top;
+            ckDetailedSum.Font = new Font("Segoe UI", 9F);
+            ckDetailedSum.Location = new Point(12, 158);
+            ckDetailedSum.Name = "ckDetailedSum";
+            ckDetailedSum.Size = new Size(297, 26);
+            ckDetailedSum.TabIndex = 57;
+            ckDetailedSum.Text = "Use Detailed Summaries";
+            ckDetailedSum.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1400,5 +1413,6 @@ namespace WaifuAI.src.forms
         private ModernComboBox cbGroupSessionStrategy;
         private Label label9;
         private Panel panel9;
+        private ModernCheckBox ckDetailedSum;
     }
 }

@@ -508,6 +508,7 @@ namespace WaifuAI
                 return;
         }
 
+        [Obsolete("This method will be removed in future versions and replaced by an action. In the meantime, bot cannot initiate conversations.")]
         private async void OnBotInitiateConversation(object? sender, EventArgs e)
         {
             if (LLMEngine.Status != SystemStatus.Ready || Bot?.CanInitiateChat != true || _afkmessagecount > 2)
@@ -518,14 +519,14 @@ namespace WaifuAI
             var lastusermessage = LLMEngine.History.CurrentSession.Messages.LastOrDefault(m => m.Role == AuthorRole.User);
             if (lastusermessage == null)
                 return;
-            var message = "The last message from {{user}} was posted " + LetheAISharp.StringExtensions.TimeSpanToHumanString(DateTime.Now - lastusermessage.Date) + " ago. We're {{day}}, the {{date}} at {{time}} now. Would you like to send a message to {{user}} now? Use your best judgement based on the conversation above. In case you don't want to send a message, just respond with No. If you want to send a message, write the message to {{user}} directly while making sure it's contextually relevant. \n\nThis query will repeat every few minutes.";
+            var message = "The last message from {{user}} was posted " + StringExtensions.TimeSpanToHumanString(DateTime.Now - lastusermessage.Date) + " ago. We're {{day}}, the {{date}} at {{time}} now. Would you like to send a message to {{user}} now? Use your best judgement based on the conversation above. In case you don't want to send a message, just respond with No. If you want to send a message, write the message to {{user}} directly while making sure it's contextually relevant. \n\nThis query will repeat every few minutes.";
             if (_afkmessagecount > 1)
                 message += " You've already sent " + _afkmessagecount + " unanswered messages in a row.";
             else if (_afkmessagecount == 1)
                 message += " You've already sent a message.";
             message = LLMEngine.Bot.ReplaceMacros(message);
             statusbar.Items[1].Text = "Analyzing...";
-            var response = await LLMEngine.QuickInferenceForSystemPrompt(message, false);
+            var response = "no"; //  await LLMEngine.QuickInferenceForSystemPrompt(message, false);
             response = response.RemoveThinkingBlocks().Trim();
 
             if (!string.IsNullOrEmpty(response) && !response.StartsWith("no", StringComparison.InvariantCultureIgnoreCase))
