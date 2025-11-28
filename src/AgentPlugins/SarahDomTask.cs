@@ -152,7 +152,7 @@ namespace WaifuAI.AgentPlugins
                 if (!string.IsNullOrEmpty(orders))
                 {
                     orders = orders.RemoveThinkingBlocks();
-                    owner.Brain.AddUserReturnInsert(LLMEngine.NewLine + "{{mchar}}'s objectives:" + LLMEngine.NewLine + orders);
+                    owner.Brain.AddUserReturnInsert(LLMEngine.NewLine + "{{mchar}}'s objectives:" + LLMEngine.NewLine + orders + LLMEngine.NewLine + LLMEngine.NewLine + "Do not rush through those points in a single message. Discuss each point individually with {{user}} in full.");
                 }
                 cfg.SetSetting("LastEval", JsonConvert.SerializeObject(evallist.Last()));
             }

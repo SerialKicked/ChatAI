@@ -120,7 +120,7 @@ namespace WaifuAI.Files
             var toretrieve = maxRes * 2 + 5;
             if (toretrieve < 30)
                 toretrieve = 30;
-            var found = await base.Search(message, toretrieve, maxDist).ConfigureAwait(false);
+            var found = await base.Search(message, toretrieve, maxDist + 0.25f).ConfigureAwait(false);
             if (found.Count == 0)
                 return [];
 
@@ -143,21 +143,22 @@ namespace WaifuAI.Files
                         item.Distance += 2f;
                 }
                 var embedhelpers = MemoryUnit.EmbedHelpers[item.Memory.Category];
+
                 if (embedhelpers?.Count > 0)
                 {
                     foreach (var kw in embedhelpers)
                     {
                         if (message.ContainsWholeWord(kw, StringComparison.OrdinalIgnoreCase))
                         {
-                            item.Distance -= 0.015f; // Boost if the message contains one of the embed helpers for this category
+                            item.Distance -= 0.01f; // Boost if the message contains one of the embed helpers for this category
                             break;
                         }
                     }
                 }
             }
             // Remove entries with distance above limit
-            found.RemoveAll(e => e.Distance > maxDist);
             found.Sort((a, b) => a.Distance.CompareTo(b.Distance));
+            found.RemoveAll(e => e.Distance > maxDist);
             // If we have too many results, trim the list to maxRes
             if (found.Count > maxRes)
                 found = found.GetRange(0, maxRes);
