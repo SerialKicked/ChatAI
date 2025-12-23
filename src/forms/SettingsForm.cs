@@ -116,6 +116,7 @@ namespace WaifuAI.src.forms
             num_removeitalicmaxword.Value = Program.Settings.RoleplayFormatting.RemoveItalicMaxWords;
             ck_lastparaphfilter.Checked = Program.Settings.RoleplayFormatting.LastParagraphDeleter;
             ckDelStartSlop.Checked = Program.Settings.RoleplayFormatting.RemoveStartingSlop;
+            ckParenthesizeToItalic.Checked = Program.Settings.RoleplayFormatting.ParenthesizeToItalic;
             cb_pastsession.SelectedIndex = (int)Program.Settings.SessionHandling;
             ck_sysrag.Checked = Program.Settings.MoveAllInsertsToSysPrompt;
             ck_remlastsentence.Checked = Program.Settings.RemoveCutSentence;
@@ -163,6 +164,7 @@ namespace WaifuAI.src.forms
             cbGroupSessionStrategy.SelectedIndex = (int)Program.Settings.GroupSecondaryPersonaSeePastSessions;
             ckGroupAltern.Checked = Program.Settings.GroupInstructFormatAdapter;
             ckDetailedSum.Checked = Program.Settings.SessionDetailedSummary;
+            ckGroupCommit.Checked = Program.Settings.CommitGroupSessionToSecondaryPersonaHistory;
 
 
             _isinitloading = saveinit;
@@ -191,6 +193,7 @@ namespace WaifuAI.src.forms
                 Program.Settings.RoleplayFormatting.LastParagraphDeleter = ck_lastparaphfilter.Checked;
                 Program.Settings.RoleplayFormatting.RemoveStartingSlop = ckDelStartSlop.Checked;
                 Program.Settings.RemoveCutSentence = ck_remlastsentence.Checked;
+                Program.Settings.RoleplayFormatting.ParenthesizeToItalic = ckParenthesizeToItalic.Checked;
                 Program.Settings.StopGenerationOnFirstParagraph = ck_oneparagraph.Checked;
                 Program.Settings.WebsitePluginUseKeywords = ck_webkeyword.Checked;
                 Program.Settings.WebsitePluginGrammar = ck_webgrammar.Checked;
@@ -215,6 +218,7 @@ namespace WaifuAI.src.forms
                 Program.Settings.GroupChatAutoResponseLimit = (int)numGroupQueue.Value;
                 Program.Settings.GroupSecondaryPersonaSeePastSessions = (GroupChatPastSessionMode)cbGroupSessionStrategy.SelectedIndex;
                 Program.Settings.GroupInstructFormatAdapter = ckGroupAltern.Checked;
+                Program.Settings.CommitGroupSessionToSecondaryPersonaHistory = ckGroupCommit.Checked;
 
                 // Search API Settings
                 if (cb_searchapi.SelectedIndex == 0)

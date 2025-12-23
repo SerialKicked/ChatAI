@@ -108,7 +108,8 @@ namespace WaifuAI.AgentPlugins
                 if (previousEvalObj is not null)
                 {
                     query = "Based on the information provided, write a new report about {{user}}. Merge the two evaluations provided into one, improving and expanding upon the previous report. Remove resolved blocks and secrets from the list. Merge similar or identical entries together. Update the analysis and conclusions accordingly. The goal is to give yourself effective directives and high quality data to further your goals. " + globalResponse.GetQuery();                
-                } 
+                }
+                query += LLMEngine.NewLine + "Write in English only, convert back any other language to English if present.";
 
                 var left = 3000 - builder.GetTokenCount(AuthorRole.User, query);
                 builder.AddMessage(AuthorRole.SysPrompt, sessprompt);
@@ -211,7 +212,7 @@ namespace WaifuAI.AgentPlugins
                 .AppendLinuxLine("# Current Evaluation of {{user}}").AppendLinuxLine()
                 .AppendLinuxLine(EvalToString(eval)).AppendLinuxLine().AppendLinuxLine();
 
-            var query = "Based on the information provided, decide {{mchar}}'s objectives for next chat session with {{user}}. This should be a short list (5 items max) of topics {{char}} will want to discuss with {{user}}, or actions to be taken. Don't add a title.";
+            var query = "Based on the information provided, decide {{mchar}}'s objectives for next chat session with {{user}}. This should be a short list (5 items max) of topics {{char}} will want to discuss with {{user}}, or actions to be taken. Don't add a title. Write in english only, convert back any other language to English if present.";
 
             builder.AddMessage(AuthorRole.SysPrompt, intro);
             builder.AddMessage(AuthorRole.User, sessionaschat.ToString() + query);
@@ -251,7 +252,7 @@ namespace WaifuAI.AgentPlugins
                     .AppendLinuxLine("# New Evaluation").AppendLinuxLine()
                     .AppendLinuxLine(EvalToString(current)).AppendLinuxLine();
 
-                var query = "Based on the information provided, write a new report about {{user}}. Merge the two evaluations provided into one, improving and expanding upon the previous report. Remove solved blocks and secrets from their list. Merge similar or identical entries together. Update the analysis and conclusions accordingly. The goal is to give yourself effective directives and high quality data to further your goals." + evalres.GetQuery();
+                var query = "Based on the information provided, write a new report about {{user}}. Merge the two evaluations provided into one, improving and expanding upon the previous report. Remove solved blocks and secrets from their list. Merge similar or identical entries together. Update the analysis and conclusions accordingly. The goal is to give yourself effective directives and high quality data to further your goals. Write in English only, convert back any other language to English if present." + evalres.GetQuery();
 
                 builder.AddMessage(AuthorRole.SysPrompt, intro);
                 builder.AddMessage(AuthorRole.User, sessionaschat.ToString() + query);

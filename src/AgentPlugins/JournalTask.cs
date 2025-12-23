@@ -79,7 +79,13 @@ namespace WaifuAI.AgentPlugins
 
         private static async Task<object> GetEntryPrompt(BasePersona owner, string topic)
         {
-            var lastsession = owner.History.Sessions[^2];
+            var lastsessions = new List<ChatSession>() { owner.History.Sessions[^2] };
+
+            if (owner.History.Sessions.Count > 2)
+            {
+                lastsessions.Insert(0, owner.History.Sessions[^3]);
+            }
+
             var entries = owner.Brain.GetMemories(MemoryType.Journal);
             MemoryUnit? mostrecententry = null;
             if (entries.Count > 0)
@@ -90,7 +96,7 @@ namespace WaifuAI.AgentPlugins
             var timespansince = lastmessagedate > DateTime.MinValue ? DateTime.Now - lastmessagedate : TimeSpan.Zero;
 
             var prompt = new StringBuilder();
-            prompt.AppendLinuxLine("You are {{mchar}} and you are about to write an entry in your private journal.").AppendLinuxLine();
+            prompt.AppendLinuxLine("You are {{mchar}} and you are about to write an entry in your private journal. It's the {{date}}, at {{time}}.").AppendLinuxLine();
 
             prompt.AppendLinuxLine("# {{mchar}}'s Biography").AppendLinuxLine();
             prompt.AppendLinuxLine("{{mcharbio}}").AppendLinuxLine();
@@ -99,17 +105,8 @@ namespace WaifuAI.AgentPlugins
             if (mostrecententry is not null)
             {
                 prompt.AppendLinuxLine("# Your previous journal entry").AppendLinuxLine();
-                prompt.AppendLinuxLine($"**{mostrecententry.Name}**");
                 prompt.AppendLinuxLine($"{mostrecententry.Content}").AppendLinuxLine();
             }
-            prompt.AppendLinuxLine("# Summary of previous session with {{user}}").AppendLinuxLine();
-            prompt.AppendLinuxLine($"{lastsession.ToSnippet(TitleInsertType.None, LLMEngine.Bot.DatesInSessionSummaries, false, false)}").AppendLinuxLine();
-            if (owner.History.CurrentSession.Messages.Count > 5)
-            {
-                prompt.AppendLinuxLine("# Most recent dialogs between you and {{user}}").AppendLinuxLine();
-                prompt.AppendLinuxLine(owner.History.CurrentSession.GetRawDialogs(1250, true, false, false, false)).AppendLinuxLine();
-            }
-
             prompt.AppendLinuxLine("# Relevant Information and Thoughts").AppendLinuxLine();
             if (lastmessagedate > DateTime.MinValue)
             {
@@ -119,11 +116,28 @@ namespace WaifuAI.AgentPlugins
             await owner.Brain.GetRAGandInserts(recall, topic, 3, 1f);
             foreach (var item in recall)
             {
-                prompt.AppendLinuxLine(item.ToContent()).AppendLinuxLine();
+                if (item.Memory.Category == MemoryType.Journal)
+                    continue;
+                prompt.AppendLinuxLine(item.ToContent().RemoveNewLines()).AppendLinuxLine();
             }
+            prompt.AppendLinuxLine("# Summary of previous sessions with {{user}}").AppendLinuxLine();
+
+            foreach (var lastsess in lastsessions)
+            {
+                prompt.AppendLinuxLine($"{lastsess.ToSnippet(TitleInsertType.None, LLMEngine.Bot.DatesInSessionSummaries, false, false)}").AppendLinuxLine();
+            }
+
+            var curr = owner.History.CurrentSession.Messages.Count > 5 ? owner.History.CurrentSession : lastsessions.Last();
+
+            if (curr.Messages.Count > 5)
+            {
+                prompt.AppendLinuxLine("# Most recent dialogs between you and {{user}}").AppendLinuxLine();
+                prompt.AppendLinuxLine(curr.GetRawDialogs(1250, true, false, false, false)).AppendLinuxLine();
+            }
+
             var builder = LLMEngine.GetPromptBuilder();
             builder.AddMessage(AuthorRole.SysPrompt, prompt.ToString());
-            builder.AddMessage(AuthorRole.User, "As {{mchar}} write a new entry in your private journal. You've set the following topic for yourself: " + topic + LLMEngine.NewLine + LLMEngine.NewLine + "Feel free to write about something else if you feel like it. Make sure the entry reflects your personality and current situation. Write in a casual, personal tone, as if you were writing to yourself. Use first person perspective. Do not add a date (it's done automatically). Don't repeat the previous entry.");
+            builder.AddMessage(AuthorRole.User, "As {{mchar}} write a new entry in your private journal. You've set the following topic for yourself: " + topic + LLMEngine.NewLine + LLMEngine.NewLine + "Feel free to write about something else if you feel like it. Make sure the entry reflects your personality and current situation. Write in a casual, personal tone, as if you were writing to yourself. Use first person perspective. Do not add a date (it's done automatically). Don't repeat the previous entry. Focus on the recent events.");
             return builder.PromptToQuery(AuthorRole.Assistant, -1, 3000);
         }
 
