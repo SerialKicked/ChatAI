@@ -45,6 +45,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="data\banlist.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="data\background\beach_day.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
