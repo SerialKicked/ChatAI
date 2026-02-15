@@ -15,7 +15,12 @@ namespace WaifuAI.GBNF
     {
         [JsonIgnore] private static string Schema = string.Empty;
 
-        [Description("Analysis of the submitted chat session, including {{user}}'s behavior, in regards to the stated goals.")]
+        [MinLength(1)]
+        [MaxLength(6)]
+        [Description("Long term goals that {{mchar}} wants to complete regarding {{user}}. Those are overall aspirations for the months and years to come. You can alter entries but avoid deletion.")]
+        public List<string> LongTermGoals { get; set; } = [];
+
+        [Description("Analysis of the submitted chat session and {{user}}'s behavior, in regards to the stated goals.")]
         public string Analysis { get; set; } = string.Empty;
 
         [MinLength(0)]
@@ -30,11 +35,16 @@ namespace WaifuAI.GBNF
 
         [MinLength(0)]
         [MaxLength(10)]
-        [Description("A list of progress points that {{user}} has made during the chat session in relation with your stated goals. Be detailed, include reasons and context.")]
+        [Description("A list to track {{user}}'s progress in relation with your stated goals. Be detailed, include reasons and context.")]
         public List<string> Progress { get; set; } = [];
 
-        [Description("Based on the information, make a conclusion about {{user}}'s behavior and its alignment with the stated goals. Offer opinions and new directives for further improvement.")]
+        [Description("Based on the information, make a conclusion about {{user}}'s behavior and their alignment with the stated goals. Offer opinions and new directives for further improvement.")]
         public string Conclusions { get; set; } = string.Empty;
+
+        [MinLength(1)]
+        [MaxLength(5)]
+        [Description("Short term tasks that {{mchar}} want to impose on {{user}}. They are meant to help achieve long-term goals, and overcome potential blocks.")]
+        public List<string> ShortTermTasks { get; set; } = [];
 
         public override async Task<string> GetGrammar()
         {

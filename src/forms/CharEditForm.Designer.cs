@@ -77,7 +77,7 @@ namespace WaifuAI.src.forms
             panel3 = new Panel();
             btSave = new Button();
             panel4 = new Panel();
-            modernTabControl1 = new ModernTabControl();
+            TabControl = new ModernTabControl();
             tbGeneral = new TabPage();
             label27 = new Label();
             edMiniBio = new TextBox();
@@ -136,9 +136,26 @@ namespace WaifuAI.src.forms
             moodCheer = new ModernNumericUpDown();
             label10 = new Label();
             moodEnergy = new ModernNumericUpDown();
+            tabSchedule = new TabPage();
+            lblSchedulePrefix = new Label();
+            edSchedulePrefix = new TextBox();
+            lblSunday = new Label();
+            edSunday = new TextBox();
+            lblMonday = new Label();
+            edMonday = new TextBox();
+            lblTuesday = new Label();
+            edTuesday = new TextBox();
+            lblWednesday = new Label();
+            edWednesday = new TextBox();
+            lblThursday = new Label();
+            edThursday = new TextBox();
+            lblFriday = new Label();
+            edFriday = new TextBox();
+            lblSaturday = new Label();
+            edSaturday = new TextBox();
             ((System.ComponentModel.ISupportInitialize)pic).BeginInit();
             panel1.SuspendLayout();
-            modernTabControl1.SuspendLayout();
+            TabControl.SuspendLayout();
             tbGeneral.SuspendLayout();
             tbStyle.SuspendLayout();
             collapsibleGroupBox3.SuspendLayout();
@@ -156,6 +173,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox9.SuspendLayout();
             collapsibleGroupBox4.SuspendLayout();
             tabMood.SuspendLayout();
+            tabSchedule.SuspendLayout();
             SuspendLayout();
             // 
             // btRegenBio
@@ -666,23 +684,24 @@ namespace WaifuAI.src.forms
             panel4.Size = new Size(234, 10);
             panel4.TabIndex = 50;
             // 
-            // modernTabControl1
+            // TabControl
             // 
-            modernTabControl1.Appearance = TabAppearance.Buttons;
-            modernTabControl1.Controls.Add(tbGeneral);
-            modernTabControl1.Controls.Add(tbStyle);
-            modernTabControl1.Controls.Add(tbPrompt);
-            modernTabControl1.Controls.Add(tbAgent);
-            modernTabControl1.Controls.Add(tbSettings);
-            modernTabControl1.Controls.Add(tabMood);
-            modernTabControl1.Dock = DockStyle.Fill;
-            modernTabControl1.Font = new Font("Segoe UI", 9F);
-            modernTabControl1.ItemSize = new Size(0, 36);
-            modernTabControl1.Location = new Point(234, 0);
-            modernTabControl1.Name = "modernTabControl1";
-            modernTabControl1.SelectedIndex = 0;
-            modernTabControl1.Size = new Size(925, 662);
-            modernTabControl1.TabIndex = 5;
+            TabControl.Appearance = TabAppearance.Buttons;
+            TabControl.Controls.Add(tbGeneral);
+            TabControl.Controls.Add(tbStyle);
+            TabControl.Controls.Add(tbPrompt);
+            TabControl.Controls.Add(tbAgent);
+            TabControl.Controls.Add(tbSettings);
+            TabControl.Controls.Add(tabMood);
+            TabControl.Controls.Add(tabSchedule);
+            TabControl.Dock = DockStyle.Fill;
+            TabControl.Font = new Font("Segoe UI", 9F);
+            TabControl.ItemSize = new Size(0, 36);
+            TabControl.Location = new Point(234, 0);
+            TabControl.Name = "TabControl";
+            TabControl.SelectedIndex = 0;
+            TabControl.Size = new Size(925, 662);
+            TabControl.TabIndex = 5;
             // 
             // tbGeneral
             // 
@@ -1398,12 +1417,184 @@ namespace WaifuAI.src.forms
             moodEnergy.Size = new Size(120, 24);
             moodEnergy.TabIndex = 0;
             // 
+            // tabSchedule
+            // 
+            tabSchedule.BackColor = Color.FromArgb(37, 37, 37);
+            tabSchedule.Controls.Add(lblSchedulePrefix);
+            tabSchedule.Controls.Add(edSchedulePrefix);
+            tabSchedule.Controls.Add(lblSunday);
+            tabSchedule.Controls.Add(edSunday);
+            tabSchedule.Controls.Add(lblMonday);
+            tabSchedule.Controls.Add(edMonday);
+            tabSchedule.Controls.Add(lblTuesday);
+            tabSchedule.Controls.Add(edTuesday);
+            tabSchedule.Controls.Add(lblWednesday);
+            tabSchedule.Controls.Add(edWednesday);
+            tabSchedule.Controls.Add(lblThursday);
+            tabSchedule.Controls.Add(edThursday);
+            tabSchedule.Controls.Add(lblFriday);
+            tabSchedule.Controls.Add(edFriday);
+            tabSchedule.Controls.Add(lblSaturday);
+            tabSchedule.Controls.Add(edSaturday);
+            tabSchedule.Font = new Font("Segoe UI", 9F);
+            tabSchedule.ForeColor = Color.FromArgb(230, 230, 230);
+            tabSchedule.Location = new Point(4, 40);
+            tabSchedule.Name = "tabSchedule";
+            tabSchedule.Padding = new Padding(3);
+            tabSchedule.Size = new Size(917, 618);
+            tabSchedule.TabIndex = 6;
+            tabSchedule.Text = "Daily Schedule";
+            // 
+            // lblSchedulePrefix
+            // 
+            lblSchedulePrefix.AutoSize = true;
+            lblSchedulePrefix.Location = new Point(20, 15);
+            lblSchedulePrefix.Name = "lblSchedulePrefix";
+            lblSchedulePrefix.Size = new Size(87, 15);
+            lblSchedulePrefix.TabIndex = 0;
+            lblSchedulePrefix.Text = "Schedule Prefix";
+            // 
+            // edSchedulePrefix
+            // 
+            edSchedulePrefix.BackColor = Color.FromArgb(64, 64, 64);
+            edSchedulePrefix.ForeColor = Color.FromArgb(230, 230, 230);
+            edSchedulePrefix.Location = new Point(20, 33);
+            edSchedulePrefix.Name = "edSchedulePrefix";
+            edSchedulePrefix.Size = new Size(400, 23);
+            edSchedulePrefix.TabIndex = 1;
+            // 
+            // lblSunday
+            // 
+            lblSunday.AutoSize = true;
+            lblSunday.Location = new Point(20, 70);
+            lblSunday.Name = "lblSunday";
+            lblSunday.Size = new Size(46, 15);
+            lblSunday.TabIndex = 2;
+            lblSunday.Text = "Sunday";
+            // 
+            // edSunday
+            // 
+            edSunday.BackColor = Color.FromArgb(64, 64, 64);
+            edSunday.ForeColor = Color.FromArgb(230, 230, 230);
+            edSunday.Location = new Point(20, 88);
+            edSunday.Name = "edSunday";
+            edSunday.Size = new Size(870, 23);
+            edSunday.TabIndex = 3;
+            // 
+            // lblMonday
+            // 
+            lblMonday.AutoSize = true;
+            lblMonday.Location = new Point(20, 120);
+            lblMonday.Name = "lblMonday";
+            lblMonday.Size = new Size(51, 15);
+            lblMonday.TabIndex = 4;
+            lblMonday.Text = "Monday";
+            // 
+            // edMonday
+            // 
+            edMonday.BackColor = Color.FromArgb(64, 64, 64);
+            edMonday.ForeColor = Color.FromArgb(230, 230, 230);
+            edMonday.Location = new Point(20, 138);
+            edMonday.Name = "edMonday";
+            edMonday.Size = new Size(870, 23);
+            edMonday.TabIndex = 5;
+            // 
+            // lblTuesday
+            // 
+            lblTuesday.AutoSize = true;
+            lblTuesday.Location = new Point(20, 170);
+            lblTuesday.Name = "lblTuesday";
+            lblTuesday.Size = new Size(51, 15);
+            lblTuesday.TabIndex = 6;
+            lblTuesday.Text = "Tuesday";
+            // 
+            // edTuesday
+            // 
+            edTuesday.BackColor = Color.FromArgb(64, 64, 64);
+            edTuesday.ForeColor = Color.FromArgb(230, 230, 230);
+            edTuesday.Location = new Point(20, 188);
+            edTuesday.Name = "edTuesday";
+            edTuesday.Size = new Size(870, 23);
+            edTuesday.TabIndex = 7;
+            // 
+            // lblWednesday
+            // 
+            lblWednesday.AutoSize = true;
+            lblWednesday.Location = new Point(20, 220);
+            lblWednesday.Name = "lblWednesday";
+            lblWednesday.Size = new Size(68, 15);
+            lblWednesday.TabIndex = 8;
+            lblWednesday.Text = "Wednesday";
+            // 
+            // edWednesday
+            // 
+            edWednesday.BackColor = Color.FromArgb(64, 64, 64);
+            edWednesday.ForeColor = Color.FromArgb(230, 230, 230);
+            edWednesday.Location = new Point(20, 238);
+            edWednesday.Name = "edWednesday";
+            edWednesday.Size = new Size(870, 23);
+            edWednesday.TabIndex = 9;
+            // 
+            // lblThursday
+            // 
+            lblThursday.AutoSize = true;
+            lblThursday.Location = new Point(20, 270);
+            lblThursday.Name = "lblThursday";
+            lblThursday.Size = new Size(56, 15);
+            lblThursday.TabIndex = 10;
+            lblThursday.Text = "Thursday";
+            // 
+            // edThursday
+            // 
+            edThursday.BackColor = Color.FromArgb(64, 64, 64);
+            edThursday.ForeColor = Color.FromArgb(230, 230, 230);
+            edThursday.Location = new Point(20, 288);
+            edThursday.Name = "edThursday";
+            edThursday.Size = new Size(870, 23);
+            edThursday.TabIndex = 11;
+            // 
+            // lblFriday
+            // 
+            lblFriday.AutoSize = true;
+            lblFriday.Location = new Point(20, 320);
+            lblFriday.Name = "lblFriday";
+            lblFriday.Size = new Size(39, 15);
+            lblFriday.TabIndex = 12;
+            lblFriday.Text = "Friday";
+            // 
+            // edFriday
+            // 
+            edFriday.BackColor = Color.FromArgb(64, 64, 64);
+            edFriday.ForeColor = Color.FromArgb(230, 230, 230);
+            edFriday.Location = new Point(20, 338);
+            edFriday.Name = "edFriday";
+            edFriday.Size = new Size(870, 23);
+            edFriday.TabIndex = 13;
+            // 
+            // lblSaturday
+            // 
+            lblSaturday.AutoSize = true;
+            lblSaturday.Location = new Point(20, 370);
+            lblSaturday.Name = "lblSaturday";
+            lblSaturday.Size = new Size(53, 15);
+            lblSaturday.TabIndex = 14;
+            lblSaturday.Text = "Saturday";
+            // 
+            // edSaturday
+            // 
+            edSaturday.BackColor = Color.FromArgb(64, 64, 64);
+            edSaturday.ForeColor = Color.FromArgb(230, 230, 230);
+            edSaturday.Location = new Point(20, 388);
+            edSaturday.Name = "edSaturday";
+            edSaturday.Size = new Size(870, 23);
+            edSaturday.TabIndex = 15;
+            // 
             // CharEditForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1159, 662);
-            Controls.Add(modernTabControl1);
+            Controls.Add(TabControl);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
@@ -1414,7 +1605,7 @@ namespace WaifuAI.src.forms
             ((System.ComponentModel.ISupportInitialize)pic).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
-            modernTabControl1.ResumeLayout(false);
+            TabControl.ResumeLayout(false);
             tbGeneral.ResumeLayout(false);
             tbGeneral.PerformLayout();
             tbStyle.ResumeLayout(false);
@@ -1446,6 +1637,8 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox4.PerformLayout();
             tabMood.ResumeLayout(false);
             tabMood.PerformLayout();
+            tabSchedule.ResumeLayout(false);
+            tabSchedule.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -1492,7 +1685,7 @@ namespace WaifuAI.src.forms
         private Label label18;
         private Label label19;
         private ModernNumericUpDown numAgentDelay;
-        private Controls.ModernTabControl modernTabControl1;
+        private Controls.ModernTabControl TabControl;
         private TabPage tbGeneral;
         private TabPage tbStyle;
         private TabPage tbPrompt;
@@ -1555,5 +1748,22 @@ namespace WaifuAI.src.forms
         private ModernCheckBox ckTimerActive;
         private ModernCheckBox ckStaticMood;
         private ModernCheckBox ckTimerAddDuration;
+        private TabPage tabSchedule;
+        private Label lblSchedulePrefix;
+        private TextBox edSchedulePrefix;
+        private Label lblSunday;
+        private TextBox edSunday;
+        private Label lblMonday;
+        private TextBox edMonday;
+        private Label lblTuesday;
+        private TextBox edTuesday;
+        private Label lblWednesday;
+        private TextBox edWednesday;
+        private Label lblThursday;
+        private TextBox edThursday;
+        private Label lblFriday;
+        private TextBox edFriday;
+        private Label lblSaturday;
+        private TextBox edSaturday;
     }
 }

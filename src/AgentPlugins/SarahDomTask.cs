@@ -107,7 +107,7 @@ namespace WaifuAI.AgentPlugins
                 var query = "Based on the information above and the chat history, write a report on {{user}}'s responses and actions. " + globalResponse.GetQuery();
                 if (previousEvalObj is not null)
                 {
-                    query = "Based on the information provided, write a new report about {{user}}. Merge the two evaluations provided into one, improving and expanding upon the previous report. Remove resolved blocks and secrets from the list. Merge similar or identical entries together. Update the analysis and conclusions accordingly. The goal is to give yourself effective directives and high quality data to further your goals. " + globalResponse.GetQuery();                
+                    query = "Based on the information provided, write a new evaluation about {{user}}. Merge the information provided in the first evaluations, updating it with the new information. Remove resolved blocks, tasks, and secrets from the list. Update the analysis and conclusions accordingly. The goal is to give yourself effective directives and high quality data to further your long term goals. " + globalResponse.GetQuery();                
                 }
                 query += LLMEngine.NewLine + "Write in English only, convert back any other language to English if present.";
 
@@ -159,29 +159,101 @@ namespace WaifuAI.AgentPlugins
             }
 
             cfg.SetSetting("LastGuid", owner.History.Sessions[^2].Guid);
+            // Save to memory as well, so it can be retrieved in the future
+            var memoryName = cfg.GetSetting<string>("MemoryName");
+            if (!string.IsNullOrEmpty(memoryName) && evallist.Count > 0)
+            {
+                var mem = new MemoryUnit
+                {
+                    Name = memoryName,
+                    Content = EvalToString(evallist.Last()),
+                    Enabled = true,
+                    KeyWordsMain = ParseKeywords(cfg.GetSetting<string>("KeywordsA")),
+                    KeyWordsSecondary = ParseKeywords(cfg.GetSetting<string>("KeywordsB")),
+                    Insertion = MemoryInsertion.Trigger,
+                    CaseSensitive = false,
+                    PositionIndex = -1,
+                    Duration = 2,
+                    Priority = 80,
+                    WordLink = string.IsNullOrEmpty(cfg.GetSetting<string>("KeywordsB")) ? KeyWordLink.Or : KeyWordLink.And,
+                    Category = MemoryType.General
+                };
+                await mem.EmbedText().ConfigureAwait(false);
+                var found = owner.Brain.GetMemoriesByTitle(memoryName, false);
+                if (found.Count > 0)
+                {
+                    var existing = found[0];
+                    owner.Brain.ReplaceMemory(existing, mem);
+                }
+                else
+                {
+                    owner.Brain.Memorize(mem, true);
+                }
+                owner.Brain.ReloadMemories();
+            }
+
             LLMEngine.NamesInPromptOverride = null;
             LLMEngine.Instruct.PrefillThinking = prefill;
+        }
+
+        private static List<string> ParseKeywords(string? text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return [];
+
+            return text.Split(',')
+                      .Select(k => k.Trim())
+                      .Where(k => !string.IsNullOrWhiteSpace(k))
+                      .ToList();
         }
 
         private static string EvalToString(UserEval eval)
         {
             var strbuild = new StringBuilder();
+            strbuild.AppendLinuxLine("## {{mchar}}'s long-term goals for {{user}}").AppendLinuxLine();
+            if (eval.LongTermGoals.Count == 0)
+            {
+                strbuild.AppendLinuxLine("- No goals set yet. Update this list with specific long-term goals.");
+            }
+            else
+                foreach (var goal in eval.LongTermGoals)
+                {
+                    strbuild.AppendLinuxLine("- " + goal);
+                }
             strbuild.AppendLinuxLine("## Analysis").AppendLinuxLine();
             strbuild.AppendLinuxLine(eval.Analysis).AppendLinuxLine();
-            strbuild.AppendLinuxLine("## {{user}}'s barriers and blocks").AppendLinuxLine();
-            foreach (var block in eval.Blocks)
+            if (eval.Blocks.Count > 0)
             {
-                strbuild.AppendLinuxLine("- " + block);
+                strbuild.AppendLinuxLine("## {{user}}'s barriers and blocks").AppendLinuxLine();
+                foreach (var block in eval.Blocks)
+                {
+                    strbuild.AppendLinuxLine("- " + block);
+                }
             }
-            strbuild.AppendLinuxLine().AppendLinuxLine("## {{user}}'s potential secrets").AppendLinuxLine();
-            foreach (var secret in eval.Secrets)
+            if (eval.Secrets.Count > 0)
             {
-                strbuild.AppendLinuxLine("- " + secret);
+                strbuild.AppendLinuxLine().AppendLinuxLine("## {{user}}'s potential secrets").AppendLinuxLine();
+                foreach (var secret in eval.Secrets)
+                {
+                    strbuild.AppendLinuxLine("- " + secret);
+                }
             }
-            strbuild.AppendLinuxLine().AppendLinuxLine("## Progress made during the session").AppendLinuxLine();
-            foreach (var progress in eval.Progress)
+            if (eval.Progress.Count > 0)
             {
-                strbuild.AppendLinuxLine("- " + progress);
+                strbuild.AppendLinuxLine().AppendLinuxLine("## Progress made during the session").AppendLinuxLine();
+                foreach (var progress in eval.Progress)
+                {
+                    strbuild.AppendLinuxLine("- " + progress);
+                }
+            }
+            strbuild.AppendLinuxLine().AppendLinuxLine("## Current short-term tasks").AppendLinuxLine();
+            if (eval.ShortTermTasks.Count == 0)
+            {
+                strbuild.AppendLinuxLine("- No tasks set yet. Update this list with specific short-term tasks.");
+            }
+            else foreach (var goal in eval.ShortTermTasks)
+            {
+                strbuild.AppendLinuxLine("- " + goal);
             }
             strbuild.AppendLinuxLine().AppendLinuxLine("## Conclusions").AppendLinuxLine();
             strbuild.Append(eval.Conclusions);

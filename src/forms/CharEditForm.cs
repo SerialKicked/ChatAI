@@ -120,6 +120,14 @@ namespace WaifuAI.src.forms
             mychar.LockSettings.IsLocked = ckTimerActive.Checked;
             mychar.LockSettings.AutomaticUnlockOnDurationEnd = ckTimerAutoExpire.Checked;
             mychar.LockSettings.ShowLockDuration = ckTimerAddDuration.Checked;
+            mychar.Brain.DailySchedulePrefix = edSchedulePrefix.Text;
+            mychar.Brain.DailySchedule[(int)DayOfWeek.Sunday] = edSunday.Text;
+            mychar.Brain.DailySchedule[(int)DayOfWeek.Monday] = edMonday.Text;
+            mychar.Brain.DailySchedule[(int)DayOfWeek.Tuesday] = edTuesday.Text;
+            mychar.Brain.DailySchedule[(int)DayOfWeek.Wednesday] = edWednesday.Text;
+            mychar.Brain.DailySchedule[(int)DayOfWeek.Thursday] = edThursday.Text;
+            mychar.Brain.DailySchedule[(int)DayOfWeek.Friday] = edFriday.Text;
+            mychar.Brain.DailySchedule[(int)DayOfWeek.Saturday] = edSaturday.Text;
 
             return mychar;
         }
@@ -205,6 +213,15 @@ namespace WaifuAI.src.forms
             cb_icon.SelectedIndex = cb_icon.Items.IndexOf(selectedCharacter.Icon);
 
             cb_pointsystems.SelectedIndex = !string.IsNullOrWhiteSpace(selectedCharacter.PointSystem) && DataFiles.Points.ContainsKey(selectedCharacter.PointSystem) ? cb_pointsystems.Items.IndexOf(selectedCharacter.PointSystem) : -1;
+
+            edSchedulePrefix.Text = selectedCharacter.Brain.DailySchedulePrefix;
+            edSunday.Text = selectedCharacter.Brain.DailySchedule[(int)DayOfWeek.Sunday] ?? string.Empty;
+            edMonday.Text = selectedCharacter.Brain.DailySchedule[(int)DayOfWeek.Monday] ?? string.Empty;
+            edTuesday.Text = selectedCharacter.Brain.DailySchedule[(int)DayOfWeek.Tuesday] ?? string.Empty;
+            edWednesday.Text = selectedCharacter.Brain.DailySchedule[(int)DayOfWeek.Wednesday] ?? string.Empty;
+            edThursday.Text = selectedCharacter.Brain.DailySchedule[(int)DayOfWeek.Thursday] ?? string.Empty;
+            edFriday.Text = selectedCharacter.Brain.DailySchedule[(int)DayOfWeek.Friday] ?? string.Empty;
+            edSaturday.Text = selectedCharacter.Brain.DailySchedule[(int)DayOfWeek.Saturday] ?? string.Empty;
         }
 
         private void bt_worldsave_Click(object sender, EventArgs e)

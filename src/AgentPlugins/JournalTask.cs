@@ -132,7 +132,7 @@ namespace WaifuAI.AgentPlugins
             if (curr.Messages.Count > 5)
             {
                 prompt.AppendLinuxLine("# Most recent dialogs between you and {{user}}").AppendLinuxLine();
-                prompt.AppendLinuxLine(curr.GetRawDialogs(1250, true, false, false, false)).AppendLinuxLine();
+                prompt.AppendLinuxLine(curr.GetRawDialogs(2000, true, false, false, false)).AppendLinuxLine();
             }
 
             var builder = LLMEngine.GetPromptBuilder();
