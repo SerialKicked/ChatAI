@@ -1892,5 +1892,14 @@ namespace WaifuAI
 
 
         }
+
+        private async void button5_Click(object sender, EventArgs e)
+        {
+            var calaction = new CalendarUpdateAction();
+            var res = await calaction.Execute(Bot!.Brain.DailySchedule, CancellationToken.None);
+            if (res is null)
+                return;
+            MessageBox.Show(this, "New Calendar:", res.ScheduleToString(), MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }

@@ -220,6 +220,7 @@ namespace WaifuAI.AgentPlugins
                 {
                     strbuild.AppendLinuxLine("- " + goal);
                 }
+            strbuild.AppendLinuxLine();
             strbuild.AppendLinuxLine("## Analysis").AppendLinuxLine();
             strbuild.AppendLinuxLine(eval.Analysis).AppendLinuxLine();
             if (eval.Blocks.Count > 0)

@@ -94,7 +94,6 @@ namespace WaifuAI.src.forms
             ck_hallusafe = new ModernCheckBox();
             ck_sysrag = new ModernCheckBox();
             verticalStackPanel1 = new VerticalStackPanel();
-            collapsibleGroupBox7 = new CollapsibleGroupBox();
             collapsibleGroupBox3 = new CollapsibleGroupBox();
             numWIEntries = new ModernNumericUpDown();
             label6 = new Label();
@@ -102,15 +101,17 @@ namespace WaifuAI.src.forms
             ckDetailedSum = new ModernCheckBox();
             mck_cutmiddle = new ModernCheckBox();
             panel8 = new Panel();
+            collapsibleGroupBox7 = new CollapsibleGroupBox();
             verticalStackPanel2 = new VerticalStackPanel();
+            collapsibleGroupBox4 = new CollapsibleGroupBox();
+            ckParenthesizeToItalic = new ModernCheckBox();
+            ckDelStartSlop = new ModernCheckBox();
+            panel5 = new Panel();
+            panel3 = new Panel();
             collapsibleGroupBox6 = new CollapsibleGroupBox();
             mcbSkin = new ModernComboBox();
             label5 = new Label();
             panel4 = new Panel();
-            collapsibleGroupBox4 = new CollapsibleGroupBox();
-            ckDelStartSlop = new ModernCheckBox();
-            panel5 = new Panel();
-            panel3 = new Panel();
             collapsibleGroupBox8 = new CollapsibleGroupBox();
             ckGroupCommit = new ModernCheckBox();
             ckGroupAltern = new ModernCheckBox();
@@ -126,20 +127,19 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox5 = new CollapsibleGroupBox();
             panel2 = new Panel();
             panel7 = new Panel();
-            ckParenthesizeToItalic = new ModernCheckBox();
             verticalStackPanel4 = new VerticalStackPanel();
             panel1.SuspendLayout();
             collapsibleGroupBox1.SuspendLayout();
             verticalStackPanel1.SuspendLayout();
-            collapsibleGroupBox7.SuspendLayout();
             collapsibleGroupBox3.SuspendLayout();
             collapsibleGroupBox2.SuspendLayout();
             panel8.SuspendLayout();
+            collapsibleGroupBox7.SuspendLayout();
             verticalStackPanel2.SuspendLayout();
-            collapsibleGroupBox6.SuspendLayout();
             collapsibleGroupBox4.SuspendLayout();
             panel5.SuspendLayout();
             panel3.SuspendLayout();
+            collapsibleGroupBox6.SuspendLayout();
             collapsibleGroupBox8.SuspendLayout();
             verticalStackPanel3.SuspendLayout();
             collapsibleGroupBox5.SuspendLayout();
@@ -852,21 +852,6 @@ namespace WaifuAI.src.forms
             verticalStackPanel1.Size = new Size(320, 551);
             verticalStackPanel1.TabIndex = 34;
             // 
-            // collapsibleGroupBox7
-            // 
-            collapsibleGroupBox7.BackColor = Color.FromArgb(37, 38, 42);
-            collapsibleGroupBox7.CanCollapse = false;
-            collapsibleGroupBox7.Controls.Add(bt_chattosessions);
-            collapsibleGroupBox7.Controls.Add(bt_ImportSTChat);
-            collapsibleGroupBox7.Controls.Add(bt_importworld);
-            collapsibleGroupBox7.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox7.Location = new Point(0, 444);
-            collapsibleGroupBox7.Name = "collapsibleGroupBox7";
-            collapsibleGroupBox7.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox7.Size = new Size(320, 98);
-            collapsibleGroupBox7.TabIndex = 1;
-            collapsibleGroupBox7.Text = "Import Files";
-            // 
             // collapsibleGroupBox3
             // 
             collapsibleGroupBox3.BackColor = Color.FromArgb(37, 38, 42);
@@ -968,6 +953,21 @@ namespace WaifuAI.src.forms
             panel8.Size = new Size(296, 36);
             panel8.TabIndex = 56;
             // 
+            // collapsibleGroupBox7
+            // 
+            collapsibleGroupBox7.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox7.CanCollapse = false;
+            collapsibleGroupBox7.Controls.Add(bt_chattosessions);
+            collapsibleGroupBox7.Controls.Add(bt_ImportSTChat);
+            collapsibleGroupBox7.Controls.Add(bt_importworld);
+            collapsibleGroupBox7.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox7.Location = new Point(0, 444);
+            collapsibleGroupBox7.Name = "collapsibleGroupBox7";
+            collapsibleGroupBox7.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox7.Size = new Size(320, 98);
+            collapsibleGroupBox7.TabIndex = 1;
+            collapsibleGroupBox7.Text = "Import Files";
+            // 
             // verticalStackPanel2
             // 
             verticalStackPanel2.Controls.Add(collapsibleGroupBox4);
@@ -977,6 +977,81 @@ namespace WaifuAI.src.forms
             verticalStackPanel2.Padding = new Padding(0, 6, 0, 6);
             verticalStackPanel2.Size = new Size(361, 551);
             verticalStackPanel2.TabIndex = 35;
+            // 
+            // collapsibleGroupBox4
+            // 
+            collapsibleGroupBox4.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox4.CanCollapse = false;
+            collapsibleGroupBox4.Controls.Add(ckParenthesizeToItalic);
+            collapsibleGroupBox4.Controls.Add(ck_lastparaphfilter);
+            collapsibleGroupBox4.Controls.Add(ckDelStartSlop);
+            collapsibleGroupBox4.Controls.Add(ck_fixasterix);
+            collapsibleGroupBox4.Controls.Add(ck_oneparagraph);
+            collapsibleGroupBox4.Controls.Add(ck_remlastsentence);
+            collapsibleGroupBox4.Controls.Add(ck_unbold);
+            collapsibleGroupBox4.Controls.Add(ck_noquotes);
+            collapsibleGroupBox4.Controls.Add(ck_fixquotes);
+            collapsibleGroupBox4.Controls.Add(ck_noemphasisword);
+            collapsibleGroupBox4.Controls.Add(panel5);
+            collapsibleGroupBox4.Controls.Add(ck_reduceitalic);
+            collapsibleGroupBox4.Controls.Add(panel3);
+            collapsibleGroupBox4.Controls.Add(ck_antislop);
+            collapsibleGroupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox4.Location = new Point(0, 6);
+            collapsibleGroupBox4.Name = "collapsibleGroupBox4";
+            collapsibleGroupBox4.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox4.Size = new Size(361, 536);
+            collapsibleGroupBox4.TabIndex = 0;
+            collapsibleGroupBox4.Text = "Output Formatting";
+            // 
+            // ckParenthesizeToItalic
+            // 
+            ckParenthesizeToItalic.Dock = DockStyle.Top;
+            ckParenthesizeToItalic.Font = new Font("Segoe UI", 9F);
+            ckParenthesizeToItalic.Location = new Point(12, 419);
+            ckParenthesizeToItalic.Name = "ckParenthesizeToItalic";
+            ckParenthesizeToItalic.Size = new Size(337, 26);
+            ckParenthesizeToItalic.TabIndex = 58;
+            ckParenthesizeToItalic.Text = "Turn parenthesizes to italic text";
+            ckParenthesizeToItalic.UseVisualStyleBackColor = true;
+            // 
+            // ckDelStartSlop
+            // 
+            ckDelStartSlop.Dock = DockStyle.Top;
+            ckDelStartSlop.Font = new Font("Segoe UI", 9F);
+            ckDelStartSlop.Location = new Point(12, 367);
+            ckDelStartSlop.Name = "ckDelStartSlop";
+            ckDelStartSlop.Size = new Size(337, 26);
+            ckDelStartSlop.TabIndex = 57;
+            ckDelStartSlop.Text = "Delete starting slop";
+            ckDelStartSlop.UseVisualStyleBackColor = true;
+            // 
+            // panel5
+            // 
+            panel5.Controls.Add(label62);
+            panel5.Controls.Add(num_italicratio);
+            panel5.Controls.Add(label63);
+            panel5.Controls.Add(num_removeitalicmaxword);
+            panel5.Dock = DockStyle.Top;
+            panel5.Location = new Point(12, 145);
+            panel5.Margin = new Padding(8);
+            panel5.Name = "panel5";
+            panel5.Padding = new Padding(8);
+            panel5.Size = new Size(337, 40);
+            panel5.TabIndex = 56;
+            // 
+            // panel3
+            // 
+            panel3.Controls.Add(ed_sloplist);
+            panel3.Controls.Add(label61);
+            panel3.Controls.Add(num_antislopchance);
+            panel3.Dock = DockStyle.Top;
+            panel3.Location = new Point(12, 58);
+            panel3.Margin = new Padding(8);
+            panel3.Name = "panel3";
+            panel3.Padding = new Padding(8);
+            panel3.Size = new Size(337, 61);
+            panel3.TabIndex = 55;
             // 
             // collapsibleGroupBox6
             // 
@@ -1035,70 +1110,6 @@ namespace WaifuAI.src.forms
             panel4.Padding = new Padding(8);
             panel4.Size = new Size(296, 10);
             panel4.TabIndex = 54;
-            // 
-            // collapsibleGroupBox4
-            // 
-            collapsibleGroupBox4.BackColor = Color.FromArgb(37, 38, 42);
-            collapsibleGroupBox4.CanCollapse = false;
-            collapsibleGroupBox4.Controls.Add(ckParenthesizeToItalic);
-            collapsibleGroupBox4.Controls.Add(ck_lastparaphfilter);
-            collapsibleGroupBox4.Controls.Add(ckDelStartSlop);
-            collapsibleGroupBox4.Controls.Add(ck_fixasterix);
-            collapsibleGroupBox4.Controls.Add(ck_oneparagraph);
-            collapsibleGroupBox4.Controls.Add(ck_remlastsentence);
-            collapsibleGroupBox4.Controls.Add(ck_unbold);
-            collapsibleGroupBox4.Controls.Add(ck_noquotes);
-            collapsibleGroupBox4.Controls.Add(ck_fixquotes);
-            collapsibleGroupBox4.Controls.Add(ck_noemphasisword);
-            collapsibleGroupBox4.Controls.Add(panel5);
-            collapsibleGroupBox4.Controls.Add(ck_reduceitalic);
-            collapsibleGroupBox4.Controls.Add(panel3);
-            collapsibleGroupBox4.Controls.Add(ck_antislop);
-            collapsibleGroupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox4.Location = new Point(0, 6);
-            collapsibleGroupBox4.Name = "collapsibleGroupBox4";
-            collapsibleGroupBox4.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox4.Size = new Size(361, 536);
-            collapsibleGroupBox4.TabIndex = 0;
-            collapsibleGroupBox4.Text = "Output Formatting";
-            // 
-            // ckDelStartSlop
-            // 
-            ckDelStartSlop.Dock = DockStyle.Top;
-            ckDelStartSlop.Font = new Font("Segoe UI", 9F);
-            ckDelStartSlop.Location = new Point(12, 367);
-            ckDelStartSlop.Name = "ckDelStartSlop";
-            ckDelStartSlop.Size = new Size(337, 26);
-            ckDelStartSlop.TabIndex = 57;
-            ckDelStartSlop.Text = "Delete starting slop";
-            ckDelStartSlop.UseVisualStyleBackColor = true;
-            // 
-            // panel5
-            // 
-            panel5.Controls.Add(label62);
-            panel5.Controls.Add(num_italicratio);
-            panel5.Controls.Add(label63);
-            panel5.Controls.Add(num_removeitalicmaxword);
-            panel5.Dock = DockStyle.Top;
-            panel5.Location = new Point(12, 145);
-            panel5.Margin = new Padding(8);
-            panel5.Name = "panel5";
-            panel5.Padding = new Padding(8);
-            panel5.Size = new Size(337, 40);
-            panel5.TabIndex = 56;
-            // 
-            // panel3
-            // 
-            panel3.Controls.Add(ed_sloplist);
-            panel3.Controls.Add(label61);
-            panel3.Controls.Add(num_antislopchance);
-            panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(12, 58);
-            panel3.Margin = new Padding(8);
-            panel3.Name = "panel3";
-            panel3.Padding = new Padding(8);
-            panel3.Size = new Size(337, 61);
-            panel3.TabIndex = 55;
             // 
             // collapsibleGroupBox8
             // 
@@ -1290,17 +1301,6 @@ namespace WaifuAI.src.forms
             panel7.Size = new Size(284, 10);
             panel7.TabIndex = 51;
             // 
-            // ckParenthesizeToItalic
-            // 
-            ckParenthesizeToItalic.Dock = DockStyle.Top;
-            ckParenthesizeToItalic.Font = new Font("Segoe UI", 9F);
-            ckParenthesizeToItalic.Location = new Point(12, 419);
-            ckParenthesizeToItalic.Name = "ckParenthesizeToItalic";
-            ckParenthesizeToItalic.Size = new Size(337, 26);
-            ckParenthesizeToItalic.TabIndex = 58;
-            ckParenthesizeToItalic.Text = "Turn parenthesizes to italic text";
-            ckParenthesizeToItalic.UseVisualStyleBackColor = true;
-            // 
             // verticalStackPanel4
             // 
             verticalStackPanel4.Controls.Add(collapsibleGroupBox7);
@@ -1334,21 +1334,21 @@ namespace WaifuAI.src.forms
             panel1.ResumeLayout(false);
             collapsibleGroupBox1.ResumeLayout(false);
             verticalStackPanel1.ResumeLayout(false);
-            collapsibleGroupBox7.ResumeLayout(false);
             collapsibleGroupBox3.ResumeLayout(false);
             collapsibleGroupBox3.PerformLayout();
             collapsibleGroupBox2.ResumeLayout(false);
             collapsibleGroupBox2.PerformLayout();
             panel8.ResumeLayout(false);
             panel8.PerformLayout();
+            collapsibleGroupBox7.ResumeLayout(false);
             verticalStackPanel2.ResumeLayout(false);
-            collapsibleGroupBox6.ResumeLayout(false);
-            collapsibleGroupBox6.PerformLayout();
             collapsibleGroupBox4.ResumeLayout(false);
             panel5.ResumeLayout(false);
             panel5.PerformLayout();
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
+            collapsibleGroupBox6.ResumeLayout(false);
+            collapsibleGroupBox6.PerformLayout();
             collapsibleGroupBox8.ResumeLayout(false);
             collapsibleGroupBox8.PerformLayout();
             verticalStackPanel3.ResumeLayout(false);

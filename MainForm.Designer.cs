@@ -96,6 +96,7 @@ namespace WaifuAI
             mck_sessionmemory = new ModernCheckBox();
             panRight = new VerticalStackPanel();
             collapsibleGroupBox4 = new CollapsibleGroupBox();
+            button5 = new Button();
             button4 = new Button();
             button3 = new Button();
             btRunAgent = new Button();
@@ -142,7 +143,7 @@ namespace WaifuAI
             // statusbar
             // 
             statusbar.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, toolStripStatusLabel2, toolStripStatusLabel3 });
-            statusbar.Location = new Point(0, 1012);
+            statusbar.Location = new Point(0, 1060);
             statusbar.Name = "statusbar";
             statusbar.Size = new Size(1261, 22);
             statusbar.TabIndex = 2;
@@ -640,7 +641,7 @@ namespace WaifuAI
             bt_impersonate.FlatStyle = FlatStyle.Flat;
             bt_impersonate.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_impersonate.ForeColor = Color.Black;
-            bt_impersonate.Location = new Point(992, 923);
+            bt_impersonate.Location = new Point(992, 971);
             bt_impersonate.Name = "bt_impersonate";
             bt_impersonate.Size = new Size(60, 25);
             bt_impersonate.TabIndex = 7;
@@ -657,7 +658,7 @@ namespace WaifuAI
             web_chat.DefaultBackgroundColor = Color.White;
             web_chat.Location = new Point(206, 3);
             web_chat.Name = "web_chat";
-            web_chat.Size = new Size(846, 914);
+            web_chat.Size = new Size(846, 962);
             web_chat.TabIndex = 6;
             web_chat.ZoomFactor = 1D;
             // 
@@ -668,7 +669,7 @@ namespace WaifuAI
             bt_delete.FlatStyle = FlatStyle.Flat;
             bt_delete.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_delete.ForeColor = Color.Black;
-            bt_delete.Location = new Point(992, 984);
+            bt_delete.Location = new Point(992, 1032);
             bt_delete.Name = "bt_delete";
             bt_delete.Size = new Size(60, 25);
             bt_delete.TabIndex = 5;
@@ -684,7 +685,7 @@ namespace WaifuAI
             bt_reroll.FlatStyle = FlatStyle.Flat;
             bt_reroll.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_reroll.ForeColor = Color.Black;
-            bt_reroll.Location = new Point(992, 954);
+            bt_reroll.Location = new Point(992, 1002);
             bt_reroll.Name = "bt_reroll";
             bt_reroll.Size = new Size(60, 25);
             bt_reroll.TabIndex = 4;
@@ -700,7 +701,7 @@ namespace WaifuAI
             bt_send.FlatStyle = FlatStyle.Flat;
             bt_send.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_send.ForeColor = Color.Black;
-            bt_send.Location = new Point(926, 923);
+            bt_send.Location = new Point(926, 971);
             bt_send.Name = "bt_send";
             bt_send.Size = new Size(60, 86);
             bt_send.TabIndex = 3;
@@ -715,7 +716,7 @@ namespace WaifuAI
             ed_input.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             ed_input.BackColor = Color.FromArgb(32, 70, 130, 180);
             ed_input.Font = new Font("Segoe UI", 16F);
-            ed_input.Location = new Point(206, 923);
+            ed_input.Location = new Point(206, 971);
             ed_input.Multiline = true;
             ed_input.Name = "ed_input";
             ed_input.ScrollBars = ScrollBars.Vertical;
@@ -804,7 +805,7 @@ namespace WaifuAI
             panLeft.Location = new Point(0, 0);
             panLeft.Name = "panLeft";
             panLeft.Padding = new Padding(0, 6, 0, 6);
-            panLeft.Size = new Size(200, 1012);
+            panLeft.Size = new Size(200, 1060);
             panLeft.TabIndex = 28;
             // 
             // cboxVLM
@@ -944,12 +945,13 @@ namespace WaifuAI
             panRight.Location = new Point(1061, 0);
             panRight.Name = "panRight";
             panRight.Padding = new Padding(0, 6, 0, 6);
-            panRight.Size = new Size(200, 1012);
+            panRight.Size = new Size(200, 1060);
             panRight.TabIndex = 29;
             // 
             // collapsibleGroupBox4
             // 
             collapsibleGroupBox4.BackColor = Color.FromArgb(37, 37, 37);
+            collapsibleGroupBox4.Controls.Add(button5);
             collapsibleGroupBox4.Controls.Add(button4);
             collapsibleGroupBox4.Controls.Add(button3);
             collapsibleGroupBox4.Controls.Add(btRunAgent);
@@ -959,9 +961,23 @@ namespace WaifuAI
             collapsibleGroupBox4.Location = new Point(0, 831);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(8, 32, 8, 8);
-            collapsibleGroupBox4.Size = new Size(200, 159);
+            collapsibleGroupBox4.Size = new Size(200, 196);
             collapsibleGroupBox4.TabIndex = 30;
             collapsibleGroupBox4.Text = "Debug";
+            // 
+            // button5
+            // 
+            button5.AutoSize = true;
+            button5.Dock = DockStyle.Top;
+            button5.FlatStyle = FlatStyle.Flat;
+            button5.Font = new Font("Segoe UI", 9F);
+            button5.Location = new Point(8, 150);
+            button5.Name = "button5";
+            button5.Size = new Size(184, 27);
+            button5.TabIndex = 54;
+            button5.Text = "Test Calendar";
+            button5.UseVisualStyleBackColor = false;
+            button5.Click += button5_Click;
             // 
             // button4
             // 
@@ -1221,7 +1237,7 @@ namespace WaifuAI
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(37, 38, 42);
-            ClientSize = new Size(1261, 1034);
+            ClientSize = new Size(1261, 1082);
             Controls.Add(panRight);
             Controls.Add(panLeft);
             Controls.Add(bt_impersonate);
@@ -1345,5 +1361,6 @@ namespace WaifuAI
         private Button btRunAgent;
         private Button button1;
         private Button button4;
+        private Button button5;
     }
 }
