@@ -1365,7 +1365,10 @@ namespace WaifuAI
 
         private async Task OutputTTS(string text)
         {
-            var paragraphs = text.Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries);
+            // remove all text between asterisks, including the asterisks, as those are for markdown formatting and would mess with TTS
+            var cleanText = System.Text.RegularExpressions.Regex.Replace(text, @"\*.*?\*", "\n");
+
+            var paragraphs = cleanText.Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries);
 
             if (paragraphs.Length == 0)
                 return;
@@ -1899,7 +1902,7 @@ namespace WaifuAI
             var res = await calaction.Execute(Bot!.Brain.DailySchedule, CancellationToken.None);
             if (res is null)
                 return;
-            MessageBox.Show(this, "New Calendar:", res.ScheduleToString(), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(this, res.ScheduleToString(), "New Calendar", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

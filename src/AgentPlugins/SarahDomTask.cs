@@ -136,7 +136,7 @@ namespace WaifuAI.AgentPlugins
                 if (finalres is not null)
                 {
                     var orders = FinalEval(finalres, owner, cfg, ct);
-                    owner.Brain.AddUserReturnInsert(LLMEngine.NewLine + "{{mchar}}'s objectives:" + LLMEngine.NewLine + orders);
+                    owner.Brain.AddUserReturnInsert(LLMEngine.NewLine + LLMEngine.NewLine + "**{{mchar}}'s objectives:**" + LLMEngine.NewLine + orders + LLMEngine.NewLine);
                     cfg.SetSetting("LastEval", JsonConvert.SerializeObject(finalres));
                 }
                 else
