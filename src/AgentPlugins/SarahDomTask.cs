@@ -136,7 +136,7 @@ namespace WaifuAI.AgentPlugins
                 if (finalres is not null)
                 {
                     var orders = FinalEval(finalres, owner, cfg, ct);
-                    owner.Brain.AddUserReturnInsert(LLMEngine.NewLine + LLMEngine.NewLine + "**{{mchar}}'s objectives:**" + LLMEngine.NewLine + orders + LLMEngine.NewLine);
+                    owner.Brain.AddUserReturnInsert(LLMEngine.NewLine + LLMEngine.NewLine + "**{{mchar}}'s objectives:**" + LLMEngine.NewLine + orders + LLMEngine.NewLine, this.Id);
                     cfg.SetSetting("LastEval", JsonConvert.SerializeObject(finalres));
                 }
                 else
@@ -153,7 +153,7 @@ namespace WaifuAI.AgentPlugins
                 if (!string.IsNullOrEmpty(orders))
                 {
                     orders = orders.RemoveThinkingBlocks();
-                    owner.Brain.AddUserReturnInsert(LLMEngine.NewLine + "{{mchar}}'s objectives:" + LLMEngine.NewLine + orders + LLMEngine.NewLine + LLMEngine.NewLine + "Do not rush through those points in a single message. Discuss each point individually with {{user}} in full.");
+                    owner.Brain.AddUserReturnInsert(LLMEngine.NewLine + "**{{mchar}}'s objectives:**" + LLMEngine.NewLine + orders + LLMEngine.NewLine + LLMEngine.NewLine + "Do not rush through those points in a single message. Discuss each point individually with {{user}} in full.", this.Id);
                 }
                 cfg.SetSetting("LastEval", JsonConvert.SerializeObject(evallist.Last()));
             }
@@ -198,13 +198,7 @@ namespace WaifuAI.AgentPlugins
 
         private static List<string> ParseKeywords(string? text)
         {
-            if (string.IsNullOrWhiteSpace(text))
-                return [];
-
-            return text.Split(',')
-                      .Select(k => k.Trim())
-                      .Where(k => !string.IsNullOrWhiteSpace(k))
-                      .ToList();
+            return string.IsNullOrWhiteSpace(text) ? [] : [.. text.Split(',').Select(k => k.Trim()).Where(k => !string.IsNullOrWhiteSpace(k))];
         }
 
         private static string EvalToString(UserEval eval)

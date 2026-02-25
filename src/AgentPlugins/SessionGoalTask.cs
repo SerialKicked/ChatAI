@@ -98,7 +98,7 @@ namespace WaifuAI.AgentPlugins
                     return;
             }
             if (goaldetails.Count > 0)
-                owner.Brain.AddUserReturnInsert(cfg.GetSetting<string>("Notification") ?? string.Empty);
+                owner.Brain.AddUserReturnInsert(cfg.GetSetting<string>("Notification") ?? string.Empty, this.Id);
             // Let's go through each goal, detail them, and add to the persona's Brain
             cfg.SetSetting("LastGoalSet", DateTime.Now);
             cfg.SetSetting("LastSessionGuid", session.Guid);

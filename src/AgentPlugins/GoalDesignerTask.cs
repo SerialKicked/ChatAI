@@ -125,7 +125,7 @@ namespace WaifuAI.AgentPlugins
             }
 
             if (goaldetails.Count > 0)
-                owner.Brain.AddUserReturnInsert("{{mchar}} has set some new personal goals.");
+                owner.Brain.AddUserReturnInsert("{{mchar}} has set some new personal goals.", this.Id);
 
 
             // Let's go through each goal, detail them, and add to the persona's Brain
