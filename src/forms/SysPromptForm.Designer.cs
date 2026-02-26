@@ -47,6 +47,8 @@ namespace WaifuAI.src.forms
             ed_editsys_prompt = new TextBox();
             collapsibleGroupBox1 = new CollapsibleGroupBox();
             collapsibleGroupBox2 = new CollapsibleGroupBox();
+            ed_corefacts = new TextBox();
+            label1 = new Label();
             PanMenu.SuspendLayout();
             collapsibleGroupBox1.SuspendLayout();
             collapsibleGroupBox2.SuspendLayout();
@@ -218,6 +220,8 @@ namespace WaifuAI.src.forms
             // 
             collapsibleGroupBox2.BackColor = Color.FromArgb(37, 37, 37);
             collapsibleGroupBox2.CanCollapse = false;
+            collapsibleGroupBox2.Controls.Add(ed_corefacts);
+            collapsibleGroupBox2.Controls.Add(label1);
             collapsibleGroupBox2.Controls.Add(ed_editsys_prefix);
             collapsibleGroupBox2.Controls.Add(label52);
             collapsibleGroupBox2.Controls.Add(label55);
@@ -230,9 +234,26 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox2.Location = new Point(862, 12);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox2.Size = new Size(369, 239);
+            collapsibleGroupBox2.Size = new Size(369, 312);
             collapsibleGroupBox2.TabIndex = 5;
             collapsibleGroupBox2.Text = "Section Titles";
+            // 
+            // ed_corefacts
+            // 
+            ed_corefacts.BorderStyle = BorderStyle.FixedSingle;
+            ed_corefacts.Location = new Point(15, 243);
+            ed_corefacts.Name = "ed_corefacts";
+            ed_corefacts.Size = new Size(339, 24);
+            ed_corefacts.TabIndex = 9;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(15, 223);
+            label1.Name = "label1";
+            label1.Size = new Size(100, 17);
+            label1.TabIndex = 8;
+            label1.Text = "Core User Facts";
             // 
             // SysPromptForm
             // 
@@ -279,5 +300,7 @@ namespace WaifuAI.src.forms
         private Controls.CollapsibleGroupBox collapsibleGroupBox2;
         private Panel panel3;
         private Panel panel1;
+        private TextBox ed_corefacts;
+        private Label label1;
     }
 }

@@ -90,10 +90,24 @@ namespace WaifuAI.src.forms
             bt_Close = new Button();
             HelptoolTip = new ToolTip(components);
             collapsibleGroupBox1 = new CollapsibleGroupBox();
+            ckForceInternalGram = new ModernCheckBox();
             ckNoPastInserts = new ModernCheckBox();
             ck_hallusafe = new ModernCheckBox();
             ck_sysrag = new ModernCheckBox();
             verticalStackPanel1 = new VerticalStackPanel();
+            collapsibleGroupBox5 = new CollapsibleGroupBox();
+            panel2 = new Panel();
+            panel7 = new Panel();
+            collapsibleGroupBox8 = new CollapsibleGroupBox();
+            ckGroupCommit = new ModernCheckBox();
+            ckGroupAltern = new ModernCheckBox();
+            cbGroupSessionStrategy = new ModernComboBox();
+            label9 = new Label();
+            panel6 = new Panel();
+            numGroupQueue = new ModernNumericUpDown();
+            label8 = new Label();
+            ckGroupRouting = new ModernComboBox();
+            label7 = new Label();
             collapsibleGroupBox3 = new CollapsibleGroupBox();
             numWIEntries = new ModernNumericUpDown();
             label6 = new Label();
@@ -112,26 +126,28 @@ namespace WaifuAI.src.forms
             mcbSkin = new ModernComboBox();
             label5 = new Label();
             panel4 = new Panel();
-            collapsibleGroupBox8 = new CollapsibleGroupBox();
-            ckGroupCommit = new ModernCheckBox();
-            ckGroupAltern = new ModernCheckBox();
-            cbGroupSessionStrategy = new ModernComboBox();
-            label9 = new Label();
-            panel9 = new Panel();
-            numGroupQueue = new ModernNumericUpDown();
-            label8 = new Label();
-            panel6 = new Panel();
-            ckGroupRouting = new ModernComboBox();
-            label7 = new Label();
             verticalStackPanel3 = new VerticalStackPanel();
-            collapsibleGroupBox5 = new CollapsibleGroupBox();
-            panel2 = new Panel();
-            panel7 = new Panel();
+            collapsibleGroupBox9 = new CollapsibleGroupBox();
+            panel13 = new Panel();
+            numFactSuper = new ModernNumericUpDown();
+            label17 = new Label();
+            panel12 = new Panel();
+            numFactRetrieval = new ModernNumericUpDown();
+            label16 = new Label();
+            panel11 = new Panel();
+            numFactDedup = new ModernNumericUpDown();
+            label10 = new Label();
+            panel10 = new Panel();
+            numFactTokens = new ModernNumericUpDown();
+            label11 = new Label();
+            ckFactRetrieval = new ModernCheckBox();
             verticalStackPanel4 = new VerticalStackPanel();
-            ckForceInternalGram = new ModernCheckBox();
             panel1.SuspendLayout();
             collapsibleGroupBox1.SuspendLayout();
             verticalStackPanel1.SuspendLayout();
+            collapsibleGroupBox5.SuspendLayout();
+            collapsibleGroupBox8.SuspendLayout();
+            panel6.SuspendLayout();
             collapsibleGroupBox3.SuspendLayout();
             collapsibleGroupBox2.SuspendLayout();
             panel8.SuspendLayout();
@@ -141,9 +157,12 @@ namespace WaifuAI.src.forms
             panel5.SuspendLayout();
             panel3.SuspendLayout();
             collapsibleGroupBox6.SuspendLayout();
-            collapsibleGroupBox8.SuspendLayout();
             verticalStackPanel3.SuspendLayout();
-            collapsibleGroupBox5.SuspendLayout();
+            collapsibleGroupBox9.SuspendLayout();
+            panel13.SuspendLayout();
+            panel12.SuspendLayout();
+            panel11.SuspendLayout();
+            panel10.SuspendLayout();
             verticalStackPanel4.SuspendLayout();
             SuspendLayout();
             // 
@@ -407,7 +426,7 @@ namespace WaifuAI.src.forms
             // 
             ck_forcePW.Dock = DockStyle.Bottom;
             ck_forcePW.Font = new Font("Segoe UI", 9F);
-            ck_forcePW.Location = new Point(12, 368);
+            ck_forcePW.Location = new Point(12, 460);
             ck_forcePW.Name = "ck_forcePW";
             ck_forcePW.Size = new Size(290, 26);
             ck_forcePW.TabIndex = 38;
@@ -418,7 +437,7 @@ namespace WaifuAI.src.forms
             // 
             ckShowHidden.Dock = DockStyle.Bottom;
             ckShowHidden.Font = new Font("Segoe UI", 9F);
-            ckShowHidden.Location = new Point(12, 394);
+            ckShowHidden.Location = new Point(12, 486);
             ckShowHidden.Name = "ckShowHidden";
             ckShowHidden.Size = new Size(290, 26);
             ckShowHidden.TabIndex = 31;
@@ -772,7 +791,7 @@ namespace WaifuAI.src.forms
             // 
             panel1.Controls.Add(bt_Close);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 576);
+            panel1.Location = new Point(0, 630);
             panel1.Name = "panel1";
             panel1.Size = new Size(1331, 38);
             panel1.TabIndex = 31;
@@ -809,6 +828,17 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox1.TabIndex = 33;
             collapsibleGroupBox1.Text = "Core Settings";
             // 
+            // ckForceInternalGram
+            // 
+            ckForceInternalGram.Dock = DockStyle.Top;
+            ckForceInternalGram.Font = new Font("Segoe UI", 9F);
+            ckForceInternalGram.Location = new Point(12, 110);
+            ckForceInternalGram.Name = "ckForceInternalGram";
+            ckForceInternalGram.Size = new Size(290, 26);
+            ckForceInternalGram.TabIndex = 39;
+            ckForceInternalGram.Text = "Use internal library's Grammar Builder";
+            ckForceInternalGram.UseVisualStyleBackColor = true;
+            // 
             // ckNoPastInserts
             // 
             ckNoPastInserts.Dock = DockStyle.Top;
@@ -844,15 +874,179 @@ namespace WaifuAI.src.forms
             // 
             // verticalStackPanel1
             // 
-            verticalStackPanel1.Controls.Add(collapsibleGroupBox3);
-            verticalStackPanel1.Controls.Add(collapsibleGroupBox2);
+            verticalStackPanel1.Controls.Add(collapsibleGroupBox5);
+            verticalStackPanel1.Controls.Add(collapsibleGroupBox8);
             verticalStackPanel1.Controls.Add(collapsibleGroupBox1);
             verticalStackPanel1.Dock = DockStyle.Left;
             verticalStackPanel1.Location = new Point(0, 0);
             verticalStackPanel1.Name = "verticalStackPanel1";
             verticalStackPanel1.Padding = new Padding(6, 6, 0, 6);
-            verticalStackPanel1.Size = new Size(320, 576);
+            verticalStackPanel1.Size = new Size(320, 630);
             verticalStackPanel1.TabIndex = 34;
+            // 
+            // collapsibleGroupBox5
+            // 
+            collapsibleGroupBox5.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox5.CanCollapse = false;
+            collapsibleGroupBox5.Controls.Add(ck_alwayswebsearch);
+            collapsibleGroupBox5.Controls.Add(ck_webkeyword);
+            collapsibleGroupBox5.Controls.Add(ck_webgrammar);
+            collapsibleGroupBox5.Controls.Add(label4);
+            collapsibleGroupBox5.Controls.Add(panel2);
+            collapsibleGroupBox5.Controls.Add(ck_searchextract);
+            collapsibleGroupBox5.Controls.Add(ed_searchkey);
+            collapsibleGroupBox5.Controls.Add(label3);
+            collapsibleGroupBox5.Controls.Add(panel7);
+            collapsibleGroupBox5.Controls.Add(cb_searchapi);
+            collapsibleGroupBox5.Controls.Add(label2);
+            collapsibleGroupBox5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox5.Location = new Point(6, 359);
+            collapsibleGroupBox5.Name = "collapsibleGroupBox5";
+            collapsibleGroupBox5.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox5.Size = new Size(314, 273);
+            collapsibleGroupBox5.TabIndex = 0;
+            collapsibleGroupBox5.Text = "Web Search";
+            // 
+            // panel2
+            // 
+            panel2.Dock = DockStyle.Top;
+            panel2.Location = new Point(12, 144);
+            panel2.Margin = new Padding(8);
+            panel2.Name = "panel2";
+            panel2.Padding = new Padding(8);
+            panel2.Size = new Size(290, 10);
+            panel2.TabIndex = 52;
+            // 
+            // panel7
+            // 
+            panel7.Dock = DockStyle.Top;
+            panel7.Location = new Point(12, 70);
+            panel7.Margin = new Padding(8);
+            panel7.Name = "panel7";
+            panel7.Padding = new Padding(8);
+            panel7.Size = new Size(290, 10);
+            panel7.TabIndex = 51;
+            // 
+            // collapsibleGroupBox8
+            // 
+            collapsibleGroupBox8.BackColor = Color.FromArgb(37, 37, 37);
+            collapsibleGroupBox8.CanCollapse = false;
+            collapsibleGroupBox8.Controls.Add(ckGroupCommit);
+            collapsibleGroupBox8.Controls.Add(ckGroupAltern);
+            collapsibleGroupBox8.Controls.Add(cbGroupSessionStrategy);
+            collapsibleGroupBox8.Controls.Add(label9);
+            collapsibleGroupBox8.Controls.Add(panel6);
+            collapsibleGroupBox8.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox8.Location = new Point(6, 159);
+            collapsibleGroupBox8.Name = "collapsibleGroupBox8";
+            collapsibleGroupBox8.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox8.Size = new Size(314, 192);
+            collapsibleGroupBox8.TabIndex = 1;
+            collapsibleGroupBox8.Text = "Group Chat";
+            // 
+            // ckGroupCommit
+            // 
+            ckGroupCommit.Dock = DockStyle.Top;
+            ckGroupCommit.Font = new Font("Segoe UI", 9F);
+            ckGroupCommit.Location = new Point(12, 150);
+            ckGroupCommit.Name = "ckGroupCommit";
+            ckGroupCommit.Size = new Size(290, 26);
+            ckGroupCommit.TabIndex = 62;
+            ckGroupCommit.Text = "Save Sessions to secondary characters too";
+            ckGroupCommit.UseVisualStyleBackColor = true;
+            // 
+            // ckGroupAltern
+            // 
+            ckGroupAltern.Dock = DockStyle.Top;
+            ckGroupAltern.Font = new Font("Segoe UI", 9F);
+            ckGroupAltern.Location = new Point(12, 124);
+            ckGroupAltern.Name = "ckGroupAltern";
+            ckGroupAltern.Size = new Size(290, 26);
+            ckGroupAltern.TabIndex = 61;
+            ckGroupAltern.Text = "Forced message role alternance";
+            ckGroupAltern.UseVisualStyleBackColor = true;
+            // 
+            // cbGroupSessionStrategy
+            // 
+            cbGroupSessionStrategy.BackColor = Color.FromArgb(64, 64, 64);
+            cbGroupSessionStrategy.Dock = DockStyle.Top;
+            cbGroupSessionStrategy.DropDownHeight = 180;
+            cbGroupSessionStrategy.Font = new Font("Segoe UI", 9F);
+            cbGroupSessionStrategy.Location = new Point(12, 101);
+            cbGroupSessionStrategy.MaxDropDownItems = 10;
+            cbGroupSessionStrategy.Name = "cbGroupSessionStrategy";
+            cbGroupSessionStrategy.Padding = new Padding(1);
+            cbGroupSessionStrategy.Size = new Size(290, 23);
+            cbGroupSessionStrategy.TabIndex = 59;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Dock = DockStyle.Top;
+            label9.Font = new Font("Segoe UI", 9F);
+            label9.Location = new Point(12, 86);
+            label9.Name = "label9";
+            label9.Size = new Size(117, 15);
+            label9.TabIndex = 60;
+            label9.Text = "Past Session Strategy";
+            // 
+            // panel6
+            // 
+            panel6.Controls.Add(numGroupQueue);
+            panel6.Controls.Add(label8);
+            panel6.Controls.Add(ckGroupRouting);
+            panel6.Controls.Add(label7);
+            panel6.Dock = DockStyle.Top;
+            panel6.Location = new Point(12, 32);
+            panel6.Margin = new Padding(8);
+            panel6.Name = "panel6";
+            panel6.Padding = new Padding(8);
+            panel6.Size = new Size(290, 54);
+            panel6.TabIndex = 55;
+            // 
+            // numGroupQueue
+            // 
+            numGroupQueue.BackColor = Color.FromArgb(64, 64, 64);
+            numGroupQueue.Font = new Font("Segoe UI", 9F);
+            numGroupQueue.Location = new Point(225, 24);
+            numGroupQueue.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            numGroupQueue.Name = "numGroupQueue";
+            numGroupQueue.Padding = new Padding(1);
+            numGroupQueue.Size = new Size(65, 23);
+            numGroupQueue.TabIndex = 58;
+            numGroupQueue.Value = new decimal(new int[] { 2, 0, 0, 0 });
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Segoe UI", 9F);
+            label8.Location = new Point(199, 5);
+            label8.Name = "label8";
+            label8.Size = new Size(88, 15);
+            label8.TabIndex = 59;
+            label8.Text = "Max Bot Queue";
+            // 
+            // ckGroupRouting
+            // 
+            ckGroupRouting.BackColor = Color.FromArgb(64, 64, 64);
+            ckGroupRouting.DropDownHeight = 180;
+            ckGroupRouting.Font = new Font("Segoe UI", 9F);
+            ckGroupRouting.Location = new Point(0, 24);
+            ckGroupRouting.MaxDropDownItems = 10;
+            ckGroupRouting.Name = "ckGroupRouting";
+            ckGroupRouting.Padding = new Padding(1);
+            ckGroupRouting.Size = new Size(219, 23);
+            ckGroupRouting.TabIndex = 43;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Font = new Font("Segoe UI", 9F);
+            label7.Location = new Point(3, 5);
+            label7.Name = "label7";
+            label7.Size = new Size(95, 15);
+            label7.TabIndex = 44;
+            label7.Text = "Routing Strategy";
             // 
             // collapsibleGroupBox3
             // 
@@ -872,7 +1066,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox3.Controls.Add(num_ragmaxretrieve);
             collapsibleGroupBox3.Controls.Add(label14);
             collapsibleGroupBox3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox3.Location = new Point(6, 360);
+            collapsibleGroupBox3.Location = new Point(6, 207);
             collapsibleGroupBox3.Name = "collapsibleGroupBox3";
             collapsibleGroupBox3.Padding = new Padding(12, 32, 12, 10);
             collapsibleGroupBox3.Size = new Size(314, 207);
@@ -913,7 +1107,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox2.Controls.Add(panel8);
             collapsibleGroupBox2.Controls.Add(ck_sessionmemory);
             collapsibleGroupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox2.Location = new Point(6, 159);
+            collapsibleGroupBox2.Location = new Point(6, 6);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(12, 32, 12, 10);
             collapsibleGroupBox2.Size = new Size(314, 193);
@@ -963,7 +1157,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox7.Controls.Add(bt_ImportSTChat);
             collapsibleGroupBox7.Controls.Add(bt_importworld);
             collapsibleGroupBox7.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox7.Location = new Point(6, 444);
+            collapsibleGroupBox7.Location = new Point(6, 536);
             collapsibleGroupBox7.Name = "collapsibleGroupBox7";
             collapsibleGroupBox7.Padding = new Padding(12, 32, 12, 10);
             collapsibleGroupBox7.Size = new Size(314, 98);
@@ -977,7 +1171,7 @@ namespace WaifuAI.src.forms
             verticalStackPanel2.Location = new Point(640, 0);
             verticalStackPanel2.Name = "verticalStackPanel2";
             verticalStackPanel2.Padding = new Padding(6, 6, 0, 6);
-            verticalStackPanel2.Size = new Size(361, 576);
+            verticalStackPanel2.Size = new Size(361, 630);
             verticalStackPanel2.TabIndex = 35;
             // 
             // collapsibleGroupBox4
@@ -1002,7 +1196,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox4.Location = new Point(6, 6);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox4.Size = new Size(355, 536);
+            collapsibleGroupBox4.Size = new Size(355, 624);
             collapsibleGroupBox4.TabIndex = 0;
             collapsibleGroupBox4.Text = "Output Formatting";
             // 
@@ -1074,7 +1268,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox6.Location = new Point(6, 6);
             collapsibleGroupBox6.Name = "collapsibleGroupBox6";
             collapsibleGroupBox6.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox6.Size = new Size(314, 430);
+            collapsibleGroupBox6.Size = new Size(314, 522);
             collapsibleGroupBox6.TabIndex = 1;
             collapsibleGroupBox6.Text = "User Interface";
             // 
@@ -1113,195 +1307,195 @@ namespace WaifuAI.src.forms
             panel4.Size = new Size(290, 10);
             panel4.TabIndex = 54;
             // 
-            // collapsibleGroupBox8
-            // 
-            collapsibleGroupBox8.BackColor = Color.FromArgb(37, 37, 37);
-            collapsibleGroupBox8.CanCollapse = false;
-            collapsibleGroupBox8.Controls.Add(ckGroupCommit);
-            collapsibleGroupBox8.Controls.Add(ckGroupAltern);
-            collapsibleGroupBox8.Controls.Add(cbGroupSessionStrategy);
-            collapsibleGroupBox8.Controls.Add(label9);
-            collapsibleGroupBox8.Controls.Add(panel9);
-            collapsibleGroupBox8.Controls.Add(numGroupQueue);
-            collapsibleGroupBox8.Controls.Add(label8);
-            collapsibleGroupBox8.Controls.Add(panel6);
-            collapsibleGroupBox8.Controls.Add(ckGroupRouting);
-            collapsibleGroupBox8.Controls.Add(label7);
-            collapsibleGroupBox8.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox8.Location = new Point(6, 270);
-            collapsibleGroupBox8.Name = "collapsibleGroupBox8";
-            collapsibleGroupBox8.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox8.Size = new Size(314, 271);
-            collapsibleGroupBox8.TabIndex = 1;
-            collapsibleGroupBox8.Text = "Group Chat";
-            // 
-            // ckGroupCommit
-            // 
-            ckGroupCommit.Dock = DockStyle.Top;
-            ckGroupCommit.Font = new Font("Segoe UI", 9F);
-            ckGroupCommit.Location = new Point(12, 192);
-            ckGroupCommit.Name = "ckGroupCommit";
-            ckGroupCommit.Size = new Size(290, 26);
-            ckGroupCommit.TabIndex = 62;
-            ckGroupCommit.Text = "Save Sessions to secondary characters too";
-            ckGroupCommit.UseVisualStyleBackColor = true;
-            // 
-            // ckGroupAltern
-            // 
-            ckGroupAltern.Dock = DockStyle.Top;
-            ckGroupAltern.Font = new Font("Segoe UI", 9F);
-            ckGroupAltern.Location = new Point(12, 166);
-            ckGroupAltern.Name = "ckGroupAltern";
-            ckGroupAltern.Size = new Size(290, 26);
-            ckGroupAltern.TabIndex = 61;
-            ckGroupAltern.Text = "Forced message role alternance";
-            ckGroupAltern.UseVisualStyleBackColor = true;
-            // 
-            // cbGroupSessionStrategy
-            // 
-            cbGroupSessionStrategy.BackColor = Color.FromArgb(64, 64, 64);
-            cbGroupSessionStrategy.Dock = DockStyle.Top;
-            cbGroupSessionStrategy.DropDownHeight = 180;
-            cbGroupSessionStrategy.Font = new Font("Segoe UI", 9F);
-            cbGroupSessionStrategy.Location = new Point(12, 143);
-            cbGroupSessionStrategy.MaxDropDownItems = 10;
-            cbGroupSessionStrategy.Name = "cbGroupSessionStrategy";
-            cbGroupSessionStrategy.Padding = new Padding(1);
-            cbGroupSessionStrategy.Size = new Size(290, 23);
-            cbGroupSessionStrategy.TabIndex = 59;
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Dock = DockStyle.Top;
-            label9.Font = new Font("Segoe UI", 9F);
-            label9.Location = new Point(12, 128);
-            label9.Name = "label9";
-            label9.Size = new Size(117, 15);
-            label9.TabIndex = 60;
-            label9.Text = "Past Session Strategy";
-            // 
-            // panel9
-            // 
-            panel9.Dock = DockStyle.Top;
-            panel9.Location = new Point(12, 118);
-            panel9.Margin = new Padding(8);
-            panel9.Name = "panel9";
-            panel9.Padding = new Padding(8);
-            panel9.Size = new Size(290, 10);
-            panel9.TabIndex = 58;
-            // 
-            // numGroupQueue
-            // 
-            numGroupQueue.BackColor = Color.FromArgb(64, 64, 64);
-            numGroupQueue.Dock = DockStyle.Top;
-            numGroupQueue.Font = new Font("Segoe UI", 9F);
-            numGroupQueue.Location = new Point(12, 95);
-            numGroupQueue.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
-            numGroupQueue.Name = "numGroupQueue";
-            numGroupQueue.Padding = new Padding(1);
-            numGroupQueue.Size = new Size(290, 23);
-            numGroupQueue.TabIndex = 56;
-            numGroupQueue.Value = new decimal(new int[] { 2, 0, 0, 0 });
-            // 
-            // label8
-            // 
-            label8.AutoSize = true;
-            label8.Dock = DockStyle.Top;
-            label8.Font = new Font("Segoe UI", 9F);
-            label8.Location = new Point(12, 80);
-            label8.Name = "label8";
-            label8.Size = new Size(88, 15);
-            label8.TabIndex = 57;
-            label8.Text = "Max Bot Queue";
-            // 
-            // panel6
-            // 
-            panel6.Dock = DockStyle.Top;
-            panel6.Location = new Point(12, 70);
-            panel6.Margin = new Padding(8);
-            panel6.Name = "panel6";
-            panel6.Padding = new Padding(8);
-            panel6.Size = new Size(290, 10);
-            panel6.TabIndex = 55;
-            // 
-            // ckGroupRouting
-            // 
-            ckGroupRouting.BackColor = Color.FromArgb(64, 64, 64);
-            ckGroupRouting.Dock = DockStyle.Top;
-            ckGroupRouting.DropDownHeight = 180;
-            ckGroupRouting.Font = new Font("Segoe UI", 9F);
-            ckGroupRouting.Location = new Point(12, 47);
-            ckGroupRouting.MaxDropDownItems = 10;
-            ckGroupRouting.Name = "ckGroupRouting";
-            ckGroupRouting.Padding = new Padding(1);
-            ckGroupRouting.Size = new Size(290, 23);
-            ckGroupRouting.TabIndex = 41;
-            // 
-            // label7
-            // 
-            label7.AutoSize = true;
-            label7.Dock = DockStyle.Top;
-            label7.Font = new Font("Segoe UI", 9F);
-            label7.Location = new Point(12, 32);
-            label7.Name = "label7";
-            label7.Size = new Size(95, 15);
-            label7.TabIndex = 42;
-            label7.Text = "Routing Strategy";
-            // 
             // verticalStackPanel3
             // 
-            verticalStackPanel3.Controls.Add(collapsibleGroupBox8);
-            verticalStackPanel3.Controls.Add(collapsibleGroupBox5);
+            verticalStackPanel3.Controls.Add(collapsibleGroupBox9);
+            verticalStackPanel3.Controls.Add(collapsibleGroupBox3);
+            verticalStackPanel3.Controls.Add(collapsibleGroupBox2);
             verticalStackPanel3.Dock = DockStyle.Left;
             verticalStackPanel3.Location = new Point(320, 0);
             verticalStackPanel3.Name = "verticalStackPanel3";
             verticalStackPanel3.Padding = new Padding(6, 6, 0, 6);
-            verticalStackPanel3.Size = new Size(320, 576);
+            verticalStackPanel3.Size = new Size(320, 630);
             verticalStackPanel3.TabIndex = 36;
             // 
-            // collapsibleGroupBox5
+            // collapsibleGroupBox9
             // 
-            collapsibleGroupBox5.BackColor = Color.FromArgb(37, 38, 42);
-            collapsibleGroupBox5.CanCollapse = false;
-            collapsibleGroupBox5.Controls.Add(ck_alwayswebsearch);
-            collapsibleGroupBox5.Controls.Add(ck_webkeyword);
-            collapsibleGroupBox5.Controls.Add(ck_webgrammar);
-            collapsibleGroupBox5.Controls.Add(label4);
-            collapsibleGroupBox5.Controls.Add(panel2);
-            collapsibleGroupBox5.Controls.Add(ck_searchextract);
-            collapsibleGroupBox5.Controls.Add(ed_searchkey);
-            collapsibleGroupBox5.Controls.Add(label3);
-            collapsibleGroupBox5.Controls.Add(panel7);
-            collapsibleGroupBox5.Controls.Add(cb_searchapi);
-            collapsibleGroupBox5.Controls.Add(label2);
-            collapsibleGroupBox5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox5.Location = new Point(6, 6);
-            collapsibleGroupBox5.Name = "collapsibleGroupBox5";
-            collapsibleGroupBox5.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox5.Size = new Size(314, 256);
-            collapsibleGroupBox5.TabIndex = 0;
-            collapsibleGroupBox5.Text = "Web Search";
+            collapsibleGroupBox9.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox9.CanCollapse = false;
+            collapsibleGroupBox9.Controls.Add(panel13);
+            collapsibleGroupBox9.Controls.Add(panel12);
+            collapsibleGroupBox9.Controls.Add(panel11);
+            collapsibleGroupBox9.Controls.Add(panel10);
+            collapsibleGroupBox9.Controls.Add(ckFactRetrieval);
+            collapsibleGroupBox9.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox9.Location = new Point(6, 422);
+            collapsibleGroupBox9.Name = "collapsibleGroupBox9";
+            collapsibleGroupBox9.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox9.Size = new Size(314, 210);
+            collapsibleGroupBox9.TabIndex = 35;
+            collapsibleGroupBox9.Text = "Fact-Based Retrieval";
             // 
-            // panel2
+            // panel13
             // 
-            panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(12, 144);
-            panel2.Margin = new Padding(8);
-            panel2.Name = "panel2";
-            panel2.Padding = new Padding(8);
-            panel2.Size = new Size(290, 10);
-            panel2.TabIndex = 52;
+            panel13.Controls.Add(numFactSuper);
+            panel13.Controls.Add(label17);
+            panel13.Dock = DockStyle.Top;
+            panel13.Location = new Point(12, 164);
+            panel13.Margin = new Padding(8);
+            panel13.Name = "panel13";
+            panel13.Padding = new Padding(8);
+            panel13.Size = new Size(290, 35);
+            panel13.TabIndex = 61;
             // 
-            // panel7
+            // numFactSuper
             // 
-            panel7.Dock = DockStyle.Top;
-            panel7.Location = new Point(12, 70);
-            panel7.Margin = new Padding(8);
-            panel7.Name = "panel7";
-            panel7.Padding = new Padding(8);
-            panel7.Size = new Size(290, 10);
-            panel7.TabIndex = 51;
+            numFactSuper.AccessibleDescription = "";
+            numFactSuper.BackColor = Color.FromArgb(64, 64, 64);
+            numFactSuper.DecimalPlaces = 3;
+            numFactSuper.Font = new Font("Segoe UI", 9F);
+            numFactSuper.Increment = new decimal(new int[] { 5, 0, 0, 196608 });
+            numFactSuper.Location = new Point(11, 6);
+            numFactSuper.Maximum = new decimal(new int[] { 5, 0, 0, 65536 });
+            numFactSuper.Minimum = new decimal(new int[] { 5, 0, 0, 196608 });
+            numFactSuper.Name = "numFactSuper";
+            numFactSuper.Padding = new Padding(1);
+            numFactSuper.Size = new Size(117, 23);
+            numFactSuper.TabIndex = 59;
+            numFactSuper.Value = new decimal(new int[] { 2, 0, 0, 65536 });
+            // 
+            // label17
+            // 
+            label17.AutoSize = true;
+            label17.Font = new Font("Segoe UI", 9F);
+            label17.Location = new Point(134, 8);
+            label17.Name = "label17";
+            label17.Size = new Size(131, 15);
+            label17.TabIndex = 60;
+            label17.Text = "Supersession Threshold";
+            // 
+            // panel12
+            // 
+            panel12.Controls.Add(numFactRetrieval);
+            panel12.Controls.Add(label16);
+            panel12.Dock = DockStyle.Top;
+            panel12.Location = new Point(12, 129);
+            panel12.Margin = new Padding(8);
+            panel12.Name = "panel12";
+            panel12.Padding = new Padding(8);
+            panel12.Size = new Size(290, 35);
+            panel12.TabIndex = 60;
+            // 
+            // numFactRetrieval
+            // 
+            numFactRetrieval.AccessibleDescription = "";
+            numFactRetrieval.BackColor = Color.FromArgb(64, 64, 64);
+            numFactRetrieval.DecimalPlaces = 3;
+            numFactRetrieval.Font = new Font("Segoe UI", 9F);
+            numFactRetrieval.Increment = new decimal(new int[] { 5, 0, 0, 196608 });
+            numFactRetrieval.Location = new Point(11, 6);
+            numFactRetrieval.Maximum = new decimal(new int[] { 5, 0, 0, 65536 });
+            numFactRetrieval.Minimum = new decimal(new int[] { 5, 0, 0, 196608 });
+            numFactRetrieval.Name = "numFactRetrieval";
+            numFactRetrieval.Padding = new Padding(1);
+            numFactRetrieval.Size = new Size(117, 23);
+            numFactRetrieval.TabIndex = 59;
+            numFactRetrieval.Value = new decimal(new int[] { 2, 0, 0, 65536 });
+            // 
+            // label16
+            // 
+            label16.AutoSize = true;
+            label16.Font = new Font("Segoe UI", 9F);
+            label16.Location = new Point(134, 8);
+            label16.Name = "label16";
+            label16.Size = new Size(108, 15);
+            label16.TabIndex = 60;
+            label16.Text = "Retrieval Threshold";
+            // 
+            // panel11
+            // 
+            panel11.Controls.Add(numFactDedup);
+            panel11.Controls.Add(label10);
+            panel11.Dock = DockStyle.Top;
+            panel11.Location = new Point(12, 94);
+            panel11.Margin = new Padding(8);
+            panel11.Name = "panel11";
+            panel11.Padding = new Padding(8);
+            panel11.Size = new Size(290, 35);
+            panel11.TabIndex = 59;
+            // 
+            // numFactDedup
+            // 
+            numFactDedup.AccessibleDescription = "";
+            numFactDedup.BackColor = Color.FromArgb(64, 64, 64);
+            numFactDedup.DecimalPlaces = 3;
+            numFactDedup.Font = new Font("Segoe UI", 9F);
+            numFactDedup.Increment = new decimal(new int[] { 5, 0, 0, 196608 });
+            numFactDedup.Location = new Point(11, 6);
+            numFactDedup.Maximum = new decimal(new int[] { 5, 0, 0, 65536 });
+            numFactDedup.Minimum = new decimal(new int[] { 5, 0, 0, 196608 });
+            numFactDedup.Name = "numFactDedup";
+            numFactDedup.Padding = new Padding(1);
+            numFactDedup.Size = new Size(117, 23);
+            numFactDedup.TabIndex = 59;
+            numFactDedup.Value = new decimal(new int[] { 2, 0, 0, 65536 });
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Font = new Font("Segoe UI", 9F);
+            label10.Location = new Point(134, 8);
+            label10.Name = "label10";
+            label10.Size = new Size(137, 15);
+            label10.TabIndex = 60;
+            label10.Text = "Deduplication Threshold";
+            // 
+            // panel10
+            // 
+            panel10.Controls.Add(numFactTokens);
+            panel10.Controls.Add(label11);
+            panel10.Dock = DockStyle.Top;
+            panel10.Location = new Point(12, 58);
+            panel10.Margin = new Padding(8);
+            panel10.Name = "panel10";
+            panel10.Padding = new Padding(8);
+            panel10.Size = new Size(290, 36);
+            panel10.TabIndex = 56;
+            // 
+            // numFactTokens
+            // 
+            numFactTokens.BackColor = Color.FromArgb(64, 64, 64);
+            numFactTokens.Font = new Font("Segoe UI", 9F);
+            numFactTokens.Increment = new decimal(new int[] { 512, 0, 0, 0 });
+            numFactTokens.Location = new Point(11, 6);
+            numFactTokens.Maximum = new decimal(new int[] { 128000, 0, 0, 0 });
+            numFactTokens.Minimum = new decimal(new int[] { 512, 0, 0, 0 });
+            numFactTokens.Name = "numFactTokens";
+            numFactTokens.Padding = new Padding(1);
+            numFactTokens.Size = new Size(117, 23);
+            numFactTokens.TabIndex = 27;
+            numFactTokens.Value = new decimal(new int[] { 2048, 0, 0, 0 });
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Font = new Font("Segoe UI", 9F);
+            label11.Location = new Point(134, 8);
+            label11.Name = "label11";
+            label11.Size = new Size(126, 15);
+            label11.TabIndex = 28;
+            label11.Text = "Fact Tokens (0 disable)";
+            // 
+            // ckFactRetrieval
+            // 
+            ckFactRetrieval.Dock = DockStyle.Top;
+            ckFactRetrieval.Font = new Font("Segoe UI", 9F);
+            ckFactRetrieval.Location = new Point(12, 32);
+            ckFactRetrieval.Name = "ckFactRetrieval";
+            ckFactRetrieval.Size = new Size(290, 26);
+            ckFactRetrieval.TabIndex = 24;
+            ckFactRetrieval.Text = "Fact Retrieval Enabled";
+            ckFactRetrieval.UseVisualStyleBackColor = true;
             // 
             // verticalStackPanel4
             // 
@@ -1311,26 +1505,15 @@ namespace WaifuAI.src.forms
             verticalStackPanel4.Location = new Point(1001, 0);
             verticalStackPanel4.Name = "verticalStackPanel4";
             verticalStackPanel4.Padding = new Padding(6, 6, 0, 6);
-            verticalStackPanel4.Size = new Size(320, 576);
+            verticalStackPanel4.Size = new Size(320, 630);
             verticalStackPanel4.TabIndex = 37;
-            // 
-            // ckForceInternalGram
-            // 
-            ckForceInternalGram.Dock = DockStyle.Top;
-            ckForceInternalGram.Font = new Font("Segoe UI", 9F);
-            ckForceInternalGram.Location = new Point(12, 110);
-            ckForceInternalGram.Name = "ckForceInternalGram";
-            ckForceInternalGram.Size = new Size(290, 26);
-            ckForceInternalGram.TabIndex = 39;
-            ckForceInternalGram.Text = "Use internal library's Grammar Builder";
-            ckForceInternalGram.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DimGray;
-            ClientSize = new Size(1331, 614);
+            ClientSize = new Size(1331, 668);
             Controls.Add(verticalStackPanel4);
             Controls.Add(verticalStackPanel2);
             Controls.Add(verticalStackPanel3);
@@ -1347,6 +1530,12 @@ namespace WaifuAI.src.forms
             panel1.ResumeLayout(false);
             collapsibleGroupBox1.ResumeLayout(false);
             verticalStackPanel1.ResumeLayout(false);
+            collapsibleGroupBox5.ResumeLayout(false);
+            collapsibleGroupBox5.PerformLayout();
+            collapsibleGroupBox8.ResumeLayout(false);
+            collapsibleGroupBox8.PerformLayout();
+            panel6.ResumeLayout(false);
+            panel6.PerformLayout();
             collapsibleGroupBox3.ResumeLayout(false);
             collapsibleGroupBox3.PerformLayout();
             collapsibleGroupBox2.ResumeLayout(false);
@@ -1362,11 +1551,16 @@ namespace WaifuAI.src.forms
             panel3.PerformLayout();
             collapsibleGroupBox6.ResumeLayout(false);
             collapsibleGroupBox6.PerformLayout();
-            collapsibleGroupBox8.ResumeLayout(false);
-            collapsibleGroupBox8.PerformLayout();
             verticalStackPanel3.ResumeLayout(false);
-            collapsibleGroupBox5.ResumeLayout(false);
-            collapsibleGroupBox5.PerformLayout();
+            collapsibleGroupBox9.ResumeLayout(false);
+            panel13.ResumeLayout(false);
+            panel13.PerformLayout();
+            panel12.ResumeLayout(false);
+            panel12.PerformLayout();
+            panel11.ResumeLayout(false);
+            panel11.PerformLayout();
+            panel10.ResumeLayout(false);
+            panel10.PerformLayout();
             verticalStackPanel4.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -1454,21 +1648,34 @@ namespace WaifuAI.src.forms
         private Panel panel4;
         private Panel panel5;
         private CollapsibleGroupBox collapsibleGroupBox8;
-        private Label label7;
-        private ModernComboBox ckGroupRouting;
-        private ModernNumericUpDown numGroupQueue;
-        private Label label8;
         private Panel panel6;
         private Panel panel8;
         private ModernCheckBox ckDelStartSlop;
         private ModernCheckBox ckGroupAltern;
         private ModernComboBox cbGroupSessionStrategy;
         private Label label9;
-        private Panel panel9;
         private ModernCheckBox ckDetailedSum;
         private ModernCheckBox ckGroupCommit;
         private ModernCheckBox ckParenthesizeToItalic;
         private VerticalStackPanel verticalStackPanel4;
         private ModernCheckBox ckForceInternalGram;
+        private CollapsibleGroupBox collapsibleGroupBox9;
+        private Panel panel10;
+        private ModernNumericUpDown numFactTokens;
+        private Label label11;
+        private ModernCheckBox ckFactRetrieval;
+        private Panel panel11;
+        private ModernNumericUpDown numFactDedup;
+        private Label label10;
+        private Panel panel12;
+        private ModernNumericUpDown numFactRetrieval;
+        private Label label16;
+        private Panel panel13;
+        private ModernNumericUpDown numFactSuper;
+        private Label label17;
+        private ModernNumericUpDown numGroupQueue;
+        private Label label8;
+        private ModernComboBox ckGroupRouting;
+        private Label label7;
     }
 }

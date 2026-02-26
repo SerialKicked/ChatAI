@@ -86,6 +86,7 @@ namespace WaifuAI
             panLeft = new VerticalStackPanel();
             cboxVLM = new CollapsibleGroupBox();
             collapsibleGroupBox2 = new CollapsibleGroupBox();
+            button6 = new Button();
             panel5 = new Panel();
             mck_agentmode = new ModernCheckBox();
             mck_onlinerag = new ModernCheckBox();
@@ -815,7 +816,7 @@ namespace WaifuAI
             cboxVLM.Controls.Add(pictEmbed);
             cboxVLM.Controls.Add(bt_clearimg);
             cboxVLM.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            cboxVLM.Location = new Point(0, 733);
+            cboxVLM.Location = new Point(0, 770);
             cboxVLM.Name = "cboxVLM";
             cboxVLM.Padding = new Padding(8, 32, 8, 8);
             cboxVLM.Size = new Size(200, 164);
@@ -825,6 +826,7 @@ namespace WaifuAI
             // collapsibleGroupBox2
             // 
             collapsibleGroupBox2.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox2.Controls.Add(button6);
             collapsibleGroupBox2.Controls.Add(btVectorSearch);
             collapsibleGroupBox2.Controls.Add(button2);
             collapsibleGroupBox2.Controls.Add(panel5);
@@ -839,9 +841,26 @@ namespace WaifuAI
             collapsibleGroupBox2.Location = new Point(0, 455);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(8, 32, 8, 8);
-            collapsibleGroupBox2.Size = new Size(200, 270);
+            collapsibleGroupBox2.Size = new Size(200, 307);
             collapsibleGroupBox2.TabIndex = 28;
             collapsibleGroupBox2.Text = "Memory and RAG";
+            // 
+            // button6
+            // 
+            button6.AutoSize = true;
+            button6.BackColor = Color.DarkKhaki;
+            button6.Dock = DockStyle.Top;
+            button6.FlatStyle = FlatStyle.Flat;
+            button6.Font = new Font("Segoe UI", 9F);
+            button6.ForeColor = Color.Black;
+            button6.Location = new Point(8, 262);
+            button6.Name = "button6";
+            button6.Size = new Size(184, 27);
+            button6.TabIndex = 50;
+            button6.Tag = "no-theme";
+            button6.Text = "Fact Map";
+            button6.UseVisualStyleBackColor = false;
+            button6.Click += button6_Click;
             // 
             // panel5
             // 
@@ -1362,5 +1381,6 @@ namespace WaifuAI
         private Button button1;
         private Button button4;
         private Button button5;
+        private Button button6;
     }
 }

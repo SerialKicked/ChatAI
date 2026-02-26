@@ -130,6 +130,11 @@ namespace WaifuAI.src.forms
             numWIEntries.Value = Program.Settings.WorldInfoMaxEntries;
             ckNoPastInserts.Checked = Program.Settings.DisableDateAndMoodIfNotLastSession;
             ckForceInternalGram.Checked = Program.Settings.ForceInternalGrammar;
+            ckFactRetrieval.Checked = Program.Settings.FactRetrievalEnabled;
+            numFactDedup.Value = (decimal)Program.Settings.FactDeduplicationThreshold;
+            numFactRetrieval.Value = (decimal)Program.Settings.FactRetrievalThreshold;
+            numFactSuper.Value = (decimal)Program.Settings.FactSupersessionThreshold;
+            numFactTokens.Value = Program.Settings.CoreFactsTokenBudget;
 
             Program.ApplyContextPluginSettings();
 
@@ -220,6 +225,11 @@ namespace WaifuAI.src.forms
                 Program.Settings.GroupInstructFormatAdapter = ckGroupAltern.Checked;
                 Program.Settings.CommitGroupSessionToSecondaryPersonaHistory = ckGroupCommit.Checked;
                 Program.Settings.ForceInternalGrammar = ckForceInternalGram.Checked;
+                Program.Settings.FactRetrievalEnabled = ckFactRetrieval.Checked;
+                Program.Settings.FactDeduplicationThreshold = (float)numFactDedup.Value;
+                Program.Settings.FactRetrievalThreshold = (float)numFactRetrieval.Value;
+                Program.Settings.FactSupersessionThreshold = (float)numFactSuper.Value;
+                Program.Settings.CoreFactsTokenBudget = (int)numFactTokens.Value;
 
                 // Search API Settings
                 if (cb_searchapi.SelectedIndex == 0)

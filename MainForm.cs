@@ -1904,5 +1904,10 @@ namespace WaifuAI
                 return;
             MessageBox.Show(this, res.ScheduleToString(), "New Calendar", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            FactBrowserForm.ShowForActiveBot(this);
+        }
     }
 }
