@@ -129,6 +129,7 @@ namespace WaifuAI.src.forms
             mck_cutmiddle.Checked = Program.Settings.CutInTheMiddleSummaryStrategy;
             numWIEntries.Value = Program.Settings.WorldInfoMaxEntries;
             ckNoPastInserts.Checked = Program.Settings.DisableDateAndMoodIfNotLastSession;
+            ckForceInternalGram.Checked = Program.Settings.ForceInternalGrammar;
 
             Program.ApplyContextPluginSettings();
 
@@ -165,7 +166,6 @@ namespace WaifuAI.src.forms
             ckGroupAltern.Checked = Program.Settings.GroupInstructFormatAdapter;
             ckDetailedSum.Checked = Program.Settings.SessionDetailedSummary;
             ckGroupCommit.Checked = Program.Settings.CommitGroupSessionToSecondaryPersonaHistory;
-
 
             _isinitloading = saveinit;
         }
@@ -219,6 +219,7 @@ namespace WaifuAI.src.forms
                 Program.Settings.GroupSecondaryPersonaSeePastSessions = (GroupChatPastSessionMode)cbGroupSessionStrategy.SelectedIndex;
                 Program.Settings.GroupInstructFormatAdapter = ckGroupAltern.Checked;
                 Program.Settings.CommitGroupSessionToSecondaryPersonaHistory = ckGroupCommit.Checked;
+                Program.Settings.ForceInternalGrammar = ckForceInternalGram.Checked;
 
                 // Search API Settings
                 if (cb_searchapi.SelectedIndex == 0)
