@@ -110,7 +110,8 @@ namespace WaifuAI.Files
 
             if (needsEncryption)
             {
-                EnsurePassword();
+                if (!EnsurePassword())
+                    throw new OperationCanceledException("Password entry cancelled.");
 
                 if (TryLoadEncryptedChatHistory(encPath, filePath) || TryLoadEncryptedChatHistory(bakPath, filePath))
                 {
@@ -142,7 +143,8 @@ namespace WaifuAI.Files
             {
                 if (string.IsNullOrEmpty(_password))
                 {
-                    EnsurePassword();
+                    if (!EnsurePassword())
+                        return;  // User cancelled, skip saving
                 }
 
                 base.SaveChatHistory(path, false);
@@ -194,7 +196,8 @@ namespace WaifuAI.Files
 
             if (needsEncryption)
             {
-                EnsurePassword();
+                if (!EnsurePassword())
+                    throw new OperationCanceledException("Password entry cancelled.");
 
                 if (TryLoadEncryptedBrain(encPath, path) || TryLoadEncryptedBrain(bakPath, path))
                 {
@@ -281,7 +284,8 @@ namespace WaifuAI.Files
             {
                 if (string.IsNullOrEmpty(_password))
                 {
-                    EnsurePassword();
+                    if (!EnsurePassword())
+                        return;  // User cancelled, skip saving
                 }
                 // Create a temporary file with current brain data
                 base.SaveBrain(path, false);
@@ -379,7 +383,7 @@ namespace WaifuAI.Files
             return false;
         }
 
-        private void EnsurePassword()
+        private bool EnsurePassword()
         {
             if (string.IsNullOrEmpty(_password))
             {
@@ -388,14 +392,15 @@ namespace WaifuAI.Files
                 while (string.IsNullOrEmpty(password))
                 {
                     password = Interaction.InputBox($"Enter password for protected character '{Name}':", "Character Password Required", "");
-                    if (retries <= 0)
+                    if (string.IsNullOrEmpty(password))
                     {
-                        throw new UnauthorizedAccessException("No password provided. Shutting Down.");
+                        if (--retries < 0)
+                            return false;
                     }
-                    retries--;
                 }
                 _password = password;
             }
+            return true;
         }
 
         private Image GetPortrait()

@@ -196,7 +196,11 @@ namespace WaifuAI
             // set cb_instruct to the Program.Settings.InstructFile value if it's in the list, otherwise set index to 0.
             cb_instruct.SelectedIndex = cb_instruct.Items.Contains(Program.Settings.Instruct) ? cb_instruct.Items.IndexOf(Program.Settings.Instruct) : 0;
             // set cb_bot to the Program.Settings.BotFile value if it's in the list, otherwise set index to 0.
-            cb_bot.SelectedIndex = cb_bot.Items.Contains(Program.Settings.BotFile) ? cb_bot.Items.IndexOf(Program.Settings.BotFile) : 0;
+            // If the saved bot is password-protected, default to "Assistant" to avoid a zombie state on startup.
+            var savedBotFile = Program.Settings.BotFile;
+            if (cb_bot.Items.Contains(savedBotFile) && DataFiles.Characters.TryGetValue(savedBotFile, out var savedBotChar) && savedBotChar.Protected)
+                savedBotFile = "Assistant";
+            cb_bot.SelectedIndex = cb_bot.Items.Contains(savedBotFile) ? cb_bot.Items.IndexOf(savedBotFile) : 0;
             // set cb_sysprompt to the Program.Settings.PromptFile value if it's in the list, otherwise set index to 0.
             cb_sysprompt.SelectedIndex = cb_sysprompt.Items.Contains(Program.Settings.PromptFile) ? cb_sysprompt.Items.IndexOf(Program.Settings.PromptFile) : 0;
             num_maxcontext.Maximum = Program.Settings.MaxTotalTokens;
@@ -219,10 +223,7 @@ namespace WaifuAI
             LLMEngine.ContextPlugins.Add(new WebSearchPlugin());
             mck_ragenabled.Checked = LLMEngine.Settings.RAGEnabled;
             mck_worldinfo.Checked = LLMEngine.Settings.AllowWorldInfo;
-            LLMEngine.OnInferenceStreamed += OnStreamMessageReceived;
-            LLMEngine.OnInferenceEnded += OnStreamInferenceEnded;
-            LLMEngine.OnFullPromptReady += OnFullPromptReady;
-            LLMEngine.OnStatusChanged += OnStatusChanged;
+            SubscribeLLMEvents();
 
             ed_input.EnableImageDragDrop(basestr =>
             {
@@ -238,6 +239,50 @@ namespace WaifuAI
             }, 1024);
             _isinitloading = false;
 
+        }
+
+        private void SubscribeLLMEvents()
+        {
+            LLMEngine.OnInferenceStreamed += OnStreamMessageReceived;
+            LLMEngine.OnInferenceEnded += OnStreamInferenceEnded;
+            LLMEngine.OnFullPromptReady += OnFullPromptReady;
+            LLMEngine.OnStatusChanged += OnStatusChanged;
+        }
+
+        private void UnsubscribeLLMEvents()
+        {
+            LLMEngine.OnInferenceStreamed -= OnStreamMessageReceived;
+            LLMEngine.OnInferenceEnded -= OnStreamInferenceEnded;
+            LLMEngine.OnFullPromptReady -= OnFullPromptReady;
+            LLMEngine.OnStatusChanged -= OnStatusChanged;
+        }
+
+        private async void bt_backend_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using var loginForm = new LoginForm();
+                ThemeManager.ApplyToForm(loginForm);
+                loginForm.ShowDialog(this);
+                if (loginForm.DialogResult == DialogResult.OK)
+                {
+                    UnsubscribeLLMEvents();
+                    SubscribeLLMEvents();
+                    num_maxcontext.Maximum = LLMEngine.MaxContextLength;
+                    num_maxcontext.Value = LLMEngine.MaxContextLength;
+                    this.Text = "w(AI)fu.NET: " + LLMEngine.CurrentModel;
+                    mck_ttstoggle.Enabled = LLMEngine.SupportsTTS;
+                    mck_onlinerag.Enabled = LLMEngine.SupportsWebSearch;
+                    cboxVLM.Enabled = LLMEngine.SupportsVision;
+                    cboxVLM.Expanded = LLMEngine.SupportsVision;
+                    UpdateUIState();
+                    await LoadHistoryToUI();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error switching backend: {ex.Message}", "Backend Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
@@ -357,33 +402,51 @@ namespace WaifuAI
 
             if (cb_bot.SelectedItem is string key && !string.IsNullOrEmpty(key))
             {
-                LLMEngine.Bot = DataFiles.Characters[key];
-                await LoadHistoryToUI();
-                mck_guidance.Checked = !LLMEngine.Bot.DisableBotGuidance;
-                mck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
-                var searchplug = LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch");
-                if (searchplug != null)
+                var previousBot = LLMEngine.Bot;
+                var previousSelection = cb_bot.SelectedItem;
+                try
                 {
-                    mck_onlinerag.Checked = searchplug.Enabled;
-                    mck_onlinerag.Enabled = true;
+                    LLMEngine.Bot = DataFiles.Characters[key];
+                    await LoadHistoryToUI();
+                    mck_guidance.Checked = !LLMEngine.Bot.DisableBotGuidance;
+                    mck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
+                    var searchplug = LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch");
+                    if (searchplug != null)
+                    {
+                        mck_onlinerag.Checked = searchplug.Enabled;
+                        mck_onlinerag.Enabled = true;
+                    }
+                    else
+                    {
+                        mck_onlinerag.Enabled = false;
+                        mck_onlinerag.Checked = false;
+                    }
+                    _activityTimer?.Reset();
+                    UpdateUIState();
+                    if (LLMEngine.Bot is not GroupChar)
+                    {
+                        _isinitloading = true;
+                        cbGroupSwitch.Enabled = false;
+                        lstGroupMembers.Items.Clear();
+                        lstGroupMembers.Enabled = false;
+                        ckGroupToggle.Checked = false;
+                        _isinitloading = false;
+                    }
+                    FillGroupMemberList();
                 }
-                else
+                catch (OperationCanceledException)
                 {
-                    mck_onlinerag.Enabled = false;
-                    mck_onlinerag.Checked = false;
-                }
-                _activityTimer?.Reset();
-                UpdateUIState();
-                if (LLMEngine.Bot is not GroupChar)
-                {
+                    // User cancelled password entry — revert to previous bot
                     _isinitloading = true;
-                    cbGroupSwitch.Enabled = false;
-                    lstGroupMembers.Items.Clear();
-                    lstGroupMembers.Enabled = false;
-                    ckGroupToggle.Checked = false;
+                    if (previousSelection != null && cb_bot.Items.Contains(previousSelection))
+                        cb_bot.SelectedItem = previousSelection;
+                    else if (cb_bot.Items.Count > 0)
+                        cb_bot.SelectedIndex = 0;
                     _isinitloading = false;
+                    if (previousBot != null)
+                        LLMEngine.Bot = previousBot;
+                    MessageBox.Show("Character switch cancelled: password was not provided.", "Access Cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                FillGroupMemberList();
             }
         }
 

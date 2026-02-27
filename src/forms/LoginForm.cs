@@ -107,6 +107,7 @@ namespace WaifuAI.src.forms
                     Program.Settings.OpenAIKey = edKey.Text;
                 await LLMEngine.Connect();
                 this.Enabled = true;
+                this.DialogResult = DialogResult.OK;
                 Close();
             }
             else
