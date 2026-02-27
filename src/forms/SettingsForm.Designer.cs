@@ -142,6 +142,13 @@ namespace WaifuAI.src.forms
             label11 = new Label();
             ckFactRetrieval = new ModernCheckBox();
             verticalStackPanel4 = new VerticalStackPanel();
+            collapsibleGroupBox10 = new CollapsibleGroupBox();
+            panel9 = new Panel();
+            num_imgEmbed = new ModernNumericUpDown();
+            label19 = new Label();
+            panel14 = new Panel();
+            num_ImgCount = new ModernNumericUpDown();
+            label18 = new Label();
             panel1.SuspendLayout();
             collapsibleGroupBox1.SuspendLayout();
             verticalStackPanel1.SuspendLayout();
@@ -164,6 +171,9 @@ namespace WaifuAI.src.forms
             panel11.SuspendLayout();
             panel10.SuspendLayout();
             verticalStackPanel4.SuspendLayout();
+            collapsibleGroupBox10.SuspendLayout();
+            panel9.SuspendLayout();
+            panel14.SuspendLayout();
             SuspendLayout();
             // 
             // openFileDialog1
@@ -791,7 +801,7 @@ namespace WaifuAI.src.forms
             // 
             panel1.Controls.Add(bt_Close);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 630);
+            panel1.Location = new Point(0, 635);
             panel1.Name = "panel1";
             panel1.Size = new Size(1331, 38);
             panel1.TabIndex = 31;
@@ -881,7 +891,7 @@ namespace WaifuAI.src.forms
             verticalStackPanel1.Location = new Point(0, 0);
             verticalStackPanel1.Name = "verticalStackPanel1";
             verticalStackPanel1.Padding = new Padding(6, 6, 0, 6);
-            verticalStackPanel1.Size = new Size(320, 630);
+            verticalStackPanel1.Size = new Size(320, 635);
             verticalStackPanel1.TabIndex = 34;
             // 
             // collapsibleGroupBox5
@@ -1160,18 +1170,19 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox7.Location = new Point(6, 536);
             collapsibleGroupBox7.Name = "collapsibleGroupBox7";
             collapsibleGroupBox7.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox7.Size = new Size(314, 98);
+            collapsibleGroupBox7.Size = new Size(314, 96);
             collapsibleGroupBox7.TabIndex = 1;
             collapsibleGroupBox7.Text = "Import Files";
             // 
             // verticalStackPanel2
             // 
+            verticalStackPanel2.Controls.Add(collapsibleGroupBox10);
             verticalStackPanel2.Controls.Add(collapsibleGroupBox4);
             verticalStackPanel2.Dock = DockStyle.Left;
             verticalStackPanel2.Location = new Point(640, 0);
             verticalStackPanel2.Name = "verticalStackPanel2";
             verticalStackPanel2.Padding = new Padding(6, 6, 0, 6);
-            verticalStackPanel2.Size = new Size(361, 630);
+            verticalStackPanel2.Size = new Size(361, 635);
             verticalStackPanel2.TabIndex = 35;
             // 
             // collapsibleGroupBox4
@@ -1196,7 +1207,7 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox4.Location = new Point(6, 6);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox4.Size = new Size(355, 624);
+            collapsibleGroupBox4.Size = new Size(355, 471);
             collapsibleGroupBox4.TabIndex = 0;
             collapsibleGroupBox4.Text = "Output Formatting";
             // 
@@ -1316,7 +1327,7 @@ namespace WaifuAI.src.forms
             verticalStackPanel3.Location = new Point(320, 0);
             verticalStackPanel3.Name = "verticalStackPanel3";
             verticalStackPanel3.Padding = new Padding(6, 6, 0, 6);
-            verticalStackPanel3.Size = new Size(320, 630);
+            verticalStackPanel3.Size = new Size(320, 635);
             verticalStackPanel3.TabIndex = 36;
             // 
             // collapsibleGroupBox9
@@ -1505,15 +1516,99 @@ namespace WaifuAI.src.forms
             verticalStackPanel4.Location = new Point(1001, 0);
             verticalStackPanel4.Name = "verticalStackPanel4";
             verticalStackPanel4.Padding = new Padding(6, 6, 0, 6);
-            verticalStackPanel4.Size = new Size(320, 630);
+            verticalStackPanel4.Size = new Size(320, 635);
             verticalStackPanel4.TabIndex = 37;
+            // 
+            // collapsibleGroupBox10
+            // 
+            collapsibleGroupBox10.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox10.CanCollapse = false;
+            collapsibleGroupBox10.Controls.Add(panel14);
+            collapsibleGroupBox10.Controls.Add(panel9);
+            collapsibleGroupBox10.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox10.Location = new Point(6, 485);
+            collapsibleGroupBox10.Name = "collapsibleGroupBox10";
+            collapsibleGroupBox10.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox10.Size = new Size(355, 147);
+            collapsibleGroupBox10.TabIndex = 35;
+            collapsibleGroupBox10.Text = "Image Processing";
+            // 
+            // panel9
+            // 
+            panel9.Controls.Add(num_imgEmbed);
+            panel9.Controls.Add(label19);
+            panel9.Dock = DockStyle.Top;
+            panel9.Location = new Point(12, 32);
+            panel9.Margin = new Padding(8);
+            panel9.Name = "panel9";
+            panel9.Padding = new Padding(8);
+            panel9.Size = new Size(331, 36);
+            panel9.TabIndex = 56;
+            // 
+            // num_imgEmbed
+            // 
+            num_imgEmbed.BackColor = Color.FromArgb(64, 64, 64);
+            num_imgEmbed.Font = new Font("Segoe UI", 9F);
+            num_imgEmbed.Increment = new decimal(new int[] { 64, 0, 0, 0 });
+            num_imgEmbed.Location = new Point(11, 6);
+            num_imgEmbed.Maximum = new decimal(new int[] { 16384, 0, 0, 0 });
+            num_imgEmbed.Minimum = new decimal(new int[] { 256, 0, 0, 0 });
+            num_imgEmbed.Name = "num_imgEmbed";
+            num_imgEmbed.Padding = new Padding(1);
+            num_imgEmbed.Size = new Size(117, 23);
+            num_imgEmbed.TabIndex = 27;
+            num_imgEmbed.Value = new decimal(new int[] { 2048, 0, 0, 0 });
+            // 
+            // label19
+            // 
+            label19.AutoSize = true;
+            label19.Font = new Font("Segoe UI", 9F);
+            label19.Location = new Point(134, 8);
+            label19.Name = "label19";
+            label19.Size = new Size(127, 15);
+            label19.TabIndex = 28;
+            label19.Text = "Image Embedding Size";
+            // 
+            // panel14
+            // 
+            panel14.Controls.Add(num_ImgCount);
+            panel14.Controls.Add(label18);
+            panel14.Dock = DockStyle.Top;
+            panel14.Location = new Point(12, 68);
+            panel14.Margin = new Padding(8);
+            panel14.Name = "panel14";
+            panel14.Padding = new Padding(8);
+            panel14.Size = new Size(331, 36);
+            panel14.TabIndex = 57;
+            // 
+            // num_ImgCount
+            // 
+            num_ImgCount.BackColor = Color.FromArgb(64, 64, 64);
+            num_ImgCount.Font = new Font("Segoe UI", 9F);
+            num_ImgCount.Location = new Point(11, 6);
+            num_ImgCount.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            num_ImgCount.Name = "num_ImgCount";
+            num_ImgCount.Padding = new Padding(1);
+            num_ImgCount.Size = new Size(117, 23);
+            num_ImgCount.TabIndex = 27;
+            num_ImgCount.Value = new decimal(new int[] { 512, 0, 0, 0 });
+            // 
+            // label18
+            // 
+            label18.AutoSize = true;
+            label18.Font = new Font("Segoe UI", 9F);
+            label18.Location = new Point(134, 8);
+            label18.Name = "label18";
+            label18.Size = new Size(179, 15);
+            label18.TabIndex = 28;
+            label18.Text = "Max Images in prompt (0 = max)";
             // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DimGray;
-            ClientSize = new Size(1331, 668);
+            ClientSize = new Size(1331, 673);
             Controls.Add(verticalStackPanel4);
             Controls.Add(verticalStackPanel2);
             Controls.Add(verticalStackPanel3);
@@ -1562,6 +1657,11 @@ namespace WaifuAI.src.forms
             panel10.ResumeLayout(false);
             panel10.PerformLayout();
             verticalStackPanel4.ResumeLayout(false);
+            collapsibleGroupBox10.ResumeLayout(false);
+            panel9.ResumeLayout(false);
+            panel9.PerformLayout();
+            panel14.ResumeLayout(false);
+            panel14.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -1677,5 +1777,12 @@ namespace WaifuAI.src.forms
         private Label label8;
         private ModernComboBox ckGroupRouting;
         private Label label7;
+        private CollapsibleGroupBox collapsibleGroupBox10;
+        private Panel panel14;
+        private ModernNumericUpDown num_ImgCount;
+        private Label label18;
+        private Panel panel9;
+        private ModernNumericUpDown num_imgEmbed;
+        private Label label19;
     }
 }

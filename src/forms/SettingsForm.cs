@@ -135,6 +135,8 @@ namespace WaifuAI.src.forms
             numFactRetrieval.Value = (decimal)Program.Settings.FactRetrievalThreshold;
             numFactSuper.Value = (decimal)Program.Settings.FactSupersessionThreshold;
             numFactTokens.Value = Program.Settings.CoreFactsTokenBudget;
+            num_imgEmbed.Value = Program.Settings.ImageEmbeddingSize;
+            num_ImgCount.Value = Program.Settings.MaxImageCount;
 
             Program.ApplyContextPluginSettings();
 
@@ -230,6 +232,8 @@ namespace WaifuAI.src.forms
                 Program.Settings.FactRetrievalThreshold = (float)numFactRetrieval.Value;
                 Program.Settings.FactSupersessionThreshold = (float)numFactSuper.Value;
                 Program.Settings.CoreFactsTokenBudget = (int)numFactTokens.Value;
+                Program.Settings.ImageEmbeddingSize = (int)num_imgEmbed.Value;
+                Program.Settings.MaxImageCount = (int)num_ImgCount.Value;
 
                 // Search API Settings
                 if (cb_searchapi.SelectedIndex == 0)
