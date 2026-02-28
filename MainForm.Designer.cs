@@ -72,6 +72,7 @@ namespace WaifuAI
             num_maxcontext = new ModernNumericUpDown();
             label8 = new Label();
             bt_connect = new Button();
+            bt_backend = new Button();
             bt_impersonate = new Button();
             web_chat = new Microsoft.Web.WebView2.WinForms.WebView2();
             bt_delete = new Button();
@@ -561,11 +562,12 @@ namespace WaifuAI
             collapseModel.Controls.Add(num_maxcontext);
             collapseModel.Controls.Add(label8);
             collapseModel.Controls.Add(bt_connect);
+            collapseModel.Controls.Add(bt_backend);
             collapseModel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             collapseModel.Location = new Point(0, 6);
             collapseModel.Name = "collapseModel";
             collapseModel.Padding = new Padding(8, 32, 8, 8);
-            collapseModel.Size = new Size(200, 126);
+            collapseModel.Size = new Size(200, 155);
             collapseModel.TabIndex = 27;
             collapseModel.Text = "Model";
             // 
@@ -634,6 +636,22 @@ namespace WaifuAI
             bt_connect.Text = "Connect";
             bt_connect.UseVisualStyleBackColor = false;
             bt_connect.Click += bt_connectClick;
+            // 
+            // bt_backend
+            // 
+            bt_backend.AutoSize = true;
+            bt_backend.BackColor = Color.SteelBlue;
+            bt_backend.Dock = DockStyle.Bottom;
+            bt_backend.FlatStyle = FlatStyle.Flat;
+            bt_backend.ForeColor = Color.White;
+            bt_backend.Location = new Point(8, 64);
+            bt_backend.Name = "bt_backend";
+            bt_backend.Size = new Size(184, 27);
+            bt_backend.TabIndex = 20;
+            bt_backend.Tag = "no-theme";
+            bt_backend.Text = "Backend";
+            bt_backend.UseVisualStyleBackColor = false;
+            bt_backend.Click += bt_backend_Click;
             // 
             // bt_impersonate
             // 
@@ -1339,6 +1357,7 @@ namespace WaifuAI
         private ModernNumericUpDown num_maxcontext;
         private Label label8;
         private Button bt_connect;
+        private Button bt_backend;
         private Controls.CollapsibleGroupBox collapsibleGroupBox1;
         private Controls.VerticalStackPanel panLeft;
         private Label label1;
