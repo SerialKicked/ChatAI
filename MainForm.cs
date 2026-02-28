@@ -111,6 +111,7 @@ namespace WaifuAI
             this.Shown += async (_, __) =>
             {
                 await InitializeWebViewAsync();
+                cb_bot_SelectedIndexChanged(cb_bot, new EventArgs());
                 await LoadHistoryToUI();
             };
 
@@ -195,14 +196,17 @@ namespace WaifuAI
             cb_infer.SelectedIndex = cb_infer.Items.Contains(Program.Settings.SamplerFile) ? cb_infer.Items.IndexOf(Program.Settings.SamplerFile) : 0;
             // set cb_instruct to the Program.Settings.InstructFile value if it's in the list, otherwise set index to 0.
             cb_instruct.SelectedIndex = cb_instruct.Items.Contains(Program.Settings.Instruct) ? cb_instruct.Items.IndexOf(Program.Settings.Instruct) : 0;
+            // set cb_sysprompt to the Program.Settings.PromptFile value if it's in the list, otherwise set index to 0.
+            cb_sysprompt.SelectedIndex = cb_sysprompt.Items.Contains(Program.Settings.PromptFile) ? cb_sysprompt.Items.IndexOf(Program.Settings.PromptFile) : 0;
+
             // set cb_bot to the Program.Settings.BotFile value if it's in the list, otherwise set index to 0.
             // If the saved bot is password-protected, default to "Assistant" to avoid a zombie state on startup.
             var savedBotFile = Program.Settings.BotFile;
             if (cb_bot.Items.Contains(savedBotFile) && DataFiles.Characters.TryGetValue(savedBotFile, out var savedBotChar) && savedBotChar.Protected)
                 savedBotFile = "Assistant";
             cb_bot.SelectedIndex = cb_bot.Items.Contains(savedBotFile) ? cb_bot.Items.IndexOf(savedBotFile) : 0;
-            // set cb_sysprompt to the Program.Settings.PromptFile value if it's in the list, otherwise set index to 0.
-            cb_sysprompt.SelectedIndex = cb_sysprompt.Items.Contains(Program.Settings.PromptFile) ? cb_sysprompt.Items.IndexOf(Program.Settings.PromptFile) : 0;
+
+
             num_maxcontext.Maximum = Program.Settings.MaxTotalTokens;
             num_maxcontext.Value = Program.Settings.MaxTotalTokens;
             num_maxresponse.Value = Program.Settings.MaxReplyLength;
@@ -403,7 +407,7 @@ namespace WaifuAI
             if (cb_bot.SelectedItem is string key && !string.IsNullOrEmpty(key))
             {
                 var previousBot = LLMEngine.Bot;
-                var previousSelection = cb_bot.SelectedItem;
+                var previousSelection = LLMEngine.Bot.UniqueName;
                 try
                 {
                     LLMEngine.Bot = DataFiles.Characters[key];

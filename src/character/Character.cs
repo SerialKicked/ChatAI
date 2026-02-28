@@ -71,6 +71,13 @@ namespace WaifuAI.Files
 
         public override void BeginChat()
         {
+            // Set Password thingy
+            if (Protected && string.IsNullOrEmpty(_password))
+            {
+                if (!EnsurePassword())
+                    throw new OperationCanceledException("Password entry cancelled.");
+            }
+
             base.BeginChat();
             if (IsUser)
                 return;
@@ -91,6 +98,10 @@ namespace WaifuAI.Files
 
         public override void EndChat(bool backup = false)
         {
+            if (Protected && string.IsNullOrEmpty(_password))
+            {
+                return; // User cancelled, skip saving
+            }
             PointValue = MyPoints.PointCount;
             base.EndChat(backup);
             // if the setting is enabled, forget the password when switching bots (will ask each switch)
@@ -110,9 +121,6 @@ namespace WaifuAI.Files
 
             if (needsEncryption)
             {
-                if (!EnsurePassword())
-                    throw new OperationCanceledException("Password entry cancelled.");
-
                 if (TryLoadEncryptedChatHistory(encPath, filePath) || TryLoadEncryptedChatHistory(bakPath, filePath))
                 {
                     return;
@@ -143,8 +151,7 @@ namespace WaifuAI.Files
             {
                 if (string.IsNullOrEmpty(_password))
                 {
-                    if (!EnsurePassword())
-                        return;  // User cancelled, skip saving
+                    return;  // User cancelled, skip saving
                 }
 
                 base.SaveChatHistory(path, false);
@@ -196,9 +203,6 @@ namespace WaifuAI.Files
 
             if (needsEncryption)
             {
-                if (!EnsurePassword())
-                    throw new OperationCanceledException("Password entry cancelled.");
-
                 if (TryLoadEncryptedBrain(encPath, path) || TryLoadEncryptedBrain(bakPath, path))
                 {
                     return;
@@ -284,8 +288,7 @@ namespace WaifuAI.Files
             {
                 if (string.IsNullOrEmpty(_password))
                 {
-                    if (!EnsurePassword())
-                        return;  // User cancelled, skip saving
+                    return;  // User cancelled, skip saving
                 }
                 // Create a temporary file with current brain data
                 base.SaveBrain(path, false);
@@ -388,14 +391,12 @@ namespace WaifuAI.Files
             if (string.IsNullOrEmpty(_password))
             {
                 var password = string.Empty;
-                var retries = 3;
                 while (string.IsNullOrEmpty(password))
                 {
                     password = Interaction.InputBox($"Enter password for protected character '{Name}':", "Character Password Required", "");
                     if (string.IsNullOrEmpty(password))
                     {
-                        if (--retries < 0)
-                            return false;
+                        return false;
                     }
                 }
                 _password = password;

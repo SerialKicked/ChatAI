@@ -628,12 +628,12 @@ namespace WaifuAI
             bt_connect.Dock = DockStyle.Bottom;
             bt_connect.FlatStyle = FlatStyle.Flat;
             bt_connect.ForeColor = Color.Black;
-            bt_connect.Location = new Point(8, 91);
+            bt_connect.Location = new Point(8, 93);
             bt_connect.Name = "bt_connect";
             bt_connect.Size = new Size(184, 27);
             bt_connect.TabIndex = 19;
             bt_connect.Tag = "no-theme";
-            bt_connect.Text = "Connect";
+            bt_connect.Text = "Refresh";
             bt_connect.UseVisualStyleBackColor = false;
             bt_connect.Click += bt_connectClick;
             // 
@@ -642,14 +642,15 @@ namespace WaifuAI
             bt_backend.AutoSize = true;
             bt_backend.BackColor = Color.SteelBlue;
             bt_backend.Dock = DockStyle.Bottom;
+            bt_backend.FlatAppearance.BorderColor = Color.Black;
             bt_backend.FlatStyle = FlatStyle.Flat;
             bt_backend.ForeColor = Color.White;
-            bt_backend.Location = new Point(8, 64);
+            bt_backend.Location = new Point(8, 120);
             bt_backend.Name = "bt_backend";
             bt_backend.Size = new Size(184, 27);
             bt_backend.TabIndex = 20;
             bt_backend.Tag = "no-theme";
-            bt_backend.Text = "Backend";
+            bt_backend.Text = "Change Backend";
             bt_backend.UseVisualStyleBackColor = false;
             bt_backend.Click += bt_backend_Click;
             // 
@@ -759,7 +760,7 @@ namespace WaifuAI
             collapsibleGroupBox1.Controls.Add(mck_ragtothink);
             collapsibleGroupBox1.Controls.Add(mck_disablethink);
             collapsibleGroupBox1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox1.Location = new Point(0, 140);
+            collapsibleGroupBox1.Location = new Point(0, 169);
             collapsibleGroupBox1.Margin = new Padding(8);
             collapsibleGroupBox1.Name = "collapsibleGroupBox1";
             collapsibleGroupBox1.Padding = new Padding(8, 32, 8, 8);
@@ -834,7 +835,7 @@ namespace WaifuAI
             cboxVLM.Controls.Add(pictEmbed);
             cboxVLM.Controls.Add(bt_clearimg);
             cboxVLM.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            cboxVLM.Location = new Point(0, 770);
+            cboxVLM.Location = new Point(0, 799);
             cboxVLM.Name = "cboxVLM";
             cboxVLM.Padding = new Padding(8, 32, 8, 8);
             cboxVLM.Size = new Size(200, 164);
@@ -856,7 +857,7 @@ namespace WaifuAI
             collapsibleGroupBox2.Controls.Add(mck_worldinfo);
             collapsibleGroupBox2.Controls.Add(mck_sessionmemory);
             collapsibleGroupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox2.Location = new Point(0, 455);
+            collapsibleGroupBox2.Location = new Point(0, 484);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(8, 32, 8, 8);
             collapsibleGroupBox2.Size = new Size(200, 307);
