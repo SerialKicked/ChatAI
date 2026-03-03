@@ -230,7 +230,7 @@ namespace WaifuAI
             mck_ragenabled.Checked = LLMEngine.Settings.RAGEnabled;
             mck_worldinfo.Checked = LLMEngine.Settings.AllowWorldInfo;
             SubscribeLLMEvents();
- 
+
 
             ed_input.EnableImageDragDrop(basestr =>
             {
@@ -256,14 +256,6 @@ namespace WaifuAI
             LLMEngine.OnInferenceEnded += OnStreamInferenceEnded;
             LLMEngine.OnFullPromptReady += OnFullPromptReady;
             LLMEngine.OnStatusChanged += OnStatusChanged;
-            LLMEngine.SetTools(
-            [
-                Tool.GetOrCreateTool(
-                    typeof(WeatherTool), 
-                    nameof(WeatherTool.GetWeather), 
-                    "Get the current weather in a specific location. Usage: WeatherTool.GetWeather(\"Country\", \"City\")"
-                    )
-            ]);
         }
 
         private void LLMEngine_OnInferenceCompleted(object? sender, InferenceResult e)
@@ -520,8 +512,8 @@ namespace WaifuAI
                         var endcount = _currentgeneration.CountSubstring(LLMEngine.Instruct.ThinkingEnd);
                         if (endcount > 1)
                         {
-                            LLMEngine.CancelGeneration();
-                            return;
+                            //LLMEngine.CancelGeneration();
+                            //return;
                         }
 
                     }
@@ -1999,6 +1991,20 @@ namespace WaifuAI
         private void button6_Click(object sender, EventArgs e)
         {
             FactBrowserForm.ShowForActiveBot(this);
+        }
+
+        private void ckToolCalls_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ckToolCalls.Checked)
+            {
+                LLMEngine.SetTools([
+                    Tool.GetOrCreateTool(typeof(WeatherTool), nameof(WeatherTool.GetWeather), "Gets the current weather for a given country and city. Parameters: country (string), city (string)."),
+                    ]);
+            }
+            else
+            {
+                LLMEngine.SetTools([]);
+            }
         }
     }
 }
