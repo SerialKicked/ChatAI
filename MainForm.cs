@@ -1,6 +1,7 @@
 using LetheAISharp;
 using LetheAISharp.Agent;
 using LetheAISharp.Agent.Actions;
+using LetheAISharp.Agent.Tools;
 using LetheAISharp.Files;
 using LetheAISharp.LLM;
 using LetheAISharp.Memory;
@@ -8,6 +9,7 @@ using Markdig;
 using Microsoft.Extensions.Logging;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
+using OpenAI;
 using System.Diagnostics;
 using System.IO;
 using System.Media;
@@ -228,6 +230,7 @@ namespace WaifuAI
             mck_ragenabled.Checked = LLMEngine.Settings.RAGEnabled;
             mck_worldinfo.Checked = LLMEngine.Settings.AllowWorldInfo;
             SubscribeLLMEvents();
+ 
 
             ed_input.EnableImageDragDrop(basestr =>
             {
@@ -247,10 +250,31 @@ namespace WaifuAI
 
         private void SubscribeLLMEvents()
         {
+            LLMEngine.OnInferenceSegment += OnInferenceSeqmentReceived;
+            LLMEngine.OnInferenceCompleted += LLMEngine_OnInferenceCompleted;
             LLMEngine.OnInferenceStreamed += OnStreamMessageReceived;
             LLMEngine.OnInferenceEnded += OnStreamInferenceEnded;
             LLMEngine.OnFullPromptReady += OnFullPromptReady;
             LLMEngine.OnStatusChanged += OnStatusChanged;
+            LLMEngine.SetTools(
+            [
+                Tool.GetOrCreateTool(
+                    typeof(WeatherTool), 
+                    nameof(WeatherTool.GetWeather), 
+                    "Get the current weather in a specific location. Usage: WeatherTool.GetWeather(\"Country\", \"City\")"
+                    )
+            ]);
+        }
+
+        private void LLMEngine_OnInferenceCompleted(object? sender, InferenceResult e)
+        {
+            Console.WriteLine($"Response: {e.Response} - Thought: {e.ThinkingContent} - Complete: {e.FinishReason}");
+        }
+
+        private void OnInferenceSeqmentReceived(object? sender, InferenceSegment e)
+        {
+            if (e.Channel != InferenceChannel.Thinking)
+                Console.WriteLine($"Text: {e.Text} - Channel: {e.Channel} - Complete {e.IsComplete}");
         }
 
         private void UnsubscribeLLMEvents()
