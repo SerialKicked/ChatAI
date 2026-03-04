@@ -21,6 +21,7 @@ namespace WaifuAI
             {
                 AuthorRole.System => "",
                 AuthorRole.SysPrompt => "",
+                AuthorRole.ToolResult => "",
                 AuthorRole.User => "**" + LLMEngine.User.Name + ":** ",
                 AuthorRole.Assistant => "**" + LLMEngine.Bot.Name  + ":** ",
                 _ => "**Error:** ",
@@ -35,6 +36,7 @@ namespace WaifuAI
                 AuthorRole.SysPrompt => "**SYS PROMPT:** ",
                 AuthorRole.User => "**" + message.User.Name + ":** ",
                 AuthorRole.Assistant => "**" + message.Bot.Name + ":** ",
+                AuthorRole.ToolResult => "**TOOL RESULT:** ",
                 _ => "**Error:** ",
             };
         }

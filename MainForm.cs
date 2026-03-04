@@ -564,9 +564,9 @@ namespace WaifuAI
 
                 var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
 
-                var msg = LLMEngine.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMEngine.User, LLMEngine.Bot);
-                await InvokeAsync(async () => { await WebEditLastMessage(MsgPrefix + stringfix, msg.Guid); });
-                PrepareResponse();
+                //var msg = LLMEngine.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMEngine.User, LLMEngine.Bot);
+                //await InvokeAsync(async () => { await WebEditLastMessage(MsgPrefix + stringfix, msg.Guid); });
+                //PrepareResponse();
 
                 if (_forcereload || Program.Settings.MaxMessagesOnScreen <= LLMEngine.History.CurrentSession.Messages.Count)
                 {
@@ -946,6 +946,9 @@ namespace WaifuAI
                 case AuthorRole.Assistant:
                     img = Bot?.Icon ?? "gears.png";
                     break;
+                case AuthorRole.ToolResult:
+                    img = "tools.png";
+                    break;
             }
             var text = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + singleMessage.Message, CustomMarkDownPipeline);
             var coremsg = $@"
@@ -1198,6 +1201,9 @@ namespace WaifuAI
                     break;
                 case AuthorRole.Assistant:
                     img = (singleMessage.Bot as ICharacter)!.Icon;
+                    break;
+                case AuthorRole.ToolResult:
+                    img = "tools.png";
                     break;
             }
             var html = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + singleMessage.Message, CustomMarkDownPipeline);
