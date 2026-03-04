@@ -564,9 +564,9 @@ namespace WaifuAI
 
                 var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
 
-                //var msg = LLMEngine.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMEngine.User, LLMEngine.Bot);
-                //await InvokeAsync(async () => { await WebEditLastMessage(MsgPrefix + stringfix, msg.Guid); });
-                //PrepareResponse();
+                var msg = LLMEngine.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMEngine.User, LLMEngine.Bot);
+                await InvokeAsync(async () => { await WebEditLastMessage(MsgPrefix + stringfix, msg.Guid); });
+                PrepareResponse();
 
                 if (_forcereload || Program.Settings.MaxMessagesOnScreen <= LLMEngine.History.CurrentSession.Messages.Count)
                 {
@@ -946,7 +946,8 @@ namespace WaifuAI
                 case AuthorRole.Assistant:
                     img = Bot?.Icon ?? "gears.png";
                     break;
-                case AuthorRole.ToolResult:
+                //case AuthorRole.Tool:
+                case AuthorRole.Tool:
                     img = "tools.png";
                     break;
             }
@@ -1202,11 +1203,26 @@ namespace WaifuAI
                 case AuthorRole.Assistant:
                     img = (singleMessage.Bot as ICharacter)!.Icon;
                     break;
-                case AuthorRole.ToolResult:
+                case AuthorRole.Tool:
                     img = "tools.png";
                     break;
             }
-            var html = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + singleMessage.Message, CustomMarkDownPipeline);
+            var msg = singleMessage.Message;
+            if (singleMessage.ToolCalls.Count > 0)
+            {
+                msg += "\n\nTool calls:\n";
+                foreach (var call in singleMessage.ToolCalls)
+                {
+                    var res = call.Success ? "Success" : "Failure";
+                    msg += $"- {call.CallId}: {call.FunctionName}() => {res} in {(int)call.Duration.TotalMilliseconds}ms\n";
+                    if (!string.IsNullOrEmpty(call.ResultJson))
+                    {
+                        msg += $"Result:\n```json\n{call.ResultJson}\n```\n";
+                    }
+                }
+            }
+
+            var html = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + msg, CustomMarkDownPipeline);
             return InjectDialogHtml(img, html, singleMessage.Guid);
         }
 
