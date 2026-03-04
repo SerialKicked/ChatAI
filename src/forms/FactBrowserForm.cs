@@ -350,9 +350,9 @@ namespace WaifuAI.src.forms
                 {
                     await webView.EnsureCoreWebView2Async();
                     try { webView.DefaultBackgroundColor = Color.FromArgb(0x12, 0x14, 0x17); } catch { }
-                    webView.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
+                    webView?.CoreWebView2?.WebMessageReceived += CoreWebView2_WebMessageReceived;
                 }
-                webView.NavigateToString(html);
+                webView?.NavigateToString(html);
             }
             catch
             {
@@ -456,39 +456,23 @@ namespace WaifuAI.src.forms
 
             var af = a.Tag as ExtractedFact;
             var bf = b.Tag as ExtractedFact;
-
-            int result;
-
-            switch (_columnIndex)
+            var result = _columnIndex switch
             {
-                case 0: // Fact text
-                    result = string.Compare(af?.Fact ?? "", bf?.Fact ?? "", StringComparison.OrdinalIgnoreCase);
-                    break;
-
-                case 1: // First Seen
-                    result = DateTime.Compare(af?.FirstSeen ?? DateTime.MinValue, bf?.FirstSeen ?? DateTime.MinValue);
-                    break;
-
-                case 2: // Last Seen
-                    result = DateTime.Compare(af?.LastSeen ?? DateTime.MinValue, bf?.LastSeen ?? DateTime.MinValue);
-                    break;
-
-                case 3: // Reference Count
-                    result = (af?.ReferenceCount ?? 0).CompareTo(bf?.ReferenceCount ?? 0);
-                    break;
-
-                case 4: // Superseded status
-                    result = (af?.Superseded ?? false).CompareTo(bf?.Superseded ?? false);
-                    break;
-
-                default:
-                    result = string.Compare(
-                        a.SubItems.Count > _columnIndex ? a.SubItems[_columnIndex].Text : "",
-                        b.SubItems.Count > _columnIndex ? b.SubItems[_columnIndex].Text : "",
-                        StringComparison.OrdinalIgnoreCase);
-                    break;
-            }
-
+                // Fact text
+                0 => string.Compare(af?.Fact ?? "", bf?.Fact ?? "", StringComparison.OrdinalIgnoreCase),
+                // First Seen
+                1 => DateTime.Compare(af?.FirstSeen ?? DateTime.MinValue, bf?.FirstSeen ?? DateTime.MinValue),
+                // Last Seen
+                2 => DateTime.Compare(af?.LastSeen ?? DateTime.MinValue, bf?.LastSeen ?? DateTime.MinValue),
+                // Reference Count
+                3 => (af?.ReferenceCount ?? 0).CompareTo(bf?.ReferenceCount ?? 0),
+                // Superseded status
+                4 => (af?.Superseded ?? false).CompareTo(bf?.Superseded ?? false),
+                _ => string.Compare(
+                                        a.SubItems.Count > _columnIndex ? a.SubItems[_columnIndex].Text : "",
+                                        b.SubItems.Count > _columnIndex ? b.SubItems[_columnIndex].Text : "",
+                                        StringComparison.OrdinalIgnoreCase),
+            };
             return _ascending ? result : -result;
         }
     }

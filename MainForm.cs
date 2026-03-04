@@ -828,9 +828,12 @@ namespace WaifuAI
                     loadingForm.SetMessage("Saving history.");
                     loadingForm.SetProgress(95);
                 }
-                Bot.SaveChatHistory();
-                await Bot.UpdateSelfEditSection();
-                Bot.SaveToFile("data/chars");
+                if (Bot != null)
+                {
+                    Bot.SaveChatHistory();
+                    await Bot.UpdateSelfEditSection();
+                    Bot.SaveToFile("data/chars");
+                }
                 loadingForm.SetMessage("Loading new session.");
                 loadingForm.SetProgress(100);
                 LLMEngine.RemoveQuickInferenceEventHandler();
@@ -1992,6 +1995,8 @@ namespace WaifuAI
 
         private async void button4_Click(object sender, EventArgs e)
         {
+            if (Bot is null)
+                return;
             var msg = Bot.Brain.BuildAwayMessage(true);
             if (msg is null)
                 return;
