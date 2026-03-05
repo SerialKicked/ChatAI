@@ -179,8 +179,8 @@ namespace WaifuAI.Plugins
             if (LLMEngine.Client!.SupportsStateSave)
             {
                 savedKV = await LLMEngine.Client.SaveKVState(0);
-                await Task.Delay(100);
             }
+            await Task.Delay(100);
             LLMEngine.NamesInPromptOverride = false;
             var fullprompt = BuildCheckPrompt(inputText);
             var response = await LLMEngine.SimpleQuery(fullprompt);
@@ -194,8 +194,8 @@ namespace WaifuAI.Plugins
                 {
                     await LLMEngine.Client.ClearKVStates();
                 }
-                await Task.Delay(100);
             }
+            await Task.Delay(100);
             return (!string.IsNullOrEmpty(response) && response.Contains("yes", StringComparison.InvariantCultureIgnoreCase));
         }
     }

@@ -110,6 +110,7 @@ namespace WaifuAI
         public MainForm()
         {
             InitializeComponent();
+            EnsureLLMLoggerConnected();
             this.Shown += async (_, __) =>
             {
                 await InitializeWebViewAsync();
@@ -157,6 +158,15 @@ namespace WaifuAI
             Application.AddMessageFilter(new ActivityMessageFilter());
             ed_input.KeyPress += Ed_input_KeyPress!;
             ThemeManager.ApplyToForm(this);
+        }
+
+        private static void EnsureLLMLoggerConnected()
+        {
+            if (LLMEngine.Logger is LLMEngineUiLogger)
+                return;
+
+            LLMEngine.Logger = new LLMEngineUiLogger(nameof(LLMEngine));
+            LLMEngine.Logger.LogInformation("LLMEngine logger connected from MainForm.");
         }
 
         /// <summary>
@@ -260,13 +270,13 @@ namespace WaifuAI
 
         private void LLMEngine_OnInferenceCompleted(object? sender, InferenceResult e)
         {
-            Console.WriteLine($"Response: {e.Response} - Thought: {e.ThinkingContent} - Complete: {e.FinishReason}");
+            LLMEngine.Logger?.LogInformation($"[InferenceCompleted] Response: {e.Response} - Complete: {e.FinishReason} - Tool: {e.ToolCalls?.Count>0}");
         }
 
         private void OnInferenceSeqmentReceived(object? sender, InferenceSegment e)
         {
-            if (e.Channel != InferenceChannel.Thinking)
-                Console.WriteLine($"Text: {e.Text} - Channel: {e.Channel} - Complete {e.IsComplete}");
+            //if (e.Channel != InferenceChannel.Thinking)
+            //    LLMEngine.Logger?.LogInformation($"[InferenceReceived] Response: {e.Text} - Complete: {e.IsComplete}");
         }
 
         private void UnsubscribeLLMEvents()
@@ -1783,7 +1793,9 @@ namespace WaifuAI
             using var logForm = new RawLogForm();
             ThemeManager.ApplyToForm(logForm);
             logForm.SetText(ed_log);
+            logForm.SetSystemLog(LLMEngineLogSink.GetText());
             logForm.StartPosition = FormStartPosition.CenterParent;
+            logForm.TopMost = true;
             logForm.ShowDialog();
         }
 
