@@ -230,15 +230,19 @@ namespace WaifuAI
             mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
             mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
             btVectorSearch.Enabled = LLMEngine.Settings.RAGEnabled;
+            ckToolCalls.Checked = LLMEngine.UseToolCallsInPrompt;
+            mck_ragenabled.Checked = LLMEngine.Settings.RAGEnabled;
+            mck_worldinfo.Checked = LLMEngine.Settings.AllowWorldInfo;
 
+            // Initialize context plugins
             Program.ApplyContextPluginSettings();
-
             LLMEngine.ContextPlugins = [];
             LLMEngine.ContextPlugins.Add(new BrowsePlugin());
             LLMEngine.ContextPlugins.Add(new LocationPlugin("Locations"));
             LLMEngine.ContextPlugins.Add(new WebSearchPlugin());
-            mck_ragenabled.Checked = LLMEngine.Settings.RAGEnabled;
-            mck_worldinfo.Checked = LLMEngine.Settings.AllowWorldInfo;
+            // Register tools
+            LLMEngine.ToolManager.RegisterToolList(new ToolDemo());
+
             SubscribeLLMEvents();
 
 
@@ -1221,17 +1225,17 @@ namespace WaifuAI
                     break;
             }
             var msg = singleMessage.Message;
-            if (singleMessage.ToolCalls.Count > 0)
+            if (singleMessage.ToolCalls.Count > 0 && singleMessage.Role != AuthorRole.Tool)
             {
                 msg += "\n\nTool calls:\n";
                 foreach (var call in singleMessage.ToolCalls)
                 {
                     var res = call.Success ? "Success" : "Failure";
                     msg += $"- {call.CallId}: {call.FunctionName}() => {res} in {(int)call.Duration.TotalMilliseconds}ms\n";
-                    if (!string.IsNullOrEmpty(call.ResultJson))
-                    {
-                        msg += $"Result:\n```json\n{call.ResultJson}\n```\n";
-                    }
+                    //if (!string.IsNullOrEmpty(call.ResultJson))
+                    //{
+                    //    msg += $"Result:\n```json\n{call.ResultJson}\n```\n";
+                    //}
                 }
             }
 
@@ -2034,16 +2038,9 @@ namespace WaifuAI
 
         private void ckToolCalls_CheckedChanged(object sender, EventArgs e)
         {
-            if (ckToolCalls.Checked)
-            {
-                LLMEngine.SetTools([
-                    Tool.GetOrCreateTool(typeof(WeatherTool), nameof(WeatherTool.GetWeather), "Gets the current weather for a given country and city. Parameters: country (string), city (string)."),
-                    ]);
-            }
-            else
-            {
-                LLMEngine.SetTools([]);
-            }
+            if (_isinitloading)
+                return;
+            LLMEngine.UseToolCallsInPrompt = ckToolCalls.Checked;
         }
     }
 }
