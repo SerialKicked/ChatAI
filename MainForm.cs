@@ -25,6 +25,7 @@ using WaifuAI.Game;
 using WaifuAI.Plugins;
 using WaifuAI.Slash;
 using WaifuAI.src.forms;
+using WaifuAI.Tools;
 
 namespace WaifuAI
 {
@@ -138,6 +139,10 @@ namespace WaifuAI
             AgentRuntime.RegisterPlugin("JournalTask", new JournalTask());
             AgentRuntime.RegisterPlugin("SessionGoalTask", new SessionGoalTask());
             AgentRuntime.RegisterPlugin("SarahDomTask", new SarahDomTask());
+            // Register tools
+            // LLMEngine.ToolManager.RegisterToolList(new ToolDemo());
+            LLMEngine.ToolManager.RegisterToolList(new ObsidianTools());
+
             // Manage theme
             if (Program.Settings.Skin == "Light")
                 ThemeManager.ApplyLight();
@@ -240,8 +245,7 @@ namespace WaifuAI
             LLMEngine.ContextPlugins.Add(new BrowsePlugin());
             LLMEngine.ContextPlugins.Add(new LocationPlugin("Locations"));
             LLMEngine.ContextPlugins.Add(new WebSearchPlugin());
-            // Register tools
-            LLMEngine.ToolManager.RegisterToolList(new ToolDemo());
+
 
             SubscribeLLMEvents();
 

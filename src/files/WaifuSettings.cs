@@ -38,5 +38,6 @@ namespace WaifuAI.Files
         public StringFix RoleplayFormatting { get; set; } = new StringFix(false, false, false, false, false, 1, 50, false, false, false);
         public GroupChatMode GroupChatMode { get; set; } = GroupChatMode.Manual;
         public int GroupChatAutoResponseLimit { get; set; } = 2;
+        public string ObsidianRootPath { get; set; } = string.Empty;
     }
 }
