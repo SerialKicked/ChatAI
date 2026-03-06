@@ -1328,12 +1328,12 @@ namespace WaifuAI
 
             if (!string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart) &&
                 newMessage.StartsWith(ChatRender.GetMessagePrefix(AuthorRole.Assistant)) &&
-                newMessage.Contains(LLMEngine.Instruct.ThinkingStart))
+                newMessage.Contains(LLMEngine.Instruct.ThinkingStart.RemoveNewLines()))
             {
                 // Strip assistant prefix
                 var worktext = newMessage[ChatRender.GetMessagePrefix(AuthorRole.Assistant).Length..];
 
-                if (!worktext.Contains(LLMEngine.Instruct.ThinkingEnd))
+                if (!worktext.Contains(LLMEngine.Instruct.ThinkingEnd.RemoveNewLines()))
                 {
                     // Thinking-only update
                     worktext = worktext.Replace(LLMEngine.Instruct.ThinkingStart, string.Empty);
@@ -1343,9 +1343,9 @@ namespace WaifuAI
                 else
                 {
                     // Thinking + final
-                    var parts = worktext.Split([LLMEngine.Instruct.ThinkingEnd], 2, StringSplitOptions.None);
+                    var parts = worktext.Split([LLMEngine.Instruct.ThinkingEnd.RemoveNewLines()], 2, StringSplitOptions.None);
 
-                    var thinkingText = parts[0].Replace(LLMEngine.Instruct.ThinkingStart, string.Empty);
+                    var thinkingText = parts[0].Replace(LLMEngine.Instruct.ThinkingStart.RemoveNewLines(), string.Empty);
                     var thinkingHtml = Markdown.ToHtml(thinkingText, CustomMarkDownPipeline).SanitizeForJS();
                     await web_chat.CoreWebView2.ExecuteScriptAsync(BuildAtomicUpdateScript(thinkingHtml, isThinking: true, messageGuid));
 
