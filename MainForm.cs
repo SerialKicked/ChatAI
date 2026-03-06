@@ -16,6 +16,7 @@ using System.Media;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Media.TextFormatting;
 using WaifuAI.AgentPlugins;
@@ -31,7 +32,8 @@ namespace WaifuAI
 {
     public partial class MainForm : Form
     {
-        private string? _currentgeneration = null;
+        private string _currentgeneration = string.Empty;
+        private string _currentgenerationThink = string.Empty;
         private int _currentgenerationtokencount = 0;
         private int _currentgencalls = 0;
         private bool _impersonatemode = false;
@@ -281,14 +283,10 @@ namespace WaifuAI
             LLMEngine.Logger?.LogInformation($"[InferenceCompleted] Response: {e.Response} - Complete: {e.FinishReason} - Tool: {e.ToolCalls?.Count>0}");
         }
 
-        private void OnInferenceSeqmentReceived(object? sender, InferenceSegment e)
-        {
-            //if (e.Channel != InferenceChannel.Thinking)
-            //    LLMEngine.Logger?.LogInformation($"[InferenceReceived] Response: {e.Text} - Complete: {e.IsComplete}");
-        }
-
         private void UnsubscribeLLMEvents()
         {
+            LLMEngine.OnInferenceSegment -= OnInferenceSeqmentReceived;
+            LLMEngine.OnInferenceCompleted -= LLMEngine_OnInferenceCompleted;
             LLMEngine.OnInferenceStreamed -= OnStreamMessageReceived;
             LLMEngine.OnInferenceEnded -= OnStreamInferenceEnded;
             LLMEngine.OnFullPromptReady -= OnFullPromptReady;
@@ -500,6 +498,30 @@ namespace WaifuAI
             });
         }
 
+        private void OnInferenceSeqmentReceived(object? sender, InferenceSegment e)
+        {
+            //if (e == null || string.IsNullOrEmpty(e.Text))
+            //    return;
+            //if (e.Channel != InferenceChannel.Text && e.Channel != InferenceChannel.Thinking)
+            //    return;
+
+            //if (e.Channel == InferenceChannel.Thinking)
+            //    _currentgenerationThink += e.Text;
+            //else
+            //    _currentgeneration += e.Text;
+
+            //// reconstruct as a single string to display in the UI, with thinking blocks if relevant
+            //var think = _currentgenerationThink;
+            //if (LLMEngine.Instruct.IsThinkFormat)
+            //{
+            //    think = _currentgenerationThink.Replace(LLMEngine.Instruct.ThinkingStart, "");
+            //    think = _currentgenerationThink.Replace(LLMEngine.Instruct.ThinkingStart, "");
+
+            //}
+
+
+        }
+
         private async void OnStreamMessageReceived(object? sender, string e)
         {
             if (string.IsNullOrEmpty(e))
@@ -524,19 +546,17 @@ namespace WaifuAI
                     {
                         statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                     });
+                    var stringfix = _currentgeneration ?? string.Empty;
                     if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart) && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingEnd))
                     {
-                        // Check if we have more than a single ThinkingEnd block, if so, we need to end the generation
-                        var endcount = _currentgeneration.CountSubstring(LLMEngine.Instruct.ThinkingEnd);
-                        if (endcount > 1)
-                        {
-                            //LLMEngine.CancelGeneration();
-                            //return;
-                        }
+                        var thinkstart = LLMEngine.Instruct.ThinkingStart.RemoveNewLines();
+                        var thinkend = LLMEngine.Instruct.ThinkingEnd.RemoveNewLines();
 
+                        var pattern = $"{Regex.Escape(thinkend)}[\\s]*{Regex.Escape(thinkstart)}";
+                        stringfix = Regex.Replace(stringfix, pattern, "\n");
                     }
                     var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
-                    var stringfix = _currentgeneration.FixRoleplayString(Program.Settings.RoleplayFormatting, true);
+                    stringfix = stringfix.FixRoleplayString(Program.Settings.RoleplayFormatting, true);
                     await WebEditLastMessage(MsgPrefix + stringfix);
                 }
                 else
@@ -676,6 +696,7 @@ namespace WaifuAI
         private void PrepareResponse()
         {
             _currentgeneration = string.Empty;
+            _currentgenerationThink = string.Empty;
             _currentgenerationtokencount = 0;
             _currentgencalls = 0;
         }
