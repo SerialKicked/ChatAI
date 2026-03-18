@@ -47,7 +47,6 @@ namespace WaifuAI.src.forms
             lbl_context = new Label();
             num_maxcontext = new ModernNumericUpDown();
             btBrowse = new Button();
-            ck_lmstudio = new ModernCheckBox();
             collapsibleGroupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -76,7 +75,7 @@ namespace WaifuAI.src.forms
             cbAPI.BackColor = Color.FromArgb(64, 64, 64);
             cbAPI.DropDownHeight = 180;
             cbAPI.Font = new Font("Segoe UI", 9F);
-            cbAPI.Items.AddRange(new object[] { "KoboldAPI", "OpenAI Compatible", "Lethe AI" });
+            cbAPI.Items.AddRange(new object[] { "KoboldAPI", "Llama.cpp", "OpenAI Compatible", "Lethe AI (internal)" });
             cbAPI.Location = new Point(15, 55);
             cbAPI.MaxDropDownItems = 10;
             cbAPI.Name = "cbAPI";
@@ -162,7 +161,6 @@ namespace WaifuAI.src.forms
             // 
             collapsibleGroupBox1.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox1.CanCollapse = false;
-            collapsibleGroupBox1.Controls.Add(ck_lmstudio);
             collapsibleGroupBox1.Controls.Add(ck_flash);
             collapsibleGroupBox1.Controls.Add(lbl_gpu);
             collapsibleGroupBox1.Controls.Add(num_gpu);
@@ -255,16 +253,6 @@ namespace WaifuAI.src.forms
             btBrowse.UseVisualStyleBackColor = true;
             btBrowse.Click += btBrowse_Click;
             // 
-            // ck_lmstudio
-            // 
-            ck_lmstudio.Font = new Font("Segoe UI", 9F);
-            ck_lmstudio.Location = new Point(393, 81);
-            ck_lmstudio.Name = "ck_lmstudio";
-            ck_lmstudio.Size = new Size(118, 23);
-            ck_lmstudio.TabIndex = 22;
-            ck_lmstudio.Text = "Is LM Studio";
-            ck_lmstudio.UseVisualStyleBackColor = true;
-            // 
             // LoginForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -304,6 +292,5 @@ namespace WaifuAI.src.forms
         private Label lbl_context;
         private ModernNumericUpDown num_maxcontext;
         private ModernCheckBox ck_flash;
-        private ModernCheckBox ck_lmstudio;
     }
 }

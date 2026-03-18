@@ -44,6 +44,16 @@ namespace WaifuAI.src.forms
                     num_gpu.Visible = false;
                     ck_flash.Visible = false;
                     break;
+                case BackendAPI.LlamaCpp:
+                    edKey.Enabled = true;
+                    edKey.PlaceholderText = "No Key Required";
+                    edKey.Text = string.Empty;
+                    lbl_context.Visible = true;
+                    num_maxcontext.Visible = true;
+                    lbl_gpu.Visible = false;
+                    num_gpu.Visible = false;
+                    ck_flash.Visible = false;
+                    break;
                 case BackendAPI.KoboldAPI:
                     edKey.Enabled = false;
                     edKey.PlaceholderText = "No Key Required";
@@ -77,7 +87,7 @@ namespace WaifuAI.src.forms
         private async void btCheck_Click(object sender, EventArgs e)
         {
             this.Enabled = false;
-            LLMEngine.Setup(edUrl.Text, (BackendAPI)cbAPI.SelectedIndex, !string.IsNullOrEmpty(edKey.Text) ? edKey.Text : null);
+            LLMEngine.Setup(edUrl.Text, (BackendAPI)cbAPI.SelectedIndex, !string.IsNullOrEmpty(edKey.Text) ? edKey.Text : "123");
             var res = await LLMEngine.CheckBackend();
             if (res)
             {
@@ -96,11 +106,6 @@ namespace WaifuAI.src.forms
             LLMEngine.Settings.LlamaSharpFlashAttention = ck_flash.Checked;
             LLMEngine.Settings.MaxTotalTokens = (int)num_maxcontext.Value;
             LLMEngine.Settings.LlamaSharpGPULayers = (int)num_gpu.Value;
-
-            if (ck_lmstudio.Checked)
-                LLMEngine.Settings.BackendStartThinkTagBehavior = LetheAISharp.Files.BackendChatCompletionThinkTagBehavior.Emitted;
-            else
-                LLMEngine.Settings.BackendStartThinkTagBehavior = LetheAISharp.Files.BackendChatCompletionThinkTagBehavior.Silent;
 
             LLMEngine.Setup(edUrl.Text, (BackendAPI)cbAPI.SelectedIndex, !string.IsNullOrEmpty(edKey.Text) ? edKey.Text : null);
             var res = await LLMEngine.CheckBackend();

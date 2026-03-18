@@ -382,7 +382,7 @@ namespace WaifuAI.src.forms
                 {
                     try
                     {
-                        LLMEngine.Bot.Brain.ReloadMemories();
+                        LLMEngine.Bot!.Brain.ReloadMemories();
                         ShowSelectedFact();
                     }
                     catch (Exception ex)
