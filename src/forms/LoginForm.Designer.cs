@@ -41,12 +41,13 @@ namespace WaifuAI.src.forms
             btCancel = new Button();
             btConnect = new Button();
             collapsibleGroupBox1 = new CollapsibleGroupBox();
-            btBrowse = new Button();
-            lbl_context = new Label();
-            num_maxcontext = new ModernNumericUpDown();
+            ck_flash = new ModernCheckBox();
             lbl_gpu = new Label();
             num_gpu = new ModernNumericUpDown();
-            ck_flash = new ModernCheckBox();
+            lbl_context = new Label();
+            num_maxcontext = new ModernNumericUpDown();
+            btBrowse = new Button();
+            ck_lmstudio = new ModernCheckBox();
             collapsibleGroupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -161,6 +162,7 @@ namespace WaifuAI.src.forms
             // 
             collapsibleGroupBox1.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox1.CanCollapse = false;
+            collapsibleGroupBox1.Controls.Add(ck_lmstudio);
             collapsibleGroupBox1.Controls.Add(ck_flash);
             collapsibleGroupBox1.Controls.Add(lbl_gpu);
             collapsibleGroupBox1.Controls.Add(num_gpu);
@@ -185,17 +187,37 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox1.TabIndex = 7;
             collapsibleGroupBox1.Text = "Connection";
             // 
-            // btBrowse
+            // ck_flash
             // 
-            btBrowse.FlatStyle = FlatStyle.Popup;
-            btBrowse.Location = new Point(433, 110);
-            btBrowse.Name = "btBrowse";
-            btBrowse.Size = new Size(78, 23);
-            btBrowse.TabIndex = 7;
-            btBrowse.Tag = "no-theme";
-            btBrowse.Text = "Browse";
-            btBrowse.UseVisualStyleBackColor = true;
-            btBrowse.Click += btBrowse_Click;
+            ck_flash.Font = new Font("Segoe UI", 9F);
+            ck_flash.Location = new Point(393, 55);
+            ck_flash.Name = "ck_flash";
+            ck_flash.Size = new Size(118, 23);
+            ck_flash.TabIndex = 21;
+            ck_flash.Text = "Flash Attention";
+            ck_flash.UseVisualStyleBackColor = true;
+            // 
+            // lbl_gpu
+            // 
+            lbl_gpu.AutoSize = true;
+            lbl_gpu.Font = new Font("Segoe UI", 9F);
+            lbl_gpu.Location = new Point(298, 37);
+            lbl_gpu.Name = "lbl_gpu";
+            lbl_gpu.Size = new Size(66, 15);
+            lbl_gpu.TabIndex = 19;
+            lbl_gpu.Text = "GPU Layers";
+            // 
+            // num_gpu
+            // 
+            num_gpu.BackColor = Color.FromArgb(64, 64, 64);
+            num_gpu.Font = new Font("Segoe UI", 9F);
+            num_gpu.Location = new Point(298, 55);
+            num_gpu.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
+            num_gpu.Name = "num_gpu";
+            num_gpu.Padding = new Padding(1);
+            num_gpu.Size = new Size(89, 23);
+            num_gpu.TabIndex = 20;
+            num_gpu.Value = new decimal(new int[] { 255, 0, 0, 0 });
             // 
             // lbl_context
             // 
@@ -221,37 +243,27 @@ namespace WaifuAI.src.forms
             num_maxcontext.TabIndex = 18;
             num_maxcontext.Value = new decimal(new int[] { 16384, 0, 0, 0 });
             // 
-            // lbl_gpu
+            // btBrowse
             // 
-            lbl_gpu.AutoSize = true;
-            lbl_gpu.Font = new Font("Segoe UI", 9F);
-            lbl_gpu.Location = new Point(298, 37);
-            lbl_gpu.Name = "lbl_gpu";
-            lbl_gpu.Size = new Size(66, 15);
-            lbl_gpu.TabIndex = 19;
-            lbl_gpu.Text = "GPU Layers";
+            btBrowse.FlatStyle = FlatStyle.Popup;
+            btBrowse.Location = new Point(433, 110);
+            btBrowse.Name = "btBrowse";
+            btBrowse.Size = new Size(78, 23);
+            btBrowse.TabIndex = 7;
+            btBrowse.Tag = "no-theme";
+            btBrowse.Text = "Browse";
+            btBrowse.UseVisualStyleBackColor = true;
+            btBrowse.Click += btBrowse_Click;
             // 
-            // num_gpu
+            // ck_lmstudio
             // 
-            num_gpu.BackColor = Color.FromArgb(64, 64, 64);
-            num_gpu.Font = new Font("Segoe UI", 9F);
-            num_gpu.Location = new Point(298, 55);
-            num_gpu.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
-            num_gpu.Name = "num_gpu";
-            num_gpu.Padding = new Padding(1);
-            num_gpu.Size = new Size(89, 23);
-            num_gpu.TabIndex = 20;
-            num_gpu.Value = new decimal(new int[] { 255, 0, 0, 0 });
-            // 
-            // ck_flash
-            // 
-            ck_flash.Font = new Font("Segoe UI", 9F);
-            ck_flash.Location = new Point(393, 55);
-            ck_flash.Name = "ck_flash";
-            ck_flash.Size = new Size(150, 23);
-            ck_flash.TabIndex = 21;
-            ck_flash.Text = "Flash Attention";
-            ck_flash.UseVisualStyleBackColor = true;
+            ck_lmstudio.Font = new Font("Segoe UI", 9F);
+            ck_lmstudio.Location = new Point(393, 81);
+            ck_lmstudio.Name = "ck_lmstudio";
+            ck_lmstudio.Size = new Size(118, 23);
+            ck_lmstudio.TabIndex = 22;
+            ck_lmstudio.Text = "Is LM Studio";
+            ck_lmstudio.UseVisualStyleBackColor = true;
             // 
             // LoginForm
             // 
@@ -292,5 +304,6 @@ namespace WaifuAI.src.forms
         private Label lbl_context;
         private ModernNumericUpDown num_maxcontext;
         private ModernCheckBox ck_flash;
+        private ModernCheckBox ck_lmstudio;
     }
 }

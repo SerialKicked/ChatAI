@@ -97,6 +97,11 @@ namespace WaifuAI.src.forms
             LLMEngine.Settings.MaxTotalTokens = (int)num_maxcontext.Value;
             LLMEngine.Settings.LlamaSharpGPULayers = (int)num_gpu.Value;
 
+            if (ck_lmstudio.Checked)
+                LLMEngine.Settings.BackendStartThinkTagBehavior = LetheAISharp.Files.BackendChatCompletionThinkTagBehavior.Emitted;
+            else
+                LLMEngine.Settings.BackendStartThinkTagBehavior = LetheAISharp.Files.BackendChatCompletionThinkTagBehavior.Silent;
+
             LLMEngine.Setup(edUrl.Text, (BackendAPI)cbAPI.SelectedIndex, !string.IsNullOrEmpty(edKey.Text) ? edKey.Text : null);
             var res = await LLMEngine.CheckBackend();
             if (res)

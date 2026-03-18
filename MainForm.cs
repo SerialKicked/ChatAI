@@ -549,8 +549,8 @@ namespace WaifuAI
                     var stringfix = _currentgeneration ?? string.Empty;
                     if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart) && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingEnd))
                     {
-                        var thinkstart = LLMEngine.Instruct.ThinkingStart.RemoveNewLines();
-                        var thinkend = LLMEngine.Instruct.ThinkingEnd.RemoveNewLines();
+                        var thinkstart = LLMEngine.Instruct.ThinkingStart.Replace("\n","");
+                        var thinkend = LLMEngine.Instruct.ThinkingEnd.Replace("\n", "");
 
                         var pattern = $"{Regex.Escape(thinkend)}[\\s]*{Regex.Escape(thinkstart)}";
                         stringfix = Regex.Replace(stringfix, pattern, "\n");
