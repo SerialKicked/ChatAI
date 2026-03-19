@@ -45,11 +45,11 @@ namespace WaifuAI.src.forms
                     ck_flash.Visible = false;
                     break;
                 case BackendAPI.LlamaCpp:
-                    edKey.Enabled = true;
+                    edKey.Enabled = false;
                     edKey.PlaceholderText = "No Key Required";
                     edKey.Text = string.Empty;
-                    lbl_context.Visible = true;
-                    num_maxcontext.Visible = true;
+                    lbl_context.Visible = false;
+                    num_maxcontext.Visible = false;
                     lbl_gpu.Visible = false;
                     num_gpu.Visible = false;
                     ck_flash.Visible = false;
