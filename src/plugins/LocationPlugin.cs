@@ -2,7 +2,9 @@
 using LetheAISharp.Files;
 using LetheAISharp.LLM;
 using LetheAISharp.Memory;
+using LetheChat.Files;
 using Microsoft.Extensions.Logging;
+using OpenAI.Responses;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -10,7 +12,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using LetheChat.Files;
 
 namespace LetheChat.Plugins
 
@@ -115,8 +116,9 @@ namespace LetheChat.Plugins
         #endregion
 
 
-        private string BuildCheckPrompt(string userinput)
+        private object BuildCheckPrompt(string userinput)
         {
+            var builder = LLMEngine.GetPromptBuilder();
             var prompt = new StringBuilder();
             prompt.AppendLinuxLine("Your goal is to determine if the user intends to go to a specific location from the list below:");
             prompt.AppendLinuxLine("- Red Cinema");
@@ -141,12 +143,9 @@ namespace LetheChat.Plugins
             prompt.AppendLinuxLine("User: I don't want to go to the Red Cinema.");
             prompt.AppendLinuxLine("Response: No").AppendLinuxLine();
 
-            var sysprompt = LLMEngine.Instruct.FormatSinglePrompt(AuthorRole.SysPrompt, LLMEngine.User, LLMEngine.Bot, prompt.ToString());
-            var msg = LLMEngine.Instruct.FormatSinglePrompt(AuthorRole.User, LLMEngine.User, LLMEngine.Bot, userinput);
-
-            if (LLMEngine.Instruct.BotStart != null)
-                msg += LLMEngine.Instruct.BotStart;
-            return sysprompt + msg;
+            builder.AddMessage(AuthorRole.SysPrompt, prompt.ToString());
+            builder.AddMessage(AuthorRole.User, "The user's input is: " + LLMEngine.NewLine + LLMEngine.NewLine + userinput);
+            return builder.PromptToQuery(AuthorRole.Assistant, 0.5);
         }
 
         /// <summary>
@@ -164,11 +163,8 @@ namespace LetheChat.Plugins
                 await Task.Delay(100);
             }
             var fullprompt = BuildCheckPrompt(inputText);
-            var fullresponse = new StringBuilder();
-            var llmparams = LLMEngine.Sampler.GetCopy();
-            llmparams.Temperature = 0;
-            llmparams.Prompt = fullprompt;
-            var finalstr = await LLMEngine.SimpleQuery(llmparams);
+            var finalstr = await LLMEngine.SimpleQuery(fullprompt);
+            finalstr = finalstr.RemoveThinkingBlocks();
             LLMEngine.Logger?.LogInformation("LocationPlugin Result: {output}", finalstr);
             if (LLMEngine.Client!.SupportsStateSave && savedKV)
             {
@@ -181,7 +177,7 @@ namespace LetheChat.Plugins
             }
             if (string.IsNullOrEmpty(finalstr))
                 return;
-            if (finalstr.Equals("no", StringComparison.InvariantCultureIgnoreCase))
+            if (finalstr.StartsWith("no", StringComparison.InvariantCultureIgnoreCase))
                 return;
             var loc = locations.Entries.FirstOrDefault(l => l.Name.Equals(finalstr, StringComparison.InvariantCultureIgnoreCase));
             if (loc != null)
