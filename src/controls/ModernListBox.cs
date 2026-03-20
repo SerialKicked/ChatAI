@@ -13,7 +13,7 @@ namespace LetheChat.Controls
     {
         public bool ThemeProcessInnerComponent => true;
 
-        private readonly Panel _itemPanel;
+        private readonly DoubleBufferedPanel _itemPanel;
         private readonly Panel _scrollPanel;
 
         private int _itemHeight = 32;
@@ -57,7 +57,7 @@ namespace LetheChat.Controls
             Items = new ListBoxItemCollection(this);
 
             // Create item display panel
-            _itemPanel = new Panel
+            _itemPanel = new DoubleBufferedPanel
             {
                 Dock = DockStyle.Fill,
                 BackColor = Color.Transparent
@@ -171,7 +171,7 @@ namespace LetheChat.Controls
                 {
                     _selectedIndex = value;
                     EnsureVisible(_selectedIndex);
-                    Invalidate();
+                    _itemPanel.Invalidate();
                     OnSelectedIndexChanged(EventArgs.Empty);
                 }
             }
@@ -353,11 +353,9 @@ namespace LetheChat.Controls
             int index = GetItemIndexAtPoint(e.Location);
             if (index >= 0 && index < Items.Count)
             {
-                SelectedIndex = index;
-                // Clear hover state when clicking to ensure selected color shows
                 _hoverIndex = -1;
+                SelectedIndex = index;
                 _itemPanel.Focus();
-                _itemPanel.Invalidate();
             }
         }
 
@@ -645,7 +643,19 @@ namespace LetheChat.Controls
         // Custom Collection
         // =========================================================
 
-        public class ListBoxItemCollection : System.Collections.IList
+        private sealed class DoubleBufferedPanel : Panel
+        {
+            public DoubleBufferedPanel()
+            {
+                SetStyle(
+                    ControlStyles.AllPaintingInWmPaint |
+                    ControlStyles.OptimizedDoubleBuffer |
+                    ControlStyles.UserPaint,
+                    true);
+            }
+        }
+
+        public class ListBoxItemCollection
         {
             private readonly ModernListBox _owner;
             private readonly System.Collections.ArrayList _items = [];
