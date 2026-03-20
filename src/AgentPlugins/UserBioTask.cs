@@ -107,9 +107,9 @@ namespace LetheChat.AgentPlugins
                     if (currentID >= owner.History.Sessions.Count - 1)
                         break; // don't include the current session
                 }
-                builder.AddMessage(AuthorRole.SysPrompt, intro + history.ToString());
-                builder.AddMessage(AuthorRole.User, "Based on the chat history information, write all the information about {{user}} you can list. " + 
-                    globalResponse.GetQuery());
+                builder.AddMessage(new SingleMessage(AuthorRole.SysPrompt, intro + history.ToString()));
+                builder.AddMessage(new SingleMessage(AuthorRole.User, "Based on the chat history information, write all the information about {{user}} you can list. " + 
+                    globalResponse.GetQuery()));
 
                 var responsesize = LLMEngine.MaxContextLength - builder.GetTokenUsage() - builder.GetResponseTokenCount(owner) - 20;
                 if (responsesize > 5000)
@@ -177,8 +177,8 @@ namespace LetheChat.AgentPlugins
             builder.Clear();
             builder.UnsetStructuredOutput();
 
-            builder.AddMessage(AuthorRole.SysPrompt, myprompt);
-            builder.AddMessage(AuthorRole.User, "Based on the information provided, create a cohesive, and comprehensive biography for {{user}}. The biography should be well-structured and written in clear, fluent language. It should read like a detailed profile. Ensure that the biography captures the essence of {{user}}'s personality, interests, sexuality, relationship, and background.");
+            builder.AddMessage(new SingleMessage(AuthorRole.SysPrompt, myprompt));
+            builder.AddMessage(new SingleMessage(AuthorRole.User, "Based on the information provided, create a cohesive, and comprehensive biography for {{user}}. The biography should be well-structured and written in clear, fluent language. It should read like a detailed profile. Ensure that the biography captures the essence of {{user}}'s personality, interests, sexuality, relationship, and background."));
 
             var responsesizefinal = LLMEngine.MaxContextLength - builder.GetTokenUsage() - builder.GetResponseTokenCount(owner);
             if (responsesizefinal > 4096)

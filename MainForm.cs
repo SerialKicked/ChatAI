@@ -237,7 +237,7 @@ namespace LetheChat
             mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
             mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
             btVectorSearch.Enabled = LLMEngine.Settings.RAGEnabled;
-            ckToolCalls.Checked = LLMEngine.UseToolCallsInPrompt;
+            ckToolCalls.Checked = LLMEngine.Settings.ToolCallsAllowed;
             mck_ragenabled.Checked = LLMEngine.Settings.RAGEnabled;
             mck_worldinfo.Checked = LLMEngine.Settings.AllowWorldInfo;
 
@@ -2090,7 +2090,7 @@ namespace LetheChat
         {
             if (_isinitloading)
                 return;
-            LLMEngine.UseToolCallsInPrompt = ckToolCalls.Checked;
+            LLMEngine.Settings.ToolCallsAllowed = true;
         }
     }
 }

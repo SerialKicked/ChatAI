@@ -151,8 +151,8 @@ namespace LetheChat.AgentPlugins
             availtokens -= promptbuild.GetTokenCount(AuthorRole.User, requestedTask);
 
             var replyln = (availtokens > 2048) ? 2048 : availtokens;
-            promptbuild.AddMessage(AuthorRole.SysPrompt, systemprompt);
-            promptbuild.AddMessage(AuthorRole.User, requestedTask);
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.SysPrompt, systemprompt));
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.User, requestedTask));
             await promptbuild.SetStructuredOutput(goalrecord).ConfigureAwait(false);
             var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, replyln);
             var finalstr = await LLMEngine.SimpleQuery(ct).ConfigureAwait(false);
@@ -178,8 +178,8 @@ namespace LetheChat.AgentPlugins
             availtokens -= promptbuild.GetTokenCount(AuthorRole.User, requestedTask);
 
             var replyln = (availtokens > 2048) ? 2048 : availtokens;
-            promptbuild.AddMessage(AuthorRole.SysPrompt, systemprompt);
-            promptbuild.AddMessage(AuthorRole.User, requestedTask);
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.SysPrompt, systemprompt));
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.User, requestedTask));
             await promptbuild.SetStructuredOutput(goallist).ConfigureAwait(false);
             var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 1.0) ? 1 : LLMEngine.Sampler.Temperature, replyln);
             var finalstr = await LLMEngine.SimpleQuery(ct).ConfigureAwait(false);

@@ -136,8 +136,8 @@ namespace LetheChat.AgentPlugins
             }
 
             var builder = LLMEngine.GetPromptBuilder();
-            builder.AddMessage(AuthorRole.SysPrompt, prompt.ToString());
-            builder.AddMessage(AuthorRole.User, "As {{mchar}} write a new entry in your private journal. You've set the following topic for yourself: " + topic + LLMEngine.NewLine + LLMEngine.NewLine + "Feel free to write about something else if you feel like it. Make sure the entry reflects your personality and current situation. Write in a casual, personal tone, as if you were writing to yourself. Use first person perspective. Do not add a date (it's done automatically). Don't repeat the previous entry. Focus on the recent events.");
+            builder.AddMessage(new SingleMessage(AuthorRole.SysPrompt, prompt.ToString()));
+            builder.AddMessage(new SingleMessage(AuthorRole.User, "As {{mchar}} write a new entry in your private journal. You've set the following topic for yourself: " + topic + LLMEngine.NewLine + LLMEngine.NewLine + "Feel free to write about something else if you feel like it. Make sure the entry reflects your personality and current situation. Write in a casual, personal tone, as if you were writing to yourself. Use first person perspective. Do not add a date (it's done automatically). Don't repeat the previous entry. Focus on the recent events."));
             return builder.PromptToQuery(AuthorRole.Assistant, -1, 3000);
         }
 
@@ -191,14 +191,14 @@ namespace LetheChat.AgentPlugins
             }
 
             var builder = LLMEngine.GetPromptBuilder();
-            builder.AddMessage(AuthorRole.SysPrompt, prompt.ToString());
+            builder.AddMessage(new SingleMessage(AuthorRole.SysPrompt, prompt.ToString()));
             if (mostrecententry is null)
             {
-                builder.AddMessage(AuthorRole.User, "Based on the above information, decide if you want to write a new journal entry or not. This will be your first entry, as such you should definitely write one. " + journal.GetQuery().CleanupAndTrim());
+                builder.AddMessage(new SingleMessage(AuthorRole.User, "Based on the above information, decide if you want to write a new journal entry or not. This will be your first entry, as such you should definitely write one. " + journal.GetQuery().CleanupAndTrim()));
             }
             else
             {
-                builder.AddMessage(AuthorRole.User, "Based on the above information, decide if you want to write a new journal entry or not. " + journal.GetQuery().CleanupAndTrim());
+                builder.AddMessage(new SingleMessage(AuthorRole.User, "Based on the above information, decide if you want to write a new journal entry or not. " + journal.GetQuery().CleanupAndTrim()));
             }
             await builder.SetStructuredOutput(journal);
             return builder.PromptToQuery(AuthorRole.Assistant, -1, 1024, false);

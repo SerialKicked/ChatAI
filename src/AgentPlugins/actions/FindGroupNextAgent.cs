@@ -74,8 +74,8 @@ namespace LetheChat.AgentPlugins
             }
             request.AppendLinuxLine().Append("Based on the chatlog, determine who is meant to talk next, and type the number corresponding to that person from the list above.");
 
-            promptbuild.AddMessage(AuthorRole.SysPrompt, sysprompt);
-            promptbuild.AddMessage(AuthorRole.User, request.ToString());
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.SysPrompt, sysprompt));
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.User, request.ToString()));
             var query = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, replyln, forceAltRoles: false);
             if (query is GenerationInput llmparams && !param.AllowFullAnalysis)
             {

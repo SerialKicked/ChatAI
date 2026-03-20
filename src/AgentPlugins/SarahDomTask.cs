@@ -112,8 +112,8 @@ namespace LetheChat.AgentPlugins
                 query += LLMEngine.NewLine + "Write in English only, convert back any other language to English if present.";
 
                 var left = 3000 - builder.GetTokenCount(AuthorRole.User, query);
-                builder.AddMessage(AuthorRole.SysPrompt, sessprompt);
-                builder.AddMessage(AuthorRole.User, query);
+                builder.AddMessage(new SingleMessage(AuthorRole.SysPrompt, sessprompt));
+                builder.AddMessage(new SingleMessage(AuthorRole.User, query));
                 var formatted = builder.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, left);
                 var finalstr = await LLMEngine.SimpleQuery(formatted, ct).ConfigureAwait(false);
                 try
@@ -281,8 +281,8 @@ namespace LetheChat.AgentPlugins
 
             var query = "Based on the information provided, decide {{mchar}}'s objectives for next chat session with {{user}}. This should be a short list (5 items max) of topics {{char}} will want to discuss with {{user}}, or actions to be taken. Don't add a title. Write in english only, convert back any other language to English if present.";
 
-            builder.AddMessage(AuthorRole.SysPrompt, intro);
-            builder.AddMessage(AuthorRole.User, sessionaschat.ToString() + query);
+            builder.AddMessage(new SingleMessage(AuthorRole.SysPrompt, intro));
+            builder.AddMessage(new SingleMessage(AuthorRole.User, sessionaschat.ToString() + query));
             var formatted = builder.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, 3000);
 
             var finalstr = LLMEngine.SimpleQuery(formatted, ct).Result;
@@ -321,8 +321,8 @@ namespace LetheChat.AgentPlugins
 
                 var query = "Based on the information provided, write a new report about {{user}}. Merge the two evaluations provided into one, improving and expanding upon the previous report. Remove solved blocks and secrets from their list. Merge similar or identical entries together. Update the analysis and conclusions accordingly. The goal is to give yourself effective directives and high quality data to further your goals. Write in English only, convert back any other language to English if present." + evalres.GetQuery();
 
-                builder.AddMessage(AuthorRole.SysPrompt, intro);
-                builder.AddMessage(AuthorRole.User, sessionaschat.ToString() + query);
+                builder.AddMessage(new SingleMessage(AuthorRole.SysPrompt, intro));
+                builder.AddMessage(new SingleMessage(AuthorRole.User, sessionaschat.ToString() + query));
                 var formatted = builder.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, 3000);
 
                 var finalstr = LLMEngine.SimpleQuery(formatted, ct).Result;

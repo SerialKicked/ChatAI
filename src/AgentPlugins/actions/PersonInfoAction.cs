@@ -106,8 +106,8 @@ namespace LetheChat.AgentPlugins
             }
 
 
-            promptbuild.AddMessage(AuthorRole.SysPrompt, str.ToString());
-            promptbuild.AddMessage(AuthorRole.User, request);
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.SysPrompt, str.ToString()));
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.User, request));
 
             return promptbuild;
         }
@@ -144,8 +144,8 @@ namespace LetheChat.AgentPlugins
                 str.AppendLinuxLine("## data.Name").AppendLinuxLine();
                 str.Append(data.Content);
             }
-            promptbuild.AddMessage(AuthorRole.SysPrompt, str.ToString());
-            promptbuild.AddMessage(AuthorRole.User, request);
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.SysPrompt, str.ToString()));
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.User, request));
 
             return promptbuild;
         }

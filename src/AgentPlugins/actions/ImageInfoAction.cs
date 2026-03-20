@@ -68,8 +68,8 @@ namespace LetheChat.AgentPlugins
                 str.AppendLinuxLine(LLMEngine.NewLine + "Image is in a folder with the following information: " + desc);
             };
 
-            promptbuild.AddMessage(AuthorRole.SysPrompt, str.ToString());
-            promptbuild.AddMessage(AuthorRole.User, request);
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.SysPrompt, str.ToString()));
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.User, request));
 
             return promptbuild;
         }

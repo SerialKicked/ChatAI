@@ -193,8 +193,8 @@ namespace LetheChat.Plugins
                 strbuilder.AppendLinuxLine();
             }
             strbuilder.AppendLinuxLine(Website.RenderFrontPage(string.Empty));
-            promptbuilder.AddMessage(AuthorRole.SysPrompt, strbuilder.ToString());
-            promptbuilder.AddMessage(AuthorRole.User, $"Complete this request from {LLMEngine.User.Name}: {_basegoal}");
+            promptbuilder.AddMessage(new SingleMessage(AuthorRole.SysPrompt, strbuilder.ToString()));
+            promptbuilder.AddMessage(new SingleMessage(AuthorRole.User, $"Complete this request from {LLMEngine.User.Name}: {_basegoal}"));
             var addthinking = LLMEngine.Instruct.PrefillThinking;
             if (EnforceCorrectGrammar)
                 addthinking = false;
@@ -235,8 +235,8 @@ namespace LetheChat.Plugins
             strbuild.AppendLinuxLine();
             strbuild.AppendLinuxLine(websiterender);
 
-            promptbuilder.AddMessage(AuthorRole.SysPrompt, strbuild.ToString());
-            promptbuilder.AddMessage(AuthorRole.User, $"Complete this request from {LLMEngine.User.Name}: {_basegoal}");
+            promptbuilder.AddMessage(new SingleMessage(AuthorRole.SysPrompt, strbuild.ToString()));
+            promptbuilder.AddMessage(new SingleMessage(AuthorRole.User, $"Complete this request from {LLMEngine.User.Name}: {_basegoal}"));
 
             var addthinking = LLMEngine.Instruct.PrefillThinking;
             if (EnforceCorrectGrammar)
@@ -325,8 +325,8 @@ namespace LetheChat.Plugins
             prompt.AppendLinuxLine("# Message to be evaluated:");
             prompt.Append(userinput);
             
-            builder.AddMessage(AuthorRole.SysPrompt, prompt.ToString());
-            builder.AddMessage(AuthorRole.User, $"Determine if the user asked you to complete one of the above tasks and respond with the corresponding number.");
+            builder.AddMessage(new SingleMessage(AuthorRole.SysPrompt, prompt.ToString()));
+            builder.AddMessage(new SingleMessage(AuthorRole.User, $"Determine if the user asked you to complete one of the above tasks and respond with the corresponding number."));
             var addthinking = LLMEngine.Instruct.PrefillThinking;
             if (EnforceCorrectGrammar)
                 addthinking = false;
