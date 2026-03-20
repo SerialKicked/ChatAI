@@ -459,7 +459,7 @@ namespace LetheChat
             SaveSettings();
             LLMEngine.Bot.EndChat(backup: true);
             LLMEngine.Bot.SaveToFile("data/chars/");
-            Program.LlamaCppProcess.KillAsync().GetAwaiter().GetResult();
+            Program.LlamaCppProcess.Dispose();
         }
 
         /// <summary>

@@ -36,11 +36,18 @@ namespace LetheChat
         /// <summary>
         /// Returns <see langword="true"/> when the managed process is currently alive.
         /// </summary>
-        public bool IsRunning => _serverProcess is not null && !_serverProcess.HasExited;
+        public bool IsRunning
+        {
+            get
+            {
+                try { return _serverProcess is not null && !_serverProcess.HasExited; }
+                catch { return false; }
+            }
+        }
 
         /// <summary>
         /// Fired for every stdout / stderr line received from the server process.
-        /// <see cref="LogLineEventArgs.Level"/> is <c>"OUT"</c> for stdout and <c>"ERR"</c> for stderr.
+        /// <see cref="LogLineEventArgs.Level"/> is <c>"OUT"</c> for stdout and <c>"INFO"</c> for stderr.
         /// </summary>
         public event EventHandler<LogLineEventArgs>? OutputReceived;
 
@@ -108,6 +115,10 @@ namespace LetheChat
             try
             {
                 process.Start();
+                _serverProcess = process;
+                ChildProcessTracker.Track(process);  // ← add this line
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
             }
             catch
             {
@@ -116,8 +127,8 @@ namespace LetheChat
             }
 
             _serverProcess = process;
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
+            //process.BeginOutputReadLine();
+            //process.BeginErrorReadLine();
 
             using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, timeoutCts.Token);

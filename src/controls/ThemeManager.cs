@@ -62,7 +62,7 @@ namespace LetheChat.Controls
         public static Color curthemeBorderColor { get; private set; } = Color.FromArgb(0x37, 0x38, 0x3D);
         public static Color curthemeAccentColor { get; private set; } = Color.FromArgb(0x4D, 0xA3, 0xFF);
         public static Color curthemeAccentHover { get; private set; } = Color.FromArgb(0x60, 0xB4, 0xFF);
-        public static Color curthemeInfoColor { get; private set; } = Color.FromArgb(0x63, 0xE1, 0x63);
+        public static Color curthemeInfoColor { get; private set; } = Color.FromArgb(0xE1, 0xC8, 0x63);
         public static Color curthemeDangerColor { get; private set; } = Color.FromArgb(0xE1, 0x63, 0x63);
         public static Color curthemeTextColor { get; private set; } = Color.FromArgb(0xE6, 0xE6, 0xE6);
         public static Color curthemeMutedText { get; private set; } = Color.FromArgb(0x9F, 0xA4, 0xAE);
