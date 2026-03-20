@@ -41,12 +41,24 @@ namespace LetheChat.Files
         public GroupChatMode GroupChatMode { get; set; } = GroupChatMode.Manual;
         public int GroupChatAutoResponseLimit { get; set; } = 2;
         public string ObsidianRootPath { get; set; } = string.Empty;
-        public string ModelDirectory { get; set; } = string.Empty;
-        public List<string> LlamaCppServerDirectories { get; set; } = [];
-        public LlamaCppSettings LlamaCppSettings { get; set; } = new LlamaCppSettings();
+
+        /// <summary>
+        /// Full path (including filename) to the llama.cpp server executable. This is used to launch the server when using the Llama.cpp plugin.
+        /// </summary>
+        public string PathToLlamaCppServer { get; set; } = string.Empty;
+
+        /// <summary>
+        /// List of directories to search for GGUF models.
+        /// </summary>
+        public List<string> ModelDirectories { get; set; } = [];
+
+        /// <summary>
+        /// Default settings for the Llama.cpp server. These settings will be applied to all models launched with the Llama.cpp plugin, unless overridden by model-specific settings.
+        /// </summary>
+        public LlamaCppSettings DefaultLLamaCppSettings { get; set; } = new LlamaCppSettings();
     }
 
-    public class LlamaCppSettings
+    public class LlamaCppSettings : BaseFile
     {
         /// <summary>
         /// Port is the port that the Llama.cpp server will listen on. The default is 8080, but it can be changed if needed.

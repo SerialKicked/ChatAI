@@ -28,7 +28,7 @@ namespace LetheChat
 
         public void SearchModels(bool clearExisting)
         {
-            var dirlist = Program.Settings.LlamaCppServerDirectories;
+            var dirlist = Program.Settings.ModelDirectories;
             var foundfiles = new List<string>();
             // go through each directory and find all files named "*.gguf" no matter their depth (that doesn't start with "mmproj")
             foreach (var dir in dirlist)
@@ -45,7 +45,14 @@ namespace LetheChat
             {
                 var found = AvailModels.Find(m => m.ModelFile == item);
                 if (found is null)
-                    AvailModels.Add(new LocalModel { ModelFile = item });
+                {
+                    var model = new LocalModel
+                    {
+                        ModelFile = item,
+                        Settings = Program.Settings.DefaultLLamaCppSettings.Copy<LlamaCppSettings>() ?? new LlamaCppSettings()
+                    };
+                    AvailModels.Add(model);
+                }
             }
         }
     }
