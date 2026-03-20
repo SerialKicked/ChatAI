@@ -2,15 +2,15 @@ using LetheAISharp.Files;
 using LetheAISharp.LLM;
 using Newtonsoft.Json;
 using System.IO;
-using WaifuAI.Files;
-using WaifuAI.Plugins;
+using LetheChat.Files;
+using LetheChat.Plugins;
 
-namespace WaifuAI
+namespace LetheChat
 {
     internal static class Program
     {
         public static MainForm? BigForm { get; private set; }
-        public static WaifuSettings Settings { get; set; } = new WaifuSettings();
+        public static LetheChatSettings Settings { get; set; } = new LetheChatSettings();
 
         /// <summary>
         ///  The main entry point for the application.
@@ -21,11 +21,11 @@ namespace WaifuAI
 
             if (!File.Exists("settings.json"))
             {
-                Settings = new WaifuSettings();
+                Settings = new LetheChatSettings();
                 File.WriteAllText("settings.json", JsonConvert.SerializeObject(Settings, Formatting.Indented));
             }
             var str = File.ReadAllText("settings.json");
-            Settings = JsonConvert.DeserializeObject<WaifuSettings>(str)!;
+            Settings = JsonConvert.DeserializeObject<LetheChatSettings>(str)!;
             LLMEngine.Settings = Settings;
 
             if (File.Exists("data/banlist.json"))

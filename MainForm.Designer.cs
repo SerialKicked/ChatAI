@@ -1,7 +1,7 @@
 ﻿using LLama.Common;
-using WaifuAI.Controls;
+using LetheChat.Controls;
 
-namespace WaifuAI
+namespace LetheChat
 {
     partial class MainForm
     {
@@ -1302,7 +1302,7 @@ namespace WaifuAI
             ForeColor = Color.WhiteSmoke;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
-            Text = "w(AI)fu";
+            Text = "Lethe Chat";
             FormClosing += MainForm_FormClosing;
             statusbar.ResumeLayout(false);
             statusbar.PerformLayout();
@@ -1341,7 +1341,7 @@ namespace WaifuAI
         private Button bt_delete;
         private Button bt_reroll;
         private Button bt_send;
-        private WaifuAI.Controls.SpellCheckedTextBox ed_input;
+        private LetheChat.Controls.SpellCheckedTextBox ed_input;
         private Button bt_editchar;
         private Button bt_scenario;
         private Label label3;

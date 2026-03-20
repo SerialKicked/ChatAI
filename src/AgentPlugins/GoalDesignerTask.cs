@@ -7,9 +7,9 @@ using LetheAISharp.Memory;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Text;
-using WaifuAI.GBNF;
+using LetheChat.GBNF;
 
-namespace WaifuAI.AgentPlugins
+namespace LetheChat.AgentPlugins
 {
     public enum RPHandling { Always, Never, Random }
 

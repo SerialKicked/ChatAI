@@ -8,9 +8,9 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.IO;
 using System.Text;
-using WaifuAI.GBNF;
+using LetheChat.GBNF;
 
-namespace WaifuAI.AgentPlugins
+namespace LetheChat.AgentPlugins
 {
 
     /// <summary>

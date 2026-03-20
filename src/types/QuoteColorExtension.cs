@@ -8,7 +8,7 @@ using Markdig.Syntax.Inlines;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace WaifuAI
+namespace LetheChat
 {
     public class QuoteColorRenderer : HtmlObjectRenderer<QuoteColorInline>
     {

@@ -11,7 +11,7 @@ using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Windows.Forms.LinkLabel;
 
-namespace WaifuAI.Game
+namespace LetheChat.Game
 {
 
     public class TurnBundle

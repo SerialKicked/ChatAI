@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LetheAISharp.Files;
-using WaifuAI.Files;
-using WaifuAI.Web;
+using LetheChat.Files;
+using LetheChat.Web;
 using LetheAISharp.LLM;
 using LetheAISharp.Memory;
 
-namespace WaifuAI
+namespace LetheChat
 {
     static class DataFiles
     {

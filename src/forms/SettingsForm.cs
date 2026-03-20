@@ -11,12 +11,12 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using WaifuAI.Controls;
-using WaifuAI.Files;
-using WaifuAI.Plugins;
-using WaifuAI.Web;
+using LetheChat.Controls;
+using LetheChat.Files;
+using LetheChat.Plugins;
+using LetheChat.Web;
 
-namespace WaifuAI.src.forms
+namespace LetheChat.src.forms
 {
     public partial class SettingsForm : Form
     {
@@ -74,7 +74,7 @@ namespace WaifuAI.src.forms
         {
             if (!File.Exists("settings.json"))
             {
-                Program.Settings = new WaifuSettings();
+                Program.Settings = new LetheChatSettings();
                 File.WriteAllText("settings.json", JsonConvert.SerializeObject(Program.Settings, Formatting.Indented));
                 LLMEngine.Settings = Program.Settings;
             }

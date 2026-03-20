@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace WaifuAI.Security
+namespace LetheChat.Security
 {
     // Envelope format:
     // [8 bytes magic "CAIENC01"][1 byte version=1]

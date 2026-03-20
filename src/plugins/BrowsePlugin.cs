@@ -9,14 +9,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using WaifuAI.Files;
+using LetheChat.Files;
 using LetheAISharp.Files;
 using LetheAISharp.LLM;
 using LetheAISharp;
-using WaifuAI.Web;
+using LetheChat.Web;
 using LetheAISharp.API;
 
-namespace WaifuAI.Plugins
+namespace LetheChat.Plugins
 {
     public class WebNavigationResult(bool isSuccess, string? response, string? subPageLink)
     {

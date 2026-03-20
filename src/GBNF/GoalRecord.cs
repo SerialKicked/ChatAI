@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WaifuAI.GBNF
+namespace LetheChat.GBNF
 {
 
     public class GoalList : LLMExtractableBase<GoalList>

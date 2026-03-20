@@ -12,11 +12,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using WaifuAI.Files;
+using LetheChat.Files;
 using static LetheAISharp.SearchAPI.WebSearchAPI;
 using LetheAISharp.Memory;
 
-namespace WaifuAI.Plugins
+namespace LetheChat.Plugins
 
 {
     internal class WebSearchPlugin : IContextPlugin

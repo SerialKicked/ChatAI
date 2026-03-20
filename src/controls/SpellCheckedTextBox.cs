@@ -12,7 +12,7 @@ using Wpf = System.Windows.Controls;
 using WpfInput = System.Windows.Input;
 using Media = System.Windows.Media;
 
-namespace WaifuAI.Controls
+namespace LetheChat.Controls
 {
     [Designer(typeof(System.Windows.Forms.Design.ControlDesigner))]
     [DesignerCategory("Code")]

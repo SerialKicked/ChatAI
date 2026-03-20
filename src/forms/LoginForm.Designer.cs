@@ -1,6 +1,6 @@
-﻿using WaifuAI.Controls;
+﻿using LetheChat.Controls;
 
-namespace WaifuAI.src.forms
+namespace LetheChat.src.forms
 {
     partial class LoginForm
     {
@@ -268,7 +268,7 @@ namespace WaifuAI.src.forms
             Name = "LoginForm";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "w(AI)fu.NET: Connect...";
+            Text = "Lethe AI Chat: Connect...";
             Shown += LoginForm_Shown;
             collapsibleGroupBox1.ResumeLayout(false);
             collapsibleGroupBox1.PerformLayout();

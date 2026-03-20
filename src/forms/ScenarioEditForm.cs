@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using LetheAISharp.LLM;
 using LetheAISharp;
 
-namespace WaifuAI.src.forms
+namespace LetheChat.src.forms
 {
     public partial class ScenarioEditForm : Form
     {

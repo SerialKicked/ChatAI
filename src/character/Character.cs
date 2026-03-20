@@ -5,10 +5,10 @@ using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using System.IO;
 using System.Text;
-using WaifuAI.Plugins;
-using WaifuAI.Security;
+using LetheChat.Plugins;
+using LetheChat.Security;
 
-namespace WaifuAI.Files
+namespace LetheChat.Files
 {
     public class Character : BasePersona, ICharacter
     {

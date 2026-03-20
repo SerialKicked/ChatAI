@@ -1,4 +1,4 @@
-﻿namespace WaifuAI.src.forms
+﻿namespace LetheChat.src.forms
 {
     partial class MemoryBrowserForm
     {
@@ -36,7 +36,7 @@
             btEditSelected = new Button();
             btAddNew = new Button();
             panelLeftTop = new Panel();
-            cbCategory = new WaifuAI.Controls.ModernComboBox();
+            cbCategory = new LetheChat.Controls.ModernComboBox();
             lblCategory = new Label();
             webView = new Microsoft.Web.WebView2.WinForms.WebView2();
             ((System.ComponentModel.ISupportInitialize)splitMain).BeginInit();

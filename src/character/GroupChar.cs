@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using WaifuAI.AgentPlugins;
-using WaifuAI.Plugins;
+using LetheChat.AgentPlugins;
+using LetheChat.Plugins;
 
-namespace WaifuAI.Files
+namespace LetheChat.Files
 {
     public enum GroupChatMode { Manual, RoundRobin, NameDetection, LLMSelection }
 

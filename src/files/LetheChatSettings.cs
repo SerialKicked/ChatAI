@@ -8,11 +8,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WaifuAI.Plugins;
+using LetheChat.Plugins;
 
-namespace WaifuAI.Files
+namespace LetheChat.Files
 {
-    public class WaifuSettings : LLMSettings
+    public class LetheChatSettings : LLMSettings
     {
         public string Skin { get; set; } = "Dark";
         public string BotFile { get; set; } = "Assistant";

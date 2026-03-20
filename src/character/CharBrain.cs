@@ -11,10 +11,10 @@ using System.Runtime;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using WaifuAI.AgentPlugins;
-using WaifuAI.GBNF;
+using LetheChat.AgentPlugins;
+using LetheChat.GBNF;
 
-namespace WaifuAI.Files
+namespace LetheChat.Files
 {
     public class CharBrain(BasePersona basePersona) : Brain(basePersona)
     {

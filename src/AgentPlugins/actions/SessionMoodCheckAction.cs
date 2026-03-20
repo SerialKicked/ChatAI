@@ -7,9 +7,9 @@ using LetheAISharp.LLM;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Text;
-using WaifuAI.GBNF;
+using LetheChat.GBNF;
 
-namespace WaifuAI.AgentPlugins
+namespace LetheChat.AgentPlugins
 {
     public class SessionMoodCheckParams(ChatSession session)
     {

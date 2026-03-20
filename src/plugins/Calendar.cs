@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using LetheAISharp;
 using LetheAISharp.Files;
 using LetheAISharp.LLM;
-using WaifuAI.Files;
+using LetheChat.Files;
 
-namespace WaifuAI.Plugins
+namespace LetheChat.Plugins
 {
     public class RecurrencePattern(RecurrenceFrequency frequency, int interval, DateTime? endDate = null)
     {

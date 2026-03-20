@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.11.35312.102
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11612.150 stable
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaifuAI", "WaifuAI.csproj", "{DF61DF11-34FA-490F-985E-2AB39D43C838}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LetheChat", "LetheChat.csproj", "{DF61DF11-34FA-490F-985E-2AB39D43C838}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A55AEDED-F358-4E07-90C6-F8865BDEDE61} = {A55AEDED-F358-4E07-90C6-F8865BDEDE61}
 	EndProjectSection

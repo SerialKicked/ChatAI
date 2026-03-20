@@ -6,7 +6,7 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
-namespace WaifuAI.Controls
+namespace LetheChat.Controls
 {
     [ToolboxItem(true)]
     [DefaultProperty(nameof(TabPages))]

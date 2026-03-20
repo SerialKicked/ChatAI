@@ -11,12 +11,12 @@ using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using WaifuAI.AgentPlugins;
-using WaifuAI.Files;
-using WaifuAI.GBNF;
-using WaifuAI.src.forms;
+using LetheChat.AgentPlugins;
+using LetheChat.Files;
+using LetheChat.GBNF;
+using LetheChat.src.forms;
 
-namespace WaifuAI.src.forms
+namespace LetheChat.src.forms
 {
     public partial class ChatHistoryForm : Form
     {

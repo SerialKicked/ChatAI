@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace WaifuAI.src.forms
+namespace LetheChat.src.forms
 {
     public partial class WorldEditForm : Form
     {

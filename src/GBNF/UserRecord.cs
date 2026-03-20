@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WaifuAI.GBNF
+namespace LetheChat.GBNF
 {
 
     public class UserRecord : LLMExtractableBase<UserRecord>

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WaifuAI.Slash
+namespace LetheChat.Slash
 {
     public class SlashReturn(SingleMessage? message, bool logToHistory = true, bool replaceUser = false, bool noBotResponse = false)
     {

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using LetheAISharp.Files;
 using LetheAISharp;
 
-namespace WaifuAI.Web
+namespace LetheChat.Web
 {
     public class WEntry
     {

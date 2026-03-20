@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WaifuAI.Files
+namespace LetheChat.Files
 {
     public enum PointEvents { DailyLogin, MessageSent }
 

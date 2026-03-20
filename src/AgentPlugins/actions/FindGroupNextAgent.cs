@@ -8,10 +8,10 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.IO;
 using System.Text;
-using WaifuAI.Files;
-using WaifuAI.GBNF;
+using LetheChat.Files;
+using LetheChat.GBNF;
 
-namespace WaifuAI.AgentPlugins
+namespace LetheChat.AgentPlugins
 {
     public class FindGroupNextAgentParams
     {

@@ -1,6 +1,6 @@
-﻿using WaifuAI.Files;
+﻿using LetheChat.Files;
 
-namespace WaifuAI.src.forms
+namespace LetheChat.src.forms
 {
     partial class EditMessageForm
     {
@@ -35,7 +35,7 @@ namespace WaifuAI.src.forms
         /// </summary>
         private void InitializeComponent()
         {
-            ed_message = new WaifuAI.Controls.SpellCheckedTextBox();
+            ed_message = new LetheChat.Controls.SpellCheckedTextBox();
             bt_save = new Button();
             button1 = new Button();
             SuspendLayout();
@@ -105,7 +105,7 @@ namespace WaifuAI.src.forms
 
         #endregion
 
-        private WaifuAI.Controls.SpellCheckedTextBox ed_message;
+        private LetheChat.Controls.SpellCheckedTextBox ed_message;
         private Button bt_save;
         private Button button1;
     }

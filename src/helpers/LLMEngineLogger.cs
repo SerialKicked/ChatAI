@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace WaifuAI
+namespace LetheChat
 {
     public sealed class LLMEngineLogEntry
     {

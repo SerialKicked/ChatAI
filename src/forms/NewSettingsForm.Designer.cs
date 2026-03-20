@@ -1,4 +1,4 @@
-﻿namespace WaifuAI.src.forms
+﻿namespace LetheChat.src.forms
 {
     partial class NewSettingsForm
     {
@@ -31,15 +31,15 @@
             panel1 = new Panel();
             button1 = new Button();
             bt_Close = new Button();
-            MainTab = new WaifuAI.Controls.ModernTabControl();
+            MainTab = new LetheChat.Controls.ModernTabControl();
             tabPage1 = new TabPage();
-            collapsibleGroupBox2 = new WaifuAI.Controls.CollapsibleGroupBox();
-            cbChatThinkPolicy = new WaifuAI.Controls.ModernComboBox();
-            collapsibleGroupBox1 = new WaifuAI.Controls.CollapsibleGroupBox();
-            ckForceInternalGram = new WaifuAI.Controls.ModernCheckBox();
-            ckNoPastInserts = new WaifuAI.Controls.ModernCheckBox();
-            ck_hallusafe = new WaifuAI.Controls.ModernCheckBox();
-            ck_sysrag = new WaifuAI.Controls.ModernCheckBox();
+            collapsibleGroupBox2 = new LetheChat.Controls.CollapsibleGroupBox();
+            cbChatThinkPolicy = new LetheChat.Controls.ModernComboBox();
+            collapsibleGroupBox1 = new LetheChat.Controls.CollapsibleGroupBox();
+            ckForceInternalGram = new LetheChat.Controls.ModernCheckBox();
+            ckNoPastInserts = new LetheChat.Controls.ModernCheckBox();
+            ck_hallusafe = new LetheChat.Controls.ModernCheckBox();
+            ck_sysrag = new LetheChat.Controls.ModernCheckBox();
             tabPage2 = new TabPage();
             tabPage3 = new TabPage();
             tabPage4 = new TabPage();
@@ -47,13 +47,13 @@
             tabPage6 = new TabPage();
             label1 = new Label();
             label2 = new Label();
-            cbParallel = new WaifuAI.Controls.ModernComboBox();
+            cbParallel = new LetheChat.Controls.ModernComboBox();
             label3 = new Label();
-            cbChatAllowPrefill = new WaifuAI.Controls.ModernComboBox();
+            cbChatAllowPrefill = new LetheChat.Controls.ModernComboBox();
             panel4 = new Panel();
             panel2 = new Panel();
             panel3 = new Panel();
-            ckLlamaCppSamplers = new WaifuAI.Controls.ModernCheckBox();
+            ckLlamaCppSamplers = new LetheChat.Controls.ModernCheckBox();
             panel1.SuspendLayout();
             MainTab.SuspendLayout();
             tabPage1.SuspendLayout();

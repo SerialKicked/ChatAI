@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace WaifuAI.Controls
+namespace LetheChat.Controls
 {
     public static class WindowDragHelper
     {

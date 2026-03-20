@@ -12,9 +12,9 @@ using LetheAISharp.LLM;
 using LetheAISharp;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Diagnostics;
-using WaifuAI.Controls;
+using LetheChat.Controls;
 
-namespace WaifuAI.src.forms
+namespace LetheChat.src.forms
 {
     public partial class EditMessageForm : Form
     {

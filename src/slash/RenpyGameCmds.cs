@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Interop;
-using WaifuAI.Game;
+using LetheChat.Game;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
-namespace WaifuAI.Slash
+namespace LetheChat.Slash
 {
     internal class CmdRenpyGame(ISlashCommand owner) : SlashCommandInfo(owner)
     {

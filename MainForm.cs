@@ -19,16 +19,16 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Media.TextFormatting;
-using WaifuAI.AgentPlugins;
-using WaifuAI.Controls;
-using WaifuAI.Files;
-using WaifuAI.Game;
-using WaifuAI.Plugins;
-using WaifuAI.Slash;
-using WaifuAI.src.forms;
-using WaifuAI.Tools;
+using LetheChat.AgentPlugins;
+using LetheChat.Controls;
+using LetheChat.Files;
+using LetheChat.Game;
+using LetheChat.Plugins;
+using LetheChat.Slash;
+using LetheChat.src.forms;
+using LetheChat.Tools;
 
-namespace WaifuAI
+namespace LetheChat
 {
     public partial class MainForm : Form
     {
@@ -306,7 +306,7 @@ namespace WaifuAI
                     SubscribeLLMEvents();
                     num_maxcontext.Maximum = LLMEngine.MaxContextLength;
                     num_maxcontext.Value = LLMEngine.MaxContextLength;
-                    this.Text = "w(AI)fu.NET: " + LLMEngine.CurrentModel;
+                    this.Text = "Lethe Chat: " + LLMEngine.CurrentModel;
                     mck_ttstoggle.Enabled = LLMEngine.SupportsTTS;
                     mck_onlinerag.Enabled = LLMEngine.SupportsWebSearch;
                     cboxVLM.Enabled = LLMEngine.SupportsVision;
@@ -842,7 +842,7 @@ namespace WaifuAI
             await LLMEngine.Connect();
             num_maxcontext.Maximum = LLMEngine.MaxContextLength;
             num_maxcontext.Value = LLMEngine.MaxContextLength;
-            this.Text = "w(AI)fu.NET: " + LLMEngine.CurrentModel;
+            this.Text = "Lethe Chat: " + LLMEngine.CurrentModel;
             mck_ttstoggle.Enabled = LLMEngine.SupportsTTS;
             mck_onlinerag.Enabled = LLMEngine.SupportsWebSearch;
             cboxVLM.Enabled = LLMEngine.SupportsVision;

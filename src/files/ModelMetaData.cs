@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LetheAISharp.Files;
 
-namespace WaifuAI.Files
+namespace LetheChat.Files
 {
     internal class ModelMetaData : BaseFile
     {

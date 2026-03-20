@@ -1,6 +1,6 @@
-﻿using WaifuAI.Files;
+﻿using LetheChat.Files;
 
-namespace WaifuAI.src.forms
+namespace LetheChat.src.forms
 {
     partial class ScenarioEditForm
     {

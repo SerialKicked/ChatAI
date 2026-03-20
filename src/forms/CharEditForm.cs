@@ -14,9 +14,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WaifuAI.Files;
+using LetheChat.Files;
 
-namespace WaifuAI.src.forms
+namespace LetheChat.src.forms
 {
     public partial class CharEditForm : Form
     {

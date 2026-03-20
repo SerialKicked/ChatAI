@@ -1,7 +1,7 @@
 ﻿using LetheAISharp.LLM;
-using WaifuAI.Plugins;
+using LetheChat.Plugins;
 
-namespace WaifuAI.Files
+namespace LetheChat.Files
 {
     public interface ICharacter : IBasePersona
     {

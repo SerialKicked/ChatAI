@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WaifuAI
+namespace LetheChat
 {
     internal static class ChatRender
     {

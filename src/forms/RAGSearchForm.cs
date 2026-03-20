@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace WaifuAI.src.forms
+namespace LetheChat.src.forms
 {
     public partial class RAGSearchForm : Form
     {

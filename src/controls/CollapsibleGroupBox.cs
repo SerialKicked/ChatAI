@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
-namespace WaifuAI.Controls
+namespace LetheChat.Controls
 {
     [ToolboxItem(true)]
     [DefaultProperty(nameof(Text))]

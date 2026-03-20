@@ -11,9 +11,9 @@ using OpenAI.Responses;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using WaifuAI.GBNF;
+using LetheChat.GBNF;
 
-namespace WaifuAI.AgentPlugins
+namespace LetheChat.AgentPlugins
 {
 
     public sealed class SarahDomTask : IAgentTask

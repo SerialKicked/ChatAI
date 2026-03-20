@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using WaifuAI.Files;
+using LetheChat.Files;
 
-namespace WaifuAI.Plugins
+namespace LetheChat.Plugins
 {
     public class LogToggleEntry
     {

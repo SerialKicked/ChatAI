@@ -4,7 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using LetheAISharp;
 
-namespace WaifuAI
+namespace LetheChat
 {
     public static class DragNDropExtension
     {

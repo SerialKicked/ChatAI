@@ -1,4 +1,4 @@
-namespace WaifuAI.src.forms
+namespace LetheChat.src.forms
 {
     partial class MemoryEditorForm
     {
@@ -24,9 +24,9 @@ namespace WaifuAI.src.forms
             lblTitle = new Label();
             edTitle = new TextBox();
             lblCategory = new Label();
-            cbCategory = new WaifuAI.Controls.ModernComboBox();
+            cbCategory = new LetheChat.Controls.ModernComboBox();
             lblInsertion = new Label();
-            cbInsertion = new WaifuAI.Controls.ModernComboBox();
+            cbInsertion = new LetheChat.Controls.ModernComboBox();
             lblContent = new Label();
             edContent = new TextBox();
             lblReason = new Label();
@@ -42,7 +42,7 @@ namespace WaifuAI.src.forms
             lblKeywordsSecondary = new Label();
             edKeywordsSecondary = new TextBox();
             lblWordLink = new Label();
-            cbWordLink = new WaifuAI.Controls.ModernComboBox();
+            cbWordLink = new LetheChat.Controls.ModernComboBox();
             lblKeywordHelp = new Label();
             grpSettings = new GroupBox();
             lblPriority = new Label();

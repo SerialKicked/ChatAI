@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace WaifuAI.Controls
+namespace LetheChat.Controls
 {
     [ToolboxItem(true)]
     [DefaultProperty(nameof(Value))]

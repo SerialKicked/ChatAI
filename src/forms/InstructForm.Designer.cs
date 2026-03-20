@@ -1,6 +1,6 @@
-﻿using WaifuAI.Controls;
+﻿using LetheChat.Controls;
 
-namespace WaifuAI.src.forms
+namespace LetheChat.src.forms
 {
     partial class InstructForm
     {

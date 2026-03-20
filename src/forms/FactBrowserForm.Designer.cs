@@ -1,4 +1,4 @@
-namespace WaifuAI.src.forms
+namespace LetheChat.src.forms
 {
     partial class FactBrowserForm
     {

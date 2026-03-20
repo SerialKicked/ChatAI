@@ -1,6 +1,6 @@
-using WaifuAI.Controls;
+using LetheChat.Controls;
 
-namespace WaifuAI.src.forms
+namespace LetheChat.src.forms
 {
     partial class SettingsForm
     {
@@ -546,7 +546,7 @@ namespace WaifuAI.src.forms
             label4.Name = "label4";
             label4.Size = new Size(83, 15);
             label4.TabIndex = 41;
-            label4.Text = "wAIfu Plugins";
+            label4.Text = "Lethe Plugins";
             // 
             // ck_searchextract
             // 

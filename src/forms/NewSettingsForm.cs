@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace WaifuAI.src.forms
+namespace LetheChat.src.forms
 {
     public partial class NewSettingsForm : Form
     {

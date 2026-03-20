@@ -10,9 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Interop;
-using WaifuAI.Game;
+using LetheChat.Game;
 
-namespace WaifuAI.Slash
+namespace LetheChat.Slash
 {
     internal class CmdMainHelp(ISlashCommand owner) : SlashCommandInfo(owner)
     {

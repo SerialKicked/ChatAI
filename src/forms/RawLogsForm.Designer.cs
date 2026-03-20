@@ -1,4 +1,4 @@
-﻿namespace WaifuAI.src.forms
+﻿namespace LetheChat.src.forms
 {
     partial class RawLogForm
     {
@@ -34,7 +34,7 @@
             colLevel = new ColumnHeader();
             colMessage = new ColumnHeader();
             btClose = new Button();
-            modernTabControl1 = new WaifuAI.Controls.ModernTabControl();
+            modernTabControl1 = new LetheChat.Controls.ModernTabControl();
             tabPage1 = new TabPage();
             tabPage2 = new TabPage();
             modernTabControl1.SuspendLayout();

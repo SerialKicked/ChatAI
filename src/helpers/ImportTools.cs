@@ -8,7 +8,7 @@ using LetheAISharp.LLM;
 using LetheAISharp.Memory;
 using Newtonsoft.Json;
 
-namespace WaifuAI
+namespace LetheChat
 {
     public static class JsonlToJsonConverter
     {
@@ -172,7 +172,7 @@ namespace WaifuAI
         }
 
         /// <summary>
-        /// Import a SillyTavern chatlog file (preconverted from JSONL to JSON ImportST) into a wAIfu Chatlog
+        /// Import a SillyTavern chatlog file (preconverted from JSONL to JSON ImportST) into a LetheAI Chatlog
         /// </summary>
         /// <param name="inputpath"></param>
         /// <param name="outputpath"></param>

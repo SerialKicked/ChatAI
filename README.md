@@ -1,4 +1,4 @@
-# w(AI)fu.NET
+# Lethe AI Chat
 
 Windows-based high-performance front-end for [KoboldCPP](https://github.com/LostRuins/koboldcpp) and OpenAI API written in C#.NET. Using [Lethe AI](https://github.com/SerialKicked/Lethe-AI-Sharp) to do the heavy lifting.
 
@@ -42,4 +42,4 @@ This application is designed for local deployment. The backend must be running o
 
 ## License
 
-w(AI)fu.NET is under [CC BY-NC-SA 4.0](https://github.com/SerialKicked/ChatAI/tree/master?tab=License-1-ov-file#readme). You may not use this code for commercial purposes.
+Lethe AI Chat is under [CC BY-NC-SA 4.0](https://github.com/SerialKicked/ChatAI/tree/master?tab=License-1-ov-file#readme). You may not use this code for commercial purposes.
