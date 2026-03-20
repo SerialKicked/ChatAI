@@ -11,6 +11,7 @@ namespace LetheChat
     {
         public static MainForm? BigForm { get; private set; }
         public static LetheChatSettings Settings { get; set; } = new LetheChatSettings();
+        public static LlamaCppProcessManager LlamaCppProcess { get; } = new LlamaCppProcessManager();
 
         /// <summary>
         ///  The main entry point for the application.
@@ -37,6 +38,7 @@ namespace LetheChat
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
+            AppDomain.CurrentDomain.ProcessExit += (_, _) => LlamaCppProcess.Dispose();
             DataFiles.LoadDB();
             BigForm = new MainForm();
             Application.Run(BigForm);

@@ -1,4 +1,5 @@
-﻿using LetheChat.Controls;
+﻿using LetheAISharp.LLM;
+using LetheChat.Controls;
 using LetheChat.Files;
 using Newtonsoft.Json;
 using System;
@@ -31,11 +32,24 @@ namespace LetheChat.src.forms
             listModels.SelectedIndexChanged += listModels_SelectedIndexChanged;
             btApply.Click += btApply_Click;
             bt_newsession.Click += bt_newsession_Click;
+            btLaunch.Click += btLaunch_Click;
+            btStop.Click += btStop_Click;
+
+            Program.LlamaCppProcess.OutputReceived += OnServerOutput;
+            Program.LlamaCppProcess.ServerReady += OnServerReady;
         }
 
         private void ModelForm_Load(object sender, EventArgs e)
         {
             PopulateModelList();
+            UpdateServerStatus();
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            Program.LlamaCppProcess.OutputReceived -= OnServerOutput;
+            Program.LlamaCppProcess.ServerReady -= OnServerReady;
+            base.OnFormClosed(e);
         }
 
         private void verticalStackPanel1_Paint(object sender, PaintEventArgs e) { }
@@ -185,6 +199,37 @@ namespace LetheChat.src.forms
         {
             panSettingsScroll.Enabled = enabled;
             btApply.Enabled = enabled;
+            UpdateLaunchStopButtons();
+        }
+
+        private void UpdateLaunchStopButtons()
+        {
+            bool managed = Program.LlamaCppProcess.IsManaged;
+            bool hasModel = _currentModel != null;
+            btLaunch.Enabled = managed && hasModel;
+            btStop.Enabled = Program.LlamaCppProcess.IsRunning;
+            if (!managed)
+                btLaunch.Enabled = false;
+        }
+
+        private void UpdateServerStatus()
+        {
+            if (!Program.LlamaCppProcess.IsManaged)
+            {
+                lblServerStatus.Text = "Server management disabled (set path in Settings)";
+                lblServerStatus.ForeColor = ThemeManager.curthemeMutedText;
+            }
+            else if (Program.LlamaCppProcess.IsRunning)
+            {
+                lblServerStatus.Text = "● Server Running";
+                lblServerStatus.ForeColor = ThemeManager.curthemeSuccessColor;
+            }
+            else
+            {
+                lblServerStatus.Text = "○ Server Stopped";
+                lblServerStatus.ForeColor = ThemeManager.curthemeTextColor;
+            }
+            UpdateLaunchStopButtons();
         }
 
         private void LoadModelToUI(LocalModel model)
@@ -259,5 +304,109 @@ namespace LetheChat.src.forms
         {
 
         }
+
+        private async void btLaunch_Click(object sender, EventArgs e)
+        {
+            if (_currentModel == null) return;
+
+            SaveUIToCurrentModel();
+
+            try
+            {
+                File.WriteAllText("modelDB.json", JsonConvert.SerializeObject(DataFiles.LocalModels, Formatting.Indented));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not save model settings before launch:\n{ex.Message}", "Save Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            btLaunch.Enabled = false;
+            btStop.Enabled = false;
+            lblServerStatus.Text = "⏳ Starting...";
+            lblServerStatus.ForeColor = ThemeManager.curthemeAccentColor;
+            ClearServerLog();
+
+            var model = _currentModel;
+            bool ready = await Program.LlamaCppProcess.LaunchAsync(model);
+
+            if (ready)
+            {
+                UpdateServerStatus();
+                try
+                {
+                    LLMEngine.Setup($"http://127.0.0.1:{model.Settings.Port}", LetheAISharp.LLM.BackendAPI.LlamaCpp, null);
+                    await LLMEngine.Connect();
+                    DialogResult = DialogResult.OK;
+                    Close();
+                }
+                catch (Exception ex)
+                {
+                    UpdateServerStatus();
+                    MessageBox.Show($"Server started but connection failed:\n{ex.Message}", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                UpdateServerStatus();
+                MessageBox.Show("Failed to start llama-server (timeout or error). Check the server path in Settings.", "Launch Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async void btStop_Click(object sender, EventArgs e)
+        {
+            btStop.Enabled = false;
+            btLaunch.Enabled = false;
+            lblServerStatus.Text = "⏳ Stopping...";
+            lblServerStatus.ForeColor = ThemeManager.curthemeMutedText;
+
+            await Program.LlamaCppProcess.KillAsync();
+            UpdateServerStatus();
+        }
+
+        private const int MaxLogLines = 500;
+
+        private void ClearServerLog()
+        {
+            if (InvokeRequired)
+                BeginInvoke(ClearServerLog);
+            else
+                lvServerLog.Items.Clear();
+        }
+
+        private void AppendLogLine(string level, string message)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(() => AppendLogLine(level, message));
+                return;
+            }
+
+            if (lvServerLog.Items.Count >= MaxLogLines)
+                lvServerLog.Items.RemoveAt(0);
+
+            var item = new ListViewItem(level);
+            item.SubItems.Add(message);
+            item.ForeColor = level == "ERR"
+                ? ThemeManager.curthemeDangerColor
+                : ThemeManager.curthemeTextColor;
+
+            lvServerLog.Items.Add(item);
+            lvServerLog.Items[lvServerLog.Items.Count - 1].EnsureVisible();
+        }
+
+        private void OnServerOutput(object? sender, LogLineEventArgs e)
+        {
+            AppendLogLine(e.Level, e.Message);
+        }
+
+        private void OnServerReady(object? sender, EventArgs e)
+        {
+            if (InvokeRequired)
+                BeginInvoke(UpdateServerStatus);
+            else
+                UpdateServerStatus();
+        }
     }
 }
+
