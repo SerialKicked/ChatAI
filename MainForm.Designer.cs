@@ -146,7 +146,7 @@ namespace WaifuAI
             // statusbar
             // 
             statusbar.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, toolStripStatusLabel2, toolStripStatusLabel3 });
-            statusbar.Location = new Point(0, 1030);
+            statusbar.Location = new Point(0, 1017);
             statusbar.Name = "statusbar";
             statusbar.Size = new Size(1261, 22);
             statusbar.TabIndex = 2;
@@ -662,7 +662,7 @@ namespace WaifuAI
             bt_impersonate.FlatStyle = FlatStyle.Flat;
             bt_impersonate.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_impersonate.ForeColor = Color.Black;
-            bt_impersonate.Location = new Point(992, 941);
+            bt_impersonate.Location = new Point(992, 928);
             bt_impersonate.Name = "bt_impersonate";
             bt_impersonate.Size = new Size(60, 25);
             bt_impersonate.TabIndex = 7;
@@ -679,7 +679,7 @@ namespace WaifuAI
             web_chat.DefaultBackgroundColor = Color.White;
             web_chat.Location = new Point(206, 3);
             web_chat.Name = "web_chat";
-            web_chat.Size = new Size(846, 932);
+            web_chat.Size = new Size(846, 919);
             web_chat.TabIndex = 6;
             web_chat.ZoomFactor = 1D;
             // 
@@ -690,7 +690,7 @@ namespace WaifuAI
             bt_delete.FlatStyle = FlatStyle.Flat;
             bt_delete.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_delete.ForeColor = Color.Black;
-            bt_delete.Location = new Point(992, 1002);
+            bt_delete.Location = new Point(992, 989);
             bt_delete.Name = "bt_delete";
             bt_delete.Size = new Size(60, 25);
             bt_delete.TabIndex = 5;
@@ -706,7 +706,7 @@ namespace WaifuAI
             bt_reroll.FlatStyle = FlatStyle.Flat;
             bt_reroll.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_reroll.ForeColor = Color.Black;
-            bt_reroll.Location = new Point(992, 972);
+            bt_reroll.Location = new Point(992, 959);
             bt_reroll.Name = "bt_reroll";
             bt_reroll.Size = new Size(60, 25);
             bt_reroll.TabIndex = 4;
@@ -722,7 +722,7 @@ namespace WaifuAI
             bt_send.FlatStyle = FlatStyle.Flat;
             bt_send.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_send.ForeColor = Color.Black;
-            bt_send.Location = new Point(926, 941);
+            bt_send.Location = new Point(926, 928);
             bt_send.Name = "bt_send";
             bt_send.Size = new Size(60, 86);
             bt_send.TabIndex = 3;
@@ -737,7 +737,7 @@ namespace WaifuAI
             ed_input.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             ed_input.BackColor = Color.FromArgb(32, 70, 130, 180);
             ed_input.Font = new Font("Segoe UI", 16F);
-            ed_input.Location = new Point(206, 941);
+            ed_input.Location = new Point(206, 928);
             ed_input.Multiline = true;
             ed_input.Name = "ed_input";
             ed_input.ScrollBars = ScrollBars.Vertical;
@@ -826,7 +826,7 @@ namespace WaifuAI
             panLeft.Location = new Point(0, 0);
             panLeft.Name = "panLeft";
             panLeft.Padding = new Padding(0, 6, 0, 6);
-            panLeft.Size = new Size(200, 1030);
+            panLeft.Size = new Size(200, 1017);
             panLeft.TabIndex = 28;
             // 
             // cboxVLM
@@ -997,7 +997,7 @@ namespace WaifuAI
             panRight.Location = new Point(1061, 0);
             panRight.Name = "panRight";
             panRight.Padding = new Padding(0, 6, 0, 6);
-            panRight.Size = new Size(200, 1030);
+            panRight.Size = new Size(200, 1017);
             panRight.TabIndex = 29;
             // 
             // collapsibleGroupBox4
@@ -1289,7 +1289,7 @@ namespace WaifuAI
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(37, 38, 42);
-            ClientSize = new Size(1261, 1052);
+            ClientSize = new Size(1261, 1039);
             Controls.Add(panRight);
             Controls.Add(panLeft);
             Controls.Add(bt_impersonate);

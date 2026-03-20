@@ -1,4 +1,5 @@
 using LetheAISharp;
+using LetheAISharp.API;
 using LetheAISharp.Files;
 using LetheAISharp.LLM;
 using LetheAISharp.Memory;
@@ -137,6 +138,29 @@ namespace WaifuAI.src.forms
             numFactTokens.Value = Program.Settings.CoreFactsTokenBudget;
             num_imgEmbed.Value = Program.Settings.ImageEmbeddingSize;
             num_ImgCount.Value = Program.Settings.MaxImageCount;
+            ckLlamaCppSamplers.Checked = Program.Settings.BackendLLamaCppAllowAllSamplers;
+
+            cbParallel.SelectedIndex = Program.Settings.BackendParallelToolCalls switch
+            {
+                null => 0,
+                true => 1,
+                false => 2,
+            };
+
+            cbChatAllowPrefill.SelectedIndex = Program.Settings.BackendChatAllowPrefill switch
+            {
+                null => 0,
+                true => 1,
+                false => 2,
+            };
+
+            cbChatThinkPolicy.SelectedIndex = Program.Settings.BackendStartThinkTagBehavior switch
+            {
+                null => 0,
+                BackendChatCompletionThinkTagBehavior.Emitted => 1,
+                BackendChatCompletionThinkTagBehavior.Silent => 2,
+                _ => 0,
+            };
 
             Program.ApplyContextPluginSettings();
 
@@ -152,6 +176,7 @@ namespace WaifuAI.src.forms
                 default:
                     break;
             }
+
             ed_searchkey.Text = Program.Settings.WebSearchBraveAPIKey;
             ck_searchextract.Checked = Program.Settings.WebSearchDetailedResults;
 
@@ -234,6 +259,29 @@ namespace WaifuAI.src.forms
                 Program.Settings.CoreFactsTokenBudget = (int)numFactTokens.Value;
                 Program.Settings.ImageEmbeddingSize = (int)num_imgEmbed.Value;
                 Program.Settings.MaxImageCount = (int)num_ImgCount.Value;
+                Program.Settings.BackendLLamaCppAllowAllSamplers = ckLlamaCppSamplers.Checked;
+
+                Program.Settings.BackendParallelToolCalls = cbParallel.SelectedIndex switch
+                {
+                    0 => null,
+                    1 => true,
+                    2 => false,
+                    _ => null,
+                };
+                Program.Settings.BackendChatAllowPrefill = cbChatAllowPrefill.SelectedIndex switch
+                {
+                    0 => null,
+                    1 => true,
+                    2 => false,
+                    _ => null,
+                };
+                Program.Settings.BackendStartThinkTagBehavior = cbChatAllowPrefill.SelectedIndex switch
+                {
+                    0 => null,
+                    1 => BackendChatCompletionThinkTagBehavior.Emitted,
+                    2 => BackendChatCompletionThinkTagBehavior.Silent,
+                    _ => null,
+                };
 
                 // Search API Settings
                 if (cb_searchapi.SelectedIndex == 0)
@@ -302,6 +350,16 @@ namespace WaifuAI.src.forms
         }
 
         private void collapsibleGroupBox2_ExpandedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void verticalStackPanel4_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void ckNoPastInserts_CheckedChanged(object sender, EventArgs e)
         {
 
         }

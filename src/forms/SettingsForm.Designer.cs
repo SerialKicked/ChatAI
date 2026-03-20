@@ -149,6 +149,17 @@ namespace WaifuAI.src.forms
             label11 = new Label();
             ckFactRetrieval = new ModernCheckBox();
             verticalStackPanel4 = new VerticalStackPanel();
+            collapsibleGroupBox11 = new CollapsibleGroupBox();
+            ckLlamaCppSamplers = new ModernCheckBox();
+            panel15 = new Panel();
+            cbChatThinkPolicy = new ModernComboBox();
+            label20 = new Label();
+            panel16 = new Panel();
+            cbChatAllowPrefill = new ModernComboBox();
+            label21 = new Label();
+            panel17 = new Panel();
+            cbParallel = new ModernComboBox();
+            label22 = new Label();
             panel1.SuspendLayout();
             collapsibleGroupBox1.SuspendLayout();
             verticalStackPanel1.SuspendLayout();
@@ -174,6 +185,7 @@ namespace WaifuAI.src.forms
             panel11.SuspendLayout();
             panel10.SuspendLayout();
             verticalStackPanel4.SuspendLayout();
+            collapsibleGroupBox11.SuspendLayout();
             SuspendLayout();
             // 
             // openFileDialog1
@@ -401,10 +413,10 @@ namespace WaifuAI.src.forms
             // 
             num_memtokens.BackColor = Color.FromArgb(64, 64, 64);
             num_memtokens.Font = new Font("Segoe UI", 9F);
-            num_memtokens.Increment = new decimal(new int[] { 512, 0, 0, 0 });
+            num_memtokens.Increment = new decimal(new int[] { 256, 0, 0, 0 });
             num_memtokens.Location = new Point(11, 6);
             num_memtokens.Maximum = new decimal(new int[] { 128000, 0, 0, 0 });
-            num_memtokens.Minimum = new decimal(new int[] { 512, 0, 0, 0 });
+            num_memtokens.Minimum = new decimal(new int[] { 256, 0, 0, 0 });
             num_memtokens.Name = "num_memtokens";
             num_memtokens.Padding = new Padding(1);
             num_memtokens.Size = new Size(117, 23);
@@ -436,7 +448,7 @@ namespace WaifuAI.src.forms
             // 
             ck_forcePW.Dock = DockStyle.Bottom;
             ck_forcePW.Font = new Font("Segoe UI", 9F);
-            ck_forcePW.Location = new Point(12, 460);
+            ck_forcePW.Location = new Point(12, 229);
             ck_forcePW.Name = "ck_forcePW";
             ck_forcePW.Size = new Size(290, 26);
             ck_forcePW.TabIndex = 38;
@@ -447,7 +459,7 @@ namespace WaifuAI.src.forms
             // 
             ckShowHidden.Dock = DockStyle.Bottom;
             ckShowHidden.Font = new Font("Segoe UI", 9F);
-            ckShowHidden.Location = new Point(12, 486);
+            ckShowHidden.Location = new Point(12, 255);
             ckShowHidden.Name = "ckShowHidden";
             ckShowHidden.Size = new Size(290, 26);
             ckShowHidden.TabIndex = 31;
@@ -803,7 +815,7 @@ namespace WaifuAI.src.forms
             panel1.Dock = DockStyle.Bottom;
             panel1.Location = new Point(0, 635);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1331, 38);
+            panel1.Size = new Size(1330, 38);
             panel1.TabIndex = 31;
             // 
             // bt_Close
@@ -815,7 +827,7 @@ namespace WaifuAI.src.forms
             bt_Close.ForeColor = Color.Black;
             bt_Close.Location = new Point(12, 6);
             bt_Close.Name = "bt_Close";
-            bt_Close.Size = new Size(1309, 23);
+            bt_Close.Size = new Size(1308, 23);
             bt_Close.TabIndex = 1;
             bt_Close.Tag = "no-theme";
             bt_Close.Text = "Apply and Close";
@@ -859,6 +871,7 @@ namespace WaifuAI.src.forms
             ckNoPastInserts.TabIndex = 38;
             ckNoPastInserts.Text = "Disable hidden inserts in past sessions";
             ckNoPastInserts.UseVisualStyleBackColor = true;
+            ckNoPastInserts.CheckedChanged += ckNoPastInserts_CheckedChanged;
             // 
             // ck_hallusafe
             // 
@@ -1221,7 +1234,7 @@ namespace WaifuAI.src.forms
             num_ImgCount.Padding = new Padding(1);
             num_ImgCount.Size = new Size(117, 23);
             num_ImgCount.TabIndex = 27;
-            num_ImgCount.Value = new decimal(new int[] { 512, 0, 0, 0 });
+            num_ImgCount.Value = new decimal(new int[] { 5, 0, 0, 0 });
             // 
             // label18
             // 
@@ -1257,7 +1270,7 @@ namespace WaifuAI.src.forms
             num_imgEmbed.Padding = new Padding(1);
             num_imgEmbed.Size = new Size(117, 23);
             num_imgEmbed.TabIndex = 27;
-            num_imgEmbed.Value = new decimal(new int[] { 2048, 0, 0, 0 });
+            num_imgEmbed.Value = new decimal(new int[] { 768, 0, 0, 0 });
             // 
             // label19
             // 
@@ -1360,10 +1373,10 @@ namespace WaifuAI.src.forms
             collapsibleGroupBox6.Controls.Add(cb_background);
             collapsibleGroupBox6.Controls.Add(label28);
             collapsibleGroupBox6.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox6.Location = new Point(6, 6);
+            collapsibleGroupBox6.Location = new Point(6, 237);
             collapsibleGroupBox6.Name = "collapsibleGroupBox6";
             collapsibleGroupBox6.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox6.Size = new Size(314, 522);
+            collapsibleGroupBox6.Size = new Size(314, 291);
             collapsibleGroupBox6.TabIndex = 1;
             collapsibleGroupBox6.Text = "User Interface";
             // 
@@ -1561,10 +1574,10 @@ namespace WaifuAI.src.forms
             // 
             numFactTokens.BackColor = Color.FromArgb(64, 64, 64);
             numFactTokens.Font = new Font("Segoe UI", 9F);
-            numFactTokens.Increment = new decimal(new int[] { 512, 0, 0, 0 });
+            numFactTokens.Increment = new decimal(new int[] { 256, 0, 0, 0 });
             numFactTokens.Location = new Point(11, 6);
             numFactTokens.Maximum = new decimal(new int[] { 128000, 0, 0, 0 });
-            numFactTokens.Minimum = new decimal(new int[] { 512, 0, 0, 0 });
+            numFactTokens.Minimum = new decimal(new int[] { 256, 0, 0, 0 });
             numFactTokens.Name = "numFactTokens";
             numFactTokens.Padding = new Padding(1);
             numFactTokens.Size = new Size(117, 23);
@@ -1596,19 +1609,159 @@ namespace WaifuAI.src.forms
             // 
             verticalStackPanel4.Controls.Add(collapsibleGroupBox7);
             verticalStackPanel4.Controls.Add(collapsibleGroupBox6);
+            verticalStackPanel4.Controls.Add(collapsibleGroupBox11);
             verticalStackPanel4.Dock = DockStyle.Left;
             verticalStackPanel4.Location = new Point(1001, 0);
             verticalStackPanel4.Name = "verticalStackPanel4";
             verticalStackPanel4.Padding = new Padding(6, 6, 0, 6);
             verticalStackPanel4.Size = new Size(320, 635);
             verticalStackPanel4.TabIndex = 37;
+            verticalStackPanel4.Paint += verticalStackPanel4_Paint;
+            // 
+            // collapsibleGroupBox11
+            // 
+            collapsibleGroupBox11.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox11.CanCollapse = false;
+            collapsibleGroupBox11.Controls.Add(ckLlamaCppSamplers);
+            collapsibleGroupBox11.Controls.Add(panel15);
+            collapsibleGroupBox11.Controls.Add(cbChatThinkPolicy);
+            collapsibleGroupBox11.Controls.Add(label20);
+            collapsibleGroupBox11.Controls.Add(panel16);
+            collapsibleGroupBox11.Controls.Add(cbChatAllowPrefill);
+            collapsibleGroupBox11.Controls.Add(label21);
+            collapsibleGroupBox11.Controls.Add(panel17);
+            collapsibleGroupBox11.Controls.Add(cbParallel);
+            collapsibleGroupBox11.Controls.Add(label22);
+            collapsibleGroupBox11.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox11.Location = new Point(6, 6);
+            collapsibleGroupBox11.Name = "collapsibleGroupBox11";
+            collapsibleGroupBox11.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox11.Size = new Size(314, 223);
+            collapsibleGroupBox11.TabIndex = 41;
+            collapsibleGroupBox11.Text = "Backend-Specific Settings";
+            // 
+            // ckLlamaCppSamplers
+            // 
+            ckLlamaCppSamplers.Dock = DockStyle.Top;
+            ckLlamaCppSamplers.Font = new Font("Segoe UI", 9F);
+            ckLlamaCppSamplers.Location = new Point(12, 179);
+            ckLlamaCppSamplers.Name = "ckLlamaCppSamplers";
+            ckLlamaCppSamplers.Size = new Size(290, 26);
+            ckLlamaCppSamplers.TabIndex = 58;
+            ckLlamaCppSamplers.Text = "Allow advanced samplers in Llama.cpp";
+            ckLlamaCppSamplers.UseVisualStyleBackColor = true;
+            // 
+            // panel15
+            // 
+            panel15.Dock = DockStyle.Top;
+            panel15.Location = new Point(12, 169);
+            panel15.Margin = new Padding(8);
+            panel15.Name = "panel15";
+            panel15.Padding = new Padding(8);
+            panel15.Size = new Size(290, 10);
+            panel15.TabIndex = 55;
+            // 
+            // cbChatThinkPolicy
+            // 
+            cbChatThinkPolicy.BackColor = Color.FromArgb(64, 64, 64);
+            cbChatThinkPolicy.Dock = DockStyle.Top;
+            cbChatThinkPolicy.DropDownHeight = 180;
+            cbChatThinkPolicy.Font = new Font("Segoe UI", 9F);
+            cbChatThinkPolicy.Items.AddRange(new object[] { "Auto", "Emitted", "Silent" });
+            cbChatThinkPolicy.Location = new Point(12, 145);
+            cbChatThinkPolicy.MaxDropDownItems = 10;
+            cbChatThinkPolicy.Name = "cbChatThinkPolicy";
+            cbChatThinkPolicy.Padding = new Padding(1);
+            cbChatThinkPolicy.Size = new Size(290, 24);
+            cbChatThinkPolicy.TabIndex = 0;
+            // 
+            // label20
+            // 
+            label20.AutoSize = true;
+            label20.Dock = DockStyle.Top;
+            label20.Font = new Font("Segoe UI", 9F);
+            label20.Location = new Point(12, 130);
+            label20.Name = "label20";
+            label20.Size = new Size(216, 15);
+            label20.TabIndex = 5;
+            label20.Text = "Chat Completion: First Think Tag Policy";
+            // 
+            // panel16
+            // 
+            panel16.Dock = DockStyle.Top;
+            panel16.Location = new Point(12, 120);
+            panel16.Margin = new Padding(8);
+            panel16.Name = "panel16";
+            panel16.Padding = new Padding(8);
+            panel16.Size = new Size(290, 10);
+            panel16.TabIndex = 56;
+            // 
+            // cbChatAllowPrefill
+            // 
+            cbChatAllowPrefill.BackColor = Color.FromArgb(64, 64, 64);
+            cbChatAllowPrefill.Dock = DockStyle.Top;
+            cbChatAllowPrefill.DropDownHeight = 180;
+            cbChatAllowPrefill.Font = new Font("Segoe UI", 9F);
+            cbChatAllowPrefill.Items.AddRange(new object[] { "Auto", "Allow", "Disallow" });
+            cbChatAllowPrefill.Location = new Point(12, 96);
+            cbChatAllowPrefill.MaxDropDownItems = 10;
+            cbChatAllowPrefill.Name = "cbChatAllowPrefill";
+            cbChatAllowPrefill.Padding = new Padding(1);
+            cbChatAllowPrefill.Size = new Size(290, 24);
+            cbChatAllowPrefill.TabIndex = 4;
+            // 
+            // label21
+            // 
+            label21.AutoSize = true;
+            label21.Dock = DockStyle.Top;
+            label21.Font = new Font("Segoe UI", 9F);
+            label21.Location = new Point(12, 81);
+            label21.Name = "label21";
+            label21.Size = new Size(230, 15);
+            label21.TabIndex = 3;
+            label21.Text = "Chat Completion: Assistant Prefill Allowed";
+            // 
+            // panel17
+            // 
+            panel17.Dock = DockStyle.Top;
+            panel17.Location = new Point(12, 71);
+            panel17.Margin = new Padding(8);
+            panel17.Name = "panel17";
+            panel17.Padding = new Padding(8);
+            panel17.Size = new Size(290, 10);
+            panel17.TabIndex = 57;
+            // 
+            // cbParallel
+            // 
+            cbParallel.BackColor = Color.FromArgb(64, 64, 64);
+            cbParallel.Dock = DockStyle.Top;
+            cbParallel.DropDownHeight = 180;
+            cbParallel.Font = new Font("Segoe UI", 9F);
+            cbParallel.Items.AddRange(new object[] { "Auto", "Allow", "Disallow" });
+            cbParallel.Location = new Point(12, 47);
+            cbParallel.MaxDropDownItems = 10;
+            cbParallel.Name = "cbParallel";
+            cbParallel.Padding = new Padding(1);
+            cbParallel.Size = new Size(290, 24);
+            cbParallel.TabIndex = 2;
+            // 
+            // label22
+            // 
+            label22.AutoSize = true;
+            label22.Dock = DockStyle.Top;
+            label22.Font = new Font("Segoe UI", 9F);
+            label22.Location = new Point(12, 32);
+            label22.Name = "label22";
+            label22.Size = new Size(111, 15);
+            label22.TabIndex = 1;
+            label22.Text = "Parallel Tool Calling";
             // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DimGray;
-            ClientSize = new Size(1331, 673);
+            ClientSize = new Size(1330, 673);
             Controls.Add(verticalStackPanel4);
             Controls.Add(verticalStackPanel2);
             Controls.Add(verticalStackPanel3);
@@ -1662,6 +1815,8 @@ namespace WaifuAI.src.forms
             panel10.ResumeLayout(false);
             panel10.PerformLayout();
             verticalStackPanel4.ResumeLayout(false);
+            collapsibleGroupBox11.ResumeLayout(false);
+            collapsibleGroupBox11.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -1784,5 +1939,16 @@ namespace WaifuAI.src.forms
         private Panel panel9;
         private ModernNumericUpDown num_imgEmbed;
         private Label label19;
+        private CollapsibleGroupBox collapsibleGroupBox11;
+        private ModernCheckBox ckLlamaCppSamplers;
+        private Panel panel15;
+        private ModernComboBox cbChatThinkPolicy;
+        private Label label20;
+        private Panel panel16;
+        private ModernComboBox cbChatAllowPrefill;
+        private Label label21;
+        private Panel panel17;
+        private ModernComboBox cbParallel;
+        private Label label22;
     }
 }
