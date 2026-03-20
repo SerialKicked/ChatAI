@@ -24,6 +24,8 @@ namespace LetheChat
         public static Dictionary<string, WebsiteDefinition> Websites = [];
         public static Dictionary<string, PointSystem> Points = [];
 
+        public static LocalModelDB LocalModels = new LocalModelDB();
+
         /// <summary>
         /// Generic Loader for database items
         /// </summary>
@@ -73,6 +75,11 @@ namespace LetheChat
             SysPrompts = Load<SystemPrompt>("data/sysprompts/", "*.json");
             Websites = Load<WebsiteDefinition>("data/websites/", "*.json");
             Points = Load<PointSystem>("data/pointsystems/", "*.json");
+
+            if (File.Exists("modelDB.json"))
+            {
+              LocalModels = JsonConvert.DeserializeObject<LocalModelDB>(File.ReadAllText("modelDB.json")) ?? new LocalModelDB(); 
+            }
         }
 
         public static void ReloadChars()

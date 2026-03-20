@@ -1096,6 +1096,7 @@ namespace LetheChat
                 Program.ApplyContextPluginSettings();
                 var str = JsonConvert.SerializeObject(Program.Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
+                (DataFiles.LocalModels as IFile).SaveToFile("modelDB.json");
             }
             catch (Exception ex)
             {
@@ -2074,11 +2075,10 @@ namespace LetheChat
 
         private async void button5_Click(object sender, EventArgs e)
         {
-            var calaction = new CalendarUpdateAction();
-            var res = await calaction.Execute(Bot!.Brain.DailySchedule, CancellationToken.None);
-            if (res is null)
-                return;
-            MessageBox.Show(this, res.ScheduleToString(), "New Calendar", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // open ModelForm
+            using var modelForm = new ModelForm();
+            ThemeManager.ApplyToForm(modelForm);
+            modelForm.ShowDialog(this);
         }
 
         private void button6_Click(object sender, EventArgs e)

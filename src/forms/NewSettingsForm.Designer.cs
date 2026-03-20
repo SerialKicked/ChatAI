@@ -30,11 +30,19 @@
         {
             panel1 = new Panel();
             button1 = new Button();
-            bt_Close = new Button();
             MainTab = new LetheChat.Controls.ModernTabControl();
             tabPage1 = new TabPage();
             collapsibleGroupBox2 = new LetheChat.Controls.CollapsibleGroupBox();
+            ckLlamaCppSamplers = new LetheChat.Controls.ModernCheckBox();
+            panel4 = new Panel();
             cbChatThinkPolicy = new LetheChat.Controls.ModernComboBox();
+            label3 = new Label();
+            panel2 = new Panel();
+            cbChatAllowPrefill = new LetheChat.Controls.ModernComboBox();
+            label2 = new Label();
+            panel3 = new Panel();
+            cbParallel = new LetheChat.Controls.ModernComboBox();
+            label1 = new Label();
             collapsibleGroupBox1 = new LetheChat.Controls.CollapsibleGroupBox();
             ckForceInternalGram = new LetheChat.Controls.ModernCheckBox();
             ckNoPastInserts = new LetheChat.Controls.ModernCheckBox();
@@ -45,15 +53,6 @@
             tabPage4 = new TabPage();
             tabPage5 = new TabPage();
             tabPage6 = new TabPage();
-            label1 = new Label();
-            label2 = new Label();
-            cbParallel = new LetheChat.Controls.ModernComboBox();
-            label3 = new Label();
-            cbChatAllowPrefill = new LetheChat.Controls.ModernComboBox();
-            panel4 = new Panel();
-            panel2 = new Panel();
-            panel3 = new Panel();
-            ckLlamaCppSamplers = new LetheChat.Controls.ModernCheckBox();
             panel1.SuspendLayout();
             MainTab.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -64,7 +63,6 @@
             // panel1
             // 
             panel1.Controls.Add(button1);
-            panel1.Controls.Add(bt_Close);
             panel1.Dock = DockStyle.Bottom;
             panel1.Location = new Point(0, 604);
             panel1.Name = "panel1";
@@ -85,21 +83,6 @@
             button1.Tag = "no-theme";
             button1.Text = "Apply and Close";
             button1.UseVisualStyleBackColor = false;
-            // 
-            // bt_Close
-            // 
-            bt_Close.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            bt_Close.BackColor = Color.DarkSeaGreen;
-            bt_Close.FlatStyle = FlatStyle.Flat;
-            bt_Close.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_Close.ForeColor = Color.Black;
-            bt_Close.Location = new Point(12, -56);
-            bt_Close.Name = "bt_Close";
-            bt_Close.Size = new Size(2049, 23);
-            bt_Close.TabIndex = 1;
-            bt_Close.Tag = "no-theme";
-            bt_Close.Text = "Apply and Close";
-            bt_Close.UseVisualStyleBackColor = false;
             // 
             // MainTab
             // 
@@ -155,6 +138,27 @@
             collapsibleGroupBox2.TabIndex = 40;
             collapsibleGroupBox2.Text = "Backend-Specific Settings";
             // 
+            // ckLlamaCppSamplers
+            // 
+            ckLlamaCppSamplers.Dock = DockStyle.Top;
+            ckLlamaCppSamplers.Font = new Font("Segoe UI", 9F);
+            ckLlamaCppSamplers.Location = new Point(12, 179);
+            ckLlamaCppSamplers.Name = "ckLlamaCppSamplers";
+            ckLlamaCppSamplers.Size = new Size(397, 26);
+            ckLlamaCppSamplers.TabIndex = 58;
+            ckLlamaCppSamplers.Text = "Allow advanced samplers in Llama.cpp (requires --props)";
+            ckLlamaCppSamplers.UseVisualStyleBackColor = true;
+            // 
+            // panel4
+            // 
+            panel4.Dock = DockStyle.Top;
+            panel4.Location = new Point(12, 169);
+            panel4.Margin = new Padding(8);
+            panel4.Name = "panel4";
+            panel4.Padding = new Padding(8);
+            panel4.Size = new Size(397, 10);
+            panel4.TabIndex = 55;
+            // 
             // cbChatThinkPolicy
             // 
             cbChatThinkPolicy.BackColor = Color.FromArgb(64, 64, 64);
@@ -168,6 +172,87 @@
             cbChatThinkPolicy.Padding = new Padding(1);
             cbChatThinkPolicy.Size = new Size(397, 24);
             cbChatThinkPolicy.TabIndex = 0;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Dock = DockStyle.Top;
+            label3.Font = new Font("Segoe UI", 9F);
+            label3.Location = new Point(12, 130);
+            label3.Name = "label3";
+            label3.Size = new Size(216, 15);
+            label3.TabIndex = 5;
+            label3.Text = "Chat Completion: First Think Tag Policy";
+            // 
+            // panel2
+            // 
+            panel2.Dock = DockStyle.Top;
+            panel2.Location = new Point(12, 120);
+            panel2.Margin = new Padding(8);
+            panel2.Name = "panel2";
+            panel2.Padding = new Padding(8);
+            panel2.Size = new Size(397, 10);
+            panel2.TabIndex = 56;
+            // 
+            // cbChatAllowPrefill
+            // 
+            cbChatAllowPrefill.BackColor = Color.FromArgb(64, 64, 64);
+            cbChatAllowPrefill.Dock = DockStyle.Top;
+            cbChatAllowPrefill.DropDownHeight = 180;
+            cbChatAllowPrefill.Font = new Font("Segoe UI", 9F);
+            cbChatAllowPrefill.Items.AddRange(new object[] { "Auto", "Allow", "Disallow" });
+            cbChatAllowPrefill.Location = new Point(12, 96);
+            cbChatAllowPrefill.MaxDropDownItems = 10;
+            cbChatAllowPrefill.Name = "cbChatAllowPrefill";
+            cbChatAllowPrefill.Padding = new Padding(1);
+            cbChatAllowPrefill.Size = new Size(397, 24);
+            cbChatAllowPrefill.TabIndex = 4;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Dock = DockStyle.Top;
+            label2.Font = new Font("Segoe UI", 9F);
+            label2.Location = new Point(12, 81);
+            label2.Name = "label2";
+            label2.Size = new Size(230, 15);
+            label2.TabIndex = 3;
+            label2.Text = "Chat Completion: Assistant Prefill Allowed";
+            // 
+            // panel3
+            // 
+            panel3.Dock = DockStyle.Top;
+            panel3.Location = new Point(12, 71);
+            panel3.Margin = new Padding(8);
+            panel3.Name = "panel3";
+            panel3.Padding = new Padding(8);
+            panel3.Size = new Size(397, 10);
+            panel3.TabIndex = 57;
+            // 
+            // cbParallel
+            // 
+            cbParallel.BackColor = Color.FromArgb(64, 64, 64);
+            cbParallel.Dock = DockStyle.Top;
+            cbParallel.DropDownHeight = 180;
+            cbParallel.Font = new Font("Segoe UI", 9F);
+            cbParallel.Items.AddRange(new object[] { "Auto", "Allow", "Disallow" });
+            cbParallel.Location = new Point(12, 47);
+            cbParallel.MaxDropDownItems = 10;
+            cbParallel.Name = "cbParallel";
+            cbParallel.Padding = new Padding(1);
+            cbParallel.Size = new Size(397, 24);
+            cbParallel.TabIndex = 2;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Dock = DockStyle.Top;
+            label1.Font = new Font("Segoe UI", 9F);
+            label1.Location = new Point(12, 32);
+            label1.Name = "label1";
+            label1.Size = new Size(111, 15);
+            label1.TabIndex = 1;
+            label1.Text = "Parallel Tool Calling";
             // 
             // collapsibleGroupBox1
             // 
@@ -285,108 +370,6 @@
             tabPage6.TabIndex = 5;
             tabPage6.Text = "Application";
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Dock = DockStyle.Top;
-            label1.Font = new Font("Segoe UI", 9F);
-            label1.Location = new Point(12, 32);
-            label1.Name = "label1";
-            label1.Size = new Size(111, 15);
-            label1.TabIndex = 1;
-            label1.Text = "Parallel Tool Calling";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Dock = DockStyle.Top;
-            label2.Font = new Font("Segoe UI", 9F);
-            label2.Location = new Point(12, 81);
-            label2.Name = "label2";
-            label2.Size = new Size(230, 15);
-            label2.TabIndex = 3;
-            label2.Text = "Chat Completion: Assistant Prefill Allowed";
-            // 
-            // cbParallel
-            // 
-            cbParallel.BackColor = Color.FromArgb(64, 64, 64);
-            cbParallel.Dock = DockStyle.Top;
-            cbParallel.DropDownHeight = 180;
-            cbParallel.Font = new Font("Segoe UI", 9F);
-            cbParallel.Items.AddRange(new object[] { "Auto", "Allow", "Disallow" });
-            cbParallel.Location = new Point(12, 47);
-            cbParallel.MaxDropDownItems = 10;
-            cbParallel.Name = "cbParallel";
-            cbParallel.Padding = new Padding(1);
-            cbParallel.Size = new Size(397, 24);
-            cbParallel.TabIndex = 2;
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Dock = DockStyle.Top;
-            label3.Font = new Font("Segoe UI", 9F);
-            label3.Location = new Point(12, 130);
-            label3.Name = "label3";
-            label3.Size = new Size(216, 15);
-            label3.TabIndex = 5;
-            label3.Text = "Chat Completion: First Think Tag Policy";
-            // 
-            // cbChatAllowPrefill
-            // 
-            cbChatAllowPrefill.BackColor = Color.FromArgb(64, 64, 64);
-            cbChatAllowPrefill.Dock = DockStyle.Top;
-            cbChatAllowPrefill.DropDownHeight = 180;
-            cbChatAllowPrefill.Font = new Font("Segoe UI", 9F);
-            cbChatAllowPrefill.Items.AddRange(new object[] { "Auto", "Allow", "Disallow" });
-            cbChatAllowPrefill.Location = new Point(12, 96);
-            cbChatAllowPrefill.MaxDropDownItems = 10;
-            cbChatAllowPrefill.Name = "cbChatAllowPrefill";
-            cbChatAllowPrefill.Padding = new Padding(1);
-            cbChatAllowPrefill.Size = new Size(397, 24);
-            cbChatAllowPrefill.TabIndex = 4;
-            // 
-            // panel4
-            // 
-            panel4.Dock = DockStyle.Top;
-            panel4.Location = new Point(12, 169);
-            panel4.Margin = new Padding(8);
-            panel4.Name = "panel4";
-            panel4.Padding = new Padding(8);
-            panel4.Size = new Size(397, 10);
-            panel4.TabIndex = 55;
-            // 
-            // panel2
-            // 
-            panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(12, 120);
-            panel2.Margin = new Padding(8);
-            panel2.Name = "panel2";
-            panel2.Padding = new Padding(8);
-            panel2.Size = new Size(397, 10);
-            panel2.TabIndex = 56;
-            // 
-            // panel3
-            // 
-            panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(12, 71);
-            panel3.Margin = new Padding(8);
-            panel3.Name = "panel3";
-            panel3.Padding = new Padding(8);
-            panel3.Size = new Size(397, 10);
-            panel3.TabIndex = 57;
-            // 
-            // ckLlamaCppSamplers
-            // 
-            ckLlamaCppSamplers.Dock = DockStyle.Top;
-            ckLlamaCppSamplers.Font = new Font("Segoe UI", 9F);
-            ckLlamaCppSamplers.Location = new Point(12, 179);
-            ckLlamaCppSamplers.Name = "ckLlamaCppSamplers";
-            ckLlamaCppSamplers.Size = new Size(397, 26);
-            ckLlamaCppSamplers.TabIndex = 58;
-            ckLlamaCppSamplers.Text = "Allow advanced samplers in Llama.cpp (requires --props)";
-            ckLlamaCppSamplers.UseVisualStyleBackColor = true;
-            // 
             // NewSettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -408,7 +391,6 @@
         #endregion
 
         private Panel panel1;
-        private Button bt_Close;
         private Button button1;
         private Controls.ModernTabControl MainTab;
         private TabPage tabPage1;
