@@ -362,6 +362,8 @@ namespace WaifuAI
                 cb_bot.Enabled = true;
                 cboxGroup.Enabled = true;
                 cb_user.Enabled = true;
+                ckToolCalls.Enabled = true;
+                bt_backend.Enabled = true;
                 var (tokens, duration) = LLMEngine.History.GetCurrentChatSessionInfo();
                 statusbar.Items[0].Text = $"Current Session: {duration.TotalDays:F2} days ({tokens} tokens)";
             }
@@ -375,15 +377,18 @@ namespace WaifuAI
                 bt_reroll.Enabled = false;
                 bt_newsession.Enabled = false;
                 bt_impersonate.Enabled = false;
+                bt_backend.Enabled = false;
                 cboxGroup.Enabled = false;
                 cb_bot.Enabled = false;
                 cb_user.Enabled = false;
+                ckToolCalls.Enabled = false;
             }
             else if (LLMEngine.Status == SystemStatus.NotInit)
             {
                 bt_delete.Enabled = false;
                 bt_connect.Enabled = false;
                 bt_send.Enabled = false;
+                bt_backend.Enabled = true;
                 bt_send.Text = "Offline";
                 bt_send.BackColor = Color.OrangeRed;
                 bt_reroll.Enabled = false;
@@ -409,6 +414,26 @@ namespace WaifuAI
             mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
             mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
             btVectorSearch.Enabled = LLMEngine.Settings.RAGEnabled;
+
+            if (LLMEngine.CompletionAPIType == LetheAISharp.API.CompletionType.Text || (LLMEngine.Settings.BackendChatAllowPrefill ?? LLMEngine.Client?.AllowPrefill == true))
+            {
+                mck_ragtothink.Enabled = true;
+                mck_disablethink.Enabled = true;
+            }
+            else
+            {
+                mck_ragtothink.Enabled = false;
+                mck_ragtothink.Checked = false;
+                mck_disablethink.Enabled = false;
+                mck_disablethink.Checked = false;
+            }
+
+            if (!LLMEngine.SupportsToolCalls)
+            {
+                ckToolCalls.Enabled = LLMEngine.SupportsToolCalls;
+                ckToolCalls.Checked = false;
+            }
+
 
             cbGroupSwitch.Enabled = LLMEngine.Status == SystemStatus.Ready;
         }

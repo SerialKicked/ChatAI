@@ -288,8 +288,9 @@ namespace WaifuAI.Controls
         {
             int textOffset = glyph.Right + 8;
             var rect = new Rectangle(textOffset, 0, Width - textOffset - 2, Height);
+            
 
-            TextRenderer.DrawText(g, Text, Font, rect, _text,
+            TextRenderer.DrawText(g, Text, Font, rect, Enabled? _text : SystemColors.GrayText,
                 TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
         }
 

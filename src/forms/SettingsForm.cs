@@ -275,7 +275,7 @@ namespace WaifuAI.src.forms
                     2 => false,
                     _ => null,
                 };
-                Program.Settings.BackendStartThinkTagBehavior = cbChatAllowPrefill.SelectedIndex switch
+                Program.Settings.BackendStartThinkTagBehavior = cbChatThinkPolicy.SelectedIndex switch
                 {
                     0 => null,
                     1 => BackendChatCompletionThinkTagBehavior.Emitted,
