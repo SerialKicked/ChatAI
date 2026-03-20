@@ -55,7 +55,7 @@
             verticalStackPanel1.Location = new Point(0, 0);
             verticalStackPanel1.Name = "verticalStackPanel1";
             verticalStackPanel1.Padding = new Padding(8);
-            verticalStackPanel1.Size = new Size(270, 560);
+            verticalStackPanel1.Size = new Size(297, 695);
             verticalStackPanel1.TabIndex = 35;
             verticalStackPanel1.Paint += verticalStackPanel1_Paint;
             // 
@@ -66,8 +66,9 @@
             bt_newsession.FlatStyle = FlatStyle.Flat;
             bt_newsession.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_newsession.ForeColor = Color.Black;
+            bt_newsession.Location = new Point(8, 658);
             bt_newsession.Name = "bt_newsession";
-            bt_newsession.Size = new Size(254, 27);
+            bt_newsession.Size = new Size(281, 27);
             bt_newsession.TabIndex = 22;
             bt_newsession.Tag = "no-theme";
             bt_newsession.Text = "Update Model List";
@@ -80,9 +81,10 @@
             listModels.BackColor = Color.FromArgb(64, 64, 64);
             listModels.BorderStyle = BorderStyle.FixedSingle;
             listModels.Font = new Font("Segoe UI", 9F);
+            listModels.Location = new Point(8, 8);
             listModels.Name = "listModels";
             listModels.Padding = new Padding(1);
-            listModels.Size = new Size(254, 489);
+            listModels.Size = new Size(281, 642);
             listModels.TabIndex = 0;
             // 
             // verticalStackPanel2
@@ -92,21 +94,22 @@
             verticalStackPanel2.Controls.Add(lvServerLog);
             verticalStackPanel2.Controls.Add(boxSettings);
             verticalStackPanel2.Dock = DockStyle.Fill;
-            verticalStackPanel2.Location = new Point(270, 0);
+            verticalStackPanel2.Location = new Point(297, 0);
             verticalStackPanel2.Name = "verticalStackPanel2";
             verticalStackPanel2.Padding = new Padding(8);
-            verticalStackPanel2.Size = new Size(645, 560);
+            verticalStackPanel2.Size = new Size(660, 695);
             verticalStackPanel2.TabIndex = 36;
             verticalStackPanel2.Paint += verticalStackPanel2_Paint;
             // 
-            // panButtons  (holds Apply / Launch / Stop side-by-side)
+            // panButtons
             // 
+            panButtons.BackColor = Color.Transparent;
             panButtons.Controls.Add(btApply);
             panButtons.Controls.Add(btLaunch);
             panButtons.Controls.Add(btStop);
-            panButtons.BackColor = Color.Transparent;
+            panButtons.Location = new Point(8, 659);
             panButtons.Name = "panButtons";
-            panButtons.Size = new Size(629, 27);
+            panButtons.Size = new Size(644, 27);
             panButtons.TabIndex = 43;
             // 
             // btApply
@@ -125,7 +128,7 @@
             // 
             // btLaunch
             // 
-            btLaunch.BackColor = Color.FromArgb(0x2E, 0x7D, 0x32);
+            btLaunch.BackColor = Color.FromArgb(46, 125, 50);
             btLaunch.FlatStyle = FlatStyle.Flat;
             btLaunch.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btLaunch.ForeColor = Color.White;
@@ -139,7 +142,7 @@
             // 
             // btStop
             // 
-            btStop.BackColor = Color.FromArgb(0xB7, 0x1C, 0x1C);
+            btStop.BackColor = Color.FromArgb(183, 28, 28);
             btStop.FlatStyle = FlatStyle.Flat;
             btStop.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btStop.ForeColor = Color.White;
@@ -154,9 +157,10 @@
             // lblServerStatus
             // 
             lblServerStatus.Font = new Font("Segoe UI", 9F);
-            lblServerStatus.ForeColor = Color.FromArgb(0xE6, 0xE6, 0xE6);
+            lblServerStatus.ForeColor = Color.FromArgb(230, 230, 230);
+            lblServerStatus.Location = new Point(8, 633);
             lblServerStatus.Name = "lblServerStatus";
-            lblServerStatus.Size = new Size(629, 18);
+            lblServerStatus.Size = new Size(644, 18);
             lblServerStatus.TabIndex = 42;
             lblServerStatus.Text = "○ Server Stopped";
             lblServerStatus.TextAlign = ContentAlignment.MiddleLeft;
@@ -167,12 +171,13 @@
             lvServerLog.BorderStyle = BorderStyle.FixedSingle;
             lvServerLog.Columns.AddRange(new ColumnHeader[] { colLogLevel, colLogMessage });
             lvServerLog.Font = new Font("Consolas", 8.25F);
-            lvServerLog.ForeColor = Color.FromArgb(0xE6, 0xE6, 0xE6);
+            lvServerLog.ForeColor = Color.FromArgb(230, 230, 230);
             lvServerLog.FullRowSelect = true;
             lvServerLog.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+            lvServerLog.Location = new Point(8, 536);
             lvServerLog.MultiSelect = false;
             lvServerLog.Name = "lvServerLog";
-            lvServerLog.Size = new Size(629, 90);
+            lvServerLog.Size = new Size(644, 89);
             lvServerLog.TabIndex = 44;
             lvServerLog.UseCompatibleStateImageBehavior = false;
             lvServerLog.View = View.Details;
@@ -191,9 +196,10 @@
             // 
             boxSettings.BackColor = Color.FromArgb(37, 37, 37);
             boxSettings.Font = new Font("Segoe UI", 9F);
+            boxSettings.Location = new Point(8, 8);
             boxSettings.Name = "boxSettings";
             boxSettings.Padding = new Padding(12, 32, 12, 10);
-            boxSettings.Size = new Size(629, 370);
+            boxSettings.Size = new Size(644, 520);
             boxSettings.TabIndex = 0;
             boxSettings.Text = "Settings";
             // 
@@ -202,7 +208,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DimGray;
-            ClientSize = new Size(915, 560);
+            ClientSize = new Size(957, 695);
             Controls.Add(verticalStackPanel2);
             Controls.Add(verticalStackPanel1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -216,7 +222,6 @@
             verticalStackPanel1.ResumeLayout(false);
             verticalStackPanel1.PerformLayout();
             verticalStackPanel2.ResumeLayout(false);
-            verticalStackPanel2.PerformLayout();
             panButtons.ResumeLayout(false);
             ResumeLayout(false);
         }
