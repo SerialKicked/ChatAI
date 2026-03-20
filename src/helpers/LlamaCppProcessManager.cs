@@ -102,7 +102,7 @@ namespace LetheChat
             }
 
             process.OutputDataReceived += (_, e) => OnLine("OUT", e.Data);
-            process.ErrorDataReceived += (_, e) => OnLine("ERR", e.Data);
+            process.ErrorDataReceived += (_, e) => OnLine("INFO", e.Data);
             process.Exited += (_, _) => readyTcs.TrySetResult(false);
 
             try

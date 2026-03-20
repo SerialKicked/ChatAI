@@ -338,6 +338,7 @@ namespace LetheChat.src.forms
                     LLMEngine.Setup($"http://127.0.0.1:{model.Settings.Port}", LetheAISharp.LLM.BackendAPI.LlamaCpp, null);
                     await LLMEngine.Connect();
                     DialogResult = DialogResult.OK;
+                    await Program.BigForm!.RefreshConnectionState();
                     Close();
                 }
                 catch (Exception ex)
@@ -387,9 +388,9 @@ namespace LetheChat.src.forms
 
             var item = new ListViewItem(level);
             item.SubItems.Add(message);
-            item.ForeColor = level == "ERR"
-                ? ThemeManager.curthemeDangerColor
-                : ThemeManager.curthemeTextColor;
+            item.ForeColor = level == "INFO"
+                ? ThemeManager.curthemeInfoColor
+                : ThemeManager.curthemeSuccessColor;
 
             lvServerLog.Items.Add(item);
             lvServerLog.Items[lvServerLog.Items.Count - 1].EnsureVisible();
@@ -406,6 +407,11 @@ namespace LetheChat.src.forms
                 BeginInvoke(UpdateServerStatus);
             else
                 UpdateServerStatus();
+        }
+
+        private void btLaunch_Click_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

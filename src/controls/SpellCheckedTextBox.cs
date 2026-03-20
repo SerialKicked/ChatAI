@@ -54,7 +54,10 @@ namespace LetheChat.Controls
                 Child = _tb
             };
 
-            Child = _border;
+            // Skip setting Child at design time to prevent HwndSource creation,
+            // which causes the designer surface to go blank on tab switches.
+            if (!InDesigner)
+                Child = _border;
 
             // Bridge common behaviors/events
             _tb.TextChanged += (_, __) => OnTextChanged(EventArgs.Empty);

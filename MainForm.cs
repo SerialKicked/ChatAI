@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
 using OpenAI;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Media;
@@ -113,6 +114,12 @@ namespace LetheChat
         public MainForm()
         {
             InitializeComponent();
+
+            // Avoid running any runtime logic when the designer instantiates the form;
+            // this prevents exceptions and stale WPF state that blank the designer surface.
+            if (LicenseManager.UsageMode == LicenseUsageMode.Designtime)
+                return;
+
             EnsureLLMLoggerConnected();
             this.Shown += async (_, __) =>
             {
@@ -280,7 +287,7 @@ namespace LetheChat
 
         private void LLMEngine_OnInferenceCompleted(object? sender, InferenceResult e)
         {
-            LLMEngine.Logger?.LogInformation($"[InferenceCompleted] Response: {e.Response} - Complete: {e.FinishReason} - Tool: {e.ToolCalls?.Count>0}");
+            LLMEngine.Logger?.LogInformation($"[InferenceCompleted] Response: {e.Response} - Complete: {e.FinishReason} - Tool: {e.ToolCalls?.Count > 0}");
         }
 
         private void UnsubscribeLLMEvents()
@@ -351,8 +358,9 @@ namespace LetheChat
             bt_scenario.ForeColor = string.IsNullOrWhiteSpace(LLMEngine.Settings.ScenarioOverride) ? Color.Black : Color.DarkGreen;
             if (LLMEngine.Status == SystemStatus.Ready)
             {
+                bt_llama.Enabled = Program.LlamaCppProcess.IsManaged;
                 bt_delete.Enabled = true;
-                bt_connect.Enabled = true;
+                bt_refresh.Enabled = true;
                 bt_send.Enabled = true;
                 bt_send.Text = "Send";
                 bt_send.BackColor = Color.DarkSeaGreen;
@@ -369,8 +377,9 @@ namespace LetheChat
             }
             else if (LLMEngine.Status == SystemStatus.Busy)
             {
+                bt_llama.Enabled = false;
                 bt_delete.Enabled = false;
-                bt_connect.Enabled = false;
+                bt_refresh.Enabled = false;
                 bt_send.Enabled = true;
                 bt_send.Text = "Cancel";
                 bt_send.BackColor = Color.OrangeRed;
@@ -385,8 +394,9 @@ namespace LetheChat
             }
             else if (LLMEngine.Status == SystemStatus.NotInit)
             {
+                bt_llama.Enabled = Program.LlamaCppProcess.IsManaged;
                 bt_delete.Enabled = false;
-                bt_connect.Enabled = false;
+                bt_refresh.Enabled = false;
                 bt_send.Enabled = false;
                 bt_backend.Enabled = true;
                 bt_send.Text = "Offline";
@@ -575,7 +585,7 @@ namespace LetheChat
                     var stringfix = _currentgeneration ?? string.Empty;
                     if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart) && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingEnd))
                     {
-                        var thinkstart = LLMEngine.Instruct.ThinkingStart.Replace("\n","");
+                        var thinkstart = LLMEngine.Instruct.ThinkingStart.Replace("\n", "");
                         var thinkend = LLMEngine.Instruct.ThinkingEnd.Replace("\n", "");
 
                         var pattern = $"{Regex.Escape(thinkend)}[\\s]*{Regex.Escape(thinkstart)}";
@@ -840,6 +850,11 @@ namespace LetheChat
 
         private async void bt_connectClick(object sender, EventArgs e)
         {
+            await RefreshConnectionState();
+        }
+
+        public async Task RefreshConnectionState()
+        {
             await LLMEngine.Connect();
             num_maxcontext.Maximum = LLMEngine.MaxContextLength;
             num_maxcontext.Value = LLMEngine.MaxContextLength;
@@ -851,6 +866,8 @@ namespace LetheChat
             LLMEngine.Bot.AgentSystem?.NotifyUserActivity();
             UpdateUIState();
         }
+
+
 
         private async void StartNewSession(object sender, EventArgs e)
         {
@@ -2074,13 +2091,6 @@ namespace LetheChat
 
         }
 
-        private async void button5_Click(object sender, EventArgs e)
-        {
-            // open ModelForm
-            using var modelForm = new ModelForm();
-            ThemeManager.ApplyToForm(modelForm);
-            modelForm.ShowDialog(this);
-        }
 
         private void button6_Click(object sender, EventArgs e)
         {
@@ -2092,6 +2102,13 @@ namespace LetheChat
             if (_isinitloading)
                 return;
             LLMEngine.Settings.ToolCallsAllowed = true;
+        }
+
+        private void bt_llama_Click(object sender, EventArgs e)
+        {
+            using var modelForm = new ModelForm();
+            ThemeManager.ApplyToForm(modelForm);
+            modelForm.ShowDialog(this);
         }
     }
 }

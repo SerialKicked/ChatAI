@@ -97,7 +97,7 @@
             verticalStackPanel2.Location = new Point(297, 0);
             verticalStackPanel2.Name = "verticalStackPanel2";
             verticalStackPanel2.Padding = new Padding(8);
-            verticalStackPanel2.Size = new Size(660, 695);
+            verticalStackPanel2.Size = new Size(646, 695);
             verticalStackPanel2.TabIndex = 36;
             verticalStackPanel2.Paint += verticalStackPanel2_Paint;
             // 
@@ -109,7 +109,7 @@
             panButtons.Controls.Add(btStop);
             panButtons.Location = new Point(8, 659);
             panButtons.Name = "panButtons";
-            panButtons.Size = new Size(644, 27);
+            panButtons.Size = new Size(630, 27);
             panButtons.TabIndex = 43;
             // 
             // btApply
@@ -120,7 +120,7 @@
             btApply.ForeColor = Color.Black;
             btApply.Location = new Point(0, 0);
             btApply.Name = "btApply";
-            btApply.Size = new Size(199, 27);
+            btApply.Size = new Size(201, 27);
             btApply.TabIndex = 39;
             btApply.Tag = "no-theme";
             btApply.Text = "Save Model's Settings";
@@ -139,6 +139,7 @@
             btLaunch.Tag = "no-theme";
             btLaunch.Text = "Launch ▶";
             btLaunch.UseVisualStyleBackColor = false;
+            btLaunch.Click += btLaunch_Click_1;
             // 
             // btStop
             // 
@@ -160,7 +161,7 @@
             lblServerStatus.ForeColor = Color.FromArgb(230, 230, 230);
             lblServerStatus.Location = new Point(8, 633);
             lblServerStatus.Name = "lblServerStatus";
-            lblServerStatus.Size = new Size(644, 18);
+            lblServerStatus.Size = new Size(630, 18);
             lblServerStatus.TabIndex = 42;
             lblServerStatus.Text = "○ Server Stopped";
             lblServerStatus.TextAlign = ContentAlignment.MiddleLeft;
@@ -177,7 +178,7 @@
             lvServerLog.Location = new Point(8, 536);
             lvServerLog.MultiSelect = false;
             lvServerLog.Name = "lvServerLog";
-            lvServerLog.Size = new Size(644, 89);
+            lvServerLog.Size = new Size(630, 89);
             lvServerLog.TabIndex = 44;
             lvServerLog.UseCompatibleStateImageBehavior = false;
             lvServerLog.View = View.Details;
@@ -199,7 +200,7 @@
             boxSettings.Location = new Point(8, 8);
             boxSettings.Name = "boxSettings";
             boxSettings.Padding = new Padding(12, 32, 12, 10);
-            boxSettings.Size = new Size(644, 520);
+            boxSettings.Size = new Size(630, 520);
             boxSettings.TabIndex = 0;
             boxSettings.Text = "Settings";
             // 
@@ -208,7 +209,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DimGray;
-            ClientSize = new Size(957, 695);
+            ClientSize = new Size(943, 695);
             Controls.Add(verticalStackPanel2);
             Controls.Add(verticalStackPanel1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
