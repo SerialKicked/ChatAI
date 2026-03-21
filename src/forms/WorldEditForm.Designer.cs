@@ -477,6 +477,7 @@ namespace LetheChat.src.forms
             Name = "WorldEditForm";
             StartPosition = FormStartPosition.CenterParent;
             Text = "World Info Editor";
+            KeyDown += WorldEditForm_KeyDown;
             groupBox8.ResumeLayout(false);
             groupBox8.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numWItriggerchance).EndInit();

@@ -49,6 +49,8 @@ namespace LetheChat.src.forms
             collapsibleGroupBox2 = new CollapsibleGroupBox();
             ed_corefacts = new TextBox();
             label1 = new Label();
+            ed_selfedit = new TextBox();
+            label2 = new Label();
             PanMenu.SuspendLayout();
             collapsibleGroupBox1.SuspendLayout();
             collapsibleGroupBox2.SuspendLayout();
@@ -189,9 +191,9 @@ namespace LetheChat.src.forms
             label52.AutoSize = true;
             label52.Location = new Point(15, 35);
             label52.Name = "label52";
-            label52.Size = new Size(132, 17);
+            label52.Size = new Size(192, 17);
             label52.TabIndex = 0;
-            label52.Text = "Scenario Section Title";
+            label52.Text = "Scenario Section Title (optional)";
             // 
             // ed_editsys_prompt
             // 
@@ -220,6 +222,8 @@ namespace LetheChat.src.forms
             // 
             collapsibleGroupBox2.BackColor = Color.FromArgb(37, 37, 37);
             collapsibleGroupBox2.CanCollapse = false;
+            collapsibleGroupBox2.Controls.Add(ed_selfedit);
+            collapsibleGroupBox2.Controls.Add(label2);
             collapsibleGroupBox2.Controls.Add(ed_corefacts);
             collapsibleGroupBox2.Controls.Add(label1);
             collapsibleGroupBox2.Controls.Add(ed_editsys_prefix);
@@ -234,7 +238,7 @@ namespace LetheChat.src.forms
             collapsibleGroupBox2.Location = new Point(862, 12);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox2.Size = new Size(369, 312);
+            collapsibleGroupBox2.Size = new Size(369, 470);
             collapsibleGroupBox2.TabIndex = 5;
             collapsibleGroupBox2.Text = "Section Titles";
             // 
@@ -255,6 +259,23 @@ namespace LetheChat.src.forms
             label1.TabIndex = 8;
             label1.Text = "Core User Facts";
             // 
+            // ed_selfedit
+            // 
+            ed_selfedit.BorderStyle = BorderStyle.FixedSingle;
+            ed_selfedit.Location = new Point(15, 292);
+            ed_selfedit.Name = "ed_selfedit";
+            ed_selfedit.Size = new Size(339, 24);
+            ed_selfedit.TabIndex = 11;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(15, 272);
+            label2.Name = "label2";
+            label2.Size = new Size(155, 17);
+            label2.TabIndex = 10;
+            label2.Text = "Inner Thoughts (optional)";
+            // 
             // SysPromptForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -272,6 +293,7 @@ namespace LetheChat.src.forms
             ShowIcon = false;
             StartPosition = FormStartPosition.CenterParent;
             Text = "System Prompt Editor";
+            KeyDown += SysPromptForm_KeyDown;
             PanMenu.ResumeLayout(false);
             PanMenu.PerformLayout();
             collapsibleGroupBox1.ResumeLayout(false);
@@ -302,5 +324,7 @@ namespace LetheChat.src.forms
         private Panel panel1;
         private TextBox ed_corefacts;
         private Label label1;
+        private TextBox ed_selfedit;
+        private Label label2;
     }
 }

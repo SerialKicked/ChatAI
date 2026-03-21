@@ -834,6 +834,7 @@ namespace LetheChat.src.forms
             ShowIcon = false;
             StartPosition = FormStartPosition.CenterParent;
             Text = "Sampler Editor";
+            KeyDown += SamplerForm_KeyDown;
             panMenu.ResumeLayout(false);
             panMenu.PerformLayout();
             groupBox15.ResumeLayout(false);

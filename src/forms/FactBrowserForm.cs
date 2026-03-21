@@ -442,6 +442,15 @@ namespace LetheChat.src.forms
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void FactBrowserForm_KeyDown_1(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
+        }
     }
 
     internal sealed class FactListComparer(int columnIndex, bool ascending) : IComparer

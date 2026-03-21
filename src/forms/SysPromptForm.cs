@@ -51,6 +51,7 @@ namespace LetheChat.src.forms
             ed_editsys_dialogs.Text = selected.DialogsTitle.Replace("\n", "\\n");
             ed_editsys_prefix.Text = selected.CategorySeparator.Replace("\n", "\\n");
             ed_corefacts.Text = selected.CoreFactsTitle.Replace("\n", "\\n");
+            ed_selfedit.Text = selected.SelfEditTitle.Replace("\n", "\\n");
             edFileName.Text = selected.UniqueName;
         }
 
@@ -72,7 +73,8 @@ namespace LetheChat.src.forms
                 ScenarioTitle = ed_editsys_scenario.Text.Replace("\\n", "\n"),
                 DialogsTitle = ed_editsys_dialogs.Text.Replace("\\n", "\n"),
                 CategorySeparator = ed_editsys_prefix.Text.Replace("\\n", "\n"),
-                CoreFactsTitle = ed_corefacts.Text.Replace("\\n", "\n")
+                CoreFactsTitle = ed_corefacts.Text.Replace("\\n", "\n"),
+                SelfEditTitle = ed_selfedit.Text.Replace("\\n", "\n"),
             };
         }
 
@@ -92,6 +94,15 @@ namespace LetheChat.src.forms
             DataFiles.SysPrompts[NewName] = SelectedPromptEditor;
             (SelectedPromptEditor as IFile).SaveToFile("data/sysprompts/" + NewName + ".json");
             SetupPromptEditor(NewName);
+        }
+
+        private void SysPromptForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
         }
     }
 }

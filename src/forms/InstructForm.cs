@@ -140,5 +140,14 @@ namespace LetheChat.src.forms
             SetupInstructEditor(NewName);
 
         }
+
+        private void InstructForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
+        }
     }
 }

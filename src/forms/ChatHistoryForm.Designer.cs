@@ -447,6 +447,7 @@ namespace LetheChat.src.forms
             StartPosition = FormStartPosition.CenterParent;
             Text = "Chat History";
             Load += ChatHistoryForm_Load;
+            KeyDown += ChatHistoryForm_KeyDown;
             collapsibleGroupBox3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)web_sessioncontent).EndInit();
             panel4.ResumeLayout(false);

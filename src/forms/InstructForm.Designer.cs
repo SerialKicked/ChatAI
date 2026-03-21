@@ -143,6 +143,7 @@ namespace LetheChat.src.forms
             Name = "InstructForm";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Instruction Format Editor";
+            KeyDown += InstructForm_KeyDown;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ResumeLayout(false);

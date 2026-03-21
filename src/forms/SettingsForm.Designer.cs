@@ -544,7 +544,7 @@ namespace LetheChat.src.forms
             label4.Font = new Font("Segoe UI", 9F, FontStyle.Bold | FontStyle.Underline);
             label4.Location = new Point(12, 154);
             label4.Name = "label4";
-            label4.Size = new Size(83, 15);
+            label4.Size = new Size(81, 15);
             label4.TabIndex = 41;
             label4.Text = "Lethe Plugins";
             // 
@@ -871,7 +871,6 @@ namespace LetheChat.src.forms
             ckNoPastInserts.TabIndex = 38;
             ckNoPastInserts.Text = "Disable hidden inserts in past sessions";
             ckNoPastInserts.UseVisualStyleBackColor = true;
-            ckNoPastInserts.CheckedChanged += ckNoPastInserts_CheckedChanged;
             // 
             // ck_hallusafe
             // 
@@ -1136,7 +1135,6 @@ namespace LetheChat.src.forms
             collapsibleGroupBox2.Size = new Size(314, 193);
             collapsibleGroupBox2.TabIndex = 34;
             collapsibleGroupBox2.Text = "Session Memory System";
-            collapsibleGroupBox2.ExpandedChanged += collapsibleGroupBox2_ExpandedChanged;
             // 
             // ckDetailedSum
             // 
@@ -1616,7 +1614,6 @@ namespace LetheChat.src.forms
             verticalStackPanel4.Padding = new Padding(6, 6, 0, 6);
             verticalStackPanel4.Size = new Size(320, 635);
             verticalStackPanel4.TabIndex = 37;
-            verticalStackPanel4.Paint += verticalStackPanel4_Paint;
             // 
             // collapsibleGroupBox11
             // 
@@ -1775,6 +1772,7 @@ namespace LetheChat.src.forms
             Name = "SettingsForm";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Settings";
+            KeyDown += SettingsForm_KeyDown;
             panel1.ResumeLayout(false);
             collapsibleGroupBox1.ResumeLayout(false);
             verticalStackPanel1.ResumeLayout(false);

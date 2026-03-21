@@ -156,6 +156,13 @@ namespace LetheChat.Files
         [Description("Automatically loads a .jinja chat template from the model directory if present, overriding the template built into the GGUF file.")]
         public bool LoadJinjaIfAvailable { get; set; } = true;
 
+        /// <summary>
+        /// Instruction template UniqueID (filename without extension) to use for selected local models. 
+        /// </summary>
+        /// <remarks>In chat-completion mode, this will ensure better token estimation count and will handle thinking messages properly. In text-completion mode, it is required for the model to work at all.</remarks>
+        [Description("Instruction template to use for selected local models. \nIn chat-completion mode, this will ensure better token estimation count and will handle thinking messages properly. In text-completion mode, it is required for the model to work at all.")]
+        public string LocalInstructTemplateID { get; set;  } = string.Empty;
+
         public string GetArgsForDirectory(string modelPath)
         {
             var model = string.Empty;

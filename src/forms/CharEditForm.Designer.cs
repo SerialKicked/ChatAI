@@ -1602,6 +1602,7 @@ namespace LetheChat.src.forms
             MinimizeBox = false;
             Name = "CharEditForm";
             Text = "Character Editor";
+            KeyDown += CharEditForm_KeyDown;
             ((System.ComponentModel.ISupportInitialize)pic).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();

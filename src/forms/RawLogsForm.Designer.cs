@@ -150,6 +150,7 @@
             ShowIcon = false;
             StartPosition = FormStartPosition.CenterParent;
             Text = "Raw Message Log";
+            KeyDown += RawLogForm_KeyDown;
             modernTabControl1.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
             tabPage1.PerformLayout();

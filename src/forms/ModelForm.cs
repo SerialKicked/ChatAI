@@ -8,6 +8,7 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using Windows.ApplicationModel.Contacts;
 
 namespace LetheChat.src.forms
 {
@@ -30,10 +31,6 @@ namespace LetheChat.src.forms
             components.Add(_toolTip);
             BuildSettingsPanel();
             listModels.SelectedIndexChanged += listModels_SelectedIndexChanged;
-            btApply.Click += btApply_Click;
-            bt_newsession.Click += bt_newsession_Click;
-            btLaunch.Click += btLaunch_Click;
-            btStop.Click += btStop_Click;
 
             Program.LlamaCppProcess.OutputReceived += OnServerOutput;
             Program.LlamaCppProcess.ServerReady += OnServerReady;
@@ -68,8 +65,10 @@ namespace LetheChat.src.forms
             const int ctrlX = 205;
             const int ctrlW = 370;
             const int ctrlH = 28;
-            const int rowGap = 34;
+            const int rowGap = 32;
             int y = 0;
+            bool colleft = true;
+            var xboxw = (boxSettings.Width - 8) / 2 - rowGap;
 
             void AddRow(string labelText, Control ctrl, string? tip = null)
             {
@@ -117,6 +116,16 @@ namespace LetheChat.src.forms
             num_reasoningBudget = new ModernNumericUpDown { Minimum = -1, Maximum = 1000000 };
             AddRow("Reasoning Budget", num_reasoningBudget, Tip(nameof(LlamaCppSettings.ReasoningBudget)));
 
+            cb_instructlocal = new ModernComboBox
+            {
+                MaxDropDownItems = 16
+            };
+            // add all DataFiles.Instruct id to combo box
+            cb_instructlocal.Items.Add("None");
+            foreach (var instruct in DataFiles.Instruct)
+                cb_instructlocal.Items.Add(instruct.Key);
+            AddRow("Instruct Template", cb_instructlocal, Tip(nameof(LlamaCppSettings.LocalInstructTemplateID)));
+
             var lblArgs = new Label
             {
                 Text = "Additional Args",
@@ -146,12 +155,14 @@ namespace LetheChat.src.forms
 
             void AddCheck(ModernCheckBox ck, string? tip = null)
             {
-                ck.Location = new Point(0, y);
-                ck.Size = new Size(labelW + ctrlW + 5, 26);
+                ck.Location = new Point(colleft ? 0 : xboxw + rowGap, y);
+                ck.Size = new Size(xboxw, 26);
                 if (tip != null)
                     _toolTip.SetToolTip(ck, tip);
                 panSettingsScroll.Controls.Add(ck);
-                y += 32;
+                if (!colleft)
+                    y += 30;
+                colleft = !colleft;
             }
 
             ck_props = new ModernCheckBox { Text = "Enable Props (--props)" };
@@ -244,6 +255,10 @@ namespace LetheChat.src.forms
             num_contextSize.Value = s.ContextSize;
             cb_flashAttention.SelectedIndex = s.FlashAttention switch { true => 1, false => 2, _ => 0 };
             cb_reasoning.SelectedIndex = s.Reasoning switch { true => 1, false => 2, _ => 0 };
+            cb_instructlocal.SelectedItem =
+                !string.IsNullOrEmpty(s.LocalInstructTemplateID) && DataFiles.Instruct.ContainsKey(s.LocalInstructTemplateID)
+                    ? s.LocalInstructTemplateID
+                    : "None";
             num_reasoningBudget.Value = s.ReasoningBudget;
             ck_props.Checked = s.Props;
             ck_kvToGpu.Checked = s.KVcacheToGPU;
@@ -268,6 +283,9 @@ namespace LetheChat.src.forms
             s.ContextSize = (int)num_contextSize.Value;
             s.FlashAttention = cb_flashAttention.SelectedIndex switch { 1 => (bool?)true, 2 => false, _ => null };
             s.Reasoning = cb_reasoning.SelectedIndex switch { 1 => (bool?)true, 2 => false, _ => null };
+            s.LocalInstructTemplateID = !string.IsNullOrEmpty(cb_instructlocal.SelectedText) && cb_instructlocal.SelectedText != "None"
+                ? cb_instructlocal.SelectedText
+                : "";
             s.ReasoningBudget = (int)num_reasoningBudget.Value;
             s.Props = ck_props.Checked;
             s.KVcacheToGPU = ck_kvToGpu.Checked;
@@ -285,14 +303,7 @@ namespace LetheChat.src.forms
             LoadModelToUI(DataFiles.LocalModels.AvailModels[listModels.SelectedIndex]);
         }
 
-        private void btApply_Click(object sender, EventArgs e)
-        {
-            SaveUIToCurrentModel();
-            File.WriteAllText("modelDB.json", JsonConvert.SerializeObject(DataFiles.LocalModels, Formatting.Indented));
-            MessageBox.Show("Model settings saved.", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void bt_newsession_Click(object sender, EventArgs e)
+        private void bt_newsession_Click_1(object sender, EventArgs e)
         {
             DataFiles.LocalModels.SearchModels(false);
             DataFiles.LocalModels.PruneModels();
@@ -300,70 +311,6 @@ namespace LetheChat.src.forms
             PopulateModelList();
         }
 
-        private void bt_newsession_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private async void btLaunch_Click(object sender, EventArgs e)
-        {
-            if (_currentModel == null) return;
-
-            SaveUIToCurrentModel();
-
-            try
-            {
-                File.WriteAllText("modelDB.json", JsonConvert.SerializeObject(DataFiles.LocalModels, Formatting.Indented));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Could not save model settings before launch:\n{ex.Message}", "Save Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            btLaunch.Enabled = false;
-            btStop.Enabled = false;
-            lblServerStatus.Text = "⏳ Starting...";
-            lblServerStatus.ForeColor = ThemeManager.curthemeAccentColor;
-            ClearServerLog();
-
-            var model = _currentModel;
-            bool ready = await Program.LlamaCppProcess.LaunchAsync(model);
-
-            if (ready)
-            {
-                UpdateServerStatus();
-                try
-                {
-                    LLMEngine.Setup($"http://127.0.0.1:{model.Settings.Port}", LetheAISharp.LLM.BackendAPI.LlamaCpp, null);
-                    await LLMEngine.Connect();
-                    DialogResult = DialogResult.OK;
-                    await Program.BigForm!.RefreshConnectionState();
-                    Close();
-                }
-                catch (Exception ex)
-                {
-                    UpdateServerStatus();
-                    MessageBox.Show($"Server started but connection failed:\n{ex.Message}", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            else
-            {
-                UpdateServerStatus();
-                MessageBox.Show("Failed to start llama-server (timeout or error). Check the server path in Settings.", "Launch Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private async void btStop_Click(object sender, EventArgs e)
-        {
-            btStop.Enabled = false;
-            btLaunch.Enabled = false;
-            lblServerStatus.Text = "⏳ Stopping...";
-            lblServerStatus.ForeColor = ThemeManager.curthemeMutedText;
-
-            await Program.LlamaCppProcess.KillAsync();
-            UpdateServerStatus();
-        }
 
         private const int MaxLogLines = 500;
 
@@ -409,9 +356,93 @@ namespace LetheChat.src.forms
                 UpdateServerStatus();
         }
 
-        private void btLaunch_Click_1(object sender, EventArgs e)
+        private async void btLaunch_Click_1(object sender, EventArgs e)
         {
+            if (_currentModel == null) return;
 
+            SaveUIToCurrentModel();
+
+            try
+            {
+                File.WriteAllText("modelDB.json", JsonConvert.SerializeObject(DataFiles.LocalModels, Formatting.Indented));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not save model settings before launch:\n{ex.Message}", "Save Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            btLaunch.Enabled = false;
+            btStop.Enabled = false;
+            lblServerStatus.Text = "⏳ Starting...";
+            lblServerStatus.ForeColor = ThemeManager.curthemeAccentColor;
+            ClearServerLog();
+
+            var model = _currentModel;
+            bool ready = await Program.LlamaCppProcess.LaunchAsync(model);
+
+            if (ready)
+            {
+                UpdateServerStatus();
+                try
+                {
+                    LLMEngine.Setup($"http://127.0.0.1:{model.Settings.Port}", BackendAPI.LlamaCpp, null);
+                    await LLMEngine.Connect();
+                    DialogResult = DialogResult.OK;
+                    await Program.BigForm!.RefreshConnectionState();
+                    Program.BigForm!.SetInstruct(model.Settings.LocalInstructTemplateID);
+                    Close();
+                }
+                catch (Exception ex)
+                {
+                    UpdateServerStatus();
+                    MessageBox.Show($"Server started but connection failed:\n{ex.Message}", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                UpdateServerStatus();
+                MessageBox.Show("Failed to start llama-server (timeout or error). Check the server path in Settings.", "Launch Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btApply_Click_1(object sender, EventArgs e)
+        {
+            SaveUIToCurrentModel();
+            File.WriteAllText("modelDB.json", JsonConvert.SerializeObject(DataFiles.LocalModels, Formatting.Indented));
+            MessageBox.Show("Model settings saved.", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private async void btStop_Click(object sender, EventArgs e)
+        {
+            btStop.Enabled = false;
+            btLaunch.Enabled = false;
+            lblServerStatus.Text = "⏳ Stopping...";
+            lblServerStatus.ForeColor = ThemeManager.curthemeMutedText;
+
+            await Program.LlamaCppProcess.KillAsync();
+            UpdateServerStatus();
+        }
+
+        private void btLoadFolders_Click(object sender, EventArgs e)
+        {
+            using var dlg = new ModelDirectoriesForm();
+            if (dlg.ShowDialog(this) != DialogResult.OK)
+                return;
+
+            DataFiles.LocalModels.SearchModels(false);
+            DataFiles.LocalModels.PruneModels();
+            File.WriteAllText("modelDB.json", JsonConvert.SerializeObject(DataFiles.LocalModels, Formatting.Indented));
+            PopulateModelList();
+        }
+
+        private void ModelForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
         }
     }
 }

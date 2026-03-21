@@ -152,6 +152,7 @@ namespace LetheChat.src.forms
             Name = "FactBrowserForm";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Extracted Facts Browser";
+            KeyDown += FactBrowserForm_KeyDown_1;
             splitMain.Panel1.ResumeLayout(false);
             splitMain.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitMain).EndInit();

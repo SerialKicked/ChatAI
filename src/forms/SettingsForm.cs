@@ -349,19 +349,13 @@ namespace LetheChat.src.forms
             this.Close();
         }
 
-        private void collapsibleGroupBox2_ExpandedChanged(object sender, EventArgs e)
+        private void SettingsForm_KeyDown(object sender, KeyEventArgs e)
         {
-
-        }
-
-        private void verticalStackPanel4_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void ckNoPastInserts_CheckedChanged(object sender, EventArgs e)
-        {
-
+            if (e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
         }
     }
 }

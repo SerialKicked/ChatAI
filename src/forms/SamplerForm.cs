@@ -134,5 +134,14 @@ namespace LetheChat.src.forms
             (SelectedSamplerEditor as IFile).SaveToFile("data/params/" + NewName + ".json");
             SetupSamplerEditor(NewName);
         }
+
+        private void SamplerForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
+        }
     }
 }

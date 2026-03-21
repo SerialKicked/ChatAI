@@ -84,5 +84,14 @@ namespace LetheChat.src.forms
         {
             LoadSystemLogEntries();
         }
+
+        private void RawLogForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
+        }
     }
 }

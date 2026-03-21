@@ -22,7 +22,7 @@ namespace LetheChat.src.forms
     {
         private ChatSession? _selectedSession = null;
         private bool _isinitloading = true;
-        
+
         // Sorting state
         private int _sortColumnIndex = 1; // Default: sort by date (column 1)
         private bool _sortAscending = false; // Default: newest first
@@ -38,10 +38,10 @@ namespace LetheChat.src.forms
         {
             InitializeComponent();
             SetupListSessionContextMenu();
-            
+
             // Setup column click sorting
             listSession.ColumnClick += ListSession_ColumnClick;
-            
+
             _isinitloading = false;
         }
 
@@ -188,7 +188,7 @@ namespace LetheChat.src.forms
                 }
                 listSession.Items.Add(item);
             }
-            
+
             // Apply current sorting after loading
             ApplyListSorting();
         }
@@ -270,12 +270,12 @@ namespace LetheChat.src.forms
             sb.Append("<div class='session-metadata'>");
             sb.Append($"<h2>{session.Name}</h2>");
             sb.Append($"<p><strong>Summary:</strong> {session.Content}</p>");
-            
+
             if (session.MetaData.Keywords.Count > 0)
             {
                 sb.Append($"<p><strong>Keywords:</strong> {string.Join(", ", session.MetaData.Keywords)}</p>");
             }
-            
+
             if (session.MetaData.FutureGoals.Count > 0)
             {
                 sb.Append("<p><strong>Goals:</strong></p><ul>");
@@ -288,7 +288,7 @@ namespace LetheChat.src.forms
             if (!string.IsNullOrWhiteSpace(session.Scenario))
                 sb.Append($"<p><strong>Scenario:</strong> {session.Scenario}</p>");
             sb.Append($"<p><strong>Relevance:</strong> {session.MetaData.Relevance}</p>");
-            
+
             if (session.Sentiments.Count > 0)
             {
                 sb.Append("<p><strong>Sentiments:</strong></p><ul>");
@@ -298,7 +298,7 @@ namespace LetheChat.src.forms
                 }
                 sb.Append("</ul>");
             }
-            
+
             sb.Append("</div>");
 
             // Add divider
@@ -332,7 +332,7 @@ namespace LetheChat.src.forms
             }
 
             var html = Markdown.ToHtml(ChatRender.GetMessagePrefix(message) + message.Message, CustomMarkDownPipeline);
-            
+
             return $@"
         <div class='chat-message' data-message-guid='{message.Guid}'>
             <div class='portrait'>
@@ -613,6 +613,15 @@ namespace LetheChat.src.forms
         private void lbl_sessiondata_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void ChatHistoryForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
         }
     }
 

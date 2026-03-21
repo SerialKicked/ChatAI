@@ -219,6 +219,7 @@
             Name = "MemoryBrowserForm";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Memory Browser";
+            KeyDown += MemoryBrowserForm_KeyDown_1;
             splitMain.Panel1.ResumeLayout(false);
             splitMain.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitMain).EndInit();

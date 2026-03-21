@@ -270,6 +270,7 @@ namespace LetheChat.src.forms
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Lethe AI Chat: Connect...";
             Shown += LoginForm_Shown;
+            KeyDown += LoginForm_KeyDown;
             collapsibleGroupBox1.ResumeLayout(false);
             collapsibleGroupBox1.PerformLayout();
             ResumeLayout(false);

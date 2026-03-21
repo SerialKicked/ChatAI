@@ -472,17 +472,17 @@ namespace LetheChat.src.forms
 
             using var editor = new MemoryEditorForm(mem);
             ThemeManager.ApplyToForm(editor);
-            
+
             if (editor.ShowDialog(this) == DialogResult.OK && editor.EditedMemory != null)
             {
                 try
                 {
                     // Update the memory in the brain
                     LLMEngine.Bot.Brain.ReloadMemories();
-                    
+
                     // Refresh the list
                     ApplyFilterAndRefreshList();
-                    
+
                     // Try to reselect the edited item
                     foreach (ListViewItem lvi in listMemories.Items)
                     {
@@ -496,7 +496,7 @@ namespace LetheChat.src.forms
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this, "Failed to update memory: " + ex.Message, "Error", 
+                    MessageBox.Show(this, "Failed to update memory: " + ex.Message, "Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -506,7 +506,7 @@ namespace LetheChat.src.forms
         {
             using var editor = new MemoryEditorForm();
             ThemeManager.ApplyToForm(editor);
-            
+
             if (editor.ShowDialog(this) == DialogResult.OK && editor.EditedMemory != null)
             {
                 try
@@ -517,10 +517,10 @@ namespace LetheChat.src.forms
 
                     // Add to our local list
                     _allMemories.Add(editor.EditedMemory);
-                    
+
                     // Refresh the list
                     ApplyFilterAndRefreshList();
-                    
+
                     // Try to select the new item
                     foreach (ListViewItem lvi in listMemories.Items)
                     {
@@ -534,7 +534,7 @@ namespace LetheChat.src.forms
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this, "Failed to add memory: " + ex.Message, "Error", 
+                    MessageBox.Show(this, "Failed to add memory: " + ex.Message, "Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -544,6 +544,15 @@ namespace LetheChat.src.forms
         {
             // Double-click to edit
             btEditSelected_Click(sender!, e);
+        }
+
+        private void MemoryBrowserForm_KeyDown_1(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
         }
     }
 

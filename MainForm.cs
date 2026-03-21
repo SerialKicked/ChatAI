@@ -157,14 +157,7 @@ namespace LetheChat
                 ThemeManager.ApplyLight();
             else
                 ThemeManager.ApplyDark();
-            // Load login form
-            var loginForm = new LoginForm();
-            ThemeManager.ApplyToForm(loginForm);
-            loginForm.ShowDialog(this);
-            if (loginForm.DialogResult != DialogResult.OK)
-            {
-                MessageBox.Show("No connection with backend server. You can use the application, but you cannot chat with the AI.");
-            }
+
             // Chat related events
             SetupChatMenu();
             _activityTimer.OnTrigger += OnBotInitiateConversation;
@@ -1647,6 +1640,16 @@ namespace LetheChat
             {
                 LLMEngine.Instruct = DataFiles.Instruct[key];
                 mck_forceNames.Checked = LLMEngine.Instruct.AddNamesToPrompt;
+                LLMEngine.InvalidatePromptCache();
+            }
+        }
+
+        public void SetInstruct(string instruct)
+        {
+            if (!string.IsNullOrEmpty(instruct) && DataFiles.Instruct.TryGetValue(instruct, out var instructData))
+            {
+                LLMEngine.Instruct = instructData;
+                cb_instruct.SelectedText = instruct;
             }
         }
 

@@ -30,7 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ModelForm));
             verticalStackPanel1 = new LetheChat.Controls.VerticalStackPanel();
-            bt_newsession = new Button();
+            bt_loaddirs = new Button();
+            bt_refreshlist = new Button();
             listModels = new LetheChat.Controls.ModernListBox();
             verticalStackPanel2 = new LetheChat.Controls.VerticalStackPanel();
             panButtons = new Panel();
@@ -49,31 +50,48 @@
             // 
             // verticalStackPanel1
             // 
-            verticalStackPanel1.Controls.Add(bt_newsession);
+            verticalStackPanel1.Controls.Add(bt_loaddirs);
+            verticalStackPanel1.Controls.Add(bt_refreshlist);
             verticalStackPanel1.Controls.Add(listModels);
             verticalStackPanel1.Dock = DockStyle.Left;
             verticalStackPanel1.Location = new Point(0, 0);
             verticalStackPanel1.Name = "verticalStackPanel1";
             verticalStackPanel1.Padding = new Padding(8);
-            verticalStackPanel1.Size = new Size(297, 695);
+            verticalStackPanel1.Size = new Size(297, 663);
             verticalStackPanel1.TabIndex = 35;
             verticalStackPanel1.Paint += verticalStackPanel1_Paint;
             // 
-            // bt_newsession
+            // bt_loaddirs
             // 
-            bt_newsession.AutoSize = true;
-            bt_newsession.BackColor = Color.DarkKhaki;
-            bt_newsession.FlatStyle = FlatStyle.Flat;
-            bt_newsession.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            bt_newsession.ForeColor = Color.Black;
-            bt_newsession.Location = new Point(8, 658);
-            bt_newsession.Name = "bt_newsession";
-            bt_newsession.Size = new Size(281, 27);
-            bt_newsession.TabIndex = 22;
-            bt_newsession.Tag = "no-theme";
-            bt_newsession.Text = "Update Model List";
-            bt_newsession.UseVisualStyleBackColor = false;
-            bt_newsession.Click += bt_newsession_Click_1;
+            bt_loaddirs.AutoSize = true;
+            bt_loaddirs.BackColor = Color.DarkKhaki;
+            bt_loaddirs.FlatStyle = FlatStyle.Flat;
+            bt_loaddirs.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            bt_loaddirs.ForeColor = Color.Black;
+            bt_loaddirs.Location = new Point(8, 629);
+            bt_loaddirs.Name = "bt_loaddirs";
+            bt_loaddirs.Size = new Size(281, 27);
+            bt_loaddirs.TabIndex = 23;
+            bt_loaddirs.Tag = "no-theme";
+            bt_loaddirs.Text = "Manage GGUF Folders";
+            bt_loaddirs.UseVisualStyleBackColor = false;
+            bt_loaddirs.Click += btLoadFolders_Click;
+            // 
+            // bt_refreshlist
+            // 
+            bt_refreshlist.AutoSize = true;
+            bt_refreshlist.BackColor = Color.ForestGreen;
+            bt_refreshlist.FlatStyle = FlatStyle.Flat;
+            bt_refreshlist.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            bt_refreshlist.ForeColor = Color.White;
+            bt_refreshlist.Location = new Point(8, 594);
+            bt_refreshlist.Name = "bt_refreshlist";
+            bt_refreshlist.Size = new Size(281, 27);
+            bt_refreshlist.TabIndex = 22;
+            bt_refreshlist.Tag = "no-theme";
+            bt_refreshlist.Text = "Refresh Model List";
+            bt_refreshlist.UseVisualStyleBackColor = false;
+            bt_refreshlist.Click += bt_newsession_Click_1;
             // 
             // listModels
             // 
@@ -84,7 +102,7 @@
             listModels.Location = new Point(8, 8);
             listModels.Name = "listModels";
             listModels.Padding = new Padding(1);
-            listModels.Size = new Size(281, 642);
+            listModels.Size = new Size(281, 578);
             listModels.TabIndex = 0;
             // 
             // verticalStackPanel2
@@ -97,7 +115,7 @@
             verticalStackPanel2.Location = new Point(297, 0);
             verticalStackPanel2.Name = "verticalStackPanel2";
             verticalStackPanel2.Padding = new Padding(8);
-            verticalStackPanel2.Size = new Size(646, 695);
+            verticalStackPanel2.Size = new Size(646, 663);
             verticalStackPanel2.TabIndex = 36;
             verticalStackPanel2.Paint += verticalStackPanel2_Paint;
             // 
@@ -107,7 +125,7 @@
             panButtons.Controls.Add(btApply);
             panButtons.Controls.Add(btLaunch);
             panButtons.Controls.Add(btStop);
-            panButtons.Location = new Point(8, 659);
+            panButtons.Location = new Point(8, 629);
             panButtons.Name = "panButtons";
             panButtons.Size = new Size(630, 27);
             panButtons.TabIndex = 43;
@@ -123,8 +141,9 @@
             btApply.Size = new Size(201, 27);
             btApply.TabIndex = 39;
             btApply.Tag = "no-theme";
-            btApply.Text = "Save Model's Settings";
+            btApply.Text = "Save Settings 💾";
             btApply.UseVisualStyleBackColor = false;
+            btApply.Click += btApply_Click_1;
             // 
             // btLaunch
             // 
@@ -137,7 +156,7 @@
             btLaunch.Size = new Size(205, 27);
             btLaunch.TabIndex = 40;
             btLaunch.Tag = "no-theme";
-            btLaunch.Text = "Launch ▶";
+            btLaunch.Text = "Save && Launch ▶";
             btLaunch.UseVisualStyleBackColor = false;
             btLaunch.Click += btLaunch_Click_1;
             // 
@@ -154,14 +173,15 @@
             btStop.Tag = "no-theme";
             btStop.Text = "Stop ■";
             btStop.UseVisualStyleBackColor = false;
+            btStop.Click += btStop_Click;
             // 
             // lblServerStatus
             // 
-            lblServerStatus.Font = new Font("Segoe UI", 9F);
+            lblServerStatus.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblServerStatus.ForeColor = Color.FromArgb(230, 230, 230);
-            lblServerStatus.Location = new Point(8, 633);
+            lblServerStatus.Location = new Point(8, 596);
             lblServerStatus.Name = "lblServerStatus";
-            lblServerStatus.Size = new Size(630, 18);
+            lblServerStatus.Size = new Size(630, 25);
             lblServerStatus.TabIndex = 42;
             lblServerStatus.Text = "○ Server Stopped";
             lblServerStatus.TextAlign = ContentAlignment.MiddleLeft;
@@ -175,10 +195,10 @@
             lvServerLog.ForeColor = Color.FromArgb(230, 230, 230);
             lvServerLog.FullRowSelect = true;
             lvServerLog.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-            lvServerLog.Location = new Point(8, 536);
+            lvServerLog.Location = new Point(8, 448);
             lvServerLog.MultiSelect = false;
             lvServerLog.Name = "lvServerLog";
-            lvServerLog.Size = new Size(630, 89);
+            lvServerLog.Size = new Size(630, 140);
             lvServerLog.TabIndex = 44;
             lvServerLog.UseCompatibleStateImageBehavior = false;
             lvServerLog.View = View.Details;
@@ -200,7 +220,7 @@
             boxSettings.Location = new Point(8, 8);
             boxSettings.Name = "boxSettings";
             boxSettings.Padding = new Padding(12, 32, 12, 10);
-            boxSettings.Size = new Size(630, 520);
+            boxSettings.Size = new Size(630, 432);
             boxSettings.TabIndex = 0;
             boxSettings.Text = "Settings";
             // 
@@ -209,7 +229,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DimGray;
-            ClientSize = new Size(943, 695);
+            ClientSize = new Size(943, 663);
             Controls.Add(verticalStackPanel2);
             Controls.Add(verticalStackPanel1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -220,6 +240,7 @@
             StartPosition = FormStartPosition.CenterParent;
             Text = "Language Model Loader";
             Load += ModelForm_Load;
+            KeyDown += ModelForm_KeyDown;
             verticalStackPanel1.ResumeLayout(false);
             verticalStackPanel1.PerformLayout();
             verticalStackPanel2.ResumeLayout(false);
@@ -232,7 +253,7 @@
         private Controls.ModernListBox listModels;
         private Controls.VerticalStackPanel verticalStackPanel2;
         private Controls.CollapsibleGroupBox boxSettings;
-        private Button bt_newsession;
+        private Button bt_refreshlist;
         private Panel panButtons;
         private Button btApply;
         private Button btLaunch;
@@ -249,6 +270,7 @@
         private Controls.ModernNumericUpDown num_gpuLayers;
         private Controls.ModernNumericUpDown num_contextSize;
         private Controls.ModernNumericUpDown num_reasoningBudget;
+        private Controls.ModernComboBox cb_instructlocal;
         private Controls.ModernComboBox cb_flashAttention;
         private Controls.ModernComboBox cb_reasoning;
         private Controls.ModernCheckBox ck_props;
@@ -258,5 +280,6 @@
         private Controls.ModernCheckBox ck_loadMmproj;
         private Controls.ModernCheckBox ck_loadJinja;
         private System.Windows.Forms.TextBox ed_additionalArgs;
+        private Button bt_loaddirs;
     }
 }

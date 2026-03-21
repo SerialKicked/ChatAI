@@ -62,5 +62,14 @@ namespace LetheChat.src.forms
                 await DoSearch(searchstr);
             }
         }
+
+        private void RAGSearchForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
+        }
     }
 }

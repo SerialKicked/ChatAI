@@ -59,17 +59,17 @@ namespace LetheChat.src.forms
             ed_worlddesc.Text = selectedWorldEditor.Description;
             num_scandepth.Value = selectedWorldEditor.ScanDepth;
             ck_wiembed.Checked = selectedWorldEditor.DoEmbeds;
-            
+
             // Create sorted list with index mapping
             RefreshWorldEntriesList();
-            
+
             if (lb_worldentries.Items.Count > 0)
             {
                 // Find the UI index for the forced entry (original index)
                 var uiIndex = _sortedToOriginalIndexMap.IndexOf(forceEntry);
                 if (uiIndex == -1 || uiIndex >= lb_worldentries.Items.Count)
                     uiIndex = 0;
-                    
+
                 var originalIndex = _sortedToOriginalIndexMap[uiIndex];
                 SelectedWorldEntryEditor = selectedWorldEditor.Entries[originalIndex];
                 lb_worldentries.SelectedIndex = uiIndex;
@@ -103,11 +103,11 @@ namespace LetheChat.src.forms
             var uiIndex = lb_worldentries.SelectedIndex;
             if (uiIndex < 0 || uiIndex >= _sortedToOriginalIndexMap.Count)
                 return;
-                
+
             var originalIndex = _sortedToOriginalIndexMap[uiIndex];
             if (originalIndex < 0 || originalIndex >= SelectedWorldEditor.Entries.Count)
                 return;
-                
+
             SelectedWorldEntryEditor = SelectedWorldEditor.Entries[originalIndex];
             LoadWorldEntry(SelectedWorldEntryEditor);
         }
@@ -166,7 +166,7 @@ namespace LetheChat.src.forms
             // Refresh the list to maintain alphabetical order after name changes
             var currentSelectedOriginalIndex = _sortedToOriginalIndexMap[lb_worldentries.SelectedIndex];
             RefreshWorldEntriesList();
-            
+
             // Find the new UI position of the edited entry and reselect it
             var newUiIndex = _sortedToOriginalIndexMap.IndexOf(currentSelectedOriginalIndex);
             if (newUiIndex >= 0)
@@ -225,10 +225,10 @@ namespace LetheChat.src.forms
             {
                 var uiIndex = lb_worldentries.SelectedIndex;
                 var originalIndex = _sortedToOriginalIndexMap[uiIndex];
-                
+
                 SelectedWorldEditor.Entries.RemoveAt(originalIndex);
                 RefreshWorldEntriesList();
-                
+
                 // Select the next available entry
                 if (lb_worldentries.Items.Count > 0)
                 {
@@ -242,9 +242,9 @@ namespace LetheChat.src.forms
         {
             SelectedWorldEntryEditor = new MemoryUnit() { Name = "New Entry" };
             SelectedWorldEditor.Entries.Add(SelectedWorldEntryEditor);
-            
+
             RefreshWorldEntriesList();
-            
+
             // Find and select the newly added entry in the sorted list
             var newEntryOriginalIndex = SelectedWorldEditor.Entries.Count - 1;
             var newEntryUiIndex = _sortedToOriginalIndexMap.IndexOf(newEntryOriginalIndex);
@@ -260,6 +260,15 @@ namespace LetheChat.src.forms
         private void bt_close_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void WorldEditForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
         }
     }
 }
