@@ -48,6 +48,11 @@
             colLastSeen = new ColumnHeader();
             colRefs = new ColumnHeader();
             colSuperseded = new ColumnHeader();
+            tabSearch = new TabPage();
+            ck3rdSearch = new LetheChat.Controls.ModernCheckBox();
+            btSearch = new Button();
+            label1 = new Label();
+            edSearch = new TextBox();
             webView = new Microsoft.Web.WebView2.WinForms.WebView2();
             ((System.ComponentModel.ISupportInitialize)splitMain).BeginInit();
             splitMain.Panel1.SuspendLayout();
@@ -57,6 +62,7 @@
             tabBrowse.SuspendLayout();
             panelLeftTop.SuspendLayout();
             tabFacts.SuspendLayout();
+            tabSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)webView).BeginInit();
             SuspendLayout();
             // 
@@ -98,6 +104,7 @@
             mainTabControl.Appearance = TabAppearance.Buttons;
             mainTabControl.Controls.Add(tabBrowse);
             mainTabControl.Controls.Add(tabFacts);
+            mainTabControl.Controls.Add(tabSearch);
             mainTabControl.Dock = DockStyle.Fill;
             mainTabControl.Font = new Font("Segoe UI", 9F);
             mainTabControl.ItemSize = new Size(0, 36);
@@ -307,6 +314,67 @@
             colSuperseded.Text = "Status";
             colSuperseded.Width = 40;
             // 
+            // tabSearch
+            // 
+            tabSearch.BackColor = Color.FromArgb(37, 37, 37);
+            tabSearch.Controls.Add(ck3rdSearch);
+            tabSearch.Controls.Add(btSearch);
+            tabSearch.Controls.Add(label1);
+            tabSearch.Controls.Add(edSearch);
+            tabSearch.Font = new Font("Segoe UI", 9F);
+            tabSearch.ForeColor = Color.FromArgb(230, 230, 230);
+            tabSearch.Location = new Point(4, 40);
+            tabSearch.Name = "tabSearch";
+            tabSearch.Size = new Size(477, 723);
+            tabSearch.TabIndex = 2;
+            tabSearch.Text = "Search";
+            // 
+            // ck3rdSearch
+            // 
+            ck3rdSearch.Checked = true;
+            ck3rdSearch.CheckState = CheckState.Checked;
+            ck3rdSearch.Font = new Font("Segoe UI", 9F);
+            ck3rdSearch.Location = new Point(8, 96);
+            ck3rdSearch.Name = "ck3rdSearch";
+            ck3rdSearch.Size = new Size(204, 26);
+            ck3rdSearch.TabIndex = 4;
+            ck3rdSearch.Text = "Convert to 3rd person";
+            ck3rdSearch.UseVisualStyleBackColor = true;
+            // 
+            // btSearch
+            // 
+            btSearch.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btSearch.BackColor = Color.DarkGreen;
+            btSearch.FlatStyle = FlatStyle.Flat;
+            btSearch.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btSearch.Location = new Point(8, 61);
+            btSearch.Name = "btSearch";
+            btSearch.Size = new Size(453, 29);
+            btSearch.TabIndex = 2;
+            btSearch.Tag = "no-theme";
+            btSearch.Text = "Search";
+            btSearch.UseVisualStyleBackColor = false;
+            btSearch.Click += btSearch_Click;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label1.Location = new Point(8, 14);
+            label1.Name = "label1";
+            label1.Size = new Size(85, 15);
+            label1.TabIndex = 1;
+            label1.Text = "Search String:";
+            // 
+            // edSearch
+            // 
+            edSearch.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            edSearch.Location = new Point(8, 32);
+            edSearch.Name = "edSearch";
+            edSearch.Size = new Size(453, 23);
+            edSearch.TabIndex = 0;
+            edSearch.KeyPress += textBox1_KeyPress;
+            // 
             // webView
             // 
             webView.AllowExternalDrop = true;
@@ -328,7 +396,7 @@
             MinimizeBox = false;
             Name = "MemoryBrowserForm";
             StartPosition = FormStartPosition.CenterParent;
-            Text = "Memory Browser";
+            Text = "Persona's Brain";
             KeyDown += MemoryBrowserForm_KeyDown_1;
             splitMain.Panel1.ResumeLayout(false);
             splitMain.Panel2.ResumeLayout(false);
@@ -339,6 +407,8 @@
             panelLeftTop.ResumeLayout(false);
             panelLeftTop.PerformLayout();
             tabFacts.ResumeLayout(false);
+            tabSearch.ResumeLayout(false);
+            tabSearch.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)webView).EndInit();
             ResumeLayout(false);
         }
@@ -353,5 +423,10 @@
         private ColumnHeader colRefs;
         private ColumnHeader colSuperseded;
         private Button button1;
+        private TabPage tabSearch;
+        private Button btSearch;
+        private Label label1;
+        private TextBox edSearch;
+        private Controls.ModernCheckBox ck3rdSearch;
     }
 }

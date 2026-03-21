@@ -304,7 +304,7 @@ namespace LetheChat.src.forms
         {
             if (mem == null)
             {
-                NavigateHtml("<html><body style='font-family:Segoe UI; color:#ddd; background:#0f1117;'><i>No memory selected.</i></body></html>");
+                NavigateHtml(BuildHtmlPage("<i>No memory selected.</i>"));
                 return;
             }
 
@@ -353,8 +353,45 @@ namespace LetheChat.src.forms
             var title = System.Net.WebUtility.HtmlEncode(mem.Name ?? "[untitled]");
             var cat = System.Net.WebUtility.HtmlEncode(mem.Category.ToString());
 
-            var html = new StringBuilder();
-            html.Append("""
+            var body = new StringBuilder();
+            body.Append($"<div class='title'>{title}</div>");
+            body.Append($"<div class='meta'><span class='badge'>{cat}</span><span class='sentiment'>Sentiment: {System.Net.WebUtility.HtmlEncode(sentiment)}</span></div>");
+            if (!string.IsNullOrEmpty(reason))
+                body.Append(reason);
+
+            // Details section (##)
+            body.Append("<h2>Details</h2>");
+            body.Append("<div class='kv'>");
+            body.Append($"<div class='k'>Added</div><div class='v'>{System.Net.WebUtility.HtmlEncode(addedStr)}</div>");
+            body.Append($"<div class='k'>Priority</div><div class='v'>{System.Net.WebUtility.HtmlEncode(priorityStr)}</div>");
+            body.Append($"<div class='k'>Insertion</div><div class='v'>{System.Net.WebUtility.HtmlEncode(insertionStr)}</div>");
+            body.Append($"<div class='k'>Last trigger</div><div class='v'>{System.Net.WebUtility.HtmlEncode(lastTrigStr)}</div>");
+            body.Append("</div><hr>");
+            body.Append($"<div class='content'>{bodyHtml}</div>");
+
+            NavigateHtml(BuildHtmlPage(body.ToString(), """
+                .title { font-size: 20px; font-weight: 600; margin-bottom: 6px; color: var(--fg); }
+                .sentiment {
+                    display: inline-block; background: var(--sent-bg); color: var(--sent-fg);
+                    padding: 2px 8px; border-radius: 10px; font-size: 12px;
+                    border: 1px solid #4b2f2a;
+                }
+                .reason { margin: 12px 0; color: var(--fg); background: var(--bg-panel); padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; }
+                .content { line-height: 1.6; color: var(--fg); }
+                blockquote {
+                    color: var(--fg);
+                    border-left: 4px solid var(--blockquote-border);
+                    margin: 8px 0; padding: 6px 12px; background: var(--blockquote-bg);
+                    border-radius: 4px;
+                }
+                code, pre { background: var(--code-bg); border-radius: 6px; color: #e6edf3; }
+                pre { padding: 10px; overflow: auto; border: 1px solid var(--border); }
+                """));
+        }
+
+        private static string BuildHtmlPage(string bodyContent, string extraCss = "")
+        {
+            return $$"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -362,11 +399,11 @@ namespace LetheChat.src.forms
 <meta name="color-scheme" content="dark light" />
 <style>
     :root {
-        --bg: #0f1117;          /* panel background */
-        --bg-panel: #111827;    /* slightly lighter than bg for blocks */
-        --fg: #e5e7eb;          /* primary text */
-        --muted: #9aa4af;       /* secondary text */
-        --border: #1f2937;      /* borders/separators */
+        --bg: #0f1117;
+        --bg-panel: #111827;
+        --fg: #e5e7eb;
+        --muted: #9aa4af;
+        --border: #1f2937;
         --badge-bg: #1f2937;
         --badge-fg: #cdd6f4;
         --sent-bg: #2b1f1d;
@@ -377,8 +414,10 @@ namespace LetheChat.src.forms
         --link: #8ab4f8;
         --link-hover: #a8c7fa;
         --accent: #64748b;
+        --superseded-bg: #3b1f1f;
+        --active-bg: #1f3b1f;
+        --dist-fg: #a3e635;
     }
-
     html, body { height: 100%; }
     body {
         font-family: "Segoe UI", Arial, sans-serif;
@@ -386,34 +425,17 @@ namespace LetheChat.src.forms
         color: var(--fg);
         background: var(--bg);
     }
-    .title { font-size: 20px; font-weight: 600; margin-bottom: 6px; color: var(--fg); }
-    .meta { color: var(--muted); margin-bottom: 12px; }
     .badge {
         display: inline-block; background: var(--badge-bg); color: var(--badge-fg);
         padding: 2px 8px; border-radius: 10px; margin-right: 8px; font-size: 12px;
         border: 1px solid var(--border);
     }
-    .sentiment {
-        display: inline-block; background: var(--sent-bg); color: var(--sent-fg);
-        padding: 2px 8px; border-radius: 10px; font-size: 12px;
-        border: 1px solid #4b2f2a;
-    }
-    .reason { margin: 12px 0; color: var(--fg); background: var(--bg-panel); padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; }
-    .content { line-height: 1.6; color: var(--fg); }
-    blockquote {
-        color: var(--fg);
-        border-left: 4px solid var(--blockquote-border);
-        margin: 8px 0; padding: 6px 12px; background: var(--blockquote-bg);
-        border-radius: 4px;
-    }
-    code, pre { background: var(--code-bg); border-radius: 6px; color: #e6edf3; }
-    pre { padding: 10px; overflow: auto; border: 1px solid var(--border); }
+    .meta { color: var(--muted); margin-bottom: 12px; }
     hr { border: 0; border-top: 1px solid var(--border); margin: 16px 0; }
     h1, h2, h3, h4 { margin-top: 16px; color: var(--fg); }
-    a { color: var(--link); text-decoration: none; }
+    a { color: var(--link); text-decoration: none; cursor: pointer; }
     a:hover { color: var(--link-hover); text-decoration: underline; }
     img, video { max-width: 100%; }
-
     .kv {
         display: grid;
         grid-template-columns: max-content 1fr;
@@ -426,29 +448,28 @@ namespace LetheChat.src.forms
     }
     .k { color: var(--muted); }
     .v { color: var(--fg); }
+    .mem-list { list-style: none; padding: 0; margin: 8px 0; }
+    .mem-list li {
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 8px 12px;
+        margin-bottom: 6px;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+    .mem-list li:hover { background: #1a2332; }
+    .mem-title { color: var(--link); font-weight: 500; }
+    .mem-cat { color: var(--muted); font-size: 12px; margin-left: 8px; }
+    .mem-none { color: var(--muted); font-style: italic; }
+    {{extraCss}}
 </style>
 </head>
 <body>
-""");
-
-            html.Append($"<div class='title'>{title}</div>");
-            html.Append($"<div class='meta'><span class='badge'>{cat}</span><span class='sentiment'>Sentiment: {System.Net.WebUtility.HtmlEncode(sentiment)}</span></div>");
-            if (!string.IsNullOrEmpty(reason))
-                html.Append(reason);
-
-            // Details section (##)
-            html.Append("<h2>Details</h2>");
-            html.Append("<div class='kv'>");
-            html.Append($"<div class='k'>Added</div><div class='v'>{System.Net.WebUtility.HtmlEncode(addedStr)}</div>");
-            html.Append($"<div class='k'>Priority</div><div class='v'>{System.Net.WebUtility.HtmlEncode(priorityStr)}</div>");
-            html.Append($"<div class='k'>Insertion</div><div class='v'>{System.Net.WebUtility.HtmlEncode(insertionStr)}</div>");
-            html.Append($"<div class='k'>Last trigger</div><div class='v'>{System.Net.WebUtility.HtmlEncode(lastTrigStr)}</div>");
-            html.Append("</div><hr>");
-
-            html.Append($"<div class='content'>{bodyHtml}</div>");
-            html.Append("</body></html>");
-
-            NavigateHtml(html.ToString());
+{{bodyContent}}
+</body>
+</html>
+""";
         }
 
         private async void NavigateHtml(string html)
@@ -610,169 +631,77 @@ namespace LetheChat.src.forms
         {
             if (fact == null)
             {
-                FactNavigateHtml("<html><body style='font-family:Segoe UI; color:#ddd; background:#0f1117;'><i>No fact selected.</i></body></html>");
+                FactNavigateHtml(BuildHtmlPage("<i>No fact selected.</i>"));
                 return;
             }
 
             var brain = LLMEngine.Bot?.Brain;
             var factHtml = System.Net.WebUtility.HtmlEncode(fact.Fact);
 
-            var html = new StringBuilder();
-            html.Append("""
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8" />
-<meta name="color-scheme" content="dark light" />
-<style>
-    :root {
-        --bg: #0f1117;
-        --bg-panel: #111827;
-        --fg: #e5e7eb;
-        --muted: #9aa4af;
-        --border: #1f2937;
-        --badge-bg: #1f2937;
-        --badge-fg: #cdd6f4;
-        --sent-bg: #2b1f1d;
-        --sent-fg: #f5e0dc;
-        --code-bg: #0b1220;
-        --link: #8ab4f8;
-        --link-hover: #a8c7fa;
-        --superseded-bg: #3b1f1f;
-        --active-bg: #1f3b1f;
-    }
-
-    html, body { height: 100%; }
-    body {
-        font-family: "Segoe UI", Arial, sans-serif;
-        margin: 0; padding: 16px;
-        color: var(--fg);
-        background: var(--bg);
-    }
-    .title { font-size: 18px; font-weight: 600; margin-bottom: 6px; color: var(--fg); line-height: 1.5; }
-    .meta { color: var(--muted); margin-bottom: 12px; }
-    .badge {
-        display: inline-block; background: var(--badge-bg); color: var(--badge-fg);
-        padding: 2px 8px; border-radius: 10px; margin-right: 8px; font-size: 12px;
-        border: 1px solid var(--border);
-    }
-    .badge-superseded {
-        display: inline-block; background: var(--superseded-bg); color: #f5a0a0;
-        padding: 2px 8px; border-radius: 10px; font-size: 12px;
-        border: 1px solid #4b2f2a;
-    }
-    .badge-active {
-        display: inline-block; background: var(--active-bg); color: #a0f5a0;
-        padding: 2px 8px; border-radius: 10px; font-size: 12px;
-        border: 1px solid #2a4b2f;
-    }
-    hr { border: 0; border-top: 1px solid var(--border); margin: 16px 0; }
-    h2, h3 { margin-top: 16px; color: var(--fg); }
-
-    .kv {
-        display: grid;
-        grid-template-columns: max-content 1fr;
-        gap: 6px 12px;
-        margin: 12px 0 16px 0;
-        background: var(--bg-panel);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 10px 12px;
-    }
-    .k { color: var(--muted); }
-    .v { color: var(--fg); }
-
-    .mem-list {
-        list-style: none;
-        padding: 0;
-        margin: 8px 0;
-    }
-    .mem-list li {
-        background: var(--bg-panel);
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        padding: 8px 12px;
-        margin-bottom: 6px;
-        cursor: pointer;
-        transition: background 0.15s;
-    }
-    .mem-list li:hover {
-        background: #1a2332;
-    }
-    .mem-title { color: var(--link); font-weight: 500; }
-    .mem-cat { color: var(--muted); font-size: 12px; margin-left: 8px; }
-    .mem-none { color: var(--muted); font-style: italic; }
-
-    a { color: var(--link); text-decoration: none; cursor: pointer; }
-    a:hover { color: var(--link-hover); text-decoration: underline; }
-</style>
-</head>
-<body>
-""");
-
-            html.Append($"<div class='title'>{factHtml}</div>");
+            var body = new StringBuilder();
+            body.Append($"<div class='title'>{factHtml}</div>");
 
             var statusBadge = fact.Superseded
                 ? "<span class='badge-superseded'>Superseded</span>"
                 : "<span class='badge-active'>Active</span>";
-            html.Append($"<div class='meta'>{statusBadge} <span class='badge'>Refs: {fact.ReferenceCount}</span> <span class='badge'>Score: {fact.GetImportanceScore():F2}</span></div>");
+            body.Append($"<div class='meta'>{statusBadge} <span class='badge'>Refs: {fact.ReferenceCount}</span> <span class='badge'>Score: {fact.GetImportanceScore():F2}</span></div>");
 
-            html.Append("<h2>Details</h2>");
-            html.Append("<div class='kv'>");
-            html.Append($"<div class='k'>First Seen</div><div class='v'>{System.Net.WebUtility.HtmlEncode(fact.FirstSeen.ToString("yyyy-MM-dd HH:mm"))}</div>");
-            html.Append($"<div class='k'>Last Seen</div><div class='v'>{System.Net.WebUtility.HtmlEncode(fact.LastSeen.ToString("yyyy-MM-dd HH:mm"))}</div>");
-            html.Append($"<div class='k'>Reference Count</div><div class='v'>{fact.ReferenceCount}</div>");
-            html.Append($"<div class='k'>Importance Score</div><div class='v'>{fact.GetImportanceScore():F3}</div>");
-            html.Append($"<div class='k'>Has Embedding</div><div class='v'>{(fact.EmbedSummary.Length > 0 ? "Yes" : "No")}</div>");
-            html.Append($"<div class='k'>GUID</div><div class='v' style='font-size:11px;'>{System.Net.WebUtility.HtmlEncode(fact.Guid.ToString())}</div>");
-            html.Append("</div><hr>");
+            body.Append("<h2>Details</h2>");
+            body.Append("<div class='kv'>");
+            body.Append($"<div class='k'>First Seen</div><div class='v'>{System.Net.WebUtility.HtmlEncode(fact.FirstSeen.ToString("yyyy-MM-dd HH:mm"))}</div>");
+            body.Append($"<div class='k'>Last Seen</div><div class='v'>{System.Net.WebUtility.HtmlEncode(fact.LastSeen.ToString("yyyy-MM-dd HH:mm"))}</div>");
+            body.Append($"<div class='k'>Reference Count</div><div class='v'>{fact.ReferenceCount}</div>");
+            body.Append($"<div class='k'>Importance Score</div><div class='v'>{fact.GetImportanceScore():F3}</div>");
+            body.Append($"<div class='k'>Has Embedding</div><div class='v'>{(fact.EmbedSummary.Length > 0 ? "Yes" : "No")}</div>");
+            body.Append($"<div class='k'>GUID</div><div class='v' style='font-size:11px;'>{System.Net.WebUtility.HtmlEncode(fact.Guid.ToString())}</div>");
+            body.Append("</div><hr>");
 
             // Superseded By section
             if (fact.Superseded && fact.SupersededBy.HasValue)
             {
-                html.Append("<h3>Superseded By</h3>");
+                body.Append("<h3>Superseded By</h3>");
                 var supersedingFact = _allFacts.Find(f => f.Guid == fact.SupersededBy.Value);
                 if (supersedingFact != null)
                 {
                     var sfText = System.Net.WebUtility.HtmlEncode(supersedingFact.Fact);
-                    html.Append($"<ul class='mem-list'><li onclick=\"window.chrome.webview.postMessage('select-fact:{supersedingFact.Guid}')\">");
-                    html.Append($"<span class='mem-title'>{sfText}</span>");
-                    html.Append($"<span class='mem-cat'>Score: {supersedingFact.GetImportanceScore():F2}</span>");
-                    html.Append("</li></ul>");
+                    body.Append($"<ul class='mem-list'><li onclick=\"window.chrome.webview.postMessage('select-fact:{supersedingFact.Guid}')\">");
+                    body.Append($"<span class='mem-title'>{sfText}</span>");
+                    body.Append($"<span class='mem-cat'>Score: {supersedingFact.GetImportanceScore():F2}</span>");
+                    body.Append("</li></ul>");
                 }
                 else
                 {
-                    html.Append($"<p class='mem-none'>Fact not found: {System.Net.WebUtility.HtmlEncode(fact.SupersededBy.Value.ToString())}</p>");
+                    body.Append($"<p class='mem-none'>Fact not found: {System.Net.WebUtility.HtmlEncode(fact.SupersededBy.Value.ToString())}</p>");
                 }
-                html.Append("<hr>");
+                body.Append("<hr>");
             }
 
             // Facts that this fact supersedes
             var supersededByThis = _allFacts.FindAll(f => f.SupersededBy == fact.Guid);
             if (supersededByThis.Count > 0)
             {
-                html.Append("<h3>Supersedes</h3>");
-                html.Append("<ul class='mem-list'>");
+                body.Append("<h3>Supersedes</h3>");
+                body.Append("<ul class='mem-list'>");
                 foreach (var sf in supersededByThis)
                 {
                     var sfText = System.Net.WebUtility.HtmlEncode(sf.Fact);
-                    html.Append($"<li onclick=\"window.chrome.webview.postMessage('select-fact:{sf.Guid}')\">");
-                    html.Append($"<span class='mem-title'>{sfText}</span>");
-                    html.Append($"<span class='mem-cat'>Refs: {sf.ReferenceCount}</span>");
-                    html.Append("</li>");
+                    body.Append($"<li onclick=\"window.chrome.webview.postMessage('select-fact:{sf.Guid}')\">");
+                    body.Append($"<span class='mem-title'>{sfText}</span>");
+                    body.Append($"<span class='mem-cat'>Refs: {sf.ReferenceCount}</span>");
+                    body.Append("</li>");
                 }
-                html.Append("</ul><hr>");
+                body.Append("</ul><hr>");
             }
 
             // Source Memories section
-            html.Append("<h3>Source Memories</h3>");
+            body.Append("<h3>Source Memories</h3>");
             if (fact.SourceMemories.Count == 0)
             {
-                html.Append("<p class='mem-none'>No source memories linked.</p>");
+                body.Append("<p class='mem-none'>No source memories linked.</p>");
             }
             else
             {
-                html.Append("<ul class='mem-list'>");
+                body.Append("<ul class='mem-list'>");
                 foreach (var sourceGuid in fact.SourceMemories)
                 {
                     var mem = brain?.GetMemoryByID(sourceGuid);
@@ -780,22 +709,32 @@ namespace LetheChat.src.forms
                     {
                         var memTitle = System.Net.WebUtility.HtmlEncode(mem.Name ?? "[untitled]");
                         var memCat = System.Net.WebUtility.HtmlEncode(mem.Category.ToString());
-                        html.Append($"<li onclick=\"window.chrome.webview.postMessage('open-memory:{sourceGuid}')\">");
-                        html.Append($"<span class='mem-title'>{memTitle}</span>");
-                        html.Append($"<span class='mem-cat'>{memCat}</span>");
-                        html.Append("</li>");
+                        body.Append($"<li onclick=\"window.chrome.webview.postMessage('open-memory:{sourceGuid}')\">");
+                        body.Append($"<span class='mem-title'>{memTitle}</span>");
+                        body.Append($"<span class='mem-cat'>{memCat}</span>");
+                        body.Append("</li>");
                     }
                     else
                     {
-                        html.Append($"<li><span class='mem-none'>Memory not found: {System.Net.WebUtility.HtmlEncode(sourceGuid.ToString())}</span></li>");
+                        body.Append($"<li><span class='mem-none'>Memory not found: {System.Net.WebUtility.HtmlEncode(sourceGuid.ToString())}</span></li>");
                     }
                 }
-                html.Append("</ul>");
+                body.Append("</ul>");
             }
 
-            html.Append("</body></html>");
-
-            FactNavigateHtml(html.ToString());
+            FactNavigateHtml(BuildHtmlPage(body.ToString(), """
+                .title { font-size: 18px; font-weight: 600; margin-bottom: 6px; color: var(--fg); line-height: 1.5; }
+                .badge-superseded {
+                    display: inline-block; background: var(--superseded-bg); color: #f5a0a0;
+                    padding: 2px 8px; border-radius: 10px; font-size: 12px;
+                    border: 1px solid #4b2f2a;
+                }
+                .badge-active {
+                    display: inline-block; background: var(--active-bg); color: #a0f5a0;
+                    padding: 2px 8px; border-radius: 10px; font-size: 12px;
+                    border: 1px solid #2a4b2f;
+                }
+                """));
         }
 
         private async void FactNavigateHtml(string html)
@@ -927,6 +866,79 @@ namespace LetheChat.src.forms
         private void listFacts_SelectedIndexChanged(object sender, EventArgs e)
         {
             ShowSelectedFact();
+        }
+
+        private async void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)13)
+            {
+                e.Handled = true;
+                var searchstr = edSearch.Text;
+                await DoSearch(searchstr);
+            }
+        }
+
+        private async void btSearch_Click(object sender, EventArgs e)
+        {
+            var searchstr = edSearch.Text;
+            await DoSearch(searchstr);
+        }
+
+        private async Task DoSearch(string searchstr)
+        {
+            if (string.IsNullOrWhiteSpace(searchstr))
+                return;
+
+            var baseStr = searchstr;
+            if (ck3rdSearch.Checked)
+                searchstr = searchstr.ConvertToThirdPerson();
+
+            var found = await LLMEngine.Bot.Brain.Search(searchstr, 100, 1.2f);
+
+            var body = new StringBuilder();
+            body.Append("<div class='search-title'>Search Results</div>");
+            body.Append($"<div class='search-query'>Query: <strong>{System.Net.WebUtility.HtmlEncode(baseStr)}</strong>");
+            if (LLMEngine.Settings.RAGConvertTo3rdPerson)
+                body.Append($"&nbsp;&rarr;&nbsp;3rd person: <strong>{System.Net.WebUtility.HtmlEncode(searchstr)}</strong>");
+            body.Append("</div><hr>");
+
+            var resultList = found?.ToList() ?? [];
+            if (resultList.Count == 0)
+            {
+                body.Append("<div class='no-results'>No results found.</div>");
+            }
+            else
+            {
+                foreach (var item in resultList)
+                {
+                    var distance = item.Distance.ToString("0.0000");
+                    var cat = System.Net.WebUtility.HtmlEncode(item.Memory.Category.ToString());
+                    var name = System.Net.WebUtility.HtmlEncode(item.Memory.Name);
+                    var content = System.Net.WebUtility.HtmlEncode(LLMEngine.Bot.ReplaceMacros(item.Memory.Content));
+                    body.Append("<div class='result-item'>");
+                    body.Append($"<div class='result-header'><span class='badge'>{cat}</span><span class='dist'>dist: {distance}</span></div>");
+                    body.Append($"<div class='result-name'>{name}</div>");
+                    body.Append($"<div class='result-content'>{content}</div>");
+                    body.Append("</div>");
+                }
+            }
+
+            NavigateHtml(BuildHtmlPage(body.ToString(), """
+                .search-title { font-size: 18px; font-weight: 600; margin-bottom: 4px; color: var(--fg); }
+                .search-query { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+                .dist { display: inline-block; color: var(--dist-fg); font-size: 12px; font-family: monospace; }
+                .result-item {
+                    background: var(--bg-panel);
+                    border: 1px solid var(--border);
+                    border-radius: 8px;
+                    padding: 10px 12px;
+                    margin-bottom: 10px;
+                }
+                .result-header { margin-bottom: 6px; }
+                .result-name { font-weight: 600; color: var(--fg); font-size: 14px; margin-bottom: 4px; }
+                .result-content { color: var(--muted); font-size: 13px; line-height: 1.5; white-space: pre-wrap; }
+                .no-results { color: var(--muted); font-style: italic; }
+                """));
         }
     }
 

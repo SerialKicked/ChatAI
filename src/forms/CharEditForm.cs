@@ -293,11 +293,6 @@ namespace LetheChat.src.forms
             SelectedCharacter.Protected = ckPassword.Checked;
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void CharEditForm_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)

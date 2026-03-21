@@ -236,7 +236,6 @@ namespace LetheChat
             mck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
             mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
             mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
-            btVectorSearch.Enabled = LLMEngine.Settings.RAGEnabled;
             ckToolCalls.Checked = LLMEngine.Settings.ToolCallsAllowed;
             mck_ragenabled.Checked = LLMEngine.Settings.RAGEnabled;
             mck_worldinfo.Checked = LLMEngine.Settings.AllowWorldInfo;
@@ -420,7 +419,6 @@ namespace LetheChat
             mck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
             mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
             mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
-            btVectorSearch.Enabled = LLMEngine.Settings.RAGEnabled;
 
             if (LLMEngine.CompletionAPIType == LetheAISharp.API.CompletionType.Text || (LLMEngine.Settings.BackendChatAllowPrefill ?? LLMEngine.Client?.AllowPrefill == true))
             {
@@ -1122,7 +1120,6 @@ namespace LetheChat
         private void ck_ragenabled_CheckedChanged(object sender, EventArgs e)
         {
             LLMEngine.Settings.RAGEnabled = mck_ragenabled.Checked;
-            btVectorSearch.Enabled = LLMEngine.Settings.RAGEnabled;
         }
 
         #endregion
@@ -1859,13 +1856,6 @@ namespace LetheChat
             await WebChatLoad();
         }
 
-        private void btVectorSearch_Click(object sender, EventArgs e)
-        {
-            using var ragForm = new RAGSearchForm();
-            ThemeManager.ApplyToForm(ragForm);
-            ragForm.StartPosition = FormStartPosition.CenterParent;
-            ragForm.ShowDialog();
-        }
 
         private void btRawLog_Click(object sender, EventArgs e)
         {
@@ -2094,8 +2084,6 @@ namespace LetheChat
                 return;
             LLMEngine.History.LogMessage(msg);
             await LoadHistoryToUI();
-
-
         }
 
         private void ckToolCalls_CheckedChanged(object sender, EventArgs e)

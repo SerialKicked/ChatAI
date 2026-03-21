@@ -750,7 +750,6 @@ namespace LetheChat.src.forms
             edMiniBio.ScrollBars = ScrollBars.Vertical;
             edMiniBio.Size = new Size(883, 66);
             edMiniBio.TabIndex = 18;
-            edMiniBio.TextChanged += textBox1_TextChanged;
             // 
             // ckNoGuidance
             // 
@@ -1242,12 +1241,13 @@ namespace LetheChat.src.forms
             // 
             // ck_caninitchat
             // 
+            ck_caninitchat.Enabled = false;
             ck_caninitchat.Font = new Font("Segoe UI", 9F);
             ck_caninitchat.Location = new Point(15, 35);
             ck_caninitchat.Name = "ck_caninitchat";
             ck_caninitchat.Size = new Size(410, 26);
             ck_caninitchat.TabIndex = 0;
-            ck_caninitchat.Text = "Character can initiate chat (when the user is afk)";
+            ck_caninitchat.Text = "TODO: Character can initiate chat (when the user is afk)";
             ck_caninitchat.UseVisualStyleBackColor = true;
             // 
             // tabMood

@@ -54,7 +54,6 @@ namespace LetheChat
             pictEmbed = new PictureBox();
             bt_clearimg = new Button();
             button2 = new Button();
-            btVectorSearch = new Button();
             btRawLog = new Button();
             btWorldEditor = new Button();
             btMainSettings = new Button();
@@ -95,6 +94,7 @@ namespace LetheChat
             mck_onlinerag = new ModernCheckBox();
             panel2 = new Panel();
             mckNatMem = new ModernCheckBox();
+            mck_guidance = new ModernCheckBox();
             mck_ragenabled = new ModernCheckBox();
             mck_worldinfo = new ModernCheckBox();
             mck_sessionmemory = new ModernCheckBox();
@@ -116,7 +116,6 @@ namespace LetheChat
             ckGroupToggle = new ModernCheckBox();
             collapsibleGroupBox3 = new CollapsibleGroupBox();
             mck_ttstoggle = new ModernCheckBox();
-            mck_guidance = new ModernCheckBox();
             mck_caninitchat = new ModernCheckBox();
             panel1 = new Panel();
             statusbar.SuspendLayout();
@@ -146,7 +145,7 @@ namespace LetheChat
             // statusbar
             // 
             statusbar.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, toolStripStatusLabel2, toolStripStatusLabel3 });
-            statusbar.Location = new Point(0, 1017);
+            statusbar.Location = new Point(0, 981);
             statusbar.Name = "statusbar";
             statusbar.Size = new Size(1261, 22);
             statusbar.TabIndex = 2;
@@ -188,7 +187,7 @@ namespace LetheChat
             btChatHistory.FlatStyle = FlatStyle.Flat;
             btChatHistory.Font = new Font("Segoe UI", 9F);
             btChatHistory.ForeColor = Color.Black;
-            btChatHistory.Location = new Point(8, 266);
+            btChatHistory.Location = new Point(8, 245);
             btChatHistory.Name = "btChatHistory";
             btChatHistory.Size = new Size(184, 27);
             btChatHistory.TabIndex = 33;
@@ -259,7 +258,7 @@ namespace LetheChat
             bt_scenario.FlatStyle = FlatStyle.Flat;
             bt_scenario.Font = new Font("Segoe UI", 9F);
             bt_scenario.ForeColor = Color.Black;
-            bt_scenario.Location = new Point(8, 293);
+            bt_scenario.Location = new Point(8, 272);
             bt_scenario.Name = "bt_scenario";
             bt_scenario.Size = new Size(184, 27);
             bt_scenario.TabIndex = 26;
@@ -300,7 +299,7 @@ namespace LetheChat
             bt_newsession.FlatStyle = FlatStyle.Flat;
             bt_newsession.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_newsession.ForeColor = Color.Black;
-            bt_newsession.Location = new Point(8, 320);
+            bt_newsession.Location = new Point(8, 299);
             bt_newsession.Name = "bt_newsession";
             bt_newsession.Size = new Size(184, 27);
             bt_newsession.TabIndex = 21;
@@ -348,7 +347,7 @@ namespace LetheChat
             pictEmbed.BorderStyle = BorderStyle.FixedSingle;
             pictEmbed.Location = new Point(11, 35);
             pictEmbed.Name = "pictEmbed";
-            pictEmbed.Size = new Size(86, 69);
+            pictEmbed.Size = new Size(86, 84);
             pictEmbed.SizeMode = PictureBoxSizeMode.StretchImage;
             pictEmbed.TabIndex = 33;
             pictEmbed.TabStop = false;
@@ -358,7 +357,7 @@ namespace LetheChat
             bt_clearimg.AutoSize = true;
             bt_clearimg.Dock = DockStyle.Bottom;
             bt_clearimg.FlatStyle = FlatStyle.Flat;
-            bt_clearimg.Location = new Point(8, 114);
+            bt_clearimg.Location = new Point(8, 126);
             bt_clearimg.Margin = new Padding(0);
             bt_clearimg.Name = "bt_clearimg";
             bt_clearimg.Size = new Size(184, 27);
@@ -376,7 +375,7 @@ namespace LetheChat
             button2.FlatStyle = FlatStyle.Flat;
             button2.Font = new Font("Segoe UI", 9F);
             button2.ForeColor = Color.Black;
-            button2.Location = new Point(8, 234);
+            button2.Location = new Point(8, 260);
             button2.Name = "button2";
             button2.Size = new Size(184, 27);
             button2.TabIndex = 41;
@@ -384,23 +383,6 @@ namespace LetheChat
             button2.Text = "Persona's Brain";
             button2.UseVisualStyleBackColor = false;
             button2.Click += button2_Click;
-            // 
-            // btVectorSearch
-            // 
-            btVectorSearch.AutoSize = true;
-            btVectorSearch.BackColor = Color.DarkKhaki;
-            btVectorSearch.Dock = DockStyle.Top;
-            btVectorSearch.FlatStyle = FlatStyle.Flat;
-            btVectorSearch.Font = new Font("Segoe UI", 9F);
-            btVectorSearch.ForeColor = Color.Black;
-            btVectorSearch.Location = new Point(8, 261);
-            btVectorSearch.Name = "btVectorSearch";
-            btVectorSearch.Size = new Size(184, 27);
-            btVectorSearch.TabIndex = 34;
-            btVectorSearch.Tag = "no-theme";
-            btVectorSearch.Text = "Vector Search";
-            btVectorSearch.UseVisualStyleBackColor = false;
-            btVectorSearch.Click += btVectorSearch_Click;
             // 
             // btRawLog
             // 
@@ -415,14 +397,14 @@ namespace LetheChat
             btRawLog.Size = new Size(184, 27);
             btRawLog.TabIndex = 40;
             btRawLog.Tag = "no-theme";
-            btRawLog.Text = "View Raw Log";
+            btRawLog.Text = "Logs and Prompts";
             btRawLog.UseVisualStyleBackColor = false;
             btRawLog.Click += btRawLog_Click;
             // 
             // btWorldEditor
             // 
             btWorldEditor.AutoSize = true;
-            btWorldEditor.BackColor = Color.DarkSeaGreen;
+            btWorldEditor.BackColor = Color.DarkKhaki;
             btWorldEditor.Dock = DockStyle.Top;
             btWorldEditor.FlatStyle = FlatStyle.Flat;
             btWorldEditor.Font = new Font("Segoe UI", 9F);
@@ -692,7 +674,7 @@ namespace LetheChat
             bt_impersonate.FlatStyle = FlatStyle.Flat;
             bt_impersonate.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_impersonate.ForeColor = Color.Black;
-            bt_impersonate.Location = new Point(992, 928);
+            bt_impersonate.Location = new Point(992, 892);
             bt_impersonate.Name = "bt_impersonate";
             bt_impersonate.Size = new Size(60, 25);
             bt_impersonate.TabIndex = 7;
@@ -709,7 +691,7 @@ namespace LetheChat
             web_chat.DefaultBackgroundColor = Color.White;
             web_chat.Location = new Point(206, 3);
             web_chat.Name = "web_chat";
-            web_chat.Size = new Size(846, 919);
+            web_chat.Size = new Size(846, 883);
             web_chat.TabIndex = 6;
             web_chat.ZoomFactor = 1D;
             // 
@@ -720,7 +702,7 @@ namespace LetheChat
             bt_delete.FlatStyle = FlatStyle.Flat;
             bt_delete.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_delete.ForeColor = Color.Black;
-            bt_delete.Location = new Point(992, 989);
+            bt_delete.Location = new Point(992, 953);
             bt_delete.Name = "bt_delete";
             bt_delete.Size = new Size(60, 25);
             bt_delete.TabIndex = 5;
@@ -736,7 +718,7 @@ namespace LetheChat
             bt_reroll.FlatStyle = FlatStyle.Flat;
             bt_reroll.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_reroll.ForeColor = Color.Black;
-            bt_reroll.Location = new Point(992, 959);
+            bt_reroll.Location = new Point(992, 923);
             bt_reroll.Name = "bt_reroll";
             bt_reroll.Size = new Size(60, 25);
             bt_reroll.TabIndex = 4;
@@ -752,7 +734,7 @@ namespace LetheChat
             bt_send.FlatStyle = FlatStyle.Flat;
             bt_send.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_send.ForeColor = Color.Black;
-            bt_send.Location = new Point(926, 928);
+            bt_send.Location = new Point(926, 892);
             bt_send.Name = "bt_send";
             bt_send.Size = new Size(60, 86);
             bt_send.TabIndex = 3;
@@ -767,7 +749,7 @@ namespace LetheChat
             ed_input.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             ed_input.BackColor = Color.FromArgb(32, 70, 130, 180);
             ed_input.Font = new Font("Segoe UI", 16F);
-            ed_input.Location = new Point(206, 928);
+            ed_input.Location = new Point(206, 892);
             ed_input.Multiline = true;
             ed_input.Name = "ed_input";
             ed_input.ScrollBars = ScrollBars.Vertical;
@@ -856,7 +838,7 @@ namespace LetheChat
             panLeft.Location = new Point(0, 0);
             panLeft.Name = "panLeft";
             panLeft.Padding = new Padding(0, 6, 0, 6);
-            panLeft.Size = new Size(200, 1017);
+            panLeft.Size = new Size(200, 981);
             panLeft.TabIndex = 28;
             // 
             // cboxVLM
@@ -866,17 +848,16 @@ namespace LetheChat
             cboxVLM.Controls.Add(pictEmbed);
             cboxVLM.Controls.Add(bt_clearimg);
             cboxVLM.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            cboxVLM.Location = new Point(0, 814);
+            cboxVLM.Location = new Point(0, 806);
             cboxVLM.Name = "cboxVLM";
             cboxVLM.Padding = new Padding(8, 32, 8, 8);
-            cboxVLM.Size = new Size(200, 149);
+            cboxVLM.Size = new Size(200, 161);
             cboxVLM.TabIndex = 29;
             cboxVLM.Text = "Visual Language Models";
             // 
             // collapsibleGroupBox2
             // 
             collapsibleGroupBox2.BackColor = Color.FromArgb(37, 38, 42);
-            collapsibleGroupBox2.Controls.Add(btVectorSearch);
             collapsibleGroupBox2.Controls.Add(button2);
             collapsibleGroupBox2.Controls.Add(panel5);
             collapsibleGroupBox2.Controls.Add(mck_agentmode);
@@ -884,6 +865,7 @@ namespace LetheChat
             collapsibleGroupBox2.Controls.Add(mck_onlinerag);
             collapsibleGroupBox2.Controls.Add(panel2);
             collapsibleGroupBox2.Controls.Add(mckNatMem);
+            collapsibleGroupBox2.Controls.Add(mck_guidance);
             collapsibleGroupBox2.Controls.Add(mck_ragenabled);
             collapsibleGroupBox2.Controls.Add(mck_worldinfo);
             collapsibleGroupBox2.Controls.Add(mck_sessionmemory);
@@ -891,14 +873,14 @@ namespace LetheChat
             collapsibleGroupBox2.Location = new Point(0, 508);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(8, 32, 8, 8);
-            collapsibleGroupBox2.Size = new Size(200, 298);
+            collapsibleGroupBox2.Size = new Size(200, 290);
             collapsibleGroupBox2.TabIndex = 28;
-            collapsibleGroupBox2.Text = "Memory and RAG";
+            collapsibleGroupBox2.Text = "Memory and Tools";
             // 
             // panel5
             // 
             panel5.Dock = DockStyle.Top;
-            panel5.Location = new Point(8, 224);
+            panel5.Location = new Point(8, 250);
             panel5.Margin = new Padding(8);
             panel5.Name = "panel5";
             panel5.Padding = new Padding(8);
@@ -909,7 +891,7 @@ namespace LetheChat
             // 
             mck_agentmode.Dock = DockStyle.Top;
             mck_agentmode.Font = new Font("Segoe UI", 9F);
-            mck_agentmode.Location = new Point(8, 198);
+            mck_agentmode.Location = new Point(8, 224);
             mck_agentmode.Name = "mck_agentmode";
             mck_agentmode.Size = new Size(184, 26);
             mck_agentmode.TabIndex = 48;
@@ -921,11 +903,11 @@ namespace LetheChat
             // 
             ckToolCalls.Dock = DockStyle.Top;
             ckToolCalls.Font = new Font("Segoe UI", 9F);
-            ckToolCalls.Location = new Point(8, 172);
+            ckToolCalls.Location = new Point(8, 198);
             ckToolCalls.Name = "ckToolCalls";
             ckToolCalls.Size = new Size(184, 26);
             ckToolCalls.TabIndex = 51;
-            ckToolCalls.Text = "Tool Call";
+            ckToolCalls.Text = "Allow Tool-calling";
             ckToolCalls.UseVisualStyleBackColor = true;
             ckToolCalls.CheckedChanged += ckToolCalls_CheckedChanged;
             // 
@@ -933,18 +915,18 @@ namespace LetheChat
             // 
             mck_onlinerag.Dock = DockStyle.Top;
             mck_onlinerag.Font = new Font("Segoe UI", 9F);
-            mck_onlinerag.Location = new Point(8, 146);
+            mck_onlinerag.Location = new Point(8, 172);
             mck_onlinerag.Name = "mck_onlinerag";
             mck_onlinerag.Size = new Size(184, 26);
             mck_onlinerag.TabIndex = 47;
-            mck_onlinerag.Text = "Web Search";
+            mck_onlinerag.Text = "Allow Web Search";
             mck_onlinerag.UseVisualStyleBackColor = true;
             mck_onlinerag.CheckedChanged += ck_onlinerag_CheckedChanged;
             // 
             // panel2
             // 
             panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(8, 136);
+            panel2.Location = new Point(8, 162);
             panel2.Margin = new Padding(8);
             panel2.Name = "panel2";
             panel2.Padding = new Padding(8);
@@ -955,13 +937,25 @@ namespace LetheChat
             // 
             mckNatMem.Dock = DockStyle.Top;
             mckNatMem.Font = new Font("Segoe UI", 9F);
-            mckNatMem.Location = new Point(8, 110);
+            mckNatMem.Location = new Point(8, 136);
             mckNatMem.Name = "mckNatMem";
             mckNatMem.Size = new Size(184, 26);
             mckNatMem.TabIndex = 45;
             mckNatMem.Text = "Contextual Inserts";
             mckNatMem.UseVisualStyleBackColor = true;
             mckNatMem.CheckedChanged += ckNatMem_CheckedChanged;
+            // 
+            // mck_guidance
+            // 
+            mck_guidance.Dock = DockStyle.Top;
+            mck_guidance.Font = new Font("Segoe UI", 9F);
+            mck_guidance.Location = new Point(8, 110);
+            mck_guidance.Name = "mck_guidance";
+            mck_guidance.Size = new Size(184, 26);
+            mck_guidance.TabIndex = 35;
+            mck_guidance.Text = "Mood & Date Guidance";
+            mck_guidance.UseVisualStyleBackColor = true;
+            mck_guidance.CheckedChanged += mck_guidance_CheckedChanged;
             // 
             // mck_ragenabled
             // 
@@ -971,7 +965,7 @@ namespace LetheChat
             mck_ragenabled.Name = "mck_ragenabled";
             mck_ragenabled.Size = new Size(184, 26);
             mck_ragenabled.TabIndex = 44;
-            mck_ragenabled.Text = "Vector Database";
+            mck_ragenabled.Text = "Contextual Memory";
             mck_ragenabled.UseVisualStyleBackColor = true;
             mck_ragenabled.CheckedChanged += ck_ragenabled_CheckedChanged;
             // 
@@ -983,7 +977,7 @@ namespace LetheChat
             mck_worldinfo.Name = "mck_worldinfo";
             mck_worldinfo.Size = new Size(184, 26);
             mck_worldinfo.TabIndex = 43;
-            mck_worldinfo.Text = "Keyword Triggers";
+            mck_worldinfo.Text = "Enable WorldInfo";
             mck_worldinfo.UseVisualStyleBackColor = true;
             mck_worldinfo.CheckedChanged += ck_worldinfo_CheckedChanged;
             // 
@@ -995,7 +989,7 @@ namespace LetheChat
             mck_sessionmemory.Name = "mck_sessionmemory";
             mck_sessionmemory.Size = new Size(184, 26);
             mck_sessionmemory.TabIndex = 42;
-            mck_sessionmemory.Text = "Past Sessions";
+            mck_sessionmemory.Text = "Remember Past Sessions";
             mck_sessionmemory.UseVisualStyleBackColor = true;
             mck_sessionmemory.CheckedChanged += ck_sessionmemory_CheckedChanged;
             // 
@@ -1009,7 +1003,7 @@ namespace LetheChat
             panRight.Location = new Point(1061, 0);
             panRight.Name = "panRight";
             panRight.Padding = new Padding(0, 6, 0, 6);
-            panRight.Size = new Size(200, 1017);
+            panRight.Size = new Size(200, 981);
             panRight.TabIndex = 29;
             // 
             // collapsibleGroupBox4
@@ -1021,7 +1015,7 @@ namespace LetheChat
             collapsibleGroupBox4.Controls.Add(button1);
             collapsibleGroupBox4.Controls.Add(panel9);
             collapsibleGroupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox4.Location = new Point(0, 833);
+            collapsibleGroupBox4.Location = new Point(0, 813);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(8, 32, 8, 8);
             collapsibleGroupBox4.Size = new Size(200, 162);
@@ -1102,7 +1096,7 @@ namespace LetheChat
             collapsibleMenus.Controls.Add(btRawLog);
             collapsibleMenus.Controls.Add(panel3);
             collapsibleMenus.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleMenus.Location = new Point(0, 698);
+            collapsibleMenus.Location = new Point(0, 678);
             collapsibleMenus.Name = "collapsibleMenus";
             collapsibleMenus.Padding = new Padding(8, 32, 8, 8);
             collapsibleMenus.Size = new Size(200, 127);
@@ -1129,10 +1123,10 @@ namespace LetheChat
             cboxGroup.Controls.Add(panel7);
             cboxGroup.Controls.Add(ckGroupToggle);
             cboxGroup.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            cboxGroup.Location = new Point(0, 369);
+            cboxGroup.Location = new Point(0, 348);
             cboxGroup.Name = "cboxGroup";
             cboxGroup.Padding = new Padding(8, 32, 8, 8);
-            cboxGroup.Size = new Size(200, 321);
+            cboxGroup.Size = new Size(200, 322);
             cboxGroup.TabIndex = 29;
             cboxGroup.Text = "Group Chat";
             // 
@@ -1213,7 +1207,6 @@ namespace LetheChat
             // 
             collapsibleGroupBox3.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox3.Controls.Add(mck_ttstoggle);
-            collapsibleGroupBox3.Controls.Add(mck_guidance);
             collapsibleGroupBox3.Controls.Add(mck_caninitchat);
             collapsibleGroupBox3.Controls.Add(btSysPrompt);
             collapsibleGroupBox3.Controls.Add(cb_user);
@@ -1231,7 +1224,7 @@ namespace LetheChat
             collapsibleGroupBox3.Location = new Point(0, 6);
             collapsibleGroupBox3.Name = "collapsibleGroupBox3";
             collapsibleGroupBox3.Padding = new Padding(8, 32, 8, 8);
-            collapsibleGroupBox3.Size = new Size(200, 355);
+            collapsibleGroupBox3.Size = new Size(200, 334);
             collapsibleGroupBox3.TabIndex = 27;
             collapsibleGroupBox3.Text = "Chat Settings";
             // 
@@ -1239,7 +1232,7 @@ namespace LetheChat
             // 
             mck_ttstoggle.Dock = DockStyle.Bottom;
             mck_ttstoggle.Font = new Font("Segoe UI", 9F);
-            mck_ttstoggle.Location = new Point(8, 178);
+            mck_ttstoggle.Location = new Point(8, 183);
             mck_ttstoggle.Name = "mck_ttstoggle";
             mck_ttstoggle.Size = new Size(184, 26);
             mck_ttstoggle.TabIndex = 36;
@@ -1247,23 +1240,12 @@ namespace LetheChat
             mck_ttstoggle.UseVisualStyleBackColor = true;
             mck_ttstoggle.CheckedChanged += ck_ttstoggle_CheckedChanged;
             // 
-            // mck_guidance
-            // 
-            mck_guidance.Dock = DockStyle.Bottom;
-            mck_guidance.Font = new Font("Segoe UI", 9F);
-            mck_guidance.Location = new Point(8, 204);
-            mck_guidance.Name = "mck_guidance";
-            mck_guidance.Size = new Size(184, 26);
-            mck_guidance.TabIndex = 35;
-            mck_guidance.Text = "Mood & Date Guidance";
-            mck_guidance.UseVisualStyleBackColor = true;
-            mck_guidance.CheckedChanged += mck_guidance_CheckedChanged;
-            // 
             // mck_caninitchat
             // 
             mck_caninitchat.Dock = DockStyle.Bottom;
+            mck_caninitchat.Enabled = false;
             mck_caninitchat.Font = new Font("Segoe UI", 9F);
-            mck_caninitchat.Location = new Point(8, 230);
+            mck_caninitchat.Location = new Point(8, 209);
             mck_caninitchat.Name = "mck_caninitchat";
             mck_caninitchat.Size = new Size(184, 26);
             mck_caninitchat.TabIndex = 34;
@@ -1274,7 +1256,7 @@ namespace LetheChat
             // panel1
             // 
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(8, 256);
+            panel1.Location = new Point(8, 235);
             panel1.Margin = new Padding(8);
             panel1.Name = "panel1";
             panel1.Padding = new Padding(8);
@@ -1286,7 +1268,7 @@ namespace LetheChat
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(37, 38, 42);
-            ClientSize = new Size(1261, 1039);
+            ClientSize = new Size(1261, 1003);
             Controls.Add(panRight);
             Controls.Add(panLeft);
             Controls.Add(bt_impersonate);
@@ -1360,7 +1342,6 @@ namespace LetheChat
         private Button btMainSettings;
         private Button btWorldEditor;
         private Button btChatHistory;
-        private Button btVectorSearch;
         private Button btRawLog;
         private Button button2;
         private Controls.CollapsibleGroupBox collapseModel;
