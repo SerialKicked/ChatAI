@@ -304,6 +304,10 @@ namespace LetheChat
         {
             try
             {
+                // Kill any managed llama-server before switching to a different backend
+                if (Program.LlamaCppProcess.IsRunning)
+                    await Program.LlamaCppProcess.KillAsync();
+
                 using var loginForm = new LoginForm();
                 ThemeManager.ApplyToForm(loginForm);
                 loginForm.ShowDialog(this);
