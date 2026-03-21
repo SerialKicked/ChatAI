@@ -89,7 +89,6 @@ namespace LetheChat
             panLeft = new VerticalStackPanel();
             cboxVLM = new CollapsibleGroupBox();
             collapsibleGroupBox2 = new CollapsibleGroupBox();
-            button6 = new Button();
             panel5 = new Panel();
             mck_agentmode = new ModernCheckBox();
             ckToolCalls = new ModernCheckBox();
@@ -382,7 +381,7 @@ namespace LetheChat
             button2.Size = new Size(184, 27);
             button2.TabIndex = 41;
             button2.Tag = "no-theme";
-            button2.Text = "Brain Memory Map";
+            button2.Text = "Persona's Brain";
             button2.UseVisualStyleBackColor = false;
             button2.Click += button2_Click;
             // 
@@ -867,7 +866,7 @@ namespace LetheChat
             cboxVLM.Controls.Add(pictEmbed);
             cboxVLM.Controls.Add(bt_clearimg);
             cboxVLM.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            cboxVLM.Location = new Point(0, 835);
+            cboxVLM.Location = new Point(0, 814);
             cboxVLM.Name = "cboxVLM";
             cboxVLM.Padding = new Padding(8, 32, 8, 8);
             cboxVLM.Size = new Size(200, 149);
@@ -877,7 +876,6 @@ namespace LetheChat
             // collapsibleGroupBox2
             // 
             collapsibleGroupBox2.BackColor = Color.FromArgb(37, 38, 42);
-            collapsibleGroupBox2.Controls.Add(button6);
             collapsibleGroupBox2.Controls.Add(btVectorSearch);
             collapsibleGroupBox2.Controls.Add(button2);
             collapsibleGroupBox2.Controls.Add(panel5);
@@ -893,26 +891,9 @@ namespace LetheChat
             collapsibleGroupBox2.Location = new Point(0, 508);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(8, 32, 8, 8);
-            collapsibleGroupBox2.Size = new Size(200, 319);
+            collapsibleGroupBox2.Size = new Size(200, 298);
             collapsibleGroupBox2.TabIndex = 28;
             collapsibleGroupBox2.Text = "Memory and RAG";
-            // 
-            // button6
-            // 
-            button6.AutoSize = true;
-            button6.BackColor = Color.DarkKhaki;
-            button6.Dock = DockStyle.Top;
-            button6.FlatStyle = FlatStyle.Flat;
-            button6.Font = new Font("Segoe UI", 9F);
-            button6.ForeColor = Color.Black;
-            button6.Location = new Point(8, 288);
-            button6.Name = "button6";
-            button6.Size = new Size(184, 27);
-            button6.TabIndex = 50;
-            button6.Tag = "no-theme";
-            button6.Text = "Fact Map";
-            button6.UseVisualStyleBackColor = false;
-            button6.Click += button6_Click;
             // 
             // panel5
             // 
@@ -1430,7 +1411,6 @@ namespace LetheChat
         private Button btRunAgent;
         private Button button1;
         private Button button4;
-        private Button button6;
         private ModernCheckBox ckToolCalls;
         private Button bt_llama;
         private Panel panel4;

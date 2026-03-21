@@ -2098,12 +2098,6 @@ namespace LetheChat
 
         }
 
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            FactBrowserForm.ShowForActiveBot(this);
-        }
-
         private void ckToolCalls_CheckedChanged(object sender, EventArgs e)
         {
             if (_isinitloading)
