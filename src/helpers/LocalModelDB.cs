@@ -14,6 +14,28 @@ namespace LetheChat
         public string ModelFile { get; set; } = string.Empty;
         public LlamaCppSettings Settings { get; set; } = new LlamaCppSettings();
 
+        public bool IsJinjaFilePresent()
+        {
+            // get directory of the model file
+            var dir = Path.GetDirectoryName(ModelFile);
+            if (string.IsNullOrEmpty(dir))
+                return false;
+
+            // check if any .jinja file exists in the directory
+            var jinjaFiles = Directory.GetFiles(dir, "*.jinja", SearchOption.TopDirectoryOnly);
+            return jinjaFiles.Length > 0;
+        }
+
+        public bool IsMMProjFilePresent()
+        {
+            // get directory of the model file
+            var dir = Path.GetDirectoryName(ModelFile);
+            if (string.IsNullOrEmpty(dir))
+                return false;
+            // check if any .mmproj file exists in the directory
+            var mmprojFiles = Directory.GetFiles(dir, "mmproj*.gguf", SearchOption.TopDirectoryOnly);
+            return mmprojFiles.Length > 0;
+        }
     }
 
 

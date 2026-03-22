@@ -16,6 +16,7 @@ namespace LetheChat.Controls
     public class ModernCheckBox : CheckBox, IThemeAware
     {
         public bool ThemeProcessInnerComponent => false;
+        public Color? ForcedColor = null;
 
         // (Animation + state fields omitted here for brevity – keep your existing ones.)
         private const int BoxSize = 18;
@@ -289,8 +290,9 @@ namespace LetheChat.Controls
             int textOffset = glyph.Right + 8;
             var rect = new Rectangle(textOffset, 0, Width - textOffset - 2, Height);
             
+            var textColor = ForcedColor ?? _text;
 
-            TextRenderer.DrawText(g, Text, Font, rect, Enabled? _text : SystemColors.GrayText,
+            TextRenderer.DrawText(g, Text, Font, rect, Enabled? textColor : SystemColors.GrayText,
                 TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
         }
 

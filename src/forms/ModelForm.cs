@@ -265,7 +265,11 @@ namespace LetheChat.src.forms
             ck_mlock.Checked = s.mlock;
             ck_mmap.Checked = s.mmap;
             ck_loadMmproj.Checked = s.LoadMMprojIfAvailable;
+            ck_loadMmproj.ForcedColor = model.IsMMProjFilePresent() ? Color.Green : null;
+            ck_loadMmproj.Refresh();
             ck_loadJinja.Checked = s.LoadJinjaIfAvailable;
+            ck_loadJinja.ForcedColor = model.IsJinjaFilePresent() ? Color.Green : null;
+            ck_loadJinja.Refresh();
             ed_additionalArgs.Text = s.AdditionalArgs;
 
             SetSettingsEnabled(true);
