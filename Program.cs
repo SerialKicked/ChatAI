@@ -46,10 +46,6 @@ namespace LetheChat
 
         public static void ApplyContextPluginSettings()
         {
-            if (LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch") is WebSearchPlugin searchplug)
-            {
-                searchplug.KeywordDetection = !Settings.AlwaysWebSearchQuery;
-            }
 
             if (LLMEngine.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
             {

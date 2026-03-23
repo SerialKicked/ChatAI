@@ -40,6 +40,7 @@ namespace LetheChat.Controls
         private Color _glyphBackHover;
 
         private ModernTabStyle _tabStyle = ModernTabStyle.Underline;
+        private bool _showTabs = true;
 
         public ModernTabControl()
         {
@@ -85,6 +86,33 @@ namespace LetheChat.Controls
             }
         }
 
+        [Category("Appearance")]
+        [DefaultValue(true)]
+        public bool ShowTabs
+        {
+            get => _showTabs;
+            set
+            {
+                if (_showTabs != value)
+                {
+                    _showTabs = value;
+                    UpdateStyles();
+                    Invalidate();
+                }
+            }
+        }
+
+        public override Rectangle DisplayRectangle
+        {
+            get
+            {
+                if (!_showTabs)
+                    return new Rectangle(0, 0, Width, Height);
+
+                return base.DisplayRectangle;
+            }
+        }
+
         public void ApplyTheme(ThemeManager.Theme t)
         {
             _back = t.Back;
@@ -116,6 +144,7 @@ namespace LetheChat.Controls
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+            if (!_showTabs) return;
 
             int newHover = GetTabIndexAtPoint(e.Location);
 
@@ -140,7 +169,7 @@ namespace LetheChat.Controls
         protected override void OnMouseClick(MouseEventArgs e)
         {
             // Handle tab clicks manually since we're owner-drawing
-            if (e.Button == MouseButtons.Left)
+            if (_showTabs && e.Button == MouseButtons.Left)
             {
                 int index = GetTabIndexAtPoint(e.Location);
                 if (index >= 0 && index < TabPages.Count)
@@ -207,31 +236,41 @@ namespace LetheChat.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            EnsureTabRectsCalculated(); // Ensure up to date before drawing
-
             var g = e.Graphics;
             g.Clear(_back);
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-            // Draw tab strip background
-            Rectangle stripRect = new(0, 0, Width, TabHeight);
-            using (var b = new SolidBrush(_panel))
-                g.FillRectangle(b, stripRect);
-
-            // Draw tabs using the pre-calculated rectangles
-            for (int i = 0; i < _drawnTabRects.Count; i++)
+            if (_showTabs)
             {
-                DrawTab(g, i, _drawnTabRects[i]);
+                EnsureTabRectsCalculated(); // Ensure up to date before drawing
+
+                // Draw tab strip background
+                Rectangle stripRect = new(0, 0, Width, TabHeight);
+                using (var b = new SolidBrush(_panel))
+                    g.FillRectangle(b, stripRect);
+
+                // Draw tabs using the pre-calculated rectangles
+                for (int i = 0; i < _drawnTabRects.Count; i++)
+                {
+                    DrawTab(g, i, _drawnTabRects[i]);
+                }
+
+                // Draw content area border
+                Rectangle contentRect = new(0, TabHeight, Width - 1, Height - TabHeight - 1);
+                using var bp = new Pen(_border);
+                g.DrawRectangle(bp, contentRect);
+
+                // Draw bottom border of tab strip
+                g.DrawLine(bp, 0, TabHeight - 1, Width, TabHeight - 1);
             }
-
-            // Draw content area border
-            Rectangle contentRect = new(0, TabHeight, Width - 1, Height - TabHeight - 1);
-            using var bp = new Pen(_border);
-            g.DrawRectangle(bp, contentRect);
-
-            // Draw bottom border of tab strip
-            g.DrawLine(bp, 0, TabHeight - 1, Width, TabHeight - 1);
+            else
+            {
+                // No tab strip - just draw content area border
+                Rectangle contentRect = new(0, 0, Width - 1, Height - 1);
+                using var bp = new Pen(_border);
+                g.DrawRectangle(bp, contentRect);
+            }
         }
 
         private void DrawTab(Graphics g, int index, Rectangle tabRect)

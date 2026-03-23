@@ -29,8 +29,8 @@ namespace LetheChat
         /// <summary>
         /// Returns <see langword="true"/> when <c>PathToLlamaCppServer</c> is set and the file exists.
         /// </summary>
-        public bool IsManaged =>
-            !string.IsNullOrWhiteSpace(Program.Settings.PathToLlamaCppServer)
+        public bool IsManaged => Program.Settings.ManagedLlama
+            && !string.IsNullOrWhiteSpace(Program.Settings.PathToLlamaCppServer)
             && File.Exists(Program.Settings.PathToLlamaCppServer);
 
         /// <summary>

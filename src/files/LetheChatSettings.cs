@@ -41,6 +41,7 @@ namespace LetheChat.Files
         public GroupChatMode GroupChatMode { get; set; } = GroupChatMode.Manual;
         public int GroupChatAutoResponseLimit { get; set; } = 2;
         public string ObsidianRootPath { get; set; } = string.Empty;
+        public bool ManagedLlama { get; set; } = false;
 
         /// <summary>
         /// Full path (including filename) to the llama.cpp server executable. This is used to launch the server when using the Llama.cpp plugin.

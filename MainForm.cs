@@ -9,7 +9,6 @@ using Markdig;
 using Microsoft.Extensions.Logging;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
-using OpenAI;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -1829,12 +1828,13 @@ namespace LetheChat
         {
             // Open settings form as modal dialog
             using var settingsForm = new SettingsForm();
-            ThemeManager.ApplyToForm(settingsForm);
+            //ThemeManager.ApplyToForm(settingsForm);
             settingsForm.StartPosition = FormStartPosition.CenterParent;
             settingsForm.ShowDialog();
             LLMEngine.InvalidatePromptCache();
             if (LLMEngine.Status == SystemStatus.Ready)
                 await WebChatLoad();
+            UpdateUIState();
         }
 
         private void btWorldEditor_Click(object sender, EventArgs e)

@@ -1,30 +1,27 @@
-using LetheAISharp;
-using LetheAISharp.API;
+﻿using LetheAISharp.API;
 using LetheAISharp.Files;
 using LetheAISharp.LLM;
 using LetheAISharp.Memory;
 using LetheAISharp.SearchAPI;
-using Newtonsoft.Json;
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Windows.Forms;
 using LetheChat.Controls;
 using LetheChat.Files;
-using LetheChat.Plugins;
-using LetheChat.Web;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Text;
+using System.Windows.Forms;
 
 namespace LetheChat.src.forms
 {
     public partial class SettingsForm : Form
     {
-        private bool _isinitloading = true;
 
-        public SettingsForm()
+        private void LoadToolTips()
         {
-            InitializeComponent();
             HelptoolTip.SetToolTip(ck_webgrammar, "If checked, the LLM will be better at navigating the website, but its results may be less accurate." + Environment.NewLine + "Only enable if the LLM is consistently failing at browsing the web.");
             HelptoolTip.SetToolTip(ck_alwayswebsearch, "Normally, the Search API will only be attempted if you explicitely ask the bot to search the web. If you check this box, the LLM will always try to determine if a search would be useful." + Environment.NewLine + Environment.NewLine + "May lead to many false positive, and overall slower generation with some models.");
             HelptoolTip.SetToolTip(ck_sessionmemory, "If checked, the bot will remember previous chat sessions by having their summaries inserted into the system prompt.");
@@ -66,9 +63,16 @@ namespace LetheChat.src.forms
             HelptoolTip.IsBalloon = true;
             HelptoolTip.ToolTipIcon = ToolTipIcon.Info;
             HelptoolTip.ToolTipTitle = "Settings";
-            LoadSettings();
-            _isinitloading = false;
+        }
+
+        public SettingsForm()
+        {
+            InitializeComponent();
             KeyPreview = true;
+            MainTab.ShowTabs = false;
+            ThemeManager.ApplyToForm(this);
+            LoadToolTips();
+            LoadSettings();
         }
 
         private void LoadSettings()
@@ -79,9 +83,6 @@ namespace LetheChat.src.forms
                 File.WriteAllText("settings.json", JsonConvert.SerializeObject(Program.Settings, Formatting.Indented));
                 LLMEngine.Settings = Program.Settings;
             }
-
-            var saveinit = _isinitloading;
-            _isinitloading = true;
 
             // Set all the controls to their current values
             num_fontsize.Value = Program.Settings.FontSize;
@@ -140,6 +141,36 @@ namespace LetheChat.src.forms
             num_imgEmbed.Value = Program.Settings.ImageEmbeddingSize;
             num_ImgCount.Value = Program.Settings.MaxImageCount;
             ckLlamaCppSamplers.Checked = Program.Settings.BackendLLamaCppAllowAllSamplers;
+            numWebSearchDetailedMaxLength.Value = (decimal)Program.Settings.WebSearchDetailedMaxLength;
+            
+            ckManagedLlama.Checked = Program.Settings.ManagedLlama;
+            edLlamaPath.Text = Program.Settings.PathToLlamaCppServer;
+            
+            numLlamaPort.Value = (decimal)Program.Settings.DefaultLLamaCppSettings.Port;
+            numLlamaThreads.Value = (decimal)Program.Settings.DefaultLLamaCppSettings.Threads;
+            numLlamaLayers.Value = (decimal)Program.Settings.DefaultLLamaCppSettings.GpuLayers;
+            numLlamaContext.Value = (decimal)Program.Settings.DefaultLLamaCppSettings.ContextSize;
+            numLlamaReasonBudget.Value = (decimal)Program.Settings.DefaultLLamaCppSettings.ReasoningBudget;
+            ckLlamaProps.Checked = Program.Settings.DefaultLLamaCppSettings.Props;
+            ckLlamaKV.Checked = Program.Settings.DefaultLLamaCppSettings.KVcacheToGPU;
+            ckLlamaMLock.Checked = Program.Settings.DefaultLLamaCppSettings.mlock;
+            ckLlamaMMap.Checked = Program.Settings.DefaultLLamaCppSettings.mmap;
+            ckLlamaMMProj.Checked = Program.Settings.DefaultLLamaCppSettings.LoadMMprojIfAvailable;
+            ckLlamaJinja.Checked = Program.Settings.DefaultLLamaCppSettings.LoadJinjaIfAvailable;
+
+            cbLlamaFlash.SelectedIndex = Program.Settings.DefaultLLamaCppSettings.FlashAttention switch
+            {
+                null => 0,
+                true => 1,
+                false => 2,
+            };
+
+            cbLlamaReason.SelectedIndex = Program.Settings.DefaultLLamaCppSettings.Reasoning switch
+            {
+                null => 0,
+                true => 1,
+                false => 2,
+            };
 
             cbParallel.SelectedIndex = Program.Settings.BackendParallelToolCalls switch
             {
@@ -200,7 +231,6 @@ namespace LetheChat.src.forms
             ckDetailedSum.Checked = Program.Settings.SessionDetailedSummary;
             ckGroupCommit.Checked = Program.Settings.CommitGroupSessionToSecondaryPersonaHistory;
 
-            _isinitloading = saveinit;
         }
 
         public void SaveSettings()
@@ -291,6 +321,36 @@ namespace LetheChat.src.forms
                     Program.Settings.WebSearchAPI = BackendSearchAPI.Brave;
                 Program.Settings.WebSearchBraveAPIKey = ed_searchkey.Text;
                 Program.Settings.WebSearchDetailedResults = ck_searchextract.Checked;
+                Program.Settings.WebSearchDetailedMaxLength = (int)numWebSearchDetailedMaxLength.Value;
+
+                // Llama.cpp settings
+                Program.Settings.ManagedLlama = ckManagedLlama.Checked;
+                Program.Settings.PathToLlamaCppServer = edLlamaPath.Text;
+                Program.Settings.DefaultLLamaCppSettings.Port = (int)numLlamaPort.Value;
+                Program.Settings.DefaultLLamaCppSettings.mlock = ckLlamaMLock.Checked;
+                Program.Settings.DefaultLLamaCppSettings.mmap = ckLlamaMMap.Checked;
+                Program.Settings.DefaultLLamaCppSettings.ContextSize = (int)numLlamaContext.Value;
+                Program.Settings.DefaultLLamaCppSettings.FlashAttention = cbLlamaFlash.SelectedIndex switch
+                {
+                    0 => null,
+                    1 => true,
+                    2 => false,
+                    _ => null,
+                };
+                Program.Settings.DefaultLLamaCppSettings.Reasoning = cbLlamaReason.SelectedIndex switch
+                {
+                    0 => null,
+                    1 => true,
+                    2 => false,
+                    _ => null,
+                };
+                Program.Settings.DefaultLLamaCppSettings.Threads = (int)numLlamaThreads.Value;
+                Program.Settings.DefaultLLamaCppSettings.GpuLayers = (int)numLlamaLayers.Value;
+                Program.Settings.DefaultLLamaCppSettings.ReasoningBudget = (int)numLlamaReasonBudget.Value;
+                Program.Settings.DefaultLLamaCppSettings.Props = ckLlamaProps.Checked;
+                Program.Settings.DefaultLLamaCppSettings.KVcacheToGPU = ckLlamaKV.Checked;
+                Program.Settings.DefaultLLamaCppSettings.LoadMMprojIfAvailable = ckLlamaMMProj.Checked;
+                Program.Settings.DefaultLLamaCppSettings.LoadJinjaIfAvailable = ckLlamaJinja.Checked;
 
                 var str = JsonConvert.SerializeObject(Program.Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
@@ -303,6 +363,21 @@ namespace LetheChat.src.forms
             catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred while saving settings: {ex.Message}");
+            }
+        }
+
+        private void btFindLlamaExe_Click(object sender, EventArgs e)
+        {
+            // Open a file dialog to select the llama-server.exe file
+            using var ofd = new OpenFileDialog();
+            ofd.Filter = "Executable Files|*.exe|All Files|*.*";
+            ofd.Title = "Select llama-server.exe";
+            ofd.CheckFileExists = true;
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                // Set the selected file path to the appropriate setting
+                Program.Settings.PathToLlamaCppServer = ofd.FileName;
+                edLlamaPath.Text = ofd.FileName;
             }
         }
 
@@ -327,7 +402,6 @@ namespace LetheChat.src.forms
                 );
         }
 
-
         private async void ConvertChatToSessionList(object sender, EventArgs e)
         {
             LLMEngine.History.DivideChatIntoSessions();
@@ -336,7 +410,6 @@ namespace LetheChat.src.forms
             // We could raise an event or use a callback for this
             MessageBox.Show("Chat converted to session list successfully!");
         }
-
 
         private void bt_Close_Click(object sender, EventArgs e)
         {
@@ -350,7 +423,83 @@ namespace LetheChat.src.forms
             this.Close();
         }
 
-        private void SettingsForm_KeyDown(object sender, KeyEventArgs e)
+        private void ColorButton(Button? selected)
+        {
+            if (selected == null)
+                return;
+            selected.ForeColor = Color.Gold;
+            // Find parent and list all buttons in the same parent and reset their color except the selected one
+            if (selected.Parent == null)
+                return;
+            foreach (var ctrl in selected.Parent.Controls)
+            {
+                if (ctrl is Button btn && btn != selected)
+                    btn.ForeColor = Color.WhiteSmoke;
+            }
+
+        }
+
+        private void btBackend_Click(object sender, EventArgs e)
+        {
+            MainTab.SelectedTab = tabBackend;
+            ColorButton(sender as Button);
+        }
+
+        private void btModelFolders_Click(object sender, EventArgs e)
+        {
+            SaveSettings();
+            using var dlg = new ModelDirectoriesForm();
+            if (dlg.ShowDialog(this) != DialogResult.OK)
+                return;
+            DataFiles.LocalModels.SearchModels(false);
+            DataFiles.LocalModels.PruneModels();
+            File.WriteAllText("modelDB.json", JsonConvert.SerializeObject(DataFiles.LocalModels, Formatting.Indented));
+            LoadSettings();
+        }
+
+        private void btCore_Click(object sender, EventArgs e)
+        {
+            MainTab.SelectedTab = tabCore;
+            ColorButton(sender as Button);
+        }
+
+        private void btMemory_Click(object sender, EventArgs e)
+        {
+            MainTab.SelectedTab = tabMemory;
+            ColorButton(sender as Button);
+        }
+
+        private void brGroup_Click(object sender, EventArgs e)
+        {
+            MainTab.SelectedTab = TabGroup;
+            ColorButton(sender as Button);
+        }
+
+        private void btWeb_Click(object sender, EventArgs e)
+        {
+            MainTab.SelectedTab = tabWeb;
+            ColorButton(sender as Button);
+        }
+
+        private void btOutput_Click(object sender, EventArgs e)
+        {
+            MainTab.SelectedTab = tabOutput;
+            ColorButton(sender as Button);
+        }
+
+        private void btTools_Click(object sender, EventArgs e)
+        {
+            MainTab.SelectedTab = tabTools;
+            ColorButton(sender as Button);
+        }
+
+        private void btApp_Click(object sender, EventArgs e)
+        {
+            MainTab.SelectedTab = tabApp;
+            ColorButton(sender as Button);
+        }
+
+        private void NewSettingsForm_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
             {

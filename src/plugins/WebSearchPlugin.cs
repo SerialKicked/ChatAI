@@ -26,7 +26,7 @@ namespace LetheChat.Plugins
 
         private readonly string[] kwEnter = [ "search ", "look for ", "what is ", "where is ", "who is ", "who are ", " the web", "internet", "web search", "do you know", "where are ", "when is " ];
 
-        public bool KeywordDetection { get; set; } = false;
+        public bool KeywordDetection => !Program.Settings.AlwaysWebSearchQuery;
 
         private bool responseAppendNeeded = false;
         private List<EnrichedSearchResult>? lastresponse = null;
