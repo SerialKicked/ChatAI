@@ -27,6 +27,7 @@ namespace LetheChat.src.forms
             InitializeComponent();
             SetupWorldEditor();
             _isInitLoading = false;
+            KeyPreview = true;
         }
 
         private void SetupWorldEditor(string ForceID = "", int forceEntry = 0)

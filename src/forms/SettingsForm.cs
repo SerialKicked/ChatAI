@@ -68,6 +68,7 @@ namespace LetheChat.src.forms
             HelptoolTip.ToolTipTitle = "Settings";
             LoadSettings();
             _isinitloading = false;
+            KeyPreview = true;
         }
 
         private void LoadSettings()

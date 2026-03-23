@@ -18,6 +18,7 @@ namespace LetheChat.src.forms
         public LoginForm()
         {
             InitializeComponent();
+            KeyPreview = true;
         }
 
         public void LoadSettings()

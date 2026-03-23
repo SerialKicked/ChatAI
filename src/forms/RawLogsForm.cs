@@ -16,6 +16,7 @@ namespace LetheChat.src.forms
             InitializeComponent();
             LoadSystemLogEntries();
             LLMEngineLogSink.LogAppended += OnLogAppended;
+            KeyPreview = true;
         }
 
         private void OnLogAppended(LLMEngineLogEntry entry)

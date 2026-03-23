@@ -20,6 +20,7 @@ namespace LetheChat.src.forms
         public InstructForm()
         {
             InitializeComponent();
+            KeyPreview = true;
         }
 
         public void SetupInstructEditor(string Forceid = "")

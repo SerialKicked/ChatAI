@@ -19,7 +19,7 @@ namespace LetheChat.src.forms
             InitializeComponent();
             ed_message.PlaceholderText = LLMEngine.Bot.Scenario.ToWinFormat();
             ed_message.Text = LLMEngine.Settings.ScenarioOverride.ToWinFormat();
-
+            KeyPreview = true;
         }
 
         private void bt_save_Click(object sender, EventArgs e)

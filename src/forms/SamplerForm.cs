@@ -19,6 +19,7 @@ namespace LetheChat.src.forms
         public SamplerForm()
         {
             InitializeComponent();
+            KeyPreview = true;
         }
 
         public void SetupSamplerEditor(string Forceid = "")

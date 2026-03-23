@@ -13,6 +13,7 @@ namespace LetheChat.src.forms
         public NewSettingsForm()
         {
             InitializeComponent();
+            KeyPreview = true;
         }
     }
 }

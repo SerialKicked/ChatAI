@@ -25,6 +25,7 @@ namespace LetheChat.src.forms
         public CharEditForm()
         {
             InitializeComponent();
+            KeyPreview = true;
         }
 
         public void SetupCharacterEditor(string Forceid = "", bool addEvents = true)

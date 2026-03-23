@@ -20,6 +20,7 @@ namespace LetheChat.src.forms
         public SysPromptForm()
         {
             InitializeComponent();
+            KeyPreview = true;
         }
 
         public void SetupPromptEditor(string Forceid = "")

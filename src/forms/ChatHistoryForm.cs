@@ -41,6 +41,7 @@ namespace LetheChat.src.forms
 
             // Setup column click sorting
             listSession.ColumnClick += ListSession_ColumnClick;
+            KeyPreview = true;
 
             _isinitloading = false;
         }
@@ -614,6 +615,7 @@ namespace LetheChat.src.forms
         {
 
         }
+
 
         private void ChatHistoryForm_KeyDown(object sender, KeyEventArgs e)
         {

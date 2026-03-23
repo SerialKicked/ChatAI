@@ -31,6 +31,7 @@ namespace LetheChat.src.forms
             components.Add(_toolTip);
             BuildSettingsPanel();
             listModels.SelectedIndexChanged += listModels_SelectedIndexChanged;
+            KeyPreview = true;
 
             Program.LlamaCppProcess.OutputReceived += OnServerOutput;
             Program.LlamaCppProcess.ServerReady += OnServerReady;
