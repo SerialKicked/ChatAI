@@ -18,7 +18,6 @@ namespace LetheChat
         public static Dictionary<string, Character> Characters = [];
         public static Dictionary<string, InstructFormat> Instruct = [];
         public static Dictionary<string, SamplerSettings> Inference = [];
-        public static Dictionary<string, ModelMetaData> Models = [];
         public static Dictionary<string, WorldInfo> WorldInfos = [];
         public static Dictionary<string, SystemPrompt> SysPrompts = [];
         public static Dictionary<string, WebsiteDefinition> Websites = [];

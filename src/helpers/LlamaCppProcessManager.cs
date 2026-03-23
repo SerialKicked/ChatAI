@@ -165,8 +165,6 @@ namespace LetheChat
             }
 
             _serverProcess = process;
-            //process.BeginOutputReadLine();
-            //process.BeginErrorReadLine();
 
             using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
             using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, timeoutCts.Token);
