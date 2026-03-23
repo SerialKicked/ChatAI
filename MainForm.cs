@@ -26,7 +26,6 @@ using LetheChat.Game;
 using LetheChat.Plugins;
 using LetheChat.Slash;
 using LetheChat.src.forms;
-using LetheChat.Tools;
 
 namespace LetheChat
 {
@@ -147,10 +146,9 @@ namespace LetheChat
             AgentRuntime.RegisterPlugin("JournalTask", new JournalTask());
             AgentRuntime.RegisterPlugin("SessionGoalTask", new SessionGoalTask());
             // Register tools
-            // LLMEngine.ToolManager.RegisterToolList(new ToolDemo());
-            LLMEngine.ToolManager.RegisterToolList(new ObsidianTools());
-
+            LLMEngine.ToolManager.RegisterToolList(new ToolDemo());
             var pluginsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins");
+            LLMEngine.ToolManager.RegisterPluginsFromDirectory(pluginsDir);
             AgentRuntime.RegisterPluginsFromDirectory(pluginsDir);
 
             // Manage theme

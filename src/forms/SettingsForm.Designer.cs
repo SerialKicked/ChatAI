@@ -187,6 +187,17 @@
             num_antislopchance = new LetheChat.Controls.ModernNumericUpDown();
             ck_antislop = new LetheChat.Controls.ModernCheckBox();
             tabTools = new TabPage();
+            edToolinfo = new TextBox();
+            collapsibleGroupBox15 = new LetheChat.Controls.CollapsibleGroupBox();
+            panel27 = new Panel();
+            numToolMemory = new LetheChat.Controls.ModernNumericUpDown();
+            label43 = new Label();
+            panel26 = new Panel();
+            numToolLimit = new LetheChat.Controls.ModernNumericUpDown();
+            label42 = new Label();
+            ckAllowtools = new LetheChat.Controls.ModernCheckBox();
+            collapsibleGroupBox14 = new LetheChat.Controls.CollapsibleGroupBox();
+            cklToolsets = new LetheChat.Controls.ModernCheckedListBox();
             tabApp = new TabPage();
             collapsibleGroupBox13 = new LetheChat.Controls.CollapsibleGroupBox();
             bt_chattosessions = new Button();
@@ -254,6 +265,11 @@
             collapsibleGroupBox11.SuspendLayout();
             panel22.SuspendLayout();
             panel23.SuspendLayout();
+            tabTools.SuspendLayout();
+            collapsibleGroupBox15.SuspendLayout();
+            panel27.SuspendLayout();
+            panel26.SuspendLayout();
+            collapsibleGroupBox14.SuspendLayout();
             tabApp.SuspendLayout();
             collapsibleGroupBox13.SuspendLayout();
             collapsibleGroupBox12.SuspendLayout();
@@ -323,6 +339,7 @@
             // collapsibleGroupBox4
             // 
             collapsibleGroupBox4.BackColor = Color.FromArgb(37, 37, 37);
+            collapsibleGroupBox4.CanCollapse = false;
             collapsibleGroupBox4.Controls.Add(verticalStackPanel3);
             collapsibleGroupBox4.Controls.Add(verticalStackPanel2);
             collapsibleGroupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
@@ -2168,6 +2185,9 @@
             // tabTools
             // 
             tabTools.BackColor = Color.FromArgb(37, 37, 37);
+            tabTools.Controls.Add(edToolinfo);
+            tabTools.Controls.Add(collapsibleGroupBox15);
+            tabTools.Controls.Add(collapsibleGroupBox14);
             tabTools.Font = new Font("Segoe UI", 9F);
             tabTools.ForeColor = Color.FromArgb(230, 230, 230);
             tabTools.Location = new Point(4, 40);
@@ -2175,6 +2195,136 @@
             tabTools.Size = new Size(866, 522);
             tabTools.TabIndex = 7;
             tabTools.Text = "Tools";
+            // 
+            // edToolinfo
+            // 
+            edToolinfo.BackColor = SystemColors.GrayText;
+            edToolinfo.BorderStyle = BorderStyle.FixedSingle;
+            edToolinfo.Location = new Point(373, 156);
+            edToolinfo.Multiline = true;
+            edToolinfo.Name = "edToolinfo";
+            edToolinfo.ReadOnly = true;
+            edToolinfo.Size = new Size(485, 352);
+            edToolinfo.TabIndex = 44;
+            // 
+            // collapsibleGroupBox15
+            // 
+            collapsibleGroupBox15.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox15.CanCollapse = false;
+            collapsibleGroupBox15.Controls.Add(panel27);
+            collapsibleGroupBox15.Controls.Add(panel26);
+            collapsibleGroupBox15.Controls.Add(ckAllowtools);
+            collapsibleGroupBox15.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox15.Location = new Point(373, 6);
+            collapsibleGroupBox15.Name = "collapsibleGroupBox15";
+            collapsibleGroupBox15.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox15.Size = new Size(485, 144);
+            collapsibleGroupBox15.TabIndex = 43;
+            collapsibleGroupBox15.Text = "Tool-Calling Settings";
+            // 
+            // panel27
+            // 
+            panel27.Controls.Add(numToolMemory);
+            panel27.Controls.Add(label43);
+            panel27.Dock = DockStyle.Top;
+            panel27.Location = new Point(12, 94);
+            panel27.Margin = new Padding(8);
+            panel27.Name = "panel27";
+            panel27.Padding = new Padding(8);
+            panel27.Size = new Size(461, 36);
+            panel27.TabIndex = 56;
+            // 
+            // numToolMemory
+            // 
+            numToolMemory.BackColor = Color.FromArgb(64, 64, 64);
+            numToolMemory.Font = new Font("Segoe UI", 9F);
+            numToolMemory.Location = new Point(11, 6);
+            numToolMemory.Maximum = new decimal(new int[] { 16384, 0, 0, 0 });
+            numToolMemory.Name = "numToolMemory";
+            numToolMemory.Padding = new Padding(1);
+            numToolMemory.Size = new Size(117, 23);
+            numToolMemory.TabIndex = 27;
+            numToolMemory.Value = new decimal(new int[] { 20, 0, 0, 0 });
+            // 
+            // label43
+            // 
+            label43.AutoSize = true;
+            label43.Font = new Font("Segoe UI", 9F);
+            label43.Location = new Point(142, 10);
+            label43.Name = "label43";
+            label43.Size = new Size(206, 15);
+            label43.TabIndex = 28;
+            label43.Text = "Tool-call memory count (0 = keep all)";
+            label43.Click += label43_Click;
+            // 
+            // panel26
+            // 
+            panel26.Controls.Add(numToolLimit);
+            panel26.Controls.Add(label42);
+            panel26.Dock = DockStyle.Top;
+            panel26.Location = new Point(12, 58);
+            panel26.Margin = new Padding(8);
+            panel26.Name = "panel26";
+            panel26.Padding = new Padding(8);
+            panel26.Size = new Size(461, 36);
+            panel26.TabIndex = 57;
+            // 
+            // numToolLimit
+            // 
+            numToolLimit.BackColor = Color.FromArgb(64, 64, 64);
+            numToolLimit.Font = new Font("Segoe UI", 9F);
+            numToolLimit.Location = new Point(11, 6);
+            numToolLimit.Maximum = new decimal(new int[] { 16384, 0, 0, 0 });
+            numToolLimit.Name = "numToolLimit";
+            numToolLimit.Padding = new Padding(1);
+            numToolLimit.Size = new Size(117, 23);
+            numToolLimit.TabIndex = 27;
+            numToolLimit.Value = new decimal(new int[] { 10, 0, 0, 0 });
+            // 
+            // label42
+            // 
+            label42.AutoSize = true;
+            label42.Font = new Font("Segoe UI", 9F);
+            label42.Location = new Point(142, 11);
+            label42.Name = "label42";
+            label42.Size = new Size(232, 15);
+            label42.TabIndex = 28;
+            label42.Text = "Tool-call limit in single query (0 = no limit)";
+            // 
+            // ckAllowtools
+            // 
+            ckAllowtools.Dock = DockStyle.Top;
+            ckAllowtools.Font = new Font("Segoe UI", 9F);
+            ckAllowtools.Location = new Point(12, 32);
+            ckAllowtools.Name = "ckAllowtools";
+            ckAllowtools.Size = new Size(461, 26);
+            ckAllowtools.TabIndex = 2;
+            ckAllowtools.Text = "Allow tool-call (if the model and backend are compatible)";
+            ckAllowtools.UseVisualStyleBackColor = true;
+            // 
+            // collapsibleGroupBox14
+            // 
+            collapsibleGroupBox14.BackColor = Color.FromArgb(37, 37, 37);
+            collapsibleGroupBox14.Controls.Add(cklToolsets);
+            collapsibleGroupBox14.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox14.Location = new Point(6, 6);
+            collapsibleGroupBox14.Name = "collapsibleGroupBox14";
+            collapsibleGroupBox14.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox14.Size = new Size(361, 502);
+            collapsibleGroupBox14.TabIndex = 0;
+            collapsibleGroupBox14.Text = "Available Toolsets";
+            // 
+            // cklToolsets
+            // 
+            cklToolsets.BackColor = Color.FromArgb(64, 64, 64);
+            cklToolsets.Font = new Font("Segoe UI", 9F);
+            cklToolsets.Location = new Point(15, 35);
+            cklToolsets.Name = "cklToolsets";
+            cklToolsets.Padding = new Padding(1);
+            cklToolsets.Size = new Size(331, 450);
+            cklToolsets.TabIndex = 0;
+            cklToolsets.SelectedIndexChanged += cklToolsets_SelectedIndexChanged;
+            cklToolsets.RightToLeftChanged += cklToolsets_RightToLeftChanged;
             // 
             // tabApp
             // 
@@ -2628,6 +2778,14 @@
             panel22.PerformLayout();
             panel23.ResumeLayout(false);
             panel23.PerformLayout();
+            tabTools.ResumeLayout(false);
+            tabTools.PerformLayout();
+            collapsibleGroupBox15.ResumeLayout(false);
+            panel27.ResumeLayout(false);
+            panel27.PerformLayout();
+            panel26.ResumeLayout(false);
+            panel26.PerformLayout();
+            collapsibleGroupBox14.ResumeLayout(false);
             tabApp.ResumeLayout(false);
             collapsibleGroupBox13.ResumeLayout(false);
             collapsibleGroupBox12.ResumeLayout(false);
@@ -2823,5 +2981,16 @@
         private Panel panel25;
         private Controls.ModernNumericUpDown numWebSearchDetailedMaxLength;
         private Label label39;
+        private Controls.CollapsibleGroupBox collapsibleGroupBox14;
+        private Controls.ModernCheckedListBox cklToolsets;
+        private Controls.ModernCheckBox ckAllowtools;
+        private Controls.CollapsibleGroupBox collapsibleGroupBox15;
+        private Panel panel26;
+        private Controls.ModernNumericUpDown numToolLimit;
+        private Label label42;
+        private Panel panel27;
+        private Controls.ModernNumericUpDown numToolMemory;
+        private Label label43;
+        private TextBox edToolinfo;
     }
 }

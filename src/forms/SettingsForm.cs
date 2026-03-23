@@ -96,6 +96,18 @@ namespace LetheChat.src.forms
             }
             cb_background.SelectedIndex = cb_background.Items.IndexOf(Program.Settings.BackgroundFile);
 
+            // Load tools
+            cklToolsets.Items.Clear();
+            var avail = LLMEngine.ToolManager.GetRegisteredToolListIds();
+            foreach (var toolset in avail)
+            {
+                cklToolsets.Items.Add(toolset, Program.Settings.AllowedToolsets.Contains(toolset));
+            }
+
+            ckAllowtools.Checked = Program.Settings.ToolCallsAllowed;
+            numToolLimit.Value = Program.Settings.ToolCallLimit;
+            numToolMemory.Value = Program.Settings.ToolCallMemoryLimit;
+
             num_memtokens.Value = Program.Settings.SessionReservedTokens;
             ck_sessionmemory.Checked = LLMEngine.Settings.SessionMemorySystem;
             cb_ragheuristic.SelectedIndex = (int)LLMEngine.Settings.RAGHeuristic;
@@ -142,10 +154,10 @@ namespace LetheChat.src.forms
             num_ImgCount.Value = Program.Settings.MaxImageCount;
             ckLlamaCppSamplers.Checked = Program.Settings.BackendLLamaCppAllowAllSamplers;
             numWebSearchDetailedMaxLength.Value = (decimal)Program.Settings.WebSearchDetailedMaxLength;
-            
+
             ckManagedLlama.Checked = Program.Settings.ManagedLlama;
             edLlamaPath.Text = Program.Settings.PathToLlamaCppServer;
-            
+
             numLlamaPort.Value = (decimal)Program.Settings.DefaultLLamaCppSettings.Port;
             numLlamaThreads.Value = (decimal)Program.Settings.DefaultLLamaCppSettings.Threads;
             numLlamaLayers.Value = (decimal)Program.Settings.DefaultLLamaCppSettings.GpuLayers;
@@ -352,6 +364,11 @@ namespace LetheChat.src.forms
                 Program.Settings.DefaultLLamaCppSettings.LoadMMprojIfAvailable = ckLlamaMMProj.Checked;
                 Program.Settings.DefaultLLamaCppSettings.LoadJinjaIfAvailable = ckLlamaJinja.Checked;
 
+                Program.Settings.AllowedToolsets = [.. cklToolsets.CheckedItems.Cast<string>()];
+                Program.Settings.ToolCallsAllowed = ckAllowtools.Checked;
+                Program.Settings.ToolCallLimit = (int)numToolLimit.Value;
+                Program.Settings.ToolCallMemoryLimit = (int)numToolMemory.Value;
+
                 var str = JsonConvert.SerializeObject(Program.Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
                 // Context plugin settings
@@ -505,6 +522,32 @@ namespace LetheChat.src.forms
             {
                 DialogResult = DialogResult.Cancel;
                 Close();
+            }
+        }
+
+        private void label43_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cklToolsets_RightToLeftChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cklToolsets_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cklToolsets.SelectedItem == null)
+                return;
+            edToolinfo.Clear();
+            var toolsetId = cklToolsets.SelectedItem.ToString();
+            if (toolsetId == null)
+                return;
+            var toolList = LLMEngine.ToolManager.GetToolsForIds(toolsetId);
+            edToolinfo.Text = $"Tools in {toolsetId}:" + Environment.NewLine + Environment.NewLine;
+            foreach (var tool in toolList)
+            {
+                edToolinfo.Text += $"- {tool.Function?.Name ?? "Unknown"}: {tool.Function?.Description ?? "No description"}" + Environment.NewLine + Environment.NewLine;
             }
         }
     }
