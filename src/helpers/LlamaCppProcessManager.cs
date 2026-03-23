@@ -1,4 +1,6 @@
+using LetheAISharp.LLM;
 using LetheChat.Files;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -57,6 +59,15 @@ namespace LetheChat
         /// </summary>
         public event EventHandler? ServerReady;
 
+        private static int? ParseHparam(string line, string key)
+        {
+            int idx = line.IndexOf(key);
+            if (idx == -1) return null;
+
+            string rest = line[(idx + key.Length)..].Trim();
+            return int.TryParse(rest, out int value) ? value : null;
+        }
+
         /// <summary>
         /// Launches llama-server.exe for the given model, waits until it reports "listening",
         /// and returns <see langword="true"/> on success or <see langword="false"/> on timeout/failure.
@@ -97,6 +108,7 @@ namespace LetheChat
 
             var readyTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
+
             void OnLine(string level, string? line)
             {
                 if (line is null) return;
@@ -108,8 +120,34 @@ namespace LetheChat
                 }
             }
 
-            process.OutputDataReceived += (_, e) => OnLine("OUT", e.Data);
-            process.ErrorDataReceived += (_, e) => OnLine("INFO", e.Data);
+
+
+            process.OutputDataReceived += (_, e) =>
+            {
+                OnLine("OUT", e.Data);
+                LLMEngine.Logger?.LogInformation("[LlamaCpp] [OUT] {Line}", e.Data);
+                if (!string.IsNullOrEmpty(e.Data) && e.Data.Contains("load_hparams: n_embd:"))
+                {
+                    int? nEmbd = ParseHparam(e.Data, "load_hparams: n_embd:");
+                    if (nEmbd.HasValue)
+                    {
+                        LLMEngine.Settings.ImageEmbeddingSize = nEmbd.Value;
+                    }
+                }
+            };
+            process.ErrorDataReceived += (_, e) =>
+            {
+                OnLine("INFO", e.Data);
+                LLMEngine.Logger?.LogInformation("[LlamaCpp] [INFO] {Line}", e.Data);
+                if (!string.IsNullOrEmpty(e.Data) && e.Data.Contains("load_hparams: n_embd:"))
+                {
+                    int? nEmbd = ParseHparam(e.Data, "load_hparams: n_embd:");
+                    if (nEmbd.HasValue)
+                    {
+                        LLMEngine.Settings.ImageEmbeddingSize = nEmbd.Value;
+                    }
+                }
+            };
             process.Exited += (_, _) => readyTcs.TrySetResult(false);
 
             try
