@@ -103,7 +103,6 @@ namespace LetheChat
             button4 = new Button();
             button3 = new Button();
             btRunAgent = new Button();
-            button1 = new Button();
             panel9 = new Panel();
             collapsibleMenus = new CollapsibleGroupBox();
             panel3 = new Panel();
@@ -1012,13 +1011,12 @@ namespace LetheChat
             collapsibleGroupBox4.Controls.Add(button4);
             collapsibleGroupBox4.Controls.Add(button3);
             collapsibleGroupBox4.Controls.Add(btRunAgent);
-            collapsibleGroupBox4.Controls.Add(button1);
             collapsibleGroupBox4.Controls.Add(panel9);
             collapsibleGroupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             collapsibleGroupBox4.Location = new Point(0, 813);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(8, 32, 8, 8);
-            collapsibleGroupBox4.Size = new Size(200, 162);
+            collapsibleGroupBox4.Size = new Size(200, 135);
             collapsibleGroupBox4.TabIndex = 30;
             collapsibleGroupBox4.Text = "Debug";
             // 
@@ -1028,7 +1026,7 @@ namespace LetheChat
             button4.Dock = DockStyle.Top;
             button4.FlatStyle = FlatStyle.Flat;
             button4.Font = new Font("Segoe UI", 9F);
-            button4.Location = new Point(8, 123);
+            button4.Location = new Point(8, 96);
             button4.Name = "button4";
             button4.Size = new Size(184, 27);
             button4.TabIndex = 53;
@@ -1042,7 +1040,7 @@ namespace LetheChat
             button3.Dock = DockStyle.Top;
             button3.FlatStyle = FlatStyle.Flat;
             button3.Font = new Font("Segoe UI", 9F);
-            button3.Location = new Point(8, 96);
+            button3.Location = new Point(8, 69);
             button3.Name = "button3";
             button3.Size = new Size(184, 27);
             button3.TabIndex = 52;
@@ -1056,27 +1054,13 @@ namespace LetheChat
             btRunAgent.Dock = DockStyle.Top;
             btRunAgent.FlatStyle = FlatStyle.Flat;
             btRunAgent.Font = new Font("Segoe UI", 9F);
-            btRunAgent.Location = new Point(8, 69);
+            btRunAgent.Location = new Point(8, 42);
             btRunAgent.Name = "btRunAgent";
             btRunAgent.Size = new Size(184, 27);
             btRunAgent.TabIndex = 51;
             btRunAgent.Text = "Force Agent Loop";
             btRunAgent.UseVisualStyleBackColor = false;
             btRunAgent.Click += dbgRunAgent_Click;
-            // 
-            // button1
-            // 
-            button1.AutoSize = true;
-            button1.Dock = DockStyle.Top;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Segoe UI", 9F);
-            button1.Location = new Point(8, 42);
-            button1.Name = "button1";
-            button1.Size = new Size(184, 27);
-            button1.TabIndex = 50;
-            button1.Text = "Mood Info";
-            button1.UseVisualStyleBackColor = false;
-            button1.Click += dbgMood_Click;
             // 
             // panel9
             // 
@@ -1390,7 +1374,6 @@ namespace LetheChat
         private Panel panel9;
         private Button button3;
         private Button btRunAgent;
-        private Button button1;
         private Button button4;
         private ModernCheckBox ckToolCalls;
         private Button bt_llama;
