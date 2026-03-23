@@ -146,10 +146,12 @@ namespace LetheChat
             AgentRuntime.RegisterPlugin("CustomGoalTask", new CustomGoalTask());
             AgentRuntime.RegisterPlugin("JournalTask", new JournalTask());
             AgentRuntime.RegisterPlugin("SessionGoalTask", new SessionGoalTask());
-            AgentRuntime.RegisterPlugin("SarahDomTask", new SarahDomTask());
             // Register tools
             // LLMEngine.ToolManager.RegisterToolList(new ToolDemo());
             LLMEngine.ToolManager.RegisterToolList(new ObsidianTools());
+
+            var pluginsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins");
+            AgentRuntime.RegisterPluginsFromDirectory(pluginsDir);
 
             // Manage theme
             if (Program.Settings.Skin == "Light")
