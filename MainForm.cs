@@ -423,14 +423,11 @@ namespace LetheChat
             if (LLMEngine.CompletionAPIType == LetheAISharp.API.CompletionType.Text || (LLMEngine.Settings.BackendChatAllowPrefill ?? LLMEngine.Client?.AllowPrefill == true))
             {
                 mck_ragtothink.Enabled = true;
-                mck_disablethink.Enabled = true;
             }
             else
             {
                 mck_ragtothink.Enabled = false;
                 mck_ragtothink.Checked = false;
-                mck_disablethink.Enabled = false;
-                mck_disablethink.Checked = false;
             }
 
             if (!LLMEngine.SupportsToolCalls)
