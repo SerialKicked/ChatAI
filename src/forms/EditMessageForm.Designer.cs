@@ -1,6 +1,6 @@
 ﻿using LetheChat.Files;
 
-namespace LetheChat.src.forms
+namespace LetheChat.Forms
 {
     partial class EditMessageForm
     {

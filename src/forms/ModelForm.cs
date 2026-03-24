@@ -10,7 +10,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using Windows.ApplicationModel.Contacts;
 
-namespace LetheChat.src.forms
+namespace LetheChat.Forms
 {
     public partial class ModelForm : Form
     {

@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using LetheChat.Files;
 
-namespace LetheChat.src.forms
+namespace LetheChat.Forms
 {
     public partial class CharEditForm : Form
     {

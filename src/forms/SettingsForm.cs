@@ -15,7 +15,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
-namespace LetheChat.src.forms
+namespace LetheChat.Forms
 {
     public partial class SettingsForm : Form
     {

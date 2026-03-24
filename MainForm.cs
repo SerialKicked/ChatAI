@@ -25,7 +25,7 @@ using LetheChat.Files;
 using LetheChat.Game;
 using LetheChat.Plugins;
 using LetheChat.Slash;
-using LetheChat.src.forms;
+using LetheChat.Forms;
 
 namespace LetheChat
 {

@@ -1,4 +1,4 @@
-﻿namespace LetheChat.src.forms
+﻿namespace LetheChat.Forms
 {
     partial class SettingsForm
     {
@@ -280,7 +280,7 @@
             // 
             panel1.Controls.Add(button1);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 566);
+            panel1.Location = new Point(0, 555);
             panel1.Name = "panel1";
             panel1.Size = new Size(1102, 38);
             panel1.TabIndex = 32;
@@ -318,7 +318,8 @@
             MainTab.Location = new Point(228, 0);
             MainTab.Name = "MainTab";
             MainTab.SelectedIndex = 0;
-            MainTab.Size = new Size(874, 566);
+            MainTab.ShowTabs = false;
+            MainTab.Size = new Size(874, 555);
             MainTab.TabIndex = 33;
             // 
             // tabBackend
@@ -329,10 +330,10 @@
             tabBackend.Controls.Add(collapsibleGroupBox2);
             tabBackend.Font = new Font("Segoe UI", 9F);
             tabBackend.ForeColor = Color.FromArgb(230, 230, 230);
-            tabBackend.Location = new Point(4, 40);
+            tabBackend.Location = new Point(0, 0);
             tabBackend.Name = "tabBackend";
             tabBackend.Padding = new Padding(3);
-            tabBackend.Size = new Size(866, 522);
+            tabBackend.Size = new Size(874, 555);
             tabBackend.TabIndex = 0;
             tabBackend.Text = "Backend";
             // 
@@ -938,10 +939,10 @@
             tabCore.Controls.Add(collapsibleGroupBox1);
             tabCore.Font = new Font("Segoe UI", 9F);
             tabCore.ForeColor = Color.FromArgb(230, 230, 230);
-            tabCore.Location = new Point(4, 40);
+            tabCore.Location = new Point(0, 0);
             tabCore.Name = "tabCore";
             tabCore.Padding = new Padding(3);
-            tabCore.Size = new Size(866, 522);
+            tabCore.Size = new Size(874, 555);
             tabCore.TabIndex = 1;
             tabCore.Text = "Core LLM";
             // 
@@ -957,7 +958,7 @@
             collapsibleGroupBox10.Location = new Point(447, 6);
             collapsibleGroupBox10.Name = "collapsibleGroupBox10";
             collapsibleGroupBox10.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox10.Size = new Size(400, 160);
+            collapsibleGroupBox10.Size = new Size(415, 165);
             collapsibleGroupBox10.TabIndex = 42;
             collapsibleGroupBox10.Text = "Image Processing";
             // 
@@ -990,7 +991,7 @@
             panel14.Margin = new Padding(8);
             panel14.Name = "panel14";
             panel14.Padding = new Padding(8);
-            panel14.Size = new Size(376, 36);
+            panel14.Size = new Size(391, 36);
             panel14.TabIndex = 57;
             // 
             // num_ImgCount
@@ -1024,7 +1025,7 @@
             panel9.Margin = new Padding(8);
             panel9.Name = "panel9";
             panel9.Padding = new Padding(8);
-            panel9.Size = new Size(376, 36);
+            panel9.Size = new Size(391, 36);
             panel9.TabIndex = 56;
             // 
             // num_imgEmbed
@@ -1063,7 +1064,7 @@
             collapsibleGroupBox1.Location = new Point(6, 6);
             collapsibleGroupBox1.Name = "collapsibleGroupBox1";
             collapsibleGroupBox1.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox1.Size = new Size(435, 195);
+            collapsibleGroupBox1.Size = new Size(435, 165);
             collapsibleGroupBox1.TabIndex = 34;
             collapsibleGroupBox1.Text = "LLM Core Settings";
             // 
@@ -1119,9 +1120,9 @@
             tabMemory.Controls.Add(collapsibleGroupBox6);
             tabMemory.Font = new Font("Segoe UI", 9F);
             tabMemory.ForeColor = Color.FromArgb(230, 230, 230);
-            tabMemory.Location = new Point(4, 40);
+            tabMemory.Location = new Point(0, 0);
             tabMemory.Name = "tabMemory";
-            tabMemory.Size = new Size(866, 522);
+            tabMemory.Size = new Size(874, 555);
             tabMemory.TabIndex = 2;
             tabMemory.Text = "Memory Systems";
             // 
@@ -1596,9 +1597,9 @@
             TabGroup.Controls.Add(collapsibleGroupBox8);
             TabGroup.Font = new Font("Segoe UI", 9F);
             TabGroup.ForeColor = Color.FromArgb(230, 230, 230);
-            TabGroup.Location = new Point(4, 40);
+            TabGroup.Location = new Point(0, 0);
             TabGroup.Name = "TabGroup";
-            TabGroup.Size = new Size(866, 522);
+            TabGroup.Size = new Size(874, 555);
             TabGroup.TabIndex = 3;
             TabGroup.Text = "Group Chat";
             // 
@@ -1729,9 +1730,9 @@
             tabWeb.Controls.Add(collapsibleGroupBox7);
             tabWeb.Font = new Font("Segoe UI", 9F);
             tabWeb.ForeColor = Color.FromArgb(230, 230, 230);
-            tabWeb.Location = new Point(4, 40);
+            tabWeb.Location = new Point(0, 0);
             tabWeb.Name = "tabWeb";
-            tabWeb.Size = new Size(866, 522);
+            tabWeb.Size = new Size(874, 555);
             tabWeb.TabIndex = 4;
             tabWeb.Text = "Web";
             // 
@@ -1909,9 +1910,9 @@
             tabOutput.Controls.Add(collapsibleGroupBox11);
             tabOutput.Font = new Font("Segoe UI", 9F);
             tabOutput.ForeColor = Color.FromArgb(230, 230, 230);
-            tabOutput.Location = new Point(4, 40);
+            tabOutput.Location = new Point(0, 0);
             tabOutput.Name = "tabOutput";
-            tabOutput.Size = new Size(866, 522);
+            tabOutput.Size = new Size(874, 555);
             tabOutput.TabIndex = 5;
             tabOutput.Text = "Output";
             // 
@@ -1937,7 +1938,7 @@
             collapsibleGroupBox11.Location = new Point(6, 6);
             collapsibleGroupBox11.Name = "collapsibleGroupBox11";
             collapsibleGroupBox11.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox11.Size = new Size(852, 459);
+            collapsibleGroupBox11.Size = new Size(852, 543);
             collapsibleGroupBox11.TabIndex = 1;
             collapsibleGroupBox11.Text = "Output Formatting";
             // 
@@ -2190,9 +2191,9 @@
             tabTools.Controls.Add(collapsibleGroupBox14);
             tabTools.Font = new Font("Segoe UI", 9F);
             tabTools.ForeColor = Color.FromArgb(230, 230, 230);
-            tabTools.Location = new Point(4, 40);
+            tabTools.Location = new Point(0, 0);
             tabTools.Name = "tabTools";
-            tabTools.Size = new Size(866, 522);
+            tabTools.Size = new Size(874, 555);
             tabTools.TabIndex = 7;
             tabTools.Text = "Tools";
             // 
@@ -2204,7 +2205,7 @@
             edToolinfo.Multiline = true;
             edToolinfo.Name = "edToolinfo";
             edToolinfo.ReadOnly = true;
-            edToolinfo.Size = new Size(485, 352);
+            edToolinfo.Size = new Size(485, 393);
             edToolinfo.TabIndex = 44;
             // 
             // collapsibleGroupBox15
@@ -2310,7 +2311,7 @@
             collapsibleGroupBox14.Location = new Point(6, 6);
             collapsibleGroupBox14.Name = "collapsibleGroupBox14";
             collapsibleGroupBox14.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox14.Size = new Size(361, 502);
+            collapsibleGroupBox14.Size = new Size(361, 543);
             collapsibleGroupBox14.TabIndex = 0;
             collapsibleGroupBox14.Text = "Available Toolsets";
             // 
@@ -2318,10 +2319,10 @@
             // 
             cklToolsets.BackColor = Color.FromArgb(64, 64, 64);
             cklToolsets.Font = new Font("Segoe UI", 9F);
-            cklToolsets.Location = new Point(15, 35);
+            cklToolsets.Location = new Point(15, 48);
             cklToolsets.Name = "cklToolsets";
             cklToolsets.Padding = new Padding(1);
-            cklToolsets.Size = new Size(331, 450);
+            cklToolsets.Size = new Size(331, 482);
             cklToolsets.TabIndex = 0;
             cklToolsets.SelectedIndexChanged += cklToolsets_SelectedIndexChanged;
             cklToolsets.RightToLeftChanged += cklToolsets_RightToLeftChanged;
@@ -2333,9 +2334,9 @@
             tabApp.Controls.Add(collapsibleGroupBox12);
             tabApp.Font = new Font("Segoe UI", 9F);
             tabApp.ForeColor = Color.FromArgb(230, 230, 230);
-            tabApp.Location = new Point(4, 40);
+            tabApp.Location = new Point(0, 0);
             tabApp.Name = "tabApp";
-            tabApp.Size = new Size(866, 522);
+            tabApp.Size = new Size(874, 555);
             tabApp.TabIndex = 6;
             tabApp.Text = "App";
             // 
@@ -2564,7 +2565,7 @@
             MainButtonStack.Location = new Point(0, 0);
             MainButtonStack.Name = "MainButtonStack";
             MainButtonStack.Padding = new Padding(4);
-            MainButtonStack.Size = new Size(228, 566);
+            MainButtonStack.Size = new Size(228, 555);
             MainButtonStack.TabIndex = 34;
             // 
             // btApp
@@ -2703,7 +2704,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1102, 604);
+            ClientSize = new Size(1102, 593);
             Controls.Add(MainTab);
             Controls.Add(MainButtonStack);
             Controls.Add(panel1);

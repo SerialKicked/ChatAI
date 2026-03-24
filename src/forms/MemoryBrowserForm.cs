@@ -11,7 +11,7 @@ using System.Text;
 using System.Windows.Forms;
 using LetheChat.Controls;
 
-namespace LetheChat.src.forms
+namespace LetheChat.Forms
 {
     public partial class MemoryBrowserForm : Form
     {

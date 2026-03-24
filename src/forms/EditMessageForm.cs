@@ -14,7 +14,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Diagnostics;
 using LetheChat.Controls;
 
-namespace LetheChat.src.forms
+namespace LetheChat.Forms
 {
     public partial class EditMessageForm : Form
     {

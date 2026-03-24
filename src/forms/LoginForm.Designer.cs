@@ -1,6 +1,6 @@
 ﻿using LetheChat.Controls;
 
-namespace LetheChat.src.forms
+namespace LetheChat.Forms
 {
     partial class LoginForm
     {

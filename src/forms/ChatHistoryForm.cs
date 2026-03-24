@@ -14,9 +14,9 @@ using System.Text;
 using LetheChat.AgentPlugins;
 using LetheChat.Files;
 using LetheChat.GBNF;
-using LetheChat.src.forms;
+using LetheChat.Forms;
 
-namespace LetheChat.src.forms
+namespace LetheChat.Forms
 {
     public partial class ChatHistoryForm : Form
     {
