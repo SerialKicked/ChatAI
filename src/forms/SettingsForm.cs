@@ -169,6 +169,7 @@ namespace LetheChat.Forms
             ckLlamaMMap.Checked = Program.Settings.DefaultLLamaCppSettings.mmap;
             ckLlamaMMProj.Checked = Program.Settings.DefaultLLamaCppSettings.LoadMMprojIfAvailable;
             ckLlamaJinja.Checked = Program.Settings.DefaultLLamaCppSettings.LoadJinjaIfAvailable;
+            ckToolAlwaysAsk.Checked = Program.Settings.ToolCallsAlwaysManualConfirm;
 
             cbLlamaFlash.SelectedIndex = Program.Settings.DefaultLLamaCppSettings.FlashAttention switch
             {
@@ -303,6 +304,7 @@ namespace LetheChat.Forms
                 Program.Settings.ImageEmbeddingSize = (int)num_imgEmbed.Value;
                 Program.Settings.MaxImageCount = (int)num_ImgCount.Value;
                 Program.Settings.BackendLLamaCppAllowAllSamplers = ckLlamaCppSamplers.Checked;
+                Program.Settings.ToolCallsAlwaysManualConfirm = ckToolAlwaysAsk.Checked;
 
                 Program.Settings.BackendParallelToolCalls = cbParallel.SelectedIndex switch
                 {

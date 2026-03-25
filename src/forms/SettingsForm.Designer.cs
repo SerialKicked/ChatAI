@@ -195,6 +195,7 @@
             panel26 = new Panel();
             numToolLimit = new LetheChat.Controls.ModernNumericUpDown();
             label42 = new Label();
+            ckToolAlwaysAsk = new LetheChat.Controls.ModernCheckBox();
             ckAllowtools = new LetheChat.Controls.ModernCheckBox();
             collapsibleGroupBox14 = new LetheChat.Controls.CollapsibleGroupBox();
             cklToolsets = new LetheChat.Controls.ModernCheckedListBox();
@@ -2201,11 +2202,11 @@
             // 
             edToolinfo.BackColor = SystemColors.GrayText;
             edToolinfo.BorderStyle = BorderStyle.FixedSingle;
-            edToolinfo.Location = new Point(373, 156);
+            edToolinfo.Location = new Point(373, 179);
             edToolinfo.Multiline = true;
             edToolinfo.Name = "edToolinfo";
             edToolinfo.ReadOnly = true;
-            edToolinfo.Size = new Size(485, 393);
+            edToolinfo.Size = new Size(485, 370);
             edToolinfo.TabIndex = 44;
             // 
             // collapsibleGroupBox15
@@ -2214,12 +2215,13 @@
             collapsibleGroupBox15.CanCollapse = false;
             collapsibleGroupBox15.Controls.Add(panel27);
             collapsibleGroupBox15.Controls.Add(panel26);
+            collapsibleGroupBox15.Controls.Add(ckToolAlwaysAsk);
             collapsibleGroupBox15.Controls.Add(ckAllowtools);
             collapsibleGroupBox15.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             collapsibleGroupBox15.Location = new Point(373, 6);
             collapsibleGroupBox15.Name = "collapsibleGroupBox15";
             collapsibleGroupBox15.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox15.Size = new Size(485, 144);
+            collapsibleGroupBox15.Size = new Size(485, 165);
             collapsibleGroupBox15.TabIndex = 43;
             collapsibleGroupBox15.Text = "Tool-Calling Settings";
             // 
@@ -2228,7 +2230,7 @@
             panel27.Controls.Add(numToolMemory);
             panel27.Controls.Add(label43);
             panel27.Dock = DockStyle.Top;
-            panel27.Location = new Point(12, 94);
+            panel27.Location = new Point(12, 120);
             panel27.Margin = new Padding(8);
             panel27.Name = "panel27";
             panel27.Padding = new Padding(8);
@@ -2263,7 +2265,7 @@
             panel26.Controls.Add(numToolLimit);
             panel26.Controls.Add(label42);
             panel26.Dock = DockStyle.Top;
-            panel26.Location = new Point(12, 58);
+            panel26.Location = new Point(12, 84);
             panel26.Margin = new Padding(8);
             panel26.Name = "panel26";
             panel26.Padding = new Padding(8);
@@ -2291,6 +2293,17 @@
             label42.Size = new Size(232, 15);
             label42.TabIndex = 28;
             label42.Text = "Tool-call limit in single query (0 = no limit)";
+            // 
+            // ckToolAlwaysAsk
+            // 
+            ckToolAlwaysAsk.Dock = DockStyle.Top;
+            ckToolAlwaysAsk.Font = new Font("Segoe UI", 9F);
+            ckToolAlwaysAsk.Location = new Point(12, 58);
+            ckToolAlwaysAsk.Name = "ckToolAlwaysAsk";
+            ckToolAlwaysAsk.Size = new Size(461, 26);
+            ckToolAlwaysAsk.TabIndex = 58;
+            ckToolAlwaysAsk.Text = "Always ask for confirmation before running tools";
+            ckToolAlwaysAsk.UseVisualStyleBackColor = true;
             // 
             // ckAllowtools
             // 
@@ -2993,5 +3006,6 @@
         private Controls.ModernNumericUpDown numToolMemory;
         private Label label43;
         private TextBox edToolinfo;
+        private Controls.ModernCheckBox ckToolAlwaysAsk;
     }
 }
