@@ -53,15 +53,7 @@ namespace LetheChat
         public static ICharacter? Bot => LLMEngine.Bot as ICharacter;
         public static ICharacter? User => LLMEngine.User as ICharacter;
 
-        /// <summary>
-        /// Custom markdown pipeline with extensions
-        /// </summary>
-        public static MarkdownPipeline CustomMarkDownPipeline { get; } = new MarkdownPipelineBuilder()
-            .UseSoftlineBreakAsHardlineBreak().UseAdvancedExtensions()
-            .UseEmojiAndSmiley()
-            .UseAutoLinks()
-            .Use(new QuoteColorExtension())
-            .Build();
+        public WebUI webUI = null!;
 
         /// <summary>
         /// Intercepts app level mouse/keyboard activity to check if user active or not
@@ -118,12 +110,14 @@ namespace LetheChat
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime)
                 return;
 
+            webUI = new WebUI(this, web_chat);
+
             EnsureLLMLoggerConnected();
             this.Shown += async (_, __) =>
             {
-                await InitializeWebViewAsync();
+                await webUI.InitializeWebViewAsync();
                 cb_bot_SelectedIndexChanged(cb_bot, new EventArgs());
-                await LoadHistoryToUI();
+                await webUI.LoadHistoryToUI();
             };
 
             ed_input.SpellCheckLanguage = "en-US";
@@ -310,7 +304,7 @@ namespace LetheChat
                     cboxVLM.Enabled = LLMEngine.SupportsVision;
                     cboxVLM.Expanded = LLMEngine.SupportsVision;
                     UpdateUIState();
-                    await LoadHistoryToUI();
+                    await webUI.LoadHistoryToUI();
                 }
             }
             catch (Exception ex)
@@ -466,7 +460,7 @@ namespace LetheChat
                 try
                 {
                     LLMEngine.Bot = DataFiles.Characters[key];
-                    await LoadHistoryToUI();
+                    await webUI.LoadHistoryToUI();
                     mck_guidance.Checked = !LLMEngine.Bot.DisableBotGuidance;
                     mck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
                     var searchplug = LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch");
@@ -537,7 +531,7 @@ namespace LetheChat
             if (!_impersonatemode && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart) && _currentgencalls == 1)
             {
                 var thoughts = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + $"*{LLMEngine.Bot.GetIdentifier()} is thinking...*";
-                await WebEditLastMessage(thoughts);
+                await webUI.WebEditLastMessage(thoughts);
             }
 
             _currentgeneration += e;
@@ -565,7 +559,7 @@ namespace LetheChat
                     }
                     var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
                     stringfix = stringfix.FixRoleplayString(Program.Settings.RoleplayFormatting, true);
-                    await WebEditLastMessage(MsgPrefix + stringfix);
+                    await webUI.WebEditLastMessage(MsgPrefix + stringfix);
                 }
                 else
                 {
@@ -611,15 +605,16 @@ namespace LetheChat
                 var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
 
                 var msg = LLMEngine.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMEngine.User, LLMEngine.Bot);
-                await InvokeAsync(async () => { await WebEditLastMessage(MsgPrefix + stringfix, msg.Guid); });
+                await InvokeAsync(async () => { await webUI.WebEditLastMessage(MsgPrefix + stringfix, msg.Guid); });
                 PrepareResponse();
 
                 if (_forcereload || Program.Settings.MaxMessagesOnScreen <= LLMEngine.History.CurrentSession.Messages.Count)
                 {
                     Invoke((System.Windows.Forms.MethodInvoker)async delegate
                     {
-                        await WebChatLoad();
+                        await webUI.WebChatLoad();
                     });
+                    _forcereload = false;
                 }
                 Invoke((System.Windows.Forms.MethodInvoker)delegate
                 {
@@ -663,7 +658,7 @@ namespace LetheChat
                 var msg = new SingleMessage(AuthorRole.Assistant, response);
                 Bot.History.LogMessage(msg);
                 _afkmessagecount++;
-                await SendMessageToUI(msg);
+                await webUI.SendMessageToUI(msg);
                 // play a notification sound
                 System.Media.SystemSounds.Question.Play();
             }
@@ -744,7 +739,7 @@ namespace LetheChat
             {
                 // ready a new message for the bot's response
                 PrepareResponse();
-                await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is thinking...*"));
+                await webUI.SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is thinking...*"));
                 ed_input.Text = string.Empty;
                 await LLMEngine.AddBotMessage();
                 return;
@@ -768,10 +763,10 @@ namespace LetheChat
             {
                 userMsg = foundslash.Message;
             }
-            await SendMessageToUI(userMsg);
+            await webUI.SendMessageToUI(userMsg);
             if (foundslash is not null && !foundslash.ReplaceUser && foundslash.Message is not null)
             {
-                await SendMessageToUI(foundslash.Message);
+                await webUI.SendMessageToUI(foundslash.Message);
                 if (foundslash.LogToHistory)
                     LLMEngine.History.LogMessage(foundslash.Message);
             }
@@ -794,7 +789,7 @@ namespace LetheChat
             {
                 // ready a new message for the bot's response
                 PrepareResponse();
-                await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"));
+                await webUI.SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"));
                 ed_input.Text = string.Empty;
                 await LLMEngine.SendMessageToBot(userMsg);
             }
@@ -813,8 +808,8 @@ namespace LetheChat
             statusbar.Items[1].Text = "Analyzing...";
             UseCharacterDefinedSampler();
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
-            await WebRemoveLastMessage();
-            await SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"));
+            await webUI.WebRemoveLastMessage();
+            await webUI.SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"));
             PrepareResponse();
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             await LLMEngine.RerollLastMessage();
@@ -889,7 +884,7 @@ namespace LetheChat
                 loadingForm.SetMessage("Loading new session.");
                 loadingForm.SetProgress(100);
                 LLMEngine.RemoveQuickInferenceEventHandler();
-                await WebChatLoad();
+                await webUI.WebChatLoad();
                 _afkmessagecount = 0;
                 _activityTimer?.Reset();
             }
@@ -932,7 +927,7 @@ namespace LetheChat
                 loadingForm.SetProgress(95);
                 LLMEngine.History.CurrentSessionID = -1;
                 (LLMEngine.Bot as Character)?.SaveChatHistory();
-                await WebChatLoad();
+                await webUI.WebChatLoad();
                 _afkmessagecount = 0;
                 _activityTimer?.Reset();
             }
@@ -974,74 +969,9 @@ namespace LetheChat
             LLMEngine.InvalidatePromptCache();
 
             if (removedVisible)
-                await WebRemoveLastMessage();
+                await webUI.WebRemoveLastMessage();
         }
 
-        private async Task LoadHistoryToUI()
-        {
-            if (InvokeRequired)
-            {
-                await InvokeAsync(WebChatLoad);
-            }
-            else
-            {
-                await WebChatLoad();
-            }
-
-        }
-
-        private async Task SendMessageToUI(SingleMessage singleMessage)
-        {
-            string img = "gears.png";
-            switch (singleMessage.Role)
-            {
-                case AuthorRole.User:
-                    img = User?.Icon ?? "gears.png";
-                    break;
-                case AuthorRole.Assistant:
-                    img = Bot?.Icon ?? "gears.png";
-                    break;
-                //case AuthorRole.Tool:
-                case AuthorRole.Tool:
-                    img = "tools.png";
-                    break;
-            }
-            var text = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + singleMessage.Message, CustomMarkDownPipeline);
-            var coremsg = $@"
-                    <div class='portrait'>
-                        <img src='https://appassets.test/img/{img}' alt='Portrait' width='60'>
-                    </div>
-                    <div class='message-content'>
-                        <div class='message-raw'>
-                            {text}
-                        </div>
-                    </div>";
-
-            if (singleMessage.Role == AuthorRole.Assistant && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart))
-            {
-                coremsg = $@"
-                    <div class='portrait'>
-                        <img src='https://appassets.test/img/{img}' alt='Portrait' width='60'>
-                    </div>
-                    <div class='message-content'>
-                        <div class='thinking-box'>
-                            <div class='thinking-header' onclick='this.parentElement.classList.toggle(""expanded"")'>
-                                {LLMEngine.Bot.Name} is thinking... (click to expand)
-                            </div>
-                            <div class='thinking-content'> 
-                            </div>
-                        </div>
-                        <div class='message-raw'>
-                            {text}
-                        </div>
-                    </div>";
-            }
-
-            coremsg = coremsg.SanitizeForJS();
-            var script = $"addHtmlAfterLastChatMessage(\"{coremsg}\", \"{singleMessage.Guid}\");";
-            await web_chat.CoreWebView2.ExecuteScriptAsync(script);
-            await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
-        }
 
         private void UseCharacterDefinedSampler()
         {
@@ -1102,421 +1032,6 @@ namespace LetheChat
 
         #region *** WebView2 Handling ***
 
-        private static string InjectDialogCSS(string htmlContent)
-        {
-            string css = $@"
-    <style>
-        body {{ 
-            max-height: 100%;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: 16px;
-            font-size: {Program.Settings.FontSize}px;
-            width: 100%;
-            box-sizing: border-box;
-            background-image: url('https://appassets.test/background/{Program.Settings.BackgroundFile}');
-            background-size: cover; /* Ensures the image covers the entire background */
-            background-attachment: fixed; /* Keeps the background image fixed in place */
-            background-position: center; /* Centers the background image */
-            background-repeat: no-repeat; /* Prevents the background image from repeating */
-        }}
-        em {{ color: yellow; }}
-        strong {{ color: Tomato }}
-        a {{ color: gold }}
-        h1 {{ font-size: 1.3em; }}
-        h2 {{ font-size: 1.25em; }}
-        h3 {{ font-size: 1.2em; }}
-        h4 {{ font-size: 1.15em; }}
-        h5 {{ font-size: 1.1em; }}
-
-        .chat-message {{
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 10px;
-            border: 1px solid gray;
-            background-color: rgba(0, 0, 0, 0.75);
-            color: rgb(200, 200, 200);
-        }}
-        .chatContainer {{
-        }}
-
-        .portrait {{
-            flex: 0 0 70px;
-            padding: 10px;
-            margin-right: 0px;
-        }}
-
-        .thinking-box {{margin: 5px 0;
-            border: 1px solid #444;
-            border-radius: 4px;
-            overflow: hidden;
-        }}
-
-        .thinking-header {{padding: 5px 10px;
-            background-color: rgba(80, 80, 80, 0.5);
-            cursor: pointer;
-            user-select: none;
-        }}
-
-        .thinking-content {{display: none;
-            padding: 10px;
-            background-color: rgba(40, 40, 40, 0.5);
-        }}
-
-        .thinking-box.expanded .thinking-content {{display: block;
-        }}
-
-        .message-content {{
-            flex: 1;
-            word-wrap: break-word;
-            padding-right: 10px;
-        }}
-    </style>";
-            string scripts = @"
-    <script>
-        function updateMessageAtIndex(text, index, isthink) {
-            const messageContents = document.getElementsByClassName('message-content');
-            if (index >= 0 && index < messageContents.length) {
-                const messageContent = messageContents[index];
-                const target = isthink ? 
-                    messageContent.querySelector('.thinking-content') : 
-                    messageContent.querySelector('.message-raw');
-
-                if (target) {
-                    target.innerHTML = text;
-                } else {
-                    console.error('Target element not found');
-                }
-            } else {
-                console.error('Index out of bounds');
-            }
-        }
-        function addHtmlAfterLastChatMessage(htmlContent, messageGuid) {
-            const container = document.getElementById('chatContainer') || document.body;
-            const chatMessages = container.querySelectorAll('.chat-message');
-
-            const newDiv = document.createElement('div');
-            newDiv.className = 'chat-message';
-            newDiv.setAttribute('data-message-guid', messageGuid);
-            newDiv.innerHTML = htmlContent;
-
-            if (chatMessages.length > 0) {
-                const lastChatMessage = chatMessages[chatMessages.length - 1];
-                lastChatMessage.insertAdjacentElement('afterend', newDiv);
-            } else {
-                // No previous messages: append as first message
-                container.appendChild(newDiv);
-            }
-        }
-        document.addEventListener('DOMContentLoaded', (event) => 
-        {
-            const chatContainer = document.getElementById('chatContainer');
-            chatContainer.addEventListener('dblclick', (event) => 
-            {
-                let targetElement = event.target;
-                while (targetElement && !targetElement.classList.contains('chat-message')) 
-                {
-                    targetElement = targetElement.parentElement;
-                }
-                if (targetElement && targetElement.classList.contains('chat-message')) 
-                {
-                    const messageGuid = targetElement.getAttribute('data-message-guid');
-                    window.chrome.webview.postMessage({ type: 'EditMessage', guid: messageGuid });
-                }
-            });
-        });         
-    </script>";
-            return $"<html><head>{css}</head><body>{scripts}<div id='chatContainer'>{htmlContent}<br/></div></body></html>";
-        }
-
-        private static string InjectDialogHtml(string imgPath, string dialog, Guid messageGuid)
-        {
-            // dialog should already be sanitized for HTML; the pipeline calling this produces the HTML
-            // Ensure both .thinking-content and .message-raw exist so JS paths always have a target.
-            return $@"
-        <div class='chat-message' data-message-guid='{messageGuid}'>
-            <div class='portrait'>
-                <img src='https://appassets.test/img/{imgPath}' alt='Portrait' width='60'>
-            </div>
-            <div class='message-content'>
-                <div class='thinking-content'></div>
-                <div class='message-raw'>
-                    {dialog}
-                </div>
-            </div>
-        </div>";
-        }
-
-        private static string AddHtmlMessage(SingleMessage singleMessage)
-        {
-            string img = "gears.png";
-            switch (singleMessage.Role)
-            {
-                case AuthorRole.User:
-                    img = (singleMessage.User as ICharacter)!.Icon;
-                    break;
-                case AuthorRole.Assistant:
-                    img = (singleMessage.Bot as ICharacter)!.Icon;
-                    break;
-                case AuthorRole.Tool:
-                    img = "tools.png";
-                    break;
-            }
-            var msg = singleMessage.Message;
-            if (singleMessage.ToolCalls.Count > 0 && singleMessage.Role != AuthorRole.Tool)
-            {
-                msg += "\n\nTool calls:\n";
-                foreach (var call in singleMessage.ToolCalls)
-                {
-                    var res = call.Success ? "Success" : "Failure";
-                    msg += $"- {call.CallId}: {call.FunctionName}() => {res} in {(int)call.Duration.TotalMilliseconds}ms\n";
-                    //if (!string.IsNullOrEmpty(call.ResultJson))
-                    //{
-                    //    msg += $"Result:\n```json\n{call.ResultJson}\n```\n";
-                    //}
-                }
-            }
-
-            var html = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + msg, CustomMarkDownPipeline);
-            return InjectDialogHtml(img, html, singleMessage.Guid);
-        }
-
-        private async Task WebRemoveLastMessage()
-        {
-            if (InvokeRequired)
-            {
-                await InvokeAsync(new Func<Task>(WebRemoveLastMessage));
-                return;
-            }
-            await web_chat.CoreWebView2.ExecuteScriptAsync(@"
-                (function(){
-                    const msgs = document.getElementsByClassName('chat-message');
-                    if (msgs.length > 0) { msgs[msgs.length - 1].remove(); }
-                })();");
-            await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
-        }
-
-        private async Task WebEditLastMessage(string newMessage, Guid? messageGuid = null)
-        {
-            if (InvokeRequired)
-            {
-                await InvokeAsync(new Func<Task>(async () => await WebEditLastMessage(newMessage, messageGuid)));
-                return;
-            }
-
-            // Builds one atomic JS block that updates content AND sets GUID on the same wrapper
-            string BuildAtomicUpdateScript(string html, bool isThinking, Guid? guid)
-            {
-                var guidLiteral = guid.HasValue ? guid.Value.ToString() : string.Empty;
-
-                return $@"
-(function() {{
-  try {{
-    const contents = document.getElementsByClassName('message-content');
-    if (!contents || contents.length === 0) {{
-      console.error('WebEditLastMessage: no .message-content elements found');
-      return;
-    }}
-    const idx = contents.length - 1;
-
-    if (typeof updateMessageAtIndex === 'function') {{
-      updateMessageAtIndex(""{html}"", idx, {(isThinking ? "true" : "false")});
-    }} else {{
-      const messageContent = contents[idx];
-      const target = {(isThinking ? "messageContent.querySelector('.thinking-content')" : "messageContent.querySelector('.message-raw')")};
-      if (target) {{
-        target.innerHTML = ""{html}"";
-      }} else {{
-        console.error('WebEditLastMessage: target element not found for isThinking=' + {(isThinking ? "true" : "false").ToString().ToLowerInvariant()});
-      }}
-    }}
-
-    const wrapper = contents[idx].closest('.chat-message');
-    {(messageGuid.HasValue ? $"if (wrapper) wrapper.setAttribute('data-message-guid', '{guidLiteral}');" : "")}
-  }} catch (e) {{
-    console.error('WebEditLastMessage: exception', e);
-  }}
-}})();";
-            }
-
-            if (!string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart) &&
-                newMessage.StartsWith(ChatRender.GetMessagePrefix(AuthorRole.Assistant)) &&
-                newMessage.Contains(LLMEngine.Instruct.ThinkingStart.RemoveNewLines()))
-            {
-                // Strip assistant prefix
-                var worktext = newMessage[ChatRender.GetMessagePrefix(AuthorRole.Assistant).Length..];
-
-                if (!worktext.Contains(LLMEngine.Instruct.ThinkingEnd.RemoveNewLines()))
-                {
-                    // Thinking-only update
-                    worktext = worktext.Replace(LLMEngine.Instruct.ThinkingStart, string.Empty);
-                    var text = Markdown.ToHtml(worktext, CustomMarkDownPipeline).SanitizeForJS();
-                    await web_chat.CoreWebView2.ExecuteScriptAsync(BuildAtomicUpdateScript(text, isThinking: true, messageGuid));
-                }
-                else
-                {
-                    // Thinking + final
-                    var parts = worktext.Split([LLMEngine.Instruct.ThinkingEnd.RemoveNewLines()], 2, StringSplitOptions.None);
-
-                    var thinkingText = parts[0].Replace(LLMEngine.Instruct.ThinkingStart.RemoveNewLines(), string.Empty);
-                    var thinkingHtml = Markdown.ToHtml(thinkingText, CustomMarkDownPipeline).SanitizeForJS();
-                    await web_chat.CoreWebView2.ExecuteScriptAsync(BuildAtomicUpdateScript(thinkingHtml, isThinking: true, messageGuid));
-
-                    var msgoutput = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + parts[1].TrimStart().TrimStart('\n').TrimStart();
-                    var messageHtml = Markdown.ToHtml(msgoutput, CustomMarkDownPipeline).SanitizeForJS();
-                    await web_chat.CoreWebView2.ExecuteScriptAsync(BuildAtomicUpdateScript(messageHtml, isThinking: false, messageGuid));
-                }
-            }
-            else
-            {
-                var text = Markdown.ToHtml(newMessage, CustomMarkDownPipeline).SanitizeForJS();
-                await web_chat.CoreWebView2.ExecuteScriptAsync(BuildAtomicUpdateScript(text, isThinking: false, messageGuid));
-            }
-
-            await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
-        }
-
-        public async void ForceUpdateLastMessage(string update)
-        {
-            await WebEditLastMessage(update);
-        }
-
-        private async Task WebChatLoad()
-        {
-            if (web_chat.CoreWebView2 == null)
-                await InitializeWebViewAsync();
-
-            var html = string.Empty;
-            _forcereload = false;
-            var start = LLMEngine.History.CurrentSession.Messages.Count - Program.Settings.MaxMessagesOnScreen;
-            if (start < 0)
-                start = 0;
-            for (int i = start; i < LLMEngine.History.CurrentSession.Messages.Count; i++)
-            {
-                if (!LLMEngine.History.CurrentSession.Messages[i].Hidden || Program.Settings.ShowHiddenMessages)
-                    html += AddHtmlMessage(LLMEngine.History.CurrentSession.Messages[i]);
-            }
-            html = InjectDialogCSS(html);
-            web_chat.NavigateToString(html);
-        }
-
-        private void OnNavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs e)
-        {
-            var url = e.Uri;
-            if (url.StartsWith("https://") || url.StartsWith("http://"))
-            {
-                e.Cancel = true; // Prevent the WebView2 control from opening the link
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = url,
-                    UseShellExecute = true
-                });
-            }
-        }
-
-        private void OnNewWindowRequested(object? sender, CoreWebView2NewWindowRequestedEventArgs e)
-        {
-            e.Handled = true; // Prevent the WebView2 control from opening the link
-            var url = e.Uri;
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-            {
-                FileName = url,
-                UseShellExecute = true
-            });
-        }
-
-        private async void OnWebChatContentLoaded(object sender, CoreWebView2DOMContentLoadedEventArgs e)
-        {
-            if (web_chat?.CoreWebView2 != null)
-            {
-                await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
-            }
-        }
-
-        private void OnWebChatWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
-        {
-            try
-            {
-                var message = e.WebMessageAsJson;
-                if (string.IsNullOrEmpty(message))
-                    return;
-                var json = JsonConvert.DeserializeObject<Dictionary<string, object>>(message);
-                if (json == null || !json.TryGetValue("type", out object? value) || value.ToString() != "EditMessage")
-                    return;
-                if (!json.TryGetValue("guid", out object? guidObj))
-                    return;
-
-                if (!Guid.TryParse(guidObj.ToString(), out Guid messageGuid))
-                    return;
-
-                // Use BeginInvoke instead of Invoke to avoid potential deadlocks
-                BeginInvoke(new Action(() =>
-                {
-                    try
-                    {
-                        if (!IsDisposed && IsHandleCreated)
-                        {
-                            EditMessage(messageGuid);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Error in EditMessage: {ex}");
-                    }
-                }));
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error in OnWebChatWebMessageReceived: {ex}");
-            }
-        }
-
-        private void EditMessage(Guid messageGuid)
-        {
-            if (LLMEngine.Status == SystemStatus.Busy)
-                return;
-
-            this.Enabled = false;
-            using var _editMessage = new EditMessageForm(messageGuid)
-            {
-                TopMost = true,
-                StartPosition = FormStartPosition.CenterParent
-            };
-            _editMessage.Refresh();
-            try
-            {
-                if (_editMessage.ShowDialog() == DialogResult.OK && _editMessage.Message != null)
-                {
-                    Invoke((System.Windows.Forms.MethodInvoker)async delegate
-                    {
-                        await LoadHistoryToUI();
-                        LLMEngine.InvalidatePromptCache();
-                    });
-                }
-            }
-            finally
-            {
-                this.Enabled = true;
-            }
-        }
-
-        private async Task InitializeWebViewAsync()
-        {
-            if (web_chat.CoreWebView2 != null) return;
-            await web_chat.EnsureCoreWebView2Async();
-            web_chat.CoreWebView2!.Settings.AreDevToolsEnabled = false;
-            web_chat.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-            web_chat.CoreWebView2.SetVirtualHostNameToFolderMapping(
-                "appassets.test",
-                Path.Combine(AppContext.BaseDirectory, "data"),
-                CoreWebView2HostResourceAccessKind.Allow);
-
-            web_chat.CoreWebView2.DOMContentLoaded += OnWebChatContentLoaded!;
-            web_chat.CoreWebView2.WebMessageReceived += OnWebChatWebMessageReceived!;
-            web_chat.CoreWebView2.NewWindowRequested += OnNewWindowRequested;
-            web_chat.CoreWebView2.NavigationStarting += OnNavigationStarting;
-            web_chat.ZoomFactor = 1D;
-        }
 
         #endregion
 
@@ -1813,7 +1328,7 @@ namespace LetheChat
             settingsForm.ShowDialog();
             LLMEngine.InvalidatePromptCache();
             if (LLMEngine.Status == SystemStatus.Ready)
-                await WebChatLoad();
+                await webUI.WebChatLoad();
             UpdateUIState();
         }
 
@@ -1833,7 +1348,7 @@ namespace LetheChat
             worldForm.StartPosition = FormStartPosition.CenterParent;
             worldForm.ShowDialog();
             LLMEngine.InvalidatePromptCache();
-            await WebChatLoad();
+            await webUI.WebChatLoad();
         }
 
 
@@ -1931,7 +1446,7 @@ namespace LetheChat
                 {
                     cbGroupSwitch.Items.Add(name.UniqueName);
                 }
-                await LoadHistoryToUI();
+                await webUI.LoadHistoryToUI();
                 mck_guidance.Checked = !LLMEngine.Bot.DisableBotGuidance;
                 mck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
                 var searchplug = LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch");
@@ -2028,7 +1543,7 @@ namespace LetheChat
                     UpdateGroupSelection();
                     LLMEngine.InvalidatePromptCache();
                     PrepareResponse();
-                    await SendMessageToUI(new SingleMessage(
+                    await webUI.SendMessageToUI(new SingleMessage(
                         AuthorRole.Assistant,
                         "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"));
                 }
@@ -2063,7 +1578,7 @@ namespace LetheChat
             if (msg is null)
                 return;
             LLMEngine.History.LogMessage(msg);
-            await LoadHistoryToUI();
+            await webUI.LoadHistoryToUI();
         }
 
         private void ckToolCalls_CheckedChanged(object sender, EventArgs e)
