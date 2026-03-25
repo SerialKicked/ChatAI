@@ -86,6 +86,9 @@
             label1 = new Label();
             tabCore = new TabPage();
             collapsibleGroupBox10 = new LetheChat.Controls.CollapsibleGroupBox();
+            panel28 = new Panel();
+            numImageRes = new LetheChat.Controls.ModernNumericUpDown();
+            label40 = new Label();
             panel14 = new Panel();
             num_ImgCount = new LetheChat.Controls.ModernNumericUpDown();
             label18 = new Label();
@@ -225,9 +228,6 @@
             btBackend = new Button();
             HelptoolTip = new ToolTip(components);
             openFileDialog1 = new OpenFileDialog();
-            panel28 = new Panel();
-            numImageRes = new LetheChat.Controls.ModernNumericUpDown();
-            label40 = new Label();
             panel1.SuspendLayout();
             MainTab.SuspendLayout();
             tabBackend.SuspendLayout();
@@ -245,6 +245,7 @@
             collapsibleGroupBox2.SuspendLayout();
             tabCore.SuspendLayout();
             collapsibleGroupBox10.SuspendLayout();
+            panel28.SuspendLayout();
             panel14.SuspendLayout();
             panel9.SuspendLayout();
             collapsibleGroupBox1.SuspendLayout();
@@ -276,7 +277,6 @@
             collapsibleGroupBox13.SuspendLayout();
             collapsibleGroupBox12.SuspendLayout();
             MainButtonStack.SuspendLayout();
-            panel28.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -285,7 +285,7 @@
             panel1.Dock = DockStyle.Bottom;
             panel1.Location = new Point(0, 555);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1102, 38);
+            panel1.Size = new Size(1026, 38);
             panel1.TabIndex = 32;
             // 
             // button1
@@ -297,7 +297,7 @@
             button1.ForeColor = Color.Black;
             button1.Location = new Point(3, 6);
             button1.Name = "button1";
-            button1.Size = new Size(1096, 27);
+            button1.Size = new Size(1020, 27);
             button1.TabIndex = 2;
             button1.Tag = "no-theme";
             button1.Text = "Apply and Close";
@@ -322,7 +322,7 @@
             MainTab.Name = "MainTab";
             MainTab.SelectedIndex = 0;
             MainTab.ShowTabs = false;
-            MainTab.Size = new Size(874, 555);
+            MainTab.Size = new Size(798, 555);
             MainTab.TabIndex = 33;
             // 
             // tabBackend
@@ -336,7 +336,7 @@
             tabBackend.Location = new Point(0, 0);
             tabBackend.Name = "tabBackend";
             tabBackend.Padding = new Padding(3);
-            tabBackend.Size = new Size(874, 555);
+            tabBackend.Size = new Size(798, 555);
             tabBackend.TabIndex = 0;
             tabBackend.Text = "Backend";
             // 
@@ -350,7 +350,7 @@
             collapsibleGroupBox4.Location = new Point(6, 238);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox4.Size = new Size(852, 310);
+            collapsibleGroupBox4.Size = new Size(780, 310);
             collapsibleGroupBox4.TabIndex = 42;
             collapsibleGroupBox4.Text = "Managed Llama.cpp Default Settings";
             // 
@@ -366,7 +366,7 @@
             verticalStackPanel3.Location = new Point(329, 32);
             verticalStackPanel3.Name = "verticalStackPanel3";
             verticalStackPanel3.Padding = new Padding(4);
-            verticalStackPanel3.Size = new Size(511, 268);
+            verticalStackPanel3.Size = new Size(439, 268);
             verticalStackPanel3.TabIndex = 1;
             // 
             // ckLlamaMMProj
@@ -375,7 +375,7 @@
             ckLlamaMMProj.Font = new Font("Segoe UI", 9F);
             ckLlamaMMProj.Location = new Point(4, 174);
             ckLlamaMMProj.Name = "ckLlamaMMProj";
-            ckLlamaMMProj.Size = new Size(503, 26);
+            ckLlamaMMProj.Size = new Size(431, 26);
             ckLlamaMMProj.TabIndex = 43;
             ckLlamaMMProj.Text = "Load MMProj file when available (image recognition)";
             ckLlamaMMProj.UseVisualStyleBackColor = true;
@@ -386,7 +386,7 @@
             ckLlamaJinja.Font = new Font("Segoe UI", 9F);
             ckLlamaJinja.Location = new Point(4, 140);
             ckLlamaJinja.Name = "ckLlamaJinja";
-            ckLlamaJinja.Size = new Size(503, 26);
+            ckLlamaJinja.Size = new Size(431, 26);
             ckLlamaJinja.TabIndex = 42;
             ckLlamaJinja.Text = "Load custom Jinja file when available";
             ckLlamaJinja.UseVisualStyleBackColor = true;
@@ -397,7 +397,7 @@
             ckLlamaMMap.Font = new Font("Segoe UI", 9F);
             ckLlamaMMap.Location = new Point(4, 106);
             ckLlamaMMap.Name = "ckLlamaMMap";
-            ckLlamaMMap.Size = new Size(503, 26);
+            ckLlamaMMap.Size = new Size(431, 26);
             ckLlamaMMap.TabIndex = 41;
             ckLlamaMMap.Text = "Memory Map";
             ckLlamaMMap.UseVisualStyleBackColor = true;
@@ -408,7 +408,7 @@
             ckLlamaMLock.Font = new Font("Segoe UI", 9F);
             ckLlamaMLock.Location = new Point(4, 72);
             ckLlamaMLock.Name = "ckLlamaMLock";
-            ckLlamaMLock.Size = new Size(503, 26);
+            ckLlamaMLock.Size = new Size(431, 26);
             ckLlamaMLock.TabIndex = 40;
             ckLlamaMLock.Text = "Memory Lock";
             ckLlamaMLock.UseVisualStyleBackColor = true;
@@ -419,7 +419,7 @@
             ckLlamaKV.Font = new Font("Segoe UI", 9F);
             ckLlamaKV.Location = new Point(4, 38);
             ckLlamaKV.Name = "ckLlamaKV";
-            ckLlamaKV.Size = new Size(503, 26);
+            ckLlamaKV.Size = new Size(431, 26);
             ckLlamaKV.TabIndex = 38;
             ckLlamaKV.Text = "KV Cache in GPU's VRAM";
             ckLlamaKV.UseVisualStyleBackColor = true;
@@ -430,7 +430,7 @@
             ckLlamaProps.Font = new Font("Segoe UI", 9F);
             ckLlamaProps.Location = new Point(4, 4);
             ckLlamaProps.Name = "ckLlamaProps";
-            ckLlamaProps.Size = new Size(503, 26);
+            ckLlamaProps.Size = new Size(431, 26);
             ckLlamaProps.TabIndex = 37;
             ckLlamaProps.Text = "Enable Props";
             ckLlamaProps.UseVisualStyleBackColor = true;
@@ -705,7 +705,7 @@
             collapsibleGroupBox3.Location = new Point(6, 6);
             collapsibleGroupBox3.Name = "collapsibleGroupBox3";
             collapsibleGroupBox3.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox3.Size = new Size(425, 226);
+            collapsibleGroupBox3.Size = new Size(407, 226);
             collapsibleGroupBox3.TabIndex = 41;
             collapsibleGroupBox3.Text = "Managed Llama.cpp";
             // 
@@ -748,7 +748,7 @@
             btModelFolders.ForeColor = Color.Black;
             btModelFolders.Location = new Point(15, 124);
             btModelFolders.Name = "btModelFolders";
-            btModelFolders.Size = new Size(392, 27);
+            btModelFolders.Size = new Size(377, 27);
             btModelFolders.TabIndex = 7;
             btModelFolders.Tag = "no-theme";
             btModelFolders.Text = "Select Models' Folders";
@@ -762,7 +762,7 @@
             btFindLlamaExe.FlatStyle = FlatStyle.Flat;
             btFindLlamaExe.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btFindLlamaExe.ForeColor = Color.Black;
-            btFindLlamaExe.Location = new Point(366, 84);
+            btFindLlamaExe.Location = new Point(351, 83);
             btFindLlamaExe.Name = "btFindLlamaExe";
             btFindLlamaExe.Size = new Size(41, 27);
             btFindLlamaExe.TabIndex = 6;
@@ -775,7 +775,7 @@
             // 
             edLlamaPath.Location = new Point(15, 87);
             edLlamaPath.Name = "edLlamaPath";
-            edLlamaPath.Size = new Size(345, 23);
+            edLlamaPath.Size = new Size(330, 23);
             edLlamaPath.TabIndex = 2;
             // 
             // label5
@@ -812,10 +812,10 @@
             collapsibleGroupBox2.Controls.Add(cbParallel);
             collapsibleGroupBox2.Controls.Add(label1);
             collapsibleGroupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox2.Location = new Point(437, 6);
+            collapsibleGroupBox2.Location = new Point(419, 6);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox2.Size = new Size(421, 226);
+            collapsibleGroupBox2.Size = new Size(367, 226);
             collapsibleGroupBox2.TabIndex = 40;
             collapsibleGroupBox2.Text = "Backend-Compatibility Settings";
             // 
@@ -825,7 +825,7 @@
             ckLlamaCppSamplers.Font = new Font("Segoe UI", 9F);
             ckLlamaCppSamplers.Location = new Point(12, 179);
             ckLlamaCppSamplers.Name = "ckLlamaCppSamplers";
-            ckLlamaCppSamplers.Size = new Size(397, 26);
+            ckLlamaCppSamplers.Size = new Size(343, 26);
             ckLlamaCppSamplers.TabIndex = 58;
             ckLlamaCppSamplers.Text = "Allow advanced samplers in Llama.cpp (requires --props)";
             ckLlamaCppSamplers.UseVisualStyleBackColor = true;
@@ -837,7 +837,7 @@
             panel4.Margin = new Padding(8);
             panel4.Name = "panel4";
             panel4.Padding = new Padding(8);
-            panel4.Size = new Size(397, 10);
+            panel4.Size = new Size(343, 10);
             panel4.TabIndex = 55;
             // 
             // cbChatThinkPolicy
@@ -851,7 +851,7 @@
             cbChatThinkPolicy.MaxDropDownItems = 10;
             cbChatThinkPolicy.Name = "cbChatThinkPolicy";
             cbChatThinkPolicy.Padding = new Padding(1);
-            cbChatThinkPolicy.Size = new Size(397, 24);
+            cbChatThinkPolicy.Size = new Size(343, 24);
             cbChatThinkPolicy.TabIndex = 0;
             // 
             // label3
@@ -872,7 +872,7 @@
             panel2.Margin = new Padding(8);
             panel2.Name = "panel2";
             panel2.Padding = new Padding(8);
-            panel2.Size = new Size(397, 10);
+            panel2.Size = new Size(343, 10);
             panel2.TabIndex = 56;
             // 
             // cbChatAllowPrefill
@@ -886,7 +886,7 @@
             cbChatAllowPrefill.MaxDropDownItems = 10;
             cbChatAllowPrefill.Name = "cbChatAllowPrefill";
             cbChatAllowPrefill.Padding = new Padding(1);
-            cbChatAllowPrefill.Size = new Size(397, 24);
+            cbChatAllowPrefill.Size = new Size(343, 24);
             cbChatAllowPrefill.TabIndex = 4;
             // 
             // label2
@@ -907,7 +907,7 @@
             panel3.Margin = new Padding(8);
             panel3.Name = "panel3";
             panel3.Padding = new Padding(8);
-            panel3.Size = new Size(397, 10);
+            panel3.Size = new Size(343, 10);
             panel3.TabIndex = 57;
             // 
             // cbParallel
@@ -921,7 +921,7 @@
             cbParallel.MaxDropDownItems = 10;
             cbParallel.Name = "cbParallel";
             cbParallel.Padding = new Padding(1);
-            cbParallel.Size = new Size(397, 24);
+            cbParallel.Size = new Size(343, 24);
             cbParallel.TabIndex = 2;
             // 
             // label1
@@ -945,7 +945,7 @@
             tabCore.Location = new Point(0, 0);
             tabCore.Name = "tabCore";
             tabCore.Padding = new Padding(3);
-            tabCore.Size = new Size(874, 555);
+            tabCore.Size = new Size(798, 555);
             tabCore.TabIndex = 1;
             tabCore.Text = "Core LLM";
             // 
@@ -960,9 +960,45 @@
             collapsibleGroupBox10.Location = new Point(6, 163);
             collapsibleGroupBox10.Name = "collapsibleGroupBox10";
             collapsibleGroupBox10.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox10.Size = new Size(856, 154);
+            collapsibleGroupBox10.Size = new Size(780, 154);
             collapsibleGroupBox10.TabIndex = 42;
             collapsibleGroupBox10.Text = "Image Processing";
+            // 
+            // panel28
+            // 
+            panel28.Controls.Add(numImageRes);
+            panel28.Controls.Add(label40);
+            panel28.Dock = DockStyle.Top;
+            panel28.Location = new Point(12, 104);
+            panel28.Margin = new Padding(8);
+            panel28.Name = "panel28";
+            panel28.Padding = new Padding(8);
+            panel28.Size = new Size(756, 36);
+            panel28.TabIndex = 60;
+            // 
+            // numImageRes
+            // 
+            numImageRes.BackColor = Color.FromArgb(64, 64, 64);
+            numImageRes.Font = new Font("Segoe UI", 9F);
+            numImageRes.Increment = new decimal(new int[] { 256, 0, 0, 0 });
+            numImageRes.Location = new Point(11, 6);
+            numImageRes.Maximum = new decimal(new int[] { 2048, 0, 0, 0 });
+            numImageRes.Minimum = new decimal(new int[] { 256, 0, 0, 0 });
+            numImageRes.Name = "numImageRes";
+            numImageRes.Padding = new Padding(1);
+            numImageRes.Size = new Size(117, 23);
+            numImageRes.TabIndex = 27;
+            numImageRes.Value = new decimal(new int[] { 1024, 0, 0, 0 });
+            // 
+            // label40
+            // 
+            label40.AutoSize = true;
+            label40.Font = new Font("Segoe UI", 9F);
+            label40.Location = new Point(134, 8);
+            label40.Name = "label40";
+            label40.Size = new Size(249, 15);
+            label40.TabIndex = 28;
+            label40.Text = "Max Image Resolution (1024 for most models)";
             // 
             // panel14
             // 
@@ -973,7 +1009,7 @@
             panel14.Margin = new Padding(8);
             panel14.Name = "panel14";
             panel14.Padding = new Padding(8);
-            panel14.Size = new Size(832, 36);
+            panel14.Size = new Size(756, 36);
             panel14.TabIndex = 57;
             // 
             // num_ImgCount
@@ -1007,7 +1043,7 @@
             panel9.Margin = new Padding(8);
             panel9.Name = "panel9";
             panel9.Padding = new Padding(8);
-            panel9.Size = new Size(832, 36);
+            panel9.Size = new Size(756, 36);
             panel9.TabIndex = 56;
             // 
             // num_imgEmbed
@@ -1046,7 +1082,7 @@
             collapsibleGroupBox1.Location = new Point(6, 6);
             collapsibleGroupBox1.Name = "collapsibleGroupBox1";
             collapsibleGroupBox1.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox1.Size = new Size(856, 142);
+            collapsibleGroupBox1.Size = new Size(780, 142);
             collapsibleGroupBox1.TabIndex = 34;
             collapsibleGroupBox1.Text = "LLM Core Settings";
             // 
@@ -1056,7 +1092,7 @@
             ckForceInternalGram.Font = new Font("Segoe UI", 9F);
             ckForceInternalGram.Location = new Point(12, 110);
             ckForceInternalGram.Name = "ckForceInternalGram";
-            ckForceInternalGram.Size = new Size(832, 26);
+            ckForceInternalGram.Size = new Size(756, 26);
             ckForceInternalGram.TabIndex = 39;
             ckForceInternalGram.Text = "Use Internal library's structured output generator";
             ckForceInternalGram.UseVisualStyleBackColor = true;
@@ -1067,7 +1103,7 @@
             ckNoPastInserts.Font = new Font("Segoe UI", 9F);
             ckNoPastInserts.Location = new Point(12, 84);
             ckNoPastInserts.Name = "ckNoPastInserts";
-            ckNoPastInserts.Size = new Size(832, 26);
+            ckNoPastInserts.Size = new Size(756, 26);
             ckNoPastInserts.TabIndex = 38;
             ckNoPastInserts.Text = "Never insert meta-data and memory when chatting in older session";
             ckNoPastInserts.UseVisualStyleBackColor = true;
@@ -1078,7 +1114,7 @@
             ck_hallusafe.Font = new Font("Segoe UI", 9F);
             ck_hallusafe.Location = new Point(12, 58);
             ck_hallusafe.Name = "ck_hallusafe";
-            ck_hallusafe.Size = new Size(832, 26);
+            ck_hallusafe.Size = new Size(756, 26);
             ck_hallusafe.TabIndex = 37;
             ck_hallusafe.Text = "System Prompt patch to reduce memory-related hallucinations";
             ck_hallusafe.UseVisualStyleBackColor = true;
@@ -1089,7 +1125,7 @@
             ck_sysrag.Font = new Font("Segoe UI", 9F);
             ck_sysrag.Location = new Point(12, 32);
             ck_sysrag.Name = "ck_sysrag";
-            ck_sysrag.Size = new Size(832, 26);
+            ck_sysrag.Size = new Size(756, 26);
             ck_sysrag.TabIndex = 36;
             ck_sysrag.Text = "Move all memory inserts to the system prompt ";
             ck_sysrag.UseVisualStyleBackColor = true;
@@ -1104,7 +1140,7 @@
             tabMemory.ForeColor = Color.FromArgb(230, 230, 230);
             tabMemory.Location = new Point(0, 0);
             tabMemory.Name = "tabMemory";
-            tabMemory.Size = new Size(874, 555);
+            tabMemory.Size = new Size(798, 555);
             tabMemory.TabIndex = 2;
             tabMemory.Text = "Memory Systems";
             // 
@@ -1118,10 +1154,10 @@
             collapsibleGroupBox9.Controls.Add(panel17);
             collapsibleGroupBox9.Controls.Add(ckFactRetrieval);
             collapsibleGroupBox9.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox9.Location = new Point(437, 6);
+            collapsibleGroupBox9.Location = new Point(410, 6);
             collapsibleGroupBox9.Name = "collapsibleGroupBox9";
             collapsibleGroupBox9.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox9.Size = new Size(421, 211);
+            collapsibleGroupBox9.Size = new Size(376, 211);
             collapsibleGroupBox9.TabIndex = 38;
             collapsibleGroupBox9.Text = "Fact-Based Retrieval";
             // 
@@ -1134,7 +1170,7 @@
             panel13.Margin = new Padding(8);
             panel13.Name = "panel13";
             panel13.Padding = new Padding(8);
-            panel13.Size = new Size(397, 35);
+            panel13.Size = new Size(352, 35);
             panel13.TabIndex = 61;
             // 
             // numFactSuper
@@ -1172,7 +1208,7 @@
             panel15.Margin = new Padding(8);
             panel15.Name = "panel15";
             panel15.Padding = new Padding(8);
-            panel15.Size = new Size(397, 35);
+            panel15.Size = new Size(352, 35);
             panel15.TabIndex = 60;
             // 
             // numFactRetrieval
@@ -1210,7 +1246,7 @@
             panel16.Margin = new Padding(8);
             panel16.Name = "panel16";
             panel16.Padding = new Padding(8);
-            panel16.Size = new Size(397, 35);
+            panel16.Size = new Size(352, 35);
             panel16.TabIndex = 59;
             // 
             // numFactDedup
@@ -1248,7 +1284,7 @@
             panel17.Margin = new Padding(8);
             panel17.Name = "panel17";
             panel17.Padding = new Padding(8);
-            panel17.Size = new Size(397, 36);
+            panel17.Size = new Size(352, 36);
             panel17.TabIndex = 56;
             // 
             // numFactTokens
@@ -1281,7 +1317,7 @@
             ckFactRetrieval.Font = new Font("Segoe UI", 9F);
             ckFactRetrieval.Location = new Point(12, 32);
             ckFactRetrieval.Name = "ckFactRetrieval";
-            ckFactRetrieval.Size = new Size(397, 26);
+            ckFactRetrieval.Size = new Size(352, 26);
             ckFactRetrieval.TabIndex = 24;
             ckFactRetrieval.Text = "Fact Retrieval Enabled";
             ckFactRetrieval.UseVisualStyleBackColor = true;
@@ -1307,7 +1343,7 @@
             collapsibleGroupBox5.Location = new Point(6, 223);
             collapsibleGroupBox5.Name = "collapsibleGroupBox5";
             collapsibleGroupBox5.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox5.Size = new Size(425, 207);
+            collapsibleGroupBox5.Size = new Size(398, 207);
             collapsibleGroupBox5.TabIndex = 37;
             collapsibleGroupBox5.Text = "Retrieval Augmented Generation";
             // 
@@ -1340,7 +1376,7 @@
             ckThirdPerson.Font = new Font("Segoe UI", 9F);
             ckThirdPerson.Location = new Point(12, 171);
             ckThirdPerson.Name = "ckThirdPerson";
-            ckThirdPerson.Size = new Size(401, 26);
+            ckThirdPerson.Size = new Size(374, 26);
             ckThirdPerson.TabIndex = 38;
             ckThirdPerson.Text = "Convert queries to 3rd person";
             ckThirdPerson.UseVisualStyleBackColor = true;
@@ -1475,7 +1511,7 @@
             collapsibleGroupBox6.Location = new Point(6, 6);
             collapsibleGroupBox6.Name = "collapsibleGroupBox6";
             collapsibleGroupBox6.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox6.Size = new Size(425, 211);
+            collapsibleGroupBox6.Size = new Size(398, 211);
             collapsibleGroupBox6.TabIndex = 36;
             collapsibleGroupBox6.Text = "Session Memory System";
             // 
@@ -1485,7 +1521,7 @@
             ckDetailedSum.Font = new Font("Segoe UI", 9F);
             ckDetailedSum.Location = new Point(12, 158);
             ckDetailedSum.Name = "ckDetailedSum";
-            ckDetailedSum.Size = new Size(401, 26);
+            ckDetailedSum.Size = new Size(374, 26);
             ckDetailedSum.TabIndex = 57;
             ckDetailedSum.Text = "Use Detailed Summaries";
             ckDetailedSum.UseVisualStyleBackColor = true;
@@ -1496,7 +1532,7 @@
             mck_cutmiddle.Font = new Font("Segoe UI", 9F);
             mck_cutmiddle.Location = new Point(12, 132);
             mck_cutmiddle.Name = "mck_cutmiddle";
-            mck_cutmiddle.Size = new Size(401, 26);
+            mck_cutmiddle.Size = new Size(374, 26);
             mck_cutmiddle.TabIndex = 35;
             mck_cutmiddle.Text = "Middle-cut text overflow during summarization";
             mck_cutmiddle.UseVisualStyleBackColor = true;
@@ -1512,7 +1548,7 @@
             cb_pastsession.MaxDropDownItems = 10;
             cb_pastsession.Name = "cb_pastsession";
             cb_pastsession.Padding = new Padding(1);
-            cb_pastsession.Size = new Size(401, 23);
+            cb_pastsession.Size = new Size(374, 23);
             cb_pastsession.TabIndex = 33;
             // 
             // label65
@@ -1535,7 +1571,7 @@
             panel18.Margin = new Padding(8);
             panel18.Name = "panel18";
             panel18.Padding = new Padding(8);
-            panel18.Size = new Size(401, 36);
+            panel18.Size = new Size(374, 36);
             panel18.TabIndex = 56;
             // 
             // num_memtokens
@@ -1568,7 +1604,7 @@
             ck_sessionmemory.Font = new Font("Segoe UI", 9F);
             ck_sessionmemory.Location = new Point(12, 32);
             ck_sessionmemory.Name = "ck_sessionmemory";
-            ck_sessionmemory.Size = new Size(401, 26);
+            ck_sessionmemory.Size = new Size(374, 26);
             ck_sessionmemory.TabIndex = 24;
             ck_sessionmemory.Text = "Add summaries of past sessions";
             ck_sessionmemory.UseVisualStyleBackColor = true;
@@ -1581,7 +1617,7 @@
             TabGroup.ForeColor = Color.FromArgb(230, 230, 230);
             TabGroup.Location = new Point(0, 0);
             TabGroup.Name = "TabGroup";
-            TabGroup.Size = new Size(874, 555);
+            TabGroup.Size = new Size(798, 555);
             TabGroup.TabIndex = 3;
             TabGroup.Text = "Group Chat";
             // 
@@ -1598,7 +1634,7 @@
             collapsibleGroupBox8.Location = new Point(6, 6);
             collapsibleGroupBox8.Name = "collapsibleGroupBox8";
             collapsibleGroupBox8.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox8.Size = new Size(852, 192);
+            collapsibleGroupBox8.Size = new Size(780, 192);
             collapsibleGroupBox8.TabIndex = 2;
             collapsibleGroupBox8.Text = "Group Chat";
             // 
@@ -1608,7 +1644,7 @@
             ckGroupCommit.Font = new Font("Segoe UI", 9F);
             ckGroupCommit.Location = new Point(12, 157);
             ckGroupCommit.Name = "ckGroupCommit";
-            ckGroupCommit.Size = new Size(828, 26);
+            ckGroupCommit.Size = new Size(756, 26);
             ckGroupCommit.TabIndex = 62;
             ckGroupCommit.Text = "Save Sessions to secondary characters too";
             ckGroupCommit.UseVisualStyleBackColor = true;
@@ -1619,7 +1655,7 @@
             ckGroupAltern.Font = new Font("Segoe UI", 9F);
             ckGroupAltern.Location = new Point(12, 131);
             ckGroupAltern.Name = "ckGroupAltern";
-            ckGroupAltern.Size = new Size(828, 26);
+            ckGroupAltern.Size = new Size(756, 26);
             ckGroupAltern.TabIndex = 61;
             ckGroupAltern.Text = "Forced message role alternance";
             ckGroupAltern.UseVisualStyleBackColor = true;
@@ -1634,7 +1670,7 @@
             cbGroupSessionStrategy.MaxDropDownItems = 10;
             cbGroupSessionStrategy.Name = "cbGroupSessionStrategy";
             cbGroupSessionStrategy.Padding = new Padding(1);
-            cbGroupSessionStrategy.Size = new Size(828, 23);
+            cbGroupSessionStrategy.Size = new Size(756, 23);
             cbGroupSessionStrategy.TabIndex = 59;
             // 
             // label28
@@ -1659,7 +1695,7 @@
             panel19.Margin = new Padding(8);
             panel19.Name = "panel19";
             panel19.Padding = new Padding(8);
-            panel19.Size = new Size(828, 61);
+            panel19.Size = new Size(756, 61);
             panel19.TabIndex = 55;
             // 
             // numGroupQueue
@@ -1714,7 +1750,7 @@
             tabWeb.ForeColor = Color.FromArgb(230, 230, 230);
             tabWeb.Location = new Point(0, 0);
             tabWeb.Name = "tabWeb";
-            tabWeb.Size = new Size(874, 555);
+            tabWeb.Size = new Size(798, 555);
             tabWeb.TabIndex = 4;
             tabWeb.Text = "Web";
             // 
@@ -1894,7 +1930,7 @@
             tabOutput.ForeColor = Color.FromArgb(230, 230, 230);
             tabOutput.Location = new Point(0, 0);
             tabOutput.Name = "tabOutput";
-            tabOutput.Size = new Size(874, 555);
+            tabOutput.Size = new Size(798, 555);
             tabOutput.TabIndex = 5;
             tabOutput.Text = "Output";
             // 
@@ -1920,7 +1956,7 @@
             collapsibleGroupBox11.Location = new Point(6, 6);
             collapsibleGroupBox11.Name = "collapsibleGroupBox11";
             collapsibleGroupBox11.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox11.Size = new Size(852, 543);
+            collapsibleGroupBox11.Size = new Size(780, 543);
             collapsibleGroupBox11.TabIndex = 1;
             collapsibleGroupBox11.Text = "Output Formatting";
             // 
@@ -1930,7 +1966,7 @@
             ckParenthesizeToItalic.Font = new Font("Segoe UI", 9F);
             ckParenthesizeToItalic.Location = new Point(12, 419);
             ckParenthesizeToItalic.Name = "ckParenthesizeToItalic";
-            ckParenthesizeToItalic.Size = new Size(828, 26);
+            ckParenthesizeToItalic.Size = new Size(756, 26);
             ckParenthesizeToItalic.TabIndex = 58;
             ckParenthesizeToItalic.Text = "Turn parenthesizes into italic text";
             ckParenthesizeToItalic.UseVisualStyleBackColor = true;
@@ -1941,7 +1977,7 @@
             ck_lastparaphfilter.Font = new Font("Segoe UI", 9F);
             ck_lastparaphfilter.Location = new Point(12, 393);
             ck_lastparaphfilter.Name = "ck_lastparaphfilter";
-            ck_lastparaphfilter.Size = new Size(828, 26);
+            ck_lastparaphfilter.Size = new Size(756, 26);
             ck_lastparaphfilter.TabIndex = 41;
             ck_lastparaphfilter.Text = "Delete meaningless last paragraph when it doesn't feel useful";
             ck_lastparaphfilter.UseVisualStyleBackColor = true;
@@ -1952,7 +1988,7 @@
             ckDelStartSlop.Font = new Font("Segoe UI", 9F);
             ckDelStartSlop.Location = new Point(12, 367);
             ckDelStartSlop.Name = "ckDelStartSlop";
-            ckDelStartSlop.Size = new Size(828, 26);
+            ckDelStartSlop.Size = new Size(756, 26);
             ckDelStartSlop.TabIndex = 57;
             ckDelStartSlop.Text = "Delete starting slop (Removes \"Oh, X\" pattern and extremely short *italic* text at the start)";
             ckDelStartSlop.UseVisualStyleBackColor = true;
@@ -1963,7 +1999,7 @@
             ck_fixasterix.Font = new Font("Segoe UI", 9F);
             ck_fixasterix.Location = new Point(12, 341);
             ck_fixasterix.Name = "ck_fixasterix";
-            ck_fixasterix.Size = new Size(828, 26);
+            ck_fixasterix.Size = new Size(756, 26);
             ck_fixasterix.TabIndex = 0;
             ck_fixasterix.Text = "Attempt to fix missing asterisks (don't use unless your model has issues with asterisks)";
             ck_fixasterix.UseVisualStyleBackColor = true;
@@ -1974,7 +2010,7 @@
             ck_oneparagraph.Font = new Font("Segoe UI", 9F);
             ck_oneparagraph.Location = new Point(12, 315);
             ck_oneparagraph.Name = "ck_oneparagraph";
-            ck_oneparagraph.Size = new Size(828, 26);
+            ck_oneparagraph.Size = new Size(756, 26);
             ck_oneparagraph.TabIndex = 38;
             ck_oneparagraph.Text = "Stop generation at first paragraph";
             ck_oneparagraph.UseVisualStyleBackColor = true;
@@ -1985,7 +2021,7 @@
             ck_remlastsentence.Font = new Font("Segoe UI", 9F);
             ck_remlastsentence.Location = new Point(12, 289);
             ck_remlastsentence.Name = "ck_remlastsentence";
-            ck_remlastsentence.Size = new Size(828, 26);
+            ck_remlastsentence.Size = new Size(756, 26);
             ck_remlastsentence.TabIndex = 37;
             ck_remlastsentence.Text = "If output > length, remove unfinished sentence";
             ck_remlastsentence.UseVisualStyleBackColor = true;
@@ -1996,7 +2032,7 @@
             ck_unbold.Font = new Font("Segoe UI", 9F);
             ck_unbold.Location = new Point(12, 263);
             ck_unbold.Name = "ck_unbold";
-            ck_unbold.Size = new Size(828, 26);
+            ck_unbold.Size = new Size(756, 26);
             ck_unbold.TabIndex = 30;
             ck_unbold.Text = "Don't bold text (any text in bold turned back to regular)";
             ck_unbold.UseVisualStyleBackColor = true;
@@ -2007,7 +2043,7 @@
             ck_noquotes.Font = new Font("Segoe UI", 9F);
             ck_noquotes.Location = new Point(12, 237);
             ck_noquotes.Name = "ck_noquotes";
-            ck_noquotes.Size = new Size(828, 26);
+            ck_noquotes.Size = new Size(756, 26);
             ck_noquotes.TabIndex = 31;
             ck_noquotes.Text = "Don't use quotes (quotation marks will be removed)";
             ck_noquotes.UseVisualStyleBackColor = true;
@@ -2018,7 +2054,7 @@
             ck_fixquotes.Font = new Font("Segoe UI", 9F);
             ck_fixquotes.Location = new Point(12, 211);
             ck_fixquotes.Name = "ck_fixquotes";
-            ck_fixquotes.Size = new Size(828, 26);
+            ck_fixquotes.Size = new Size(756, 26);
             ck_fixquotes.TabIndex = 32;
             ck_fixquotes.Text = "Fix quoted text (useful for QwQ / R1 models)";
             ck_fixquotes.UseVisualStyleBackColor = true;
@@ -2029,7 +2065,7 @@
             ck_noemphasisword.Font = new Font("Segoe UI", 9F);
             ck_noemphasisword.Location = new Point(12, 185);
             ck_noemphasisword.Name = "ck_noemphasisword";
-            ck_noemphasisword.Size = new Size(828, 26);
+            ck_noemphasisword.Size = new Size(756, 26);
             ck_noemphasisword.TabIndex = 33;
             ck_noemphasisword.Text = "Don't emphasis single words (useful for R1 models)";
             ck_noemphasisword.UseVisualStyleBackColor = true;
@@ -2045,7 +2081,7 @@
             panel22.Margin = new Padding(8);
             panel22.Name = "panel22";
             panel22.Padding = new Padding(8);
-            panel22.Size = new Size(828, 40);
+            panel22.Size = new Size(756, 40);
             panel22.TabIndex = 56;
             // 
             // label62
@@ -2103,7 +2139,7 @@
             ck_reduceitalic.Font = new Font("Segoe UI", 9F);
             ck_reduceitalic.Location = new Point(12, 119);
             ck_reduceitalic.Name = "ck_reduceitalic";
-            ck_reduceitalic.Size = new Size(828, 26);
+            ck_reduceitalic.Size = new Size(756, 26);
             ck_reduceitalic.TabIndex = 34;
             ck_reduceitalic.Text = "Remove a ratio of italic sentences from output";
             ck_reduceitalic.UseVisualStyleBackColor = true;
@@ -2118,7 +2154,7 @@
             panel23.Margin = new Padding(8);
             panel23.Name = "panel23";
             panel23.Padding = new Padding(8);
-            panel23.Size = new Size(828, 61);
+            panel23.Size = new Size(756, 61);
             panel23.TabIndex = 55;
             // 
             // ed_sloplist
@@ -2126,7 +2162,7 @@
             ed_sloplist.Location = new Point(11, 6);
             ed_sloplist.Name = "ed_sloplist";
             ed_sloplist.PlaceholderText = "comma separated list of words to filter out";
-            ed_sloplist.Size = new Size(806, 23);
+            ed_sloplist.Size = new Size(734, 23);
             ed_sloplist.TabIndex = 2;
             // 
             // label61
@@ -2160,7 +2196,7 @@
             ck_antislop.Font = new Font("Segoe UI", 9F);
             ck_antislop.Location = new Point(12, 32);
             ck_antislop.Name = "ck_antislop";
-            ck_antislop.Size = new Size(828, 26);
+            ck_antislop.Size = new Size(756, 26);
             ck_antislop.TabIndex = 1;
             ck_antislop.Text = "Remove words from list (ad-hoc anti slop)";
             ck_antislop.UseVisualStyleBackColor = true;
@@ -2175,7 +2211,7 @@
             tabTools.ForeColor = Color.FromArgb(230, 230, 230);
             tabTools.Location = new Point(0, 0);
             tabTools.Name = "tabTools";
-            tabTools.Size = new Size(874, 555);
+            tabTools.Size = new Size(798, 555);
             tabTools.TabIndex = 7;
             tabTools.Text = "Tools";
             // 
@@ -2183,12 +2219,12 @@
             // 
             edToolinfo.BackColor = SystemColors.GrayText;
             edToolinfo.BorderStyle = BorderStyle.FixedSingle;
-            edToolinfo.Location = new Point(373, 179);
+            edToolinfo.Location = new Point(354, 179);
             edToolinfo.Multiline = true;
             edToolinfo.Name = "edToolinfo";
             edToolinfo.ReadOnly = true;
             edToolinfo.ScrollBars = ScrollBars.Vertical;
-            edToolinfo.Size = new Size(485, 370);
+            edToolinfo.Size = new Size(432, 370);
             edToolinfo.TabIndex = 44;
             // 
             // collapsibleGroupBox15
@@ -2200,10 +2236,10 @@
             collapsibleGroupBox15.Controls.Add(ckToolAlwaysAsk);
             collapsibleGroupBox15.Controls.Add(ckAllowtools);
             collapsibleGroupBox15.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox15.Location = new Point(373, 6);
+            collapsibleGroupBox15.Location = new Point(354, 6);
             collapsibleGroupBox15.Name = "collapsibleGroupBox15";
             collapsibleGroupBox15.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox15.Size = new Size(485, 165);
+            collapsibleGroupBox15.Size = new Size(432, 165);
             collapsibleGroupBox15.TabIndex = 43;
             collapsibleGroupBox15.Text = "Tool-Calling Settings";
             // 
@@ -2216,7 +2252,7 @@
             panel27.Margin = new Padding(8);
             panel27.Name = "panel27";
             panel27.Padding = new Padding(8);
-            panel27.Size = new Size(461, 36);
+            panel27.Size = new Size(408, 36);
             panel27.TabIndex = 56;
             // 
             // numToolMemory
@@ -2251,7 +2287,7 @@
             panel26.Margin = new Padding(8);
             panel26.Name = "panel26";
             panel26.Padding = new Padding(8);
-            panel26.Size = new Size(461, 36);
+            panel26.Size = new Size(408, 36);
             panel26.TabIndex = 57;
             // 
             // numToolLimit
@@ -2282,7 +2318,7 @@
             ckToolAlwaysAsk.Font = new Font("Segoe UI", 9F);
             ckToolAlwaysAsk.Location = new Point(12, 58);
             ckToolAlwaysAsk.Name = "ckToolAlwaysAsk";
-            ckToolAlwaysAsk.Size = new Size(461, 26);
+            ckToolAlwaysAsk.Size = new Size(408, 26);
             ckToolAlwaysAsk.TabIndex = 58;
             ckToolAlwaysAsk.Text = "Always ask for confirmation before running tools";
             ckToolAlwaysAsk.UseVisualStyleBackColor = true;
@@ -2293,7 +2329,7 @@
             ckAllowtools.Font = new Font("Segoe UI", 9F);
             ckAllowtools.Location = new Point(12, 32);
             ckAllowtools.Name = "ckAllowtools";
-            ckAllowtools.Size = new Size(461, 26);
+            ckAllowtools.Size = new Size(408, 26);
             ckAllowtools.TabIndex = 2;
             ckAllowtools.Text = "Allow tool-call (if the model and backend are compatible)";
             ckAllowtools.UseVisualStyleBackColor = true;
@@ -2306,7 +2342,7 @@
             collapsibleGroupBox14.Location = new Point(6, 6);
             collapsibleGroupBox14.Name = "collapsibleGroupBox14";
             collapsibleGroupBox14.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox14.Size = new Size(361, 543);
+            collapsibleGroupBox14.Size = new Size(342, 543);
             collapsibleGroupBox14.TabIndex = 0;
             collapsibleGroupBox14.Text = "Available Toolsets";
             // 
@@ -2317,7 +2353,7 @@
             cklToolsets.Location = new Point(15, 48);
             cklToolsets.Name = "cklToolsets";
             cklToolsets.Padding = new Padding(1);
-            cklToolsets.Size = new Size(331, 482);
+            cklToolsets.Size = new Size(312, 482);
             cklToolsets.TabIndex = 0;
             cklToolsets.SelectedIndexChanged += cklToolsets_SelectedIndexChanged;
             cklToolsets.RightToLeftChanged += cklToolsets_RightToLeftChanged;
@@ -2331,7 +2367,7 @@
             tabApp.ForeColor = Color.FromArgb(230, 230, 230);
             tabApp.Location = new Point(0, 0);
             tabApp.Name = "tabApp";
-            tabApp.Size = new Size(874, 555);
+            tabApp.Size = new Size(798, 555);
             tabApp.TabIndex = 6;
             tabApp.Text = "App";
             // 
@@ -2343,10 +2379,10 @@
             collapsibleGroupBox13.Controls.Add(bt_ImportSTChat);
             collapsibleGroupBox13.Controls.Add(bt_importworld);
             collapsibleGroupBox13.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox13.Location = new Point(619, 6);
+            collapsibleGroupBox13.Location = new Point(545, 6);
             collapsibleGroupBox13.Name = "collapsibleGroupBox13";
             collapsibleGroupBox13.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox13.Size = new Size(239, 136);
+            collapsibleGroupBox13.Size = new Size(241, 136);
             collapsibleGroupBox13.TabIndex = 3;
             collapsibleGroupBox13.Text = "Import Files";
             // 
@@ -2414,7 +2450,7 @@
             collapsibleGroupBox12.Location = new Point(6, 6);
             collapsibleGroupBox12.Name = "collapsibleGroupBox12";
             collapsibleGroupBox12.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox12.Size = new Size(607, 230);
+            collapsibleGroupBox12.Size = new Size(533, 230);
             collapsibleGroupBox12.TabIndex = 2;
             collapsibleGroupBox12.Text = "User Interface";
             // 
@@ -2429,7 +2465,7 @@
             mcbSkin.MaxDropDownItems = 10;
             mcbSkin.Name = "mcbSkin";
             mcbSkin.Padding = new Padding(1);
-            mcbSkin.Size = new Size(583, 23);
+            mcbSkin.Size = new Size(509, 23);
             mcbSkin.TabIndex = 40;
             // 
             // ck_forcePW
@@ -2438,7 +2474,7 @@
             ck_forcePW.Font = new Font("Segoe UI", 9F);
             ck_forcePW.Location = new Point(12, 168);
             ck_forcePW.Name = "ck_forcePW";
-            ck_forcePW.Size = new Size(583, 26);
+            ck_forcePW.Size = new Size(509, 26);
             ck_forcePW.TabIndex = 38;
             ck_forcePW.Text = "Force password when switching bot";
             ck_forcePW.UseVisualStyleBackColor = true;
@@ -2449,7 +2485,7 @@
             ckShowHidden.Font = new Font("Segoe UI", 9F);
             ckShowHidden.Location = new Point(12, 194);
             ckShowHidden.Name = "ckShowHidden";
-            ckShowHidden.Size = new Size(583, 26);
+            ckShowHidden.Size = new Size(509, 26);
             ckShowHidden.TabIndex = 31;
             ckShowHidden.Text = "Show hidden system messages";
             ckShowHidden.UseVisualStyleBackColor = true;
@@ -2519,7 +2555,7 @@
             panel24.Margin = new Padding(8);
             panel24.Name = "panel24";
             panel24.Padding = new Padding(8);
-            panel24.Size = new Size(583, 10);
+            panel24.Size = new Size(509, 10);
             panel24.TabIndex = 54;
             // 
             // cb_background
@@ -2532,7 +2568,7 @@
             cb_background.MaxDropDownItems = 10;
             cb_background.Name = "cb_background";
             cb_background.Padding = new Padding(1);
-            cb_background.Size = new Size(583, 23);
+            cb_background.Size = new Size(509, 23);
             cb_background.TabIndex = 27;
             // 
             // label37
@@ -2695,47 +2731,11 @@
             // 
             openFileDialog1.FileName = "openFileDialog1";
             // 
-            // panel28
-            // 
-            panel28.Controls.Add(numImageRes);
-            panel28.Controls.Add(label40);
-            panel28.Dock = DockStyle.Top;
-            panel28.Location = new Point(12, 104);
-            panel28.Margin = new Padding(8);
-            panel28.Name = "panel28";
-            panel28.Padding = new Padding(8);
-            panel28.Size = new Size(832, 36);
-            panel28.TabIndex = 60;
-            // 
-            // numImageRes
-            // 
-            numImageRes.BackColor = Color.FromArgb(64, 64, 64);
-            numImageRes.Font = new Font("Segoe UI", 9F);
-            numImageRes.Increment = new decimal(new int[] { 256, 0, 0, 0 });
-            numImageRes.Location = new Point(11, 6);
-            numImageRes.Maximum = new decimal(new int[] { 2048, 0, 0, 0 });
-            numImageRes.Minimum = new decimal(new int[] { 256, 0, 0, 0 });
-            numImageRes.Name = "numImageRes";
-            numImageRes.Padding = new Padding(1);
-            numImageRes.Size = new Size(117, 23);
-            numImageRes.TabIndex = 27;
-            numImageRes.Value = new decimal(new int[] { 1024, 0, 0, 0 });
-            // 
-            // label40
-            // 
-            label40.AutoSize = true;
-            label40.Font = new Font("Segoe UI", 9F);
-            label40.Location = new Point(134, 8);
-            label40.Name = "label40";
-            label40.Size = new Size(249, 15);
-            label40.TabIndex = 28;
-            label40.Text = "Max Image Resolution (1024 for most models)";
-            // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1102, 593);
+            ClientSize = new Size(1026, 593);
             Controls.Add(MainTab);
             Controls.Add(MainButtonStack);
             Controls.Add(panel1);
@@ -2772,6 +2772,8 @@
             collapsibleGroupBox2.PerformLayout();
             tabCore.ResumeLayout(false);
             collapsibleGroupBox10.ResumeLayout(false);
+            panel28.ResumeLayout(false);
+            panel28.PerformLayout();
             panel14.ResumeLayout(false);
             panel14.PerformLayout();
             panel9.ResumeLayout(false);
@@ -2822,8 +2824,6 @@
             collapsibleGroupBox12.ResumeLayout(false);
             collapsibleGroupBox12.PerformLayout();
             MainButtonStack.ResumeLayout(false);
-            panel28.ResumeLayout(false);
-            panel28.PerformLayout();
             ResumeLayout(false);
         }
 
