@@ -162,6 +162,26 @@ namespace LetheChat
                             console.error('Index out of bounds');
                         }
                     }
+                    function updateMessageBothAtIndex(messageHtml, thinkingHtml, index) {
+                        const messageContents = document.getElementsByClassName('message-content');
+                        if (index >= 0 && index < messageContents.length) {
+                            const messageContent = messageContents[index];
+                            const msgTarget = messageContent.querySelector('.message-raw');
+                            if (msgTarget) {
+                                msgTarget.innerHTML = messageHtml;
+                            } else {
+                                console.error('updateMessageBothAtIndex: .message-raw not found');
+                            }
+                            const thinkTarget = messageContent.querySelector('.thinking-content');
+                            if (thinkTarget) {
+                                thinkTarget.innerHTML = thinkingHtml || '';
+                            } else {
+                                console.error('updateMessageBothAtIndex: .thinking-content not found');
+                            }
+                        } else {
+                            console.error('updateMessageBothAtIndex: index out of bounds');
+                        }
+                    }
                     function addHtmlAfterLastChatMessage(htmlContent, messageGuid) {
                         const container = document.getElementById('chatContainer') || document.body;
                         const chatMessages = container.querySelectorAll('.chat-message');
@@ -250,83 +270,53 @@ namespace LetheChat
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
 
-        public async Task EditMessage(string newMessage, Guid? messageGuid = null)
+
+        public async Task EditMessage(string message, string? thinking = null, Guid? messageGuid = null)
         {
             if (mainForm.InvokeRequired)
             {
-                await InvokeAsync(new Func<Task>(async () => await EditMessage(newMessage, messageGuid)));
+                await InvokeAsync(new Func<Task>(async () => await EditMessage(message, thinking, messageGuid)));
                 return;
             }
 
-            // Builds one atomic JS block that updates content AND sets GUID on the same wrapper
-            string BuildAtomicUpdateScript(string html, bool isThinking, Guid? guid)
-            {
-                var guidLiteral = guid.HasValue ? guid.Value.ToString() : string.Empty;
+            var messageHtml = Markdown.ToHtml(message, CustomMarkDownPipeline).SanitizeForJS();
+            var thinkingHtml = !string.IsNullOrEmpty(thinking)
+                ? Markdown.ToHtml(thinking, CustomMarkDownPipeline).SanitizeForJS()
+                : string.Empty;
+            var guidLiteral = messageGuid.HasValue ? messageGuid.Value.ToString() : string.Empty;
 
-                return $@"
+            var script = $@"
 (function() {{
   try {{
     const contents = document.getElementsByClassName('message-content');
     if (!contents || contents.length === 0) {{
-      console.error('WebEditLastMessage: no .message-content elements found');
+      console.error('NewEditMessage: no .message-content elements found');
       return;
     }}
     const idx = contents.length - 1;
 
-    if (typeof updateMessageAtIndex === 'function') {{
-      updateMessageAtIndex(""{html}"", idx, {(isThinking ? "true" : "false")});
+    if (typeof updateMessageBothAtIndex === 'function') {{
+      updateMessageBothAtIndex(""{messageHtml}"", ""{thinkingHtml}"", idx);
     }} else {{
       const messageContent = contents[idx];
-      const target = {(isThinking ? "messageContent.querySelector('.thinking-content')" : "messageContent.querySelector('.message-raw')")};
-      if (target) {{
-        target.innerHTML = ""{html}"";
-      }} else {{
-        console.error('WebEditLastMessage: target element not found for isThinking=' + {(isThinking ? "true" : "false").ToString().ToLowerInvariant()});
+      const msgTarget = messageContent.querySelector('.message-raw');
+      if (msgTarget) {{
+        msgTarget.innerHTML = ""{messageHtml}"";
+      }}
+      const thinkTarget = messageContent.querySelector('.thinking-content');
+      if (thinkTarget) {{
+        thinkTarget.innerHTML = ""{thinkingHtml}"";
       }}
     }}
 
     const wrapper = contents[idx].closest('.chat-message');
     {(messageGuid.HasValue ? $"if (wrapper) wrapper.setAttribute('data-message-guid', '{guidLiteral}');" : "")}
   }} catch (e) {{
-    console.error('WebEditLastMessage: exception', e);
+    console.error('NewEditMessage: exception', e);
   }}
 }})();";
-            }
 
-            if (!string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart) &&
-                newMessage.StartsWith(ChatRender.GetMessagePrefix(AuthorRole.Assistant)) &&
-                newMessage.Contains(LLMEngine.Instruct.ThinkingStart.RemoveNewLines()))
-            {
-                // Strip assistant prefix
-                var worktext = newMessage[ChatRender.GetMessagePrefix(AuthorRole.Assistant).Length..];
-
-                if (!worktext.Contains(LLMEngine.Instruct.ThinkingEnd.RemoveNewLines()))
-                {
-                    // Thinking-only update
-                    worktext = worktext.Replace(LLMEngine.Instruct.ThinkingStart, string.Empty);
-                    var text = Markdown.ToHtml(worktext, CustomMarkDownPipeline).SanitizeForJS();
-                    await web_chat.CoreWebView2.ExecuteScriptAsync(BuildAtomicUpdateScript(text, isThinking: true, messageGuid));
-                }
-                else
-                {
-                    // Thinking + final
-                    var parts = worktext.Split([LLMEngine.Instruct.ThinkingEnd.RemoveNewLines()], 2, StringSplitOptions.None);
-
-                    var thinkingText = parts[0].Replace(LLMEngine.Instruct.ThinkingStart.RemoveNewLines(), string.Empty);
-                    var thinkingHtml = Markdown.ToHtml(thinkingText, CustomMarkDownPipeline).SanitizeForJS();
-                    await web_chat.CoreWebView2.ExecuteScriptAsync(BuildAtomicUpdateScript(thinkingHtml, isThinking: true, messageGuid));
-
-                    var msgoutput = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + parts[1].TrimStart().TrimStart('\n').TrimStart();
-                    var messageHtml = Markdown.ToHtml(msgoutput, CustomMarkDownPipeline).SanitizeForJS();
-                    await web_chat.CoreWebView2.ExecuteScriptAsync(BuildAtomicUpdateScript(messageHtml, isThinking: false, messageGuid));
-                }
-            }
-            else
-            {
-                var text = Markdown.ToHtml(newMessage, CustomMarkDownPipeline).SanitizeForJS();
-                await web_chat.CoreWebView2.ExecuteScriptAsync(BuildAtomicUpdateScript(text, isThinking: false, messageGuid));
-            }
-
+            await web_chat.CoreWebView2.ExecuteScriptAsync(script);
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
 

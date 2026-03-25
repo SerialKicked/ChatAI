@@ -31,8 +31,8 @@ namespace LetheChat
 {
     public partial class MainForm : Form
     {
-        private string _currentgeneration = string.Empty;
-        private string _currentgenerationThink = string.Empty;
+        private StringBuilder _currentgeneration = new();
+        private StringBuilder _currentgenerationThink = new();
         private int _currentgenerationtokencount = 0;
         private int _currentgencalls = 0;
         private bool _impersonatemode = false;
@@ -265,8 +265,6 @@ namespace LetheChat
         {
             LLMEngine.OnInferenceSegment += LMEngine_OnInferenceSeqmentReceived;
             LLMEngine.OnInferenceCompleted += LLMEngine_OnInferenceCompleted;
-            LLMEngine.OnInferenceStreamed += OnStreamMessageReceived;
-            LLMEngine.OnInferenceEnded += OnStreamInferenceEnded;
             LLMEngine.OnFullPromptReady += OnFullPromptReady;
             LLMEngine.OnStatusChanged += OnStatusChanged;
         }
@@ -275,8 +273,6 @@ namespace LetheChat
         {
             LLMEngine.OnInferenceSegment -= LMEngine_OnInferenceSeqmentReceived;
             LLMEngine.OnInferenceCompleted -= LLMEngine_OnInferenceCompleted;
-            LLMEngine.OnInferenceStreamed -= OnStreamMessageReceived;
-            LLMEngine.OnInferenceEnded -= OnStreamInferenceEnded;
             LLMEngine.OnFullPromptReady -= OnFullPromptReady;
             LLMEngine.OnStatusChanged -= OnStatusChanged;
         }
@@ -515,31 +511,37 @@ namespace LetheChat
             });
         }
 
-        private void LMEngine_OnInferenceSeqmentReceived(object? sender, InferenceSegment e)
+        private async void LMEngine_OnInferenceSeqmentReceived(object? sender, InferenceSegment e)
         {
-        }
-
-        private void LLMEngine_OnInferenceCompleted(object? sender, InferenceResult e)
-        {
-            LLMEngine.Logger?.LogInformation($"[InferenceCompleted] Response: {e.Response} - Complete: {e.FinishReason} - Tool: {e.ToolCalls?.Count > 0}");
-        }
-
-        private async void OnStreamMessageReceived(object? sender, string e)
-        {
-            if (string.IsNullOrEmpty(e))
+            if (string.IsNullOrEmpty(e.Text))
                 return;
-            if (!_impersonatemode && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart) && _currentgencalls == 1)
+
+            if (!_impersonatemode && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart) && _currentgencalls <= 1)
             {
                 var thoughts = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + $"*{LLMEngine.Bot.GetIdentifier()} is thinking...*";
                 await webUI.EditMessage(thoughts);
             }
 
-            _currentgeneration += e;
+            switch (e.Channel)
+            {
+                case InferenceChannel.ToolCall:
+                    if (e.ToolCall is not null)
+                        _currentgenerationThink.AppendLinuxLine().AppendLinuxLine($"[Tool Call: {e.ToolCall.FunctionName}]");
+                    break;
+                case InferenceChannel.Text:
+                    _currentgeneration.Append(e.Text);
+                    break;
+                case InferenceChannel.Thinking:
+                    _currentgenerationThink.Append(e.Text);
+                    break;
+                default:
+                    break;
+            }
             _currentgencalls++;
             _currentgenerationtokencount++;
             _responselength = DateTime.Now - _postdate;
             _activityTimer?.Reset();
-            if (_currentgenerationtokencount > 1)
+            if (_currentgenerationtokencount > 2)
             {
                 _currentgenerationtokencount = 0;
                 if (!_impersonatemode)
@@ -548,31 +550,27 @@ namespace LetheChat
                     {
                         statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                     });
-                    var stringfix = _currentgeneration ?? string.Empty;
-                    if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingStart) && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingEnd))
-                    {
-                        var thinkstart = LLMEngine.Instruct.ThinkingStart.Replace("\n", "");
-                        var thinkend = LLMEngine.Instruct.ThinkingEnd.Replace("\n", "");
+                    var stringfix = _currentgeneration.ToString();
+                    if (string.IsNullOrEmpty(stringfix))
+                         stringfix = $"*{LLMEngine.Bot.GetIdentifier()} is thinking...*";
+                    else
+                        stringfix = stringfix.FixRoleplayString(Program.Settings.RoleplayFormatting, true);
 
-                        var pattern = $"{Regex.Escape(thinkend)}[\\s]*{Regex.Escape(thinkstart)}";
-                        stringfix = Regex.Replace(stringfix, pattern, "\n");
-                    }
                     var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
-                    stringfix = stringfix.FixRoleplayString(Program.Settings.RoleplayFormatting, true);
-                    await webUI.EditMessage(MsgPrefix + stringfix);
+                    await webUI.EditMessage(MsgPrefix + stringfix, _currentgenerationThink.ToString());
                 }
                 else
                 {
                     Invoke((System.Windows.Forms.MethodInvoker)delegate
                     {
                         statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
-                        ed_input.Text = _currentgeneration;
+                        ed_input.Text = _currentgeneration.ToString();
                     });
                 }
             }
         }
 
-        private async void OnStreamInferenceEnded(object? sender, string e)
+        private async void LLMEngine_OnInferenceCompleted(object? sender, InferenceResult e)
         {
             _responselength = DateTime.Now - _postdate;
             _activityTimer?.Reset();
@@ -582,18 +580,14 @@ namespace LetheChat
                 _impersonatemode = false;
                 Invoke((System.Windows.Forms.MethodInvoker)delegate
                 {
-                    ed_input.Text = e.ToWinFormat();
+                    ed_input.Text = e.Response.ToWinFormat();
                     statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                 });
                 LLMEngine.InvalidatePromptCache();
             }
             else
             {
-                var stringfix = Program.Settings.AsteriskCheck ? e.FixAsterisks() : e;
-                if (!string.IsNullOrWhiteSpace(LLMEngine.Instruct.ThinkingEnd) && stringfix.CountSubstring(LLMEngine.Instruct.ThinkingEnd) > 1)
-                {
-                    stringfix = stringfix.RemoveEverythingAfterLast(LLMEngine.Instruct.ThinkingEnd);
-                }
+                var stringfix = Program.Settings.AsteriskCheck ? e.Response.FixAsterisks() : e.Response;
 
                 if (Program.Settings.RemoveCutSentence)
                     stringfix = stringfix.RemoveUnfinishedSentence();
@@ -605,7 +599,9 @@ namespace LetheChat
                 var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
 
                 var msg = LLMEngine.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMEngine.User, LLMEngine.Bot);
-                await InvokeAsync(async () => { await webUI.EditMessage(MsgPrefix + stringfix, msg.Guid); });
+                msg.ThinkBlock = e.ThinkingContent ?? string.Empty;
+                var thinkingContent = !string.IsNullOrEmpty(e.ThinkingContent) ? e.ThinkingContent : null;
+                await InvokeAsync(async () => { await webUI.EditMessage(MsgPrefix + stringfix, thinkingContent, msg.Guid); });
                 PrepareResponse();
 
                 if (_forcereload || Program.Settings.MaxMessagesOnScreen <= LLMEngine.History.CurrentSession.Messages.Count)
@@ -630,6 +626,7 @@ namespace LetheChat
             // GROUP CHAT CHAIN: continue with next queued bot if any
             if (await AdvanceGroupQueue())
                 return;
+            LLMEngine.Logger?.LogInformation($"[InferenceCompleted] Response: {e.Response} - Complete: {e.FinishReason} - Tool: {e.ToolCalls?.Count > 0}");
         }
 
         [Obsolete("This method will be removed in future versions and replaced by an action. In the meantime, bot cannot initiate conversations.")]
@@ -698,8 +695,8 @@ namespace LetheChat
 
         private void PrepareResponse()
         {
-            _currentgeneration = string.Empty;
-            _currentgenerationThink = string.Empty;
+            _currentgeneration.Clear();
+            _currentgenerationThink.Clear();
             _currentgenerationtokencount = 0;
             _currentgencalls = 0;
         }

@@ -30,7 +30,7 @@ namespace LetheChat.Forms
             components ??= new System.ComponentModel.Container();
             components.Add(_toolTip);
             BuildSettingsPanel();
-            listModels.SelectedIndexChanged += listModels_SelectedIndexChanged;
+            listModels.SelectedIndexChanged += listModels_SelectedIndexChanged!;
             KeyPreview = true;
 
             Program.LlamaCppProcess.OutputReceived += OnServerOutput;
@@ -105,12 +105,12 @@ namespace LetheChat.Forms
             AddRow("Context Size (-c)", num_contextSize, Tip(nameof(LlamaCppSettings.ContextSize)));
 
             cb_flashAttention = new ModernComboBox();
-            cb_flashAttention.Items.AddRange(new object[] { "Auto", "On", "Off" });
+            cb_flashAttention.Items.AddRange(["Auto", "On", "Off"]);
             cb_flashAttention.SelectedIndex = 0;
             AddRow("Flash Attention (-fa)", cb_flashAttention, Tip(nameof(LlamaCppSettings.FlashAttention)));
 
             cb_reasoning = new ModernComboBox();
-            cb_reasoning.Items.AddRange(new object[] { "Auto", "On", "Off" });
+            cb_reasoning.Items.AddRange(["Auto", "On", "Off"]);
             cb_reasoning.SelectedIndex = 0;
             AddRow("Reasoning (-rea)", cb_reasoning, Tip(nameof(LlamaCppSettings.Reasoning)));
 
@@ -345,7 +345,7 @@ namespace LetheChat.Forms
                 : ThemeManager.curthemeSuccessColor;
 
             lvServerLog.Items.Add(item);
-            lvServerLog.Items[lvServerLog.Items.Count - 1].EnsureVisible();
+            lvServerLog.Items[^1].EnsureVisible();
         }
 
         private void OnServerOutput(object? sender, LogLineEventArgs e)
