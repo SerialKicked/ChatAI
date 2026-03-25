@@ -247,16 +247,12 @@ namespace LetheChat
 
             ed_input.EnableImageDragDrop(basestr =>
             {
-                LLMEngine.VLM_ClearImages();
-                LLMEngine.VLM_AddImage(DragNDropExtension.DroppedFilePath);
                 DisplayImage(basestr);
-            }, 1024);
+            }, LLMEngine.Settings.ImageResolution);
             pictEmbed.EnableImageDragDrop(basestr =>
             {
-                LLMEngine.VLM_ClearImages();
-                LLMEngine.VLM_AddImage(DragNDropExtension.DroppedFilePath);
                 DisplayImage(basestr);
-            }, 1024);
+            }, LLMEngine.Settings.ImageResolution);
             _isinitloading = false;
 
         }
@@ -789,6 +785,9 @@ namespace LetheChat
                 await webUI.SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"));
                 ed_input.Text = string.Empty;
                 await LLMEngine.SendMessageToBot(userMsg);
+                DragNDropExtension.DroppedFilePath = string.Empty;
+                pictEmbed.Image = null;
+
             }
         }
 
@@ -1243,7 +1242,6 @@ namespace LetheChat
 
         private void bt_clearimg_Click(object sender, EventArgs e)
         {
-            LLMEngine.VLM_ClearImages();
             DragNDropExtension.DroppedFilePath = string.Empty;
             pictEmbed.Image = null;
         }
@@ -1536,7 +1534,6 @@ namespace LetheChat
                 try
                 {
                     DragNDropExtension.DroppedFilePath = string.Empty;
-                    LLMEngine.VLM_ClearImages();
                     UpdateGroupSelection();
                     LLMEngine.InvalidatePromptCache();
                     PrepareResponse();

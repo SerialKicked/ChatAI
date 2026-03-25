@@ -33,8 +33,6 @@ namespace LetheChat.AgentPlugins
             var request = "Look at the provided image and describe it in details. " + imageRecord.GetQuery() + LLMEngine.NewLine + LLMEngine.NewLine + "Only answer with the JSON, nothing else.";
 
             var prompt = GetSystemPromt(param, request);
-            prompt.VLM_ClearImages();
-            prompt.VLM_AddImage(param);
             await prompt.SetStructuredOutput(imageRecord).ConfigureAwait(false);
             var fullprompt = prompt.PromptToQuery(AuthorRole.Assistant, LLMEngine.Sampler.Temperature, 2048);
             var response = await LLMEngine.SimpleQuery(fullprompt, ct).ConfigureAwait(false);
@@ -69,7 +67,7 @@ namespace LetheChat.AgentPlugins
             };
 
             promptbuild.AddMessage(new SingleMessage(AuthorRole.SysPrompt, str.ToString()));
-            promptbuild.AddMessage(new SingleMessage(AuthorRole.User, request));
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.User, request, filepath));
 
             return promptbuild;
         }

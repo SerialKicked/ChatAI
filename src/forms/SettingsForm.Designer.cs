@@ -86,8 +86,6 @@
             label1 = new Label();
             tabCore = new TabPage();
             collapsibleGroupBox10 = new LetheChat.Controls.CollapsibleGroupBox();
-            label38 = new Label();
-            label4 = new Label();
             panel14 = new Panel();
             num_ImgCount = new LetheChat.Controls.ModernNumericUpDown();
             label18 = new Label();
@@ -227,6 +225,9 @@
             btBackend = new Button();
             HelptoolTip = new ToolTip(components);
             openFileDialog1 = new OpenFileDialog();
+            panel28 = new Panel();
+            numImageRes = new LetheChat.Controls.ModernNumericUpDown();
+            label40 = new Label();
             panel1.SuspendLayout();
             MainTab.SuspendLayout();
             tabBackend.SuspendLayout();
@@ -275,6 +276,7 @@
             collapsibleGroupBox13.SuspendLayout();
             collapsibleGroupBox12.SuspendLayout();
             MainButtonStack.SuspendLayout();
+            panel28.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -951,37 +953,16 @@
             // 
             collapsibleGroupBox10.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox10.CanCollapse = false;
-            collapsibleGroupBox10.Controls.Add(label38);
-            collapsibleGroupBox10.Controls.Add(label4);
+            collapsibleGroupBox10.Controls.Add(panel28);
             collapsibleGroupBox10.Controls.Add(panel14);
             collapsibleGroupBox10.Controls.Add(panel9);
             collapsibleGroupBox10.Font = new Font("Segoe UI", 9F);
-            collapsibleGroupBox10.Location = new Point(447, 6);
+            collapsibleGroupBox10.Location = new Point(6, 163);
             collapsibleGroupBox10.Name = "collapsibleGroupBox10";
             collapsibleGroupBox10.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox10.Size = new Size(415, 165);
+            collapsibleGroupBox10.Size = new Size(856, 154);
             collapsibleGroupBox10.TabIndex = 42;
             collapsibleGroupBox10.Text = "Image Processing";
-            // 
-            // label38
-            // 
-            label38.AutoSize = true;
-            label38.Dock = DockStyle.Top;
-            label38.Location = new Point(12, 119);
-            label38.Name = "label38";
-            label38.Size = new Size(210, 15);
-            label38.TabIndex = 59;
-            label38.Text = "the size will be detected automatically.";
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Dock = DockStyle.Top;
-            label4.Location = new Point(12, 104);
-            label4.Name = "label4";
-            label4.Size = new Size(276, 15);
-            label4.TabIndex = 58;
-            label4.Text = "When running using llama.cpp in managed mode, ";
             // 
             // panel14
             // 
@@ -992,7 +973,7 @@
             panel14.Margin = new Padding(8);
             panel14.Name = "panel14";
             panel14.Padding = new Padding(8);
-            panel14.Size = new Size(391, 36);
+            panel14.Size = new Size(832, 36);
             panel14.TabIndex = 57;
             // 
             // num_ImgCount
@@ -1026,7 +1007,7 @@
             panel9.Margin = new Padding(8);
             panel9.Name = "panel9";
             panel9.Padding = new Padding(8);
-            panel9.Size = new Size(391, 36);
+            panel9.Size = new Size(832, 36);
             panel9.TabIndex = 56;
             // 
             // num_imgEmbed
@@ -1049,9 +1030,9 @@
             label19.Font = new Font("Segoe UI", 9F);
             label19.Location = new Point(134, 8);
             label19.Name = "label19";
-            label19.Size = new Size(127, 15);
+            label19.Size = new Size(400, 15);
             label19.TabIndex = 28;
-            label19.Text = "Image Embedding Size";
+            label19.Text = "Image Embedding Size (will be autodetected in managed llama.cpp mode)";
             // 
             // collapsibleGroupBox1
             // 
@@ -1065,7 +1046,7 @@
             collapsibleGroupBox1.Location = new Point(6, 6);
             collapsibleGroupBox1.Name = "collapsibleGroupBox1";
             collapsibleGroupBox1.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox1.Size = new Size(435, 165);
+            collapsibleGroupBox1.Size = new Size(856, 142);
             collapsibleGroupBox1.TabIndex = 34;
             collapsibleGroupBox1.Text = "LLM Core Settings";
             // 
@@ -1075,7 +1056,7 @@
             ckForceInternalGram.Font = new Font("Segoe UI", 9F);
             ckForceInternalGram.Location = new Point(12, 110);
             ckForceInternalGram.Name = "ckForceInternalGram";
-            ckForceInternalGram.Size = new Size(411, 26);
+            ckForceInternalGram.Size = new Size(832, 26);
             ckForceInternalGram.TabIndex = 39;
             ckForceInternalGram.Text = "Use Internal library's structured output generator";
             ckForceInternalGram.UseVisualStyleBackColor = true;
@@ -1086,7 +1067,7 @@
             ckNoPastInserts.Font = new Font("Segoe UI", 9F);
             ckNoPastInserts.Location = new Point(12, 84);
             ckNoPastInserts.Name = "ckNoPastInserts";
-            ckNoPastInserts.Size = new Size(411, 26);
+            ckNoPastInserts.Size = new Size(832, 26);
             ckNoPastInserts.TabIndex = 38;
             ckNoPastInserts.Text = "Never insert meta-data and memory when chatting in older session";
             ckNoPastInserts.UseVisualStyleBackColor = true;
@@ -1097,7 +1078,7 @@
             ck_hallusafe.Font = new Font("Segoe UI", 9F);
             ck_hallusafe.Location = new Point(12, 58);
             ck_hallusafe.Name = "ck_hallusafe";
-            ck_hallusafe.Size = new Size(411, 26);
+            ck_hallusafe.Size = new Size(832, 26);
             ck_hallusafe.TabIndex = 37;
             ck_hallusafe.Text = "System Prompt patch to reduce memory-related hallucinations";
             ck_hallusafe.UseVisualStyleBackColor = true;
@@ -1108,7 +1089,7 @@
             ck_sysrag.Font = new Font("Segoe UI", 9F);
             ck_sysrag.Location = new Point(12, 32);
             ck_sysrag.Name = "ck_sysrag";
-            ck_sysrag.Size = new Size(411, 26);
+            ck_sysrag.Size = new Size(832, 26);
             ck_sysrag.TabIndex = 36;
             ck_sysrag.Text = "Move all memory inserts to the system prompt ";
             ck_sysrag.UseVisualStyleBackColor = true;
@@ -2206,6 +2187,7 @@
             edToolinfo.Multiline = true;
             edToolinfo.Name = "edToolinfo";
             edToolinfo.ReadOnly = true;
+            edToolinfo.ScrollBars = ScrollBars.Vertical;
             edToolinfo.Size = new Size(485, 370);
             edToolinfo.TabIndex = 44;
             // 
@@ -2713,6 +2695,42 @@
             // 
             openFileDialog1.FileName = "openFileDialog1";
             // 
+            // panel28
+            // 
+            panel28.Controls.Add(numImageRes);
+            panel28.Controls.Add(label40);
+            panel28.Dock = DockStyle.Top;
+            panel28.Location = new Point(12, 104);
+            panel28.Margin = new Padding(8);
+            panel28.Name = "panel28";
+            panel28.Padding = new Padding(8);
+            panel28.Size = new Size(832, 36);
+            panel28.TabIndex = 60;
+            // 
+            // numImageRes
+            // 
+            numImageRes.BackColor = Color.FromArgb(64, 64, 64);
+            numImageRes.Font = new Font("Segoe UI", 9F);
+            numImageRes.Increment = new decimal(new int[] { 256, 0, 0, 0 });
+            numImageRes.Location = new Point(11, 6);
+            numImageRes.Maximum = new decimal(new int[] { 2048, 0, 0, 0 });
+            numImageRes.Minimum = new decimal(new int[] { 256, 0, 0, 0 });
+            numImageRes.Name = "numImageRes";
+            numImageRes.Padding = new Padding(1);
+            numImageRes.Size = new Size(117, 23);
+            numImageRes.TabIndex = 27;
+            numImageRes.Value = new decimal(new int[] { 1024, 0, 0, 0 });
+            // 
+            // label40
+            // 
+            label40.AutoSize = true;
+            label40.Font = new Font("Segoe UI", 9F);
+            label40.Location = new Point(134, 8);
+            label40.Name = "label40";
+            label40.Size = new Size(249, 15);
+            label40.TabIndex = 28;
+            label40.Text = "Max Image Resolution (1024 for most models)";
+            // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -2754,7 +2772,6 @@
             collapsibleGroupBox2.PerformLayout();
             tabCore.ResumeLayout(false);
             collapsibleGroupBox10.ResumeLayout(false);
-            collapsibleGroupBox10.PerformLayout();
             panel14.ResumeLayout(false);
             panel14.PerformLayout();
             panel9.ResumeLayout(false);
@@ -2805,6 +2822,8 @@
             collapsibleGroupBox12.ResumeLayout(false);
             collapsibleGroupBox12.PerformLayout();
             MainButtonStack.ResumeLayout(false);
+            panel28.ResumeLayout(false);
+            panel28.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -2846,7 +2865,6 @@
         private TabPage tabTools;
         private TabPage tabApp;
         private Controls.CollapsibleGroupBox collapsibleGroupBox10;
-        private Label label4;
         private Panel panel14;
         private Controls.ModernNumericUpDown num_ImgCount;
         private Label label18;
@@ -2991,7 +3009,6 @@
         private Button bt_importworld;
         private ToolTip HelptoolTip;
         private OpenFileDialog openFileDialog1;
-        private Label label38;
         private Panel panel25;
         private Controls.ModernNumericUpDown numWebSearchDetailedMaxLength;
         private Label label39;
@@ -3007,5 +3024,8 @@
         private Label label43;
         private TextBox edToolinfo;
         private Controls.ModernCheckBox ckToolAlwaysAsk;
+        private Panel panel28;
+        private Controls.ModernNumericUpDown numImageRes;
+        private Label label40;
     }
 }
