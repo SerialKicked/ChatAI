@@ -113,7 +113,7 @@ namespace LetheChat.Plugins
                     if (DataFiles.Websites.TryGetValue(x, out var site))
                     {
                         Website = site;
-                        Program.BigForm!.webUI.ForceUpdateLastMessage($"**{LLMEngine.Bot.Name}:** *I am browsing {Website.WebsiteName}...*");
+                        await Program.BigForm!.webUI.EditMessage($"**{LLMEngine.Bot.Name}:** *I am browsing {Website.WebsiteName}...*");
                     }
                     else
                     {
@@ -125,11 +125,11 @@ namespace LetheChat.Plugins
                     var webresult = await StartWebNavigation(userinput);
                     if (webresult.IsSuccess)
                     {
-                        Program.BigForm!.webUI.ForceUpdateLastMessage($"**{LLMEngine.Bot.Name}:** *I am writing a message...*");
+                        await Program.BigForm!.webUI.EditMessage($"**{LLMEngine.Bot.Name}:** *I am writing a message...*");
                     }
                     else
                     {
-                        Program.BigForm!.webUI.ForceUpdateLastMessage($"**{LLMEngine.Bot.Name}:** *I am writing a message (web navigation failed)...*");
+                        await Program.BigForm!.webUI.EditMessage($"**{LLMEngine.Bot.Name}:** *I am writing a message (web navigation failed)...*");
                     }
 
                     var output = new PluginResponse 
@@ -218,7 +218,7 @@ namespace LetheChat.Plugins
         public async Task<WebNavigationResult> DoPage(WLink page)
         {
             _location = page.Category;
-            Program.BigForm!.webUI.ForceUpdateLastMessage($"**{LLMEngine.Bot.Name}:** *I am browsing {page.Title}...*");
+            await Program.BigForm!.webUI.EditMessage($"**{LLMEngine.Bot.Name}:** *I am browsing {page.Title}...*");
             var websiterender = await Website!.RenderPage(page.ID, string.Empty, crawler);
             if (string.IsNullOrEmpty(websiterender))
             {

@@ -103,14 +103,14 @@ namespace LetheChat.Plugins
             if (topics == null || topics.SearchQueries.Count == 0)
                 return new PluginResponse { IsHandled = false, Response = null };
             // run web search
-            Program.BigForm!.webUI.ForceUpdateLastMessage($"**{LLMEngine.Bot.Name}:** *I am searching the web about '{topics.Topic}'...*");
+            await Program.BigForm!.webUI.EditMessage($"**{LLMEngine.Bot.Name}:** *I am searching the web about '{topics.Topic}'...*");
             var searcheng = new WebSearchAction();
             var webres = await searcheng.Execute(topics, CancellationToken.None);
             if (webres == null || webres.Count == 0)
                 return new PluginResponse { IsHandled = false, Response = null };
             lastresponse = webres;
 
-            Program.BigForm!.webUI.ForceUpdateLastMessage($"**{LLMEngine.Bot.Name}:** *I am processing web info about '{topics.Topic}'...*");
+            await Program.BigForm!.webUI.EditMessage($"**{LLMEngine.Bot.Name}:** *I am processing web info about '{topics.Topic}'...*");
             var merger = new MergeSearchResultsAction();
             var merged = await merger.Execute(new MergeSearchParams("This is a search done regarding the currently active discussion.", topics.Topic, topics.Reason, webres), CancellationToken.None);
             if (string.IsNullOrWhiteSpace(merged))

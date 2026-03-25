@@ -531,7 +531,7 @@ namespace LetheChat
             if (!_impersonatemode && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart) && _currentgencalls == 1)
             {
                 var thoughts = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + $"*{LLMEngine.Bot.GetIdentifier()} is thinking...*";
-                await webUI.WebEditLastMessage(thoughts);
+                await webUI.EditMessage(thoughts);
             }
 
             _currentgeneration += e;
@@ -559,7 +559,7 @@ namespace LetheChat
                     }
                     var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
                     stringfix = stringfix.FixRoleplayString(Program.Settings.RoleplayFormatting, true);
-                    await webUI.WebEditLastMessage(MsgPrefix + stringfix);
+                    await webUI.EditMessage(MsgPrefix + stringfix);
                 }
                 else
                 {
@@ -605,14 +605,14 @@ namespace LetheChat
                 var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
 
                 var msg = LLMEngine.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMEngine.User, LLMEngine.Bot);
-                await InvokeAsync(async () => { await webUI.WebEditLastMessage(MsgPrefix + stringfix, msg.Guid); });
+                await InvokeAsync(async () => { await webUI.EditMessage(MsgPrefix + stringfix, msg.Guid); });
                 PrepareResponse();
 
                 if (_forcereload || Program.Settings.MaxMessagesOnScreen <= LLMEngine.History.CurrentSession.Messages.Count)
                 {
                     Invoke((System.Windows.Forms.MethodInvoker)async delegate
                     {
-                        await webUI.WebChatLoad();
+                        await webUI.ReloadFullChat();
                     });
                     _forcereload = false;
                 }
@@ -808,7 +808,7 @@ namespace LetheChat
             statusbar.Items[1].Text = "Analyzing...";
             UseCharacterDefinedSampler();
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
-            await webUI.WebRemoveLastMessage();
+            await webUI.RemoveLastMessage();
             await webUI.SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"));
             PrepareResponse();
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
@@ -884,7 +884,7 @@ namespace LetheChat
                 loadingForm.SetMessage("Loading new session.");
                 loadingForm.SetProgress(100);
                 LLMEngine.RemoveQuickInferenceEventHandler();
-                await webUI.WebChatLoad();
+                await webUI.ReloadFullChat();
                 _afkmessagecount = 0;
                 _activityTimer?.Reset();
             }
@@ -927,7 +927,7 @@ namespace LetheChat
                 loadingForm.SetProgress(95);
                 LLMEngine.History.CurrentSessionID = -1;
                 (LLMEngine.Bot as Character)?.SaveChatHistory();
-                await webUI.WebChatLoad();
+                await webUI.ReloadFullChat();
                 _afkmessagecount = 0;
                 _activityTimer?.Reset();
             }
@@ -969,7 +969,7 @@ namespace LetheChat
             LLMEngine.InvalidatePromptCache();
 
             if (removedVisible)
-                await webUI.WebRemoveLastMessage();
+                await webUI.RemoveLastMessage();
         }
 
 
@@ -1328,7 +1328,7 @@ namespace LetheChat
             settingsForm.ShowDialog();
             LLMEngine.InvalidatePromptCache();
             if (LLMEngine.Status == SystemStatus.Ready)
-                await webUI.WebChatLoad();
+                await webUI.ReloadFullChat();
             UpdateUIState();
         }
 
@@ -1348,7 +1348,7 @@ namespace LetheChat
             worldForm.StartPosition = FormStartPosition.CenterParent;
             worldForm.ShowDialog();
             LLMEngine.InvalidatePromptCache();
-            await webUI.WebChatLoad();
+            await webUI.ReloadFullChat();
         }
 
 

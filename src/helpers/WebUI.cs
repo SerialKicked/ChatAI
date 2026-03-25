@@ -31,8 +31,6 @@ namespace LetheChat
         private readonly WebView2 web_chat = webview;
         private readonly MainForm mainForm = form;
 
-        public static Func<string, string, Task<bool>>? ToolCallConfirmation { get; set; }
-
         /// <summary>
         /// // Helper method to use Invoke with async methods
         /// </summary>
@@ -56,18 +54,18 @@ namespace LetheChat
             return tcs.Task;
         }
 
-
-        private static string InjectDialogHtml(string imgPath, string dialog, Guid messageGuid)
+        private static string InjectDialogHtml(string imgPath, string dialog, string? thinking, Guid messageGuid)
         {
             // dialog should already be sanitized for HTML; the pipeline calling this produces the HTML
             // Ensure both .thinking-content and .message-raw exist so JS paths always have a target.
+            string think = thinking ?? string.Empty;
             return $@"
         <div class='chat-message' data-message-guid='{messageGuid}'>
             <div class='portrait'>
                 <img src='https://appassets.test/img/{imgPath}' alt='Portrait' width='60'>
             </div>
             <div class='message-content'>
-                <div class='thinking-content'></div>
+                <div class='thinking-content'>{think}</div>
                 <div class='message-raw'>
                     {dialog}
                 </div>
@@ -218,6 +216,7 @@ namespace LetheChat
                     break;
             }
             var msg = singleMessage.Message;
+            var think = singleMessage.ThinkBlock;
             if (singleMessage.ToolCalls.Count > 0 && singleMessage.Role != AuthorRole.Tool)
             {
                 msg += "\n\nTool calls:\n";
@@ -225,22 +224,22 @@ namespace LetheChat
                 {
                     var res = call.Success ? "Success" : "Failure";
                     msg += $"- {call.CallId}: {call.FunctionName}() => {res} in {(int)call.Duration.TotalMilliseconds}ms\n";
-                    //if (!string.IsNullOrEmpty(call.ResultJson))
-                    //{
-                    //    msg += $"Result:\n```json\n{call.ResultJson}\n```\n";
-                    //}
                 }
             }
 
             var html = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + msg, CustomMarkDownPipeline);
-            return InjectDialogHtml(img, html, singleMessage.Guid);
+            if (!string.IsNullOrEmpty(think))
+            {
+                think = Markdown.ToHtml(think, CustomMarkDownPipeline);
+            }
+            return InjectDialogHtml(img, html, think, singleMessage.Guid);
         }
 
-        public async Task WebRemoveLastMessage()
+        public async Task RemoveLastMessage()
         {
             if (mainForm.InvokeRequired)
             {
-                await InvokeAsync(new Func<Task>(WebRemoveLastMessage));
+                await InvokeAsync(new Func<Task>(RemoveLastMessage));
                 return;
             }
             await web_chat.CoreWebView2.ExecuteScriptAsync(@"
@@ -251,11 +250,11 @@ namespace LetheChat
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
 
-        public async Task WebEditLastMessage(string newMessage, Guid? messageGuid = null)
+        public async Task EditMessage(string newMessage, Guid? messageGuid = null)
         {
             if (mainForm.InvokeRequired)
             {
-                await InvokeAsync(new Func<Task>(async () => await WebEditLastMessage(newMessage, messageGuid)));
+                await InvokeAsync(new Func<Task>(async () => await EditMessage(newMessage, messageGuid)));
                 return;
             }
 
@@ -331,12 +330,7 @@ namespace LetheChat
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
 
-        public async void ForceUpdateLastMessage(string update)
-        {
-            await WebEditLastMessage(update);
-        }
-
-        public async Task WebChatLoad()
+        public async Task ReloadFullChat()
         {
             if (web_chat.CoreWebView2 == null)
                 await InitializeWebViewAsync();
@@ -353,6 +347,121 @@ namespace LetheChat
             html = InjectDialogCSS(html);
             web_chat.NavigateToString(html);
         }
+
+        private void OpenEditMessageMenu(Guid messageGuid)
+        {
+            if (LLMEngine.Status == SystemStatus.Busy)
+                return;
+
+            mainForm.Enabled = false;
+            using var _editMessage = new EditMessageForm(messageGuid)
+            {
+                TopMost = true,
+                StartPosition = FormStartPosition.CenterParent
+            };
+            _editMessage.Refresh();
+            try
+            {
+                if (_editMessage.ShowDialog() == DialogResult.OK && _editMessage.Message != null)
+                {
+                    mainForm.BeginInvoke((System.Windows.Forms.MethodInvoker)async delegate
+                    {
+                        await LoadHistoryToUI();
+                        LLMEngine.InvalidatePromptCache();
+                    });
+                }
+            }
+            finally
+            {
+                mainForm.Enabled = true;
+            }
+        }
+
+        public async Task InitializeWebViewAsync()
+        {
+            if (web_chat.CoreWebView2 != null) return;
+            await web_chat.EnsureCoreWebView2Async();
+            web_chat.CoreWebView2!.Settings.AreDevToolsEnabled = false;
+            web_chat.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            web_chat.CoreWebView2.SetVirtualHostNameToFolderMapping(
+                "appassets.test",
+                Path.Combine(AppContext.BaseDirectory, "data"),
+                CoreWebView2HostResourceAccessKind.Allow);
+
+            web_chat.CoreWebView2.DOMContentLoaded += OnWebChatContentLoaded!;
+            web_chat.CoreWebView2.WebMessageReceived += OnWebChatWebMessageReceived!;
+            web_chat.CoreWebView2.NewWindowRequested += OnNewWindowRequested;
+            web_chat.CoreWebView2.NavigationStarting += OnNavigationStarting;
+            web_chat.ZoomFactor = 1D;
+        }
+
+        public async Task LoadHistoryToUI()
+        {
+            if (mainForm.InvokeRequired)
+            {
+                await InvokeAsync(ReloadFullChat);
+            }
+            else
+            {
+                await ReloadFullChat();
+            }
+        }
+
+        public async Task SendMessageToUI(SingleMessage singleMessage)
+        {
+            string img = "gears.png";
+            switch (singleMessage.Role)
+            {
+                case AuthorRole.User:
+                    img = MainForm.User?.Icon ?? "gears.png";
+                    break;
+                case AuthorRole.Assistant:
+                    img = MainForm.Bot?.Icon ?? "gears.png";
+                    break;
+                //case AuthorRole.Tool:
+                case AuthorRole.Tool:
+                    img = "tools.png";
+                    break;
+            }
+            var text = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + singleMessage.Message, WebUI.CustomMarkDownPipeline);
+            var coremsg = $@"
+                    <div class='portrait'>
+                        <img src='https://appassets.test/img/{img}' alt='Portrait' width='60'>
+                    </div>
+                    <div class='message-content'>
+                        <div class='message-raw'>
+                            {text}
+                        </div>
+                    </div>";
+
+            if (singleMessage.Role == AuthorRole.Assistant && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart))
+            {
+                coremsg = $@"
+                    <div class='portrait'>
+                        <img src='https://appassets.test/img/{img}' alt='Portrait' width='60'>
+                    </div>
+                    <div class='message-content'>
+                        <div class='thinking-box'>
+                            <div class='thinking-header' onclick='this.parentElement.classList.toggle(""expanded"")'>
+                                {LLMEngine.Bot.Name} is thinking... (click to expand)
+                            </div>
+                            <div class='thinking-content'> 
+                            </div>
+                        </div>
+                        <div class='message-raw'>
+                            {text}
+                        </div>
+                    </div>";
+            }
+
+            coremsg = coremsg.SanitizeForJS();
+            var script = $"addHtmlAfterLastChatMessage(\"{coremsg}\", \"{singleMessage.Guid}\");";
+            await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+            await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
+        }
+
+
+        #region *** Event Handlers for WebView2 ***
 
         private void OnNavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs e)
         {
@@ -410,7 +519,7 @@ namespace LetheChat
                     {
                         if (!mainForm.IsDisposed && mainForm.IsHandleCreated)
                         {
-                            EditMessage(messageGuid);
+                            OpenEditMessageMenu(messageGuid);
                         }
                     }
                     catch (Exception ex)
@@ -425,116 +534,6 @@ namespace LetheChat
             }
         }
 
-        private void EditMessage(Guid messageGuid)
-        {
-            if (LLMEngine.Status == SystemStatus.Busy)
-                return;
-
-            mainForm.Enabled = false;
-            using var _editMessage = new EditMessageForm(messageGuid)
-            {
-                TopMost = true,
-                StartPosition = FormStartPosition.CenterParent
-            };
-            _editMessage.Refresh();
-            try
-            {
-                if (_editMessage.ShowDialog() == DialogResult.OK && _editMessage.Message != null)
-                {
-                    mainForm.BeginInvoke((System.Windows.Forms.MethodInvoker)async delegate
-                    {
-                        await LoadHistoryToUI();
-                        LLMEngine.InvalidatePromptCache();
-                    });
-                }
-            }
-            finally
-            {
-                mainForm.Enabled = true;
-            }
-        }
-
-        public async Task InitializeWebViewAsync()
-        {
-            if (web_chat.CoreWebView2 != null) return;
-            await web_chat.EnsureCoreWebView2Async();
-            web_chat.CoreWebView2!.Settings.AreDevToolsEnabled = false;
-            web_chat.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-            web_chat.CoreWebView2.SetVirtualHostNameToFolderMapping(
-                "appassets.test",
-                Path.Combine(AppContext.BaseDirectory, "data"),
-                CoreWebView2HostResourceAccessKind.Allow);
-
-            web_chat.CoreWebView2.DOMContentLoaded += OnWebChatContentLoaded!;
-            web_chat.CoreWebView2.WebMessageReceived += OnWebChatWebMessageReceived!;
-            web_chat.CoreWebView2.NewWindowRequested += OnNewWindowRequested;
-            web_chat.CoreWebView2.NavigationStarting += OnNavigationStarting;
-            web_chat.ZoomFactor = 1D;
-        }
-
-        public async Task LoadHistoryToUI()
-        {
-            if (mainForm.InvokeRequired)
-            {
-                await InvokeAsync(WebChatLoad);
-            }
-            else
-            {
-                await WebChatLoad();
-            }
-        }
-
-        public async Task SendMessageToUI(SingleMessage singleMessage)
-        {
-            string img = "gears.png";
-            switch (singleMessage.Role)
-            {
-                case AuthorRole.User:
-                    img = MainForm.User?.Icon ?? "gears.png";
-                    break;
-                case AuthorRole.Assistant:
-                    img = MainForm.Bot?.Icon ?? "gears.png";
-                    break;
-                //case AuthorRole.Tool:
-                case AuthorRole.Tool:
-                    img = "tools.png";
-                    break;
-            }
-            var text = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + singleMessage.Message, WebUI.CustomMarkDownPipeline);
-            var coremsg = $@"
-                    <div class='portrait'>
-                        <img src='https://appassets.test/img/{img}' alt='Portrait' width='60'>
-                    </div>
-                    <div class='message-content'>
-                        <div class='message-raw'>
-                            {text}
-                        </div>
-                    </div>";
-
-            if (singleMessage.Role == AuthorRole.Assistant && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart))
-            {
-                coremsg = $@"
-                    <div class='portrait'>
-                        <img src='https://appassets.test/img/{img}' alt='Portrait' width='60'>
-                    </div>
-                    <div class='message-content'>
-                        <div class='thinking-box'>
-                            <div class='thinking-header' onclick='this.parentElement.classList.toggle(""expanded"")'>
-                                {LLMEngine.Bot.Name} is thinking... (click to expand)
-                            </div>
-                            <div class='thinking-content'> 
-                            </div>
-                        </div>
-                        <div class='message-raw'>
-                            {text}
-                        </div>
-                    </div>";
-            }
-
-            coremsg = coremsg.SanitizeForJS();
-            var script = $"addHtmlAfterLastChatMessage(\"{coremsg}\", \"{singleMessage.Guid}\");";
-            await web_chat.CoreWebView2.ExecuteScriptAsync(script);
-            await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
-        }
+        #endregion
     }
 }
