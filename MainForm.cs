@@ -269,7 +269,7 @@ namespace LetheChat
 
         private void SubscribeLLMEvents()
         {
-            LLMEngine.OnInferenceSegment += OnInferenceSeqmentReceived;
+            LLMEngine.OnInferenceSegment += LMEngine_OnInferenceSeqmentReceived;
             LLMEngine.OnInferenceCompleted += LLMEngine_OnInferenceCompleted;
             LLMEngine.OnInferenceStreamed += OnStreamMessageReceived;
             LLMEngine.OnInferenceEnded += OnStreamInferenceEnded;
@@ -277,14 +277,9 @@ namespace LetheChat
             LLMEngine.OnStatusChanged += OnStatusChanged;
         }
 
-        private void LLMEngine_OnInferenceCompleted(object? sender, InferenceResult e)
-        {
-            LLMEngine.Logger?.LogInformation($"[InferenceCompleted] Response: {e.Response} - Complete: {e.FinishReason} - Tool: {e.ToolCalls?.Count > 0}");
-        }
-
         private void UnsubscribeLLMEvents()
         {
-            LLMEngine.OnInferenceSegment -= OnInferenceSeqmentReceived;
+            LLMEngine.OnInferenceSegment -= LMEngine_OnInferenceSeqmentReceived;
             LLMEngine.OnInferenceCompleted -= LLMEngine_OnInferenceCompleted;
             LLMEngine.OnInferenceStreamed -= OnStreamMessageReceived;
             LLMEngine.OnInferenceEnded -= OnStreamInferenceEnded;
@@ -526,28 +521,13 @@ namespace LetheChat
             });
         }
 
-        private void OnInferenceSeqmentReceived(object? sender, InferenceSegment e)
+        private void LMEngine_OnInferenceSeqmentReceived(object? sender, InferenceSegment e)
         {
-            //if (e == null || string.IsNullOrEmpty(e.Text))
-            //    return;
-            //if (e.Channel != InferenceChannel.Text && e.Channel != InferenceChannel.Thinking)
-            //    return;
+        }
 
-            //if (e.Channel == InferenceChannel.Thinking)
-            //    _currentgenerationThink += e.Text;
-            //else
-            //    _currentgeneration += e.Text;
-
-            //// reconstruct as a single string to display in the UI, with thinking blocks if relevant
-            //var think = _currentgenerationThink;
-            //if (LLMEngine.Instruct.IsThinkFormat)
-            //{
-            //    think = _currentgenerationThink.Replace(LLMEngine.Instruct.ThinkingStart, "");
-            //    think = _currentgenerationThink.Replace(LLMEngine.Instruct.ThinkingStart, "");
-
-            //}
-
-
+        private void LLMEngine_OnInferenceCompleted(object? sender, InferenceResult e)
+        {
+            LLMEngine.Logger?.LogInformation($"[InferenceCompleted] Response: {e.Response} - Complete: {e.FinishReason} - Tool: {e.ToolCalls?.Count > 0}");
         }
 
         private async void OnStreamMessageReceived(object? sender, string e)
@@ -858,8 +838,6 @@ namespace LetheChat
             LLMEngine.Bot.AgentSystem?.NotifyUserActivity();
             UpdateUIState();
         }
-
-
 
         private async void StartNewSession(object sender, EventArgs e)
         {
