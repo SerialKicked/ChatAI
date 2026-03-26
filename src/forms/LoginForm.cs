@@ -82,6 +82,7 @@ namespace LetheChat.Forms
 
         private void btCancel_Click(object sender, EventArgs e)
         {
+            LLMEngine.Disconnect();
             Close();
         }
 
@@ -142,14 +143,12 @@ namespace LetheChat.Forms
         private void btBrowse_Click(object sender, EventArgs e)
         {
             // Open file dialog to select a .GGUF model file
-            using (OpenFileDialog ofd = new OpenFileDialog())
+            using OpenFileDialog ofd = new();
+            ofd.Filter = "GGUF Model Files (*.gguf)|*.gguf|All Files (*.*)|*.*";
+            ofd.Title = "Select a GGUF Model File";
+            if (ofd.ShowDialog() == DialogResult.OK)
             {
-                ofd.Filter = "GGUF Model Files (*.gguf)|*.gguf|All Files (*.*)|*.*";
-                ofd.Title = "Select a GGUF Model File";
-                if (ofd.ShowDialog() == DialogResult.OK)
-                {
-                    edUrl.Text = $"{ofd.FileName}";
-                }
+                edUrl.Text = $"{ofd.FileName}";
             }
         }
 

@@ -85,7 +85,7 @@ namespace LetheChat
 
             var exe = Program.Settings.PathToLlamaCppServer;
             var modelDir = Path.GetDirectoryName(model.ModelFile) ?? string.Empty;
-            var args = model.Settings.GetArgsForDirectory(modelDir);
+            var args = model.GetLlamaCppArguments();
 
             if (string.IsNullOrEmpty(args))
                 return false;

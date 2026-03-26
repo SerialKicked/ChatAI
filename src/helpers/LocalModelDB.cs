@@ -14,6 +14,13 @@ namespace LetheChat
         public string ModelFile { get; set; } = string.Empty;
         public LlamaCppSettings Settings { get; set; } = new LlamaCppSettings();
 
+        public string GetLlamaCppArguments()
+        {
+            var args = new StringBuilder($" -m \"{ModelFile}\" ");
+            args.Append(Settings.GetArgsForDirectory(Path.GetDirectoryName(ModelFile)!));
+            return args.ToString();
+        }
+
         public bool IsJinjaFilePresent()
         {
             // get directory of the model file

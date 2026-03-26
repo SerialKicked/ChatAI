@@ -171,12 +171,6 @@ namespace LetheChat.Files
             // Check if the directory exists and 
             if (!Directory.Exists(modelPath))
                 return string.Empty;
-            // if so, find the first .gguf file in it (that doesn't start with mmproj)
-            var ggufFiles = Directory.GetFiles(modelPath, "*.gguf").Where(f => !Path.GetFileName(f).StartsWith("mmproj", StringComparison.OrdinalIgnoreCase)).ToArray();
-            if (ggufFiles.Length > 0)
-                model = ggufFiles[0];
-            else
-                return string.Empty;
             if (LoadMMprojIfAvailable)
             {
                 var mmprojFiles = Directory.GetFiles(modelPath, "mmproj*.gguf");
@@ -189,8 +183,14 @@ namespace LetheChat.Files
                 if (jinjaFiles.Length > 0)
                     jinja = jinjaFiles[0];
             }
+            // if so, find the first .gguf file in it (that doesn't start with mmproj)
+            var ggufFiles = Directory.GetFiles(modelPath, "*.gguf").Where(f => !Path.GetFileName(f).StartsWith("mmproj", StringComparison.OrdinalIgnoreCase)).ToArray();
+            if (ggufFiles.Length > 0)
+                model = ggufFiles[0];
+            else
+                return string.Empty;
+            var args = new StringBuilder();
 
-            var args = new StringBuilder($" -m \"{model}\"");
             if (!string.IsNullOrEmpty(mmproj))
                 args.Append($" -mm \"{mmproj}\"");
             if (!string.IsNullOrEmpty(jinja))

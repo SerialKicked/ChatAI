@@ -75,9 +75,6 @@
             ckManagedLlama = new LetheChat.Controls.ModernCheckBox();
             collapsibleGroupBox2 = new LetheChat.Controls.CollapsibleGroupBox();
             ckLlamaCppSamplers = new LetheChat.Controls.ModernCheckBox();
-            panel4 = new Panel();
-            cbChatThinkPolicy = new LetheChat.Controls.ModernComboBox();
-            label3 = new Label();
             panel2 = new Panel();
             cbChatAllowPrefill = new LetheChat.Controls.ModernComboBox();
             label2 = new Label();
@@ -286,7 +283,7 @@
             // 
             panel1.Controls.Add(button1);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 545);
+            panel1.Location = new Point(0, 518);
             panel1.Name = "panel1";
             panel1.Size = new Size(1026, 38);
             panel1.TabIndex = 32;
@@ -325,7 +322,7 @@
             MainTab.Name = "MainTab";
             MainTab.SelectedIndex = 0;
             MainTab.ShowTabs = false;
-            MainTab.Size = new Size(798, 545);
+            MainTab.Size = new Size(798, 518);
             MainTab.TabIndex = 33;
             // 
             // tabBackend
@@ -339,7 +336,7 @@
             tabBackend.Location = new Point(0, 0);
             tabBackend.Name = "tabBackend";
             tabBackend.Padding = new Padding(3);
-            tabBackend.Size = new Size(798, 545);
+            tabBackend.Size = new Size(798, 518);
             tabBackend.TabIndex = 0;
             tabBackend.Text = "Backend";
             // 
@@ -350,7 +347,7 @@
             collapsibleGroupBox4.Controls.Add(verticalStackPanel3);
             collapsibleGroupBox4.Controls.Add(verticalStackPanel2);
             collapsibleGroupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox4.Location = new Point(6, 266);
+            collapsibleGroupBox4.Location = new Point(6, 232);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(12, 32, 12, 10);
             collapsibleGroupBox4.Size = new Size(780, 274);
@@ -710,7 +707,7 @@
             collapsibleGroupBox3.Location = new Point(6, 6);
             collapsibleGroupBox3.Name = "collapsibleGroupBox3";
             collapsibleGroupBox3.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox3.Size = new Size(407, 254);
+            collapsibleGroupBox3.Size = new Size(407, 220);
             collapsibleGroupBox3.TabIndex = 41;
             collapsibleGroupBox3.Text = "Managed Llama.cpp";
             // 
@@ -807,9 +804,6 @@
             collapsibleGroupBox2.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox2.CanCollapse = false;
             collapsibleGroupBox2.Controls.Add(ckLlamaCppSamplers);
-            collapsibleGroupBox2.Controls.Add(panel4);
-            collapsibleGroupBox2.Controls.Add(cbChatThinkPolicy);
-            collapsibleGroupBox2.Controls.Add(label3);
             collapsibleGroupBox2.Controls.Add(panel2);
             collapsibleGroupBox2.Controls.Add(cbChatAllowPrefill);
             collapsibleGroupBox2.Controls.Add(label2);
@@ -823,7 +817,7 @@
             collapsibleGroupBox2.Location = new Point(419, 6);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox2.Size = new Size(367, 254);
+            collapsibleGroupBox2.Size = new Size(367, 220);
             collapsibleGroupBox2.TabIndex = 40;
             collapsibleGroupBox2.Text = "Backend-Compatibility Settings";
             // 
@@ -831,47 +825,12 @@
             // 
             ckLlamaCppSamplers.Dock = DockStyle.Top;
             ckLlamaCppSamplers.Font = new Font("Segoe UI", 9F);
-            ckLlamaCppSamplers.Location = new Point(12, 220);
+            ckLlamaCppSamplers.Location = new Point(12, 173);
             ckLlamaCppSamplers.Name = "ckLlamaCppSamplers";
             ckLlamaCppSamplers.Size = new Size(343, 26);
             ckLlamaCppSamplers.TabIndex = 58;
             ckLlamaCppSamplers.Text = "Allow advanced samplers in Llama.cpp (requires --props)";
             ckLlamaCppSamplers.UseVisualStyleBackColor = true;
-            // 
-            // panel4
-            // 
-            panel4.Dock = DockStyle.Top;
-            panel4.Location = new Point(12, 212);
-            panel4.Margin = new Padding(8);
-            panel4.Name = "panel4";
-            panel4.Padding = new Padding(8);
-            panel4.Size = new Size(343, 8);
-            panel4.TabIndex = 55;
-            // 
-            // cbChatThinkPolicy
-            // 
-            cbChatThinkPolicy.BackColor = Color.FromArgb(64, 64, 64);
-            cbChatThinkPolicy.Dock = DockStyle.Top;
-            cbChatThinkPolicy.DropDownHeight = 180;
-            cbChatThinkPolicy.Font = new Font("Segoe UI", 9F);
-            cbChatThinkPolicy.Items.AddRange(new object[] { "Auto", "Allow", "Disallow" });
-            cbChatThinkPolicy.Location = new Point(12, 188);
-            cbChatThinkPolicy.MaxDropDownItems = 10;
-            cbChatThinkPolicy.Name = "cbChatThinkPolicy";
-            cbChatThinkPolicy.Padding = new Padding(1);
-            cbChatThinkPolicy.Size = new Size(343, 24);
-            cbChatThinkPolicy.TabIndex = 0;
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Dock = DockStyle.Top;
-            label3.Font = new Font("Segoe UI", 9F);
-            label3.Location = new Point(12, 173);
-            label3.Name = "label3";
-            label3.Size = new Size(216, 15);
-            label3.TabIndex = 5;
-            label3.Text = "Chat Completion: First Think Tag Policy";
             // 
             // panel2
             // 
@@ -988,7 +947,7 @@
             tabCore.Location = new Point(0, 0);
             tabCore.Name = "tabCore";
             tabCore.Padding = new Padding(3);
-            tabCore.Size = new Size(798, 545);
+            tabCore.Size = new Size(798, 518);
             tabCore.TabIndex = 1;
             tabCore.Text = "Core LLM";
             // 
@@ -1183,7 +1142,7 @@
             tabMemory.ForeColor = Color.FromArgb(230, 230, 230);
             tabMemory.Location = new Point(0, 0);
             tabMemory.Name = "tabMemory";
-            tabMemory.Size = new Size(798, 545);
+            tabMemory.Size = new Size(798, 518);
             tabMemory.TabIndex = 2;
             tabMemory.Text = "Memory Systems";
             // 
@@ -1660,7 +1619,7 @@
             TabGroup.ForeColor = Color.FromArgb(230, 230, 230);
             TabGroup.Location = new Point(0, 0);
             TabGroup.Name = "TabGroup";
-            TabGroup.Size = new Size(798, 545);
+            TabGroup.Size = new Size(798, 518);
             TabGroup.TabIndex = 3;
             TabGroup.Text = "Group Chat";
             // 
@@ -1793,7 +1752,7 @@
             tabWeb.ForeColor = Color.FromArgb(230, 230, 230);
             tabWeb.Location = new Point(0, 0);
             tabWeb.Name = "tabWeb";
-            tabWeb.Size = new Size(798, 545);
+            tabWeb.Size = new Size(798, 518);
             tabWeb.TabIndex = 4;
             tabWeb.Text = "Web";
             // 
@@ -1973,7 +1932,7 @@
             tabOutput.ForeColor = Color.FromArgb(230, 230, 230);
             tabOutput.Location = new Point(0, 0);
             tabOutput.Name = "tabOutput";
-            tabOutput.Size = new Size(798, 545);
+            tabOutput.Size = new Size(798, 518);
             tabOutput.TabIndex = 5;
             tabOutput.Text = "Output";
             // 
@@ -1999,7 +1958,7 @@
             collapsibleGroupBox11.Location = new Point(6, 6);
             collapsibleGroupBox11.Name = "collapsibleGroupBox11";
             collapsibleGroupBox11.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox11.Size = new Size(780, 543);
+            collapsibleGroupBox11.Size = new Size(780, 497);
             collapsibleGroupBox11.TabIndex = 1;
             collapsibleGroupBox11.Text = "Output Formatting";
             // 
@@ -2254,7 +2213,7 @@
             tabTools.ForeColor = Color.FromArgb(230, 230, 230);
             tabTools.Location = new Point(0, 0);
             tabTools.Name = "tabTools";
-            tabTools.Size = new Size(798, 545);
+            tabTools.Size = new Size(798, 518);
             tabTools.TabIndex = 7;
             tabTools.Text = "Tools";
             // 
@@ -2267,7 +2226,7 @@
             edToolinfo.Name = "edToolinfo";
             edToolinfo.ReadOnly = true;
             edToolinfo.ScrollBars = ScrollBars.Vertical;
-            edToolinfo.Size = new Size(432, 370);
+            edToolinfo.Size = new Size(432, 333);
             edToolinfo.TabIndex = 44;
             // 
             // collapsibleGroupBox15
@@ -2385,7 +2344,7 @@
             collapsibleGroupBox14.Location = new Point(6, 6);
             collapsibleGroupBox14.Name = "collapsibleGroupBox14";
             collapsibleGroupBox14.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox14.Size = new Size(342, 543);
+            collapsibleGroupBox14.Size = new Size(342, 506);
             collapsibleGroupBox14.TabIndex = 0;
             collapsibleGroupBox14.Text = "Available Toolsets";
             // 
@@ -2396,7 +2355,7 @@
             cklToolsets.Location = new Point(15, 48);
             cklToolsets.Name = "cklToolsets";
             cklToolsets.Padding = new Padding(1);
-            cklToolsets.Size = new Size(312, 482);
+            cklToolsets.Size = new Size(312, 450);
             cklToolsets.TabIndex = 0;
             cklToolsets.SelectedIndexChanged += cklToolsets_SelectedIndexChanged;
             cklToolsets.RightToLeftChanged += cklToolsets_RightToLeftChanged;
@@ -2410,7 +2369,7 @@
             tabApp.ForeColor = Color.FromArgb(230, 230, 230);
             tabApp.Location = new Point(0, 0);
             tabApp.Name = "tabApp";
-            tabApp.Size = new Size(798, 545);
+            tabApp.Size = new Size(798, 518);
             tabApp.TabIndex = 6;
             tabApp.Text = "App";
             // 
@@ -2639,7 +2598,7 @@
             MainButtonStack.Location = new Point(0, 0);
             MainButtonStack.Name = "MainButtonStack";
             MainButtonStack.Padding = new Padding(4);
-            MainButtonStack.Size = new Size(228, 545);
+            MainButtonStack.Size = new Size(228, 518);
             MainButtonStack.TabIndex = 34;
             // 
             // btApp
@@ -2778,7 +2737,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1026, 583);
+            ClientSize = new Size(1026, 556);
             Controls.Add(MainTab);
             Controls.Add(MainButtonStack);
             Controls.Add(panel1);
@@ -2887,14 +2846,11 @@
         private Controls.ModernCheckBox ck_hallusafe;
         private Controls.ModernCheckBox ck_sysrag;
         private Controls.CollapsibleGroupBox collapsibleGroupBox2;
-        private Controls.ModernComboBox cbChatThinkPolicy;
         private Label label1;
         private Label label2;
         private Controls.ModernComboBox cbParallel;
-        private Label label3;
         private Controls.ModernComboBox cbChatAllowPrefill;
         private Controls.ModernCheckBox ckLlamaCppSamplers;
-        private Panel panel4;
         private Panel panel2;
         private Panel panel3;
         private Controls.VerticalStackPanel MainButtonStack;

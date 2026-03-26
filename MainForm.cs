@@ -295,9 +295,9 @@ namespace LetheChat
                     mck_onlinerag.Enabled = LLMEngine.SupportsWebSearch;
                     cboxVLM.Enabled = LLMEngine.SupportsVision;
                     cboxVLM.Expanded = LLMEngine.SupportsVision;
-                    UpdateUIState();
-                    await webUI.LoadHistoryToUI();
                 }
+                UpdateUIState();
+                await webUI.LoadHistoryToUI();
             }
             catch (Exception ex)
             {

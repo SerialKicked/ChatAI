@@ -211,14 +211,6 @@ namespace LetheChat.Forms
                 false => 2,
             };
 
-            cbChatThinkPolicy.SelectedIndex = Program.Settings.BackendStartThinkTagBehavior switch
-            {
-                null => 0,
-                BackendChatCompletionThinkTagBehavior.Emitted => 1,
-                BackendChatCompletionThinkTagBehavior.Silent => 2,
-                _ => 0,
-            };
-
             Program.ApplyContextPluginSettings();
 
             // Search API Settings
@@ -330,13 +322,6 @@ namespace LetheChat.Forms
                     0 => null,
                     1 => true,
                     2 => false,
-                    _ => null,
-                };
-                Program.Settings.BackendStartThinkTagBehavior = cbChatThinkPolicy.SelectedIndex switch
-                {
-                    0 => null,
-                    1 => BackendChatCompletionThinkTagBehavior.Emitted,
-                    2 => BackendChatCompletionThinkTagBehavior.Silent,
                     _ => null,
                 };
 
