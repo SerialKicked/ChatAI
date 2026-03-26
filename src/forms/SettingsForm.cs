@@ -22,7 +22,6 @@ namespace LetheChat.Forms
 
         private void LoadToolTips()
         {
-            HelptoolTip.SetToolTip(ck_webgrammar, "If checked, the LLM will be better at navigating the website, but its results may be less accurate." + Environment.NewLine + "Only enable if the LLM is consistently failing at browsing the web.");
             HelptoolTip.SetToolTip(ck_alwayswebsearch, "Normally, the Search API will only be attempted if you explicitely ask the bot to search the web. If you check this box, the LLM will always try to determine if a search would be useful." + Environment.NewLine + Environment.NewLine + "May lead to many false positive, and overall slower generation with some models.");
             HelptoolTip.SetToolTip(ck_sessionmemory, "If checked, the bot will remember previous chat sessions by having their summaries inserted into the system prompt.");
             HelptoolTip.SetToolTip(num_memtokens, "The number of tokens to reserve for session memory summaries. The more tokens you reserve, the more context the bot can remember from previous sessions, but the less tokens are available for the chatlog." + Environment.NewLine + "If you have a very large context window. A good rule of thumb is 2K per 16K of total context windows available.");
