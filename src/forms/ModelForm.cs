@@ -83,10 +83,11 @@ namespace LetheChat.Forms
                 };
                 ctrl.Location = new Point(ctrlX, y);
                 ctrl.Size = new Size(ctrlW, ctrlH);
-                if (tip != null)
+
+                if (!string.IsNullOrEmpty(tip))
                 {
-                    _toolTip.SetToolTip(lbl, tip);
-                    _toolTip.SetToolTip(ctrl, tip);
+                    HelpToolTip.SetToolTip(lbl, tip);
+                    HelpToolTip.SetToolTip(ctrl, tip);
                 }
                 panSettingsScroll.Controls.Add(lbl);
                 panSettingsScroll.Controls.Add(ctrl);
@@ -151,10 +152,10 @@ namespace LetheChat.Forms
                 Font = ThemeManager.curthemeBaseFont
             };
             var additionalArgsTip = Tip(nameof(LlamaCppSettings.AdditionalArgs));
-            if (additionalArgsTip != null)
+            if (!string.IsNullOrEmpty(additionalArgsTip))
             {
-                _toolTip.SetToolTip(lblArgs, additionalArgsTip);
-                _toolTip.SetToolTip(ed_additionalArgs, additionalArgsTip);
+                HelpToolTip.SetToolTip(lblArgs, additionalArgsTip);
+                HelpToolTip.SetToolTip(ed_additionalArgs, additionalArgsTip);
             }
             panSettingsScroll.Controls.Add(lblArgs);
             panSettingsScroll.Controls.Add(ed_additionalArgs);
@@ -164,8 +165,10 @@ namespace LetheChat.Forms
             {
                 ck.Location = new Point(colleft ? 0 : xboxw + rowGap, y);
                 ck.Size = new Size(xboxw, 26);
-                if (tip != null)
-                    _toolTip.SetToolTip(ck, tip);
+                if (!string.IsNullOrEmpty(tip))
+                {
+                    HelpToolTip.SetToolTip(ck, tip);
+                }
                 panSettingsScroll.Controls.Add(ck);
                 if (!colleft)
                     y += 30;

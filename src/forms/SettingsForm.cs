@@ -118,7 +118,7 @@ namespace LetheChat.Forms
 
             ckAllowtools.Checked = Program.Settings.ToolCallsAllowed;
             numToolLimit.Value = Program.Settings.ToolCallLimit;
-            numToolMemory.Value = Program.Settings.ToolCallMemoryLimit;
+            numToolMemory.Value = Program.Settings.ToolCallChainLimit;
 
             num_memtokens.Value = Program.Settings.SessionReservedTokens;
             ck_sessionmemory.Checked = LLMEngine.Settings.SessionMemorySystem;
@@ -374,7 +374,7 @@ namespace LetheChat.Forms
                 Program.Settings.AllowedToolsets = [.. cklToolsets.CheckedItems.Cast<string>()];
                 Program.Settings.ToolCallsAllowed = ckAllowtools.Checked;
                 Program.Settings.ToolCallLimit = (int)numToolLimit.Value;
-                Program.Settings.ToolCallMemoryLimit = (int)numToolMemory.Value;
+                Program.Settings.ToolCallChainLimit = (int)numToolMemory.Value;
 
                 var str = JsonConvert.SerializeObject(Program.Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);

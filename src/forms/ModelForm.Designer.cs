@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ModelForm));
             verticalStackPanel1 = new LetheChat.Controls.VerticalStackPanel();
             bt_loaddirs = new Button();
@@ -43,6 +44,7 @@
             colLogLevel = new ColumnHeader();
             colLogMessage = new ColumnHeader();
             boxSettings = new LetheChat.Controls.CollapsibleGroupBox();
+            HelpToolTip = new ToolTip(components);
             verticalStackPanel1.SuspendLayout();
             verticalStackPanel2.SuspendLayout();
             panButtons.SuspendLayout();
@@ -224,6 +226,11 @@
             boxSettings.TabIndex = 0;
             boxSettings.Text = "Settings";
             // 
+            // HelpToolTip
+            // 
+            HelpToolTip.ToolTipIcon = ToolTipIcon.Info;
+            HelpToolTip.ToolTipTitle = "Information";
+            // 
             // ModelForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -282,5 +289,6 @@
         private Controls.ModernComboBox cb_completion;
         private System.Windows.Forms.TextBox ed_additionalArgs;
         private Button bt_loaddirs;
+        private ToolTip HelpToolTip;
     }
 }
