@@ -48,7 +48,7 @@ namespace LetheChat.Plugins
         /// <returns></returns>
         public bool ReplaceOutput(string botoutput, Chatlog log, out string response)
         {
-            if (LLMEngine.ToolCallsLoaded && LLMEngine.ToolManager.AllowedToolSets.Contains("BasicToolset"))
+            if (LLMEngine.ToolCallsLoaded && LLMEngine.ToolManager.AllowedToolSets.Contains("Web Search"))
             {
                 // if tool calls are loaded and web search is allowed, we can use the tools over this
                 response = string.Empty;
@@ -81,7 +81,7 @@ namespace LetheChat.Plugins
         /// <returns></returns>
         public async Task<PluginResponse> ReplaceUserInput(string userinput)
         {
-            if (LLMEngine.ToolCallsLoaded && LLMEngine.ToolManager.AllowedToolSets.Contains("BasicToolset"))
+            if (LLMEngine.ToolCallsLoaded && LLMEngine.ToolManager.AllowedToolSets.Contains("Web Search"))
             {
                 // if tool calls are loaded and web search is allowed, we can use the tools over this
                 return new PluginResponse { IsHandled = false, Response = null };

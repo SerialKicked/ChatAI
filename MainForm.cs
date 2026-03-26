@@ -141,6 +141,7 @@ namespace LetheChat
             AgentRuntime.RegisterPlugin("SessionGoalTask", new SessionGoalTask());
             // Register tools
             LLMEngine.ToolManager.RegisterToolList(new LetheBasicTools());
+            LLMEngine.ToolManager.RegisterToolList(new MemoryTools());
             var pluginsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins");
             LLMEngine.ToolManager.RegisterPluginsFromDirectory(pluginsDir);
             AgentRuntime.RegisterPluginsFromDirectory(pluginsDir);

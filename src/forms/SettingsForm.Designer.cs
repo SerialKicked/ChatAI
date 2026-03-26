@@ -151,12 +151,12 @@
             label30 = new Label();
             tabWeb = new TabPage();
             collapsibleGroupBox7 = new LetheChat.Controls.CollapsibleGroupBox();
-            panel20 = new Panel();
             ck_alwayswebsearch = new LetheChat.Controls.ModernCheckBox();
             panel25 = new Panel();
             numWebSearchDetailedMaxLength = new LetheChat.Controls.ModernNumericUpDown();
             label39 = new Label();
             ck_searchextract = new LetheChat.Controls.ModernCheckBox();
+            panel20 = new Panel();
             ed_searchkey = new TextBox();
             label33 = new Label();
             panel21 = new Panel();
@@ -1775,16 +1775,6 @@
             collapsibleGroupBox7.TabIndex = 1;
             collapsibleGroupBox7.Text = "Web Search API";
             // 
-            // panel20
-            // 
-            panel20.Dock = DockStyle.Top;
-            panel20.Location = new Point(12, 118);
-            panel20.Margin = new Padding(8);
-            panel20.Name = "panel20";
-            panel20.Padding = new Padding(8);
-            panel20.Size = new Size(756, 10);
-            panel20.TabIndex = 52;
-            // 
             // ck_alwayswebsearch
             // 
             ck_alwayswebsearch.Dock = DockStyle.Top;
@@ -1842,6 +1832,16 @@
             ck_searchextract.TabIndex = 40;
             ck_searchextract.Text = "Try to extract page content using jina.ai";
             ck_searchextract.UseVisualStyleBackColor = true;
+            // 
+            // panel20
+            // 
+            panel20.Dock = DockStyle.Top;
+            panel20.Location = new Point(12, 118);
+            panel20.Margin = new Padding(8);
+            panel20.Name = "panel20";
+            panel20.Padding = new Padding(8);
+            panel20.Size = new Size(756, 10);
+            panel20.TabIndex = 52;
             // 
             // ed_searchkey
             // 
