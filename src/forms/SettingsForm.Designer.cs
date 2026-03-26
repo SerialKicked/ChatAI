@@ -84,6 +84,9 @@
             panel3 = new Panel();
             cbParallel = new LetheChat.Controls.ModernComboBox();
             label1 = new Label();
+            panel29 = new Panel();
+            cbDefaultCompletion = new LetheChat.Controls.ModernComboBox();
+            label4 = new Label();
             tabCore = new TabPage();
             collapsibleGroupBox10 = new LetheChat.Controls.CollapsibleGroupBox();
             panel28 = new Panel();
@@ -283,7 +286,7 @@
             // 
             panel1.Controls.Add(button1);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 555);
+            panel1.Location = new Point(0, 545);
             panel1.Name = "panel1";
             panel1.Size = new Size(1026, 38);
             panel1.TabIndex = 32;
@@ -322,7 +325,7 @@
             MainTab.Name = "MainTab";
             MainTab.SelectedIndex = 0;
             MainTab.ShowTabs = false;
-            MainTab.Size = new Size(798, 555);
+            MainTab.Size = new Size(798, 545);
             MainTab.TabIndex = 33;
             // 
             // tabBackend
@@ -336,7 +339,7 @@
             tabBackend.Location = new Point(0, 0);
             tabBackend.Name = "tabBackend";
             tabBackend.Padding = new Padding(3);
-            tabBackend.Size = new Size(798, 555);
+            tabBackend.Size = new Size(798, 545);
             tabBackend.TabIndex = 0;
             tabBackend.Text = "Backend";
             // 
@@ -347,10 +350,10 @@
             collapsibleGroupBox4.Controls.Add(verticalStackPanel3);
             collapsibleGroupBox4.Controls.Add(verticalStackPanel2);
             collapsibleGroupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox4.Location = new Point(6, 238);
+            collapsibleGroupBox4.Location = new Point(6, 266);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox4.Size = new Size(780, 310);
+            collapsibleGroupBox4.Size = new Size(780, 274);
             collapsibleGroupBox4.TabIndex = 42;
             collapsibleGroupBox4.Text = "Managed Llama.cpp Default Settings";
             // 
@@ -363,17 +366,18 @@
             verticalStackPanel3.Controls.Add(ckLlamaKV);
             verticalStackPanel3.Controls.Add(ckLlamaProps);
             verticalStackPanel3.Dock = DockStyle.Fill;
+            verticalStackPanel3.Gap = 4;
             verticalStackPanel3.Location = new Point(329, 32);
             verticalStackPanel3.Name = "verticalStackPanel3";
             verticalStackPanel3.Padding = new Padding(4);
-            verticalStackPanel3.Size = new Size(439, 268);
+            verticalStackPanel3.Size = new Size(439, 232);
             verticalStackPanel3.TabIndex = 1;
             // 
             // ckLlamaMMProj
             // 
             ckLlamaMMProj.Dock = DockStyle.Top;
             ckLlamaMMProj.Font = new Font("Segoe UI", 9F);
-            ckLlamaMMProj.Location = new Point(4, 174);
+            ckLlamaMMProj.Location = new Point(4, 154);
             ckLlamaMMProj.Name = "ckLlamaMMProj";
             ckLlamaMMProj.Size = new Size(431, 26);
             ckLlamaMMProj.TabIndex = 43;
@@ -384,7 +388,7 @@
             // 
             ckLlamaJinja.Dock = DockStyle.Top;
             ckLlamaJinja.Font = new Font("Segoe UI", 9F);
-            ckLlamaJinja.Location = new Point(4, 140);
+            ckLlamaJinja.Location = new Point(4, 124);
             ckLlamaJinja.Name = "ckLlamaJinja";
             ckLlamaJinja.Size = new Size(431, 26);
             ckLlamaJinja.TabIndex = 42;
@@ -395,7 +399,7 @@
             // 
             ckLlamaMMap.Dock = DockStyle.Top;
             ckLlamaMMap.Font = new Font("Segoe UI", 9F);
-            ckLlamaMMap.Location = new Point(4, 106);
+            ckLlamaMMap.Location = new Point(4, 94);
             ckLlamaMMap.Name = "ckLlamaMMap";
             ckLlamaMMap.Size = new Size(431, 26);
             ckLlamaMMap.TabIndex = 41;
@@ -406,7 +410,7 @@
             // 
             ckLlamaMLock.Dock = DockStyle.Top;
             ckLlamaMLock.Font = new Font("Segoe UI", 9F);
-            ckLlamaMLock.Location = new Point(4, 72);
+            ckLlamaMLock.Location = new Point(4, 64);
             ckLlamaMLock.Name = "ckLlamaMLock";
             ckLlamaMLock.Size = new Size(431, 26);
             ckLlamaMLock.TabIndex = 40;
@@ -417,7 +421,7 @@
             // 
             ckLlamaKV.Dock = DockStyle.Top;
             ckLlamaKV.Font = new Font("Segoe UI", 9F);
-            ckLlamaKV.Location = new Point(4, 38);
+            ckLlamaKV.Location = new Point(4, 34);
             ckLlamaKV.Name = "ckLlamaKV";
             ckLlamaKV.Size = new Size(431, 26);
             ckLlamaKV.TabIndex = 38;
@@ -445,11 +449,12 @@
             verticalStackPanel2.Controls.Add(panel6);
             verticalStackPanel2.Controls.Add(panel5);
             verticalStackPanel2.Dock = DockStyle.Left;
+            verticalStackPanel2.Gap = 4;
             verticalStackPanel2.Location = new Point(12, 32);
             verticalStackPanel2.Margin = new Padding(0);
             verticalStackPanel2.Name = "verticalStackPanel2";
             verticalStackPanel2.Padding = new Padding(0, 6, 0, 6);
-            verticalStackPanel2.Size = new Size(317, 268);
+            verticalStackPanel2.Size = new Size(317, 232);
             verticalStackPanel2.TabIndex = 0;
             // 
             // panel10
@@ -457,10 +462,10 @@
             panel10.Controls.Add(numLlamaReasonBudget);
             panel10.Controls.Add(label10);
             panel10.Dock = DockStyle.Top;
-            panel10.Location = new Point(0, 241);
+            panel10.Location = new Point(0, 210);
             panel10.Margin = new Padding(0);
             panel10.Name = "panel10";
-            panel10.Size = new Size(317, 31);
+            panel10.Size = new Size(317, 30);
             panel10.TabIndex = 61;
             // 
             // numLlamaReasonBudget
@@ -491,10 +496,10 @@
             panel12.Controls.Add(cbLlamaReason);
             panel12.Controls.Add(label15);
             panel12.Dock = DockStyle.Top;
-            panel12.Location = new Point(0, 202);
+            panel12.Location = new Point(0, 176);
             panel12.Margin = new Padding(0);
             panel12.Name = "panel12";
-            panel12.Size = new Size(317, 31);
+            panel12.Size = new Size(317, 30);
             panel12.TabIndex = 63;
             // 
             // cbLlamaReason
@@ -525,10 +530,10 @@
             panel11.Controls.Add(cbLlamaFlash);
             panel11.Controls.Add(label14);
             panel11.Dock = DockStyle.Top;
-            panel11.Location = new Point(0, 163);
+            panel11.Location = new Point(0, 142);
             panel11.Margin = new Padding(0);
             panel11.Name = "panel11";
-            panel11.Size = new Size(317, 31);
+            panel11.Size = new Size(317, 30);
             panel11.TabIndex = 62;
             // 
             // cbLlamaFlash
@@ -559,10 +564,10 @@
             panel8.Controls.Add(numLlamaContext);
             panel8.Controls.Add(label9);
             panel8.Dock = DockStyle.Top;
-            panel8.Location = new Point(0, 124);
+            panel8.Location = new Point(0, 108);
             panel8.Margin = new Padding(0);
             panel8.Name = "panel8";
-            panel8.Size = new Size(317, 31);
+            panel8.Size = new Size(317, 30);
             panel8.TabIndex = 60;
             // 
             // numLlamaContext
@@ -594,10 +599,10 @@
             panel7.Controls.Add(numLlamaLayers);
             panel7.Controls.Add(label8);
             panel7.Dock = DockStyle.Top;
-            panel7.Location = new Point(0, 85);
+            panel7.Location = new Point(0, 74);
             panel7.Margin = new Padding(0);
             panel7.Name = "panel7";
-            panel7.Size = new Size(317, 31);
+            panel7.Size = new Size(317, 30);
             panel7.TabIndex = 59;
             // 
             // numLlamaLayers
@@ -627,10 +632,10 @@
             panel6.Controls.Add(numLlamaThreads);
             panel6.Controls.Add(label7);
             panel6.Dock = DockStyle.Top;
-            panel6.Location = new Point(0, 46);
+            panel6.Location = new Point(0, 40);
             panel6.Margin = new Padding(0);
             panel6.Name = "panel6";
-            panel6.Size = new Size(317, 31);
+            panel6.Size = new Size(317, 30);
             panel6.TabIndex = 58;
             // 
             // numLlamaThreads
@@ -664,7 +669,7 @@
             panel5.Location = new Point(0, 6);
             panel5.Margin = new Padding(0);
             panel5.Name = "panel5";
-            panel5.Size = new Size(317, 32);
+            panel5.Size = new Size(317, 30);
             panel5.TabIndex = 57;
             // 
             // numLlamaPort
@@ -705,7 +710,7 @@
             collapsibleGroupBox3.Location = new Point(6, 6);
             collapsibleGroupBox3.Name = "collapsibleGroupBox3";
             collapsibleGroupBox3.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox3.Size = new Size(407, 226);
+            collapsibleGroupBox3.Size = new Size(407, 254);
             collapsibleGroupBox3.TabIndex = 41;
             collapsibleGroupBox3.Text = "Managed Llama.cpp";
             // 
@@ -811,11 +816,14 @@
             collapsibleGroupBox2.Controls.Add(panel3);
             collapsibleGroupBox2.Controls.Add(cbParallel);
             collapsibleGroupBox2.Controls.Add(label1);
+            collapsibleGroupBox2.Controls.Add(panel29);
+            collapsibleGroupBox2.Controls.Add(cbDefaultCompletion);
+            collapsibleGroupBox2.Controls.Add(label4);
             collapsibleGroupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             collapsibleGroupBox2.Location = new Point(419, 6);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox2.Size = new Size(367, 226);
+            collapsibleGroupBox2.Size = new Size(367, 254);
             collapsibleGroupBox2.TabIndex = 40;
             collapsibleGroupBox2.Text = "Backend-Compatibility Settings";
             // 
@@ -823,7 +831,7 @@
             // 
             ckLlamaCppSamplers.Dock = DockStyle.Top;
             ckLlamaCppSamplers.Font = new Font("Segoe UI", 9F);
-            ckLlamaCppSamplers.Location = new Point(12, 179);
+            ckLlamaCppSamplers.Location = new Point(12, 220);
             ckLlamaCppSamplers.Name = "ckLlamaCppSamplers";
             ckLlamaCppSamplers.Size = new Size(343, 26);
             ckLlamaCppSamplers.TabIndex = 58;
@@ -833,11 +841,11 @@
             // panel4
             // 
             panel4.Dock = DockStyle.Top;
-            panel4.Location = new Point(12, 169);
+            panel4.Location = new Point(12, 212);
             panel4.Margin = new Padding(8);
             panel4.Name = "panel4";
             panel4.Padding = new Padding(8);
-            panel4.Size = new Size(343, 10);
+            panel4.Size = new Size(343, 8);
             panel4.TabIndex = 55;
             // 
             // cbChatThinkPolicy
@@ -847,7 +855,7 @@
             cbChatThinkPolicy.DropDownHeight = 180;
             cbChatThinkPolicy.Font = new Font("Segoe UI", 9F);
             cbChatThinkPolicy.Items.AddRange(new object[] { "Auto", "Allow", "Disallow" });
-            cbChatThinkPolicy.Location = new Point(12, 145);
+            cbChatThinkPolicy.Location = new Point(12, 188);
             cbChatThinkPolicy.MaxDropDownItems = 10;
             cbChatThinkPolicy.Name = "cbChatThinkPolicy";
             cbChatThinkPolicy.Padding = new Padding(1);
@@ -859,7 +867,7 @@
             label3.AutoSize = true;
             label3.Dock = DockStyle.Top;
             label3.Font = new Font("Segoe UI", 9F);
-            label3.Location = new Point(12, 130);
+            label3.Location = new Point(12, 173);
             label3.Name = "label3";
             label3.Size = new Size(216, 15);
             label3.TabIndex = 5;
@@ -868,11 +876,11 @@
             // panel2
             // 
             panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(12, 120);
+            panel2.Location = new Point(12, 165);
             panel2.Margin = new Padding(8);
             panel2.Name = "panel2";
             panel2.Padding = new Padding(8);
-            panel2.Size = new Size(343, 10);
+            panel2.Size = new Size(343, 8);
             panel2.TabIndex = 56;
             // 
             // cbChatAllowPrefill
@@ -882,7 +890,7 @@
             cbChatAllowPrefill.DropDownHeight = 180;
             cbChatAllowPrefill.Font = new Font("Segoe UI", 9F);
             cbChatAllowPrefill.Items.AddRange(new object[] { "Auto", "Allow", "Disallow" });
-            cbChatAllowPrefill.Location = new Point(12, 96);
+            cbChatAllowPrefill.Location = new Point(12, 141);
             cbChatAllowPrefill.MaxDropDownItems = 10;
             cbChatAllowPrefill.Name = "cbChatAllowPrefill";
             cbChatAllowPrefill.Padding = new Padding(1);
@@ -894,7 +902,7 @@
             label2.AutoSize = true;
             label2.Dock = DockStyle.Top;
             label2.Font = new Font("Segoe UI", 9F);
-            label2.Location = new Point(12, 81);
+            label2.Location = new Point(12, 126);
             label2.Name = "label2";
             label2.Size = new Size(230, 15);
             label2.TabIndex = 3;
@@ -903,11 +911,11 @@
             // panel3
             // 
             panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(12, 71);
+            panel3.Location = new Point(12, 118);
             panel3.Margin = new Padding(8);
             panel3.Name = "panel3";
             panel3.Padding = new Padding(8);
-            panel3.Size = new Size(343, 10);
+            panel3.Size = new Size(343, 8);
             panel3.TabIndex = 57;
             // 
             // cbParallel
@@ -917,7 +925,7 @@
             cbParallel.DropDownHeight = 180;
             cbParallel.Font = new Font("Segoe UI", 9F);
             cbParallel.Items.AddRange(new object[] { "Auto", "Allow", "Disallow" });
-            cbParallel.Location = new Point(12, 47);
+            cbParallel.Location = new Point(12, 94);
             cbParallel.MaxDropDownItems = 10;
             cbParallel.Name = "cbParallel";
             cbParallel.Padding = new Padding(1);
@@ -929,11 +937,46 @@
             label1.AutoSize = true;
             label1.Dock = DockStyle.Top;
             label1.Font = new Font("Segoe UI", 9F);
-            label1.Location = new Point(12, 32);
+            label1.Location = new Point(12, 79);
             label1.Name = "label1";
             label1.Size = new Size(111, 15);
             label1.TabIndex = 1;
             label1.Text = "Parallel Tool Calling";
+            // 
+            // panel29
+            // 
+            panel29.Dock = DockStyle.Top;
+            panel29.Location = new Point(12, 71);
+            panel29.Margin = new Padding(8);
+            panel29.Name = "panel29";
+            panel29.Padding = new Padding(8);
+            panel29.Size = new Size(343, 8);
+            panel29.TabIndex = 61;
+            // 
+            // cbDefaultCompletion
+            // 
+            cbDefaultCompletion.BackColor = Color.FromArgb(64, 64, 64);
+            cbDefaultCompletion.Dock = DockStyle.Top;
+            cbDefaultCompletion.DropDownHeight = 180;
+            cbDefaultCompletion.Font = new Font("Segoe UI", 9F);
+            cbDefaultCompletion.Items.AddRange(new object[] { "Auto", "Allow", "Disallow" });
+            cbDefaultCompletion.Location = new Point(12, 47);
+            cbDefaultCompletion.MaxDropDownItems = 10;
+            cbDefaultCompletion.Name = "cbDefaultCompletion";
+            cbDefaultCompletion.Padding = new Padding(1);
+            cbDefaultCompletion.Size = new Size(343, 24);
+            cbDefaultCompletion.TabIndex = 60;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Dock = DockStyle.Top;
+            label4.Font = new Font("Segoe UI", 9F);
+            label4.Location = new Point(12, 32);
+            label4.Name = "label4";
+            label4.Size = new Size(238, 15);
+            label4.TabIndex = 59;
+            label4.Text = "Favored Completion Mode (when available)";
             // 
             // tabCore
             // 
@@ -945,7 +988,7 @@
             tabCore.Location = new Point(0, 0);
             tabCore.Name = "tabCore";
             tabCore.Padding = new Padding(3);
-            tabCore.Size = new Size(798, 555);
+            tabCore.Size = new Size(798, 545);
             tabCore.TabIndex = 1;
             tabCore.Text = "Core LLM";
             // 
@@ -1140,7 +1183,7 @@
             tabMemory.ForeColor = Color.FromArgb(230, 230, 230);
             tabMemory.Location = new Point(0, 0);
             tabMemory.Name = "tabMemory";
-            tabMemory.Size = new Size(798, 555);
+            tabMemory.Size = new Size(798, 545);
             tabMemory.TabIndex = 2;
             tabMemory.Text = "Memory Systems";
             // 
@@ -1617,7 +1660,7 @@
             TabGroup.ForeColor = Color.FromArgb(230, 230, 230);
             TabGroup.Location = new Point(0, 0);
             TabGroup.Name = "TabGroup";
-            TabGroup.Size = new Size(798, 555);
+            TabGroup.Size = new Size(798, 545);
             TabGroup.TabIndex = 3;
             TabGroup.Text = "Group Chat";
             // 
@@ -1750,7 +1793,7 @@
             tabWeb.ForeColor = Color.FromArgb(230, 230, 230);
             tabWeb.Location = new Point(0, 0);
             tabWeb.Name = "tabWeb";
-            tabWeb.Size = new Size(798, 555);
+            tabWeb.Size = new Size(798, 545);
             tabWeb.TabIndex = 4;
             tabWeb.Text = "Web";
             // 
@@ -1930,7 +1973,7 @@
             tabOutput.ForeColor = Color.FromArgb(230, 230, 230);
             tabOutput.Location = new Point(0, 0);
             tabOutput.Name = "tabOutput";
-            tabOutput.Size = new Size(798, 555);
+            tabOutput.Size = new Size(798, 545);
             tabOutput.TabIndex = 5;
             tabOutput.Text = "Output";
             // 
@@ -2211,7 +2254,7 @@
             tabTools.ForeColor = Color.FromArgb(230, 230, 230);
             tabTools.Location = new Point(0, 0);
             tabTools.Name = "tabTools";
-            tabTools.Size = new Size(798, 555);
+            tabTools.Size = new Size(798, 545);
             tabTools.TabIndex = 7;
             tabTools.Text = "Tools";
             // 
@@ -2367,7 +2410,7 @@
             tabApp.ForeColor = Color.FromArgb(230, 230, 230);
             tabApp.Location = new Point(0, 0);
             tabApp.Name = "tabApp";
-            tabApp.Size = new Size(798, 555);
+            tabApp.Size = new Size(798, 545);
             tabApp.TabIndex = 6;
             tabApp.Text = "App";
             // 
@@ -2596,7 +2639,7 @@
             MainButtonStack.Location = new Point(0, 0);
             MainButtonStack.Name = "MainButtonStack";
             MainButtonStack.Padding = new Padding(4);
-            MainButtonStack.Size = new Size(228, 555);
+            MainButtonStack.Size = new Size(228, 545);
             MainButtonStack.TabIndex = 34;
             // 
             // btApp
@@ -2735,7 +2778,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1026, 593);
+            ClientSize = new Size(1026, 583);
             Controls.Add(MainTab);
             Controls.Add(MainButtonStack);
             Controls.Add(panel1);
@@ -3027,5 +3070,8 @@
         private Panel panel28;
         private Controls.ModernNumericUpDown numImageRes;
         private Label label40;
+        private Panel panel29;
+        private Controls.ModernComboBox cbDefaultCompletion;
+        private Label label4;
     }
 }

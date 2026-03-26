@@ -721,6 +721,7 @@ namespace LetheChat
                 if (LLMEngine.Bot is GroupChar mygroup)
                     mygroup.ClearResponseQueue();
                 UpdateUIState();
+                await webUI.ReloadFullChat();
                 return;
             }
             _impersonatemode = false;
@@ -1579,7 +1580,7 @@ namespace LetheChat
         {
             if (_isinitloading)
                 return;
-            LLMEngine.Settings.ToolCallsAllowed = true;
+            LLMEngine.Settings.ToolCallsAllowed = ckToolCalls.Checked;
         }
 
         private void bt_llama_Click(object sender, EventArgs e)

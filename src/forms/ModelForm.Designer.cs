@@ -179,9 +179,9 @@
             // 
             lblServerStatus.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblServerStatus.ForeColor = Color.FromArgb(230, 230, 230);
-            lblServerStatus.Location = new Point(8, 596);
+            lblServerStatus.Location = new Point(8, 605);
             lblServerStatus.Name = "lblServerStatus";
-            lblServerStatus.Size = new Size(630, 25);
+            lblServerStatus.Size = new Size(630, 16);
             lblServerStatus.TabIndex = 42;
             lblServerStatus.Text = "○ Server Stopped";
             lblServerStatus.TextAlign = ContentAlignment.MiddleLeft;
@@ -195,10 +195,10 @@
             lvServerLog.ForeColor = Color.FromArgb(230, 230, 230);
             lvServerLog.FullRowSelect = true;
             lvServerLog.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-            lvServerLog.Location = new Point(8, 448);
+            lvServerLog.Location = new Point(8, 484);
             lvServerLog.MultiSelect = false;
             lvServerLog.Name = "lvServerLog";
-            lvServerLog.Size = new Size(630, 140);
+            lvServerLog.Size = new Size(630, 113);
             lvServerLog.TabIndex = 44;
             lvServerLog.UseCompatibleStateImageBehavior = false;
             lvServerLog.View = View.Details;
@@ -220,7 +220,7 @@
             boxSettings.Location = new Point(8, 8);
             boxSettings.Name = "boxSettings";
             boxSettings.Padding = new Padding(12, 32, 12, 10);
-            boxSettings.Size = new Size(630, 432);
+            boxSettings.Size = new Size(630, 468);
             boxSettings.TabIndex = 0;
             boxSettings.Text = "Settings";
             // 
@@ -279,6 +279,7 @@
         private Controls.ModernCheckBox ck_mmap;
         private Controls.ModernCheckBox ck_loadMmproj;
         private Controls.ModernCheckBox ck_loadJinja;
+        private Controls.ModernComboBox cb_completion;
         private System.Windows.Forms.TextBox ed_additionalArgs;
         private Button bt_loaddirs;
     }

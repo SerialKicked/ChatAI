@@ -104,6 +104,18 @@ namespace LetheChat.Forms
                 cklToolsets.Items.Add(toolset, Program.Settings.AllowedToolsets.Contains(toolset));
             }
 
+            // Init Completion
+            cbDefaultCompletion.Items.Clear();
+            cbDefaultCompletion.Items.AddRange(["Default", "Text", "Chat"]);
+
+            cbDefaultCompletion.SelectedIndex = Program.Settings.DefaultCompletionType switch
+            {
+                null => 0,
+                CompletionType.Text => 1,
+                CompletionType.Chat => 2,
+                _ => 0,
+            };
+
             ckAllowtools.Checked = Program.Settings.ToolCallsAllowed;
             numToolLimit.Value = Program.Settings.ToolCallLimit;
             numToolMemory.Value = Program.Settings.ToolCallMemoryLimit;
@@ -365,6 +377,14 @@ namespace LetheChat.Forms
                 Program.Settings.DefaultLLamaCppSettings.KVcacheToGPU = ckLlamaKV.Checked;
                 Program.Settings.DefaultLLamaCppSettings.LoadMMprojIfAvailable = ckLlamaMMProj.Checked;
                 Program.Settings.DefaultLLamaCppSettings.LoadJinjaIfAvailable = ckLlamaJinja.Checked;
+
+                Program.Settings.DefaultCompletionType = cbDefaultCompletion.SelectedIndex switch
+                {
+                    0 => null,
+                    1 => CompletionType.Text,
+                    2 => CompletionType.Chat,
+                    _ => null,
+                };
 
                 Program.Settings.AllowedToolsets = [.. cklToolsets.CheckedItems.Cast<string>()];
                 Program.Settings.ToolCallsAllowed = ckAllowtools.Checked;

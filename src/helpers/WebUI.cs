@@ -255,6 +255,7 @@ namespace LetheChat
             return InjectDialogHtml(img, html, think, singleMessage.Guid);
         }
 
+
         public async Task RemoveLastMessage()
         {
             if (mainForm.InvokeRequired)
@@ -269,7 +270,6 @@ namespace LetheChat
                 })();");
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
         }
-
 
         public async Task EditMessage(string message, string? thinking = null, Guid? messageGuid = null)
         {

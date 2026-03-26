@@ -1,4 +1,5 @@
-﻿using LetheAISharp.LLM;
+﻿using LetheAISharp.API;
+using LetheAISharp.LLM;
 using LetheChat.Controls;
 using LetheChat.Files;
 using Newtonsoft.Json;
@@ -91,6 +92,11 @@ namespace LetheChat.Forms
                 panSettingsScroll.Controls.Add(ctrl);
                 y += rowGap;
             }
+
+            cb_completion = new ModernComboBox();
+            cb_completion.Items.AddRange(["Default (Chat)", "Text", "Chat"]);
+            cb_completion.SelectedIndex = 0;
+            AddRow("Completion Type", cb_completion, Tip(nameof(LLMEngine.Settings.DefaultCompletionType)));
 
             num_port = new ModernNumericUpDown { Minimum = 1, Maximum = 65535 };
             AddRow("Port", num_port, Tip(nameof(LlamaCppSettings.Port)));
@@ -250,6 +256,12 @@ namespace LetheChat.Forms
             var s = model.Settings;
             _loading = true;
 
+            cb_completion.SelectedIndex = LLMEngine.Settings.DefaultCompletionType switch 
+            { 
+                CompletionType.Text => 1, 
+                CompletionType.Chat => 2, 
+                _ => 0 
+            };
             num_port.Value = s.Port;
             num_threads.Value = s.Threads;
             num_gpuLayers.Value = s.GpuLayers;
@@ -299,6 +311,13 @@ namespace LetheChat.Forms
             s.LoadMMprojIfAvailable = ck_loadMmproj.Checked;
             s.LoadJinjaIfAvailable = ck_loadJinja.Checked;
             s.AdditionalArgs = ed_additionalArgs.Text.Trim();
+
+            LLMEngine.Settings.DefaultCompletionType = cb_completion.SelectedIndex switch
+            {
+                1 => CompletionType.Text,
+                2 => CompletionType.Chat,
+                _ => null,
+            };
         }
 
         private void listModels_SelectedIndexChanged(object sender, EventArgs e)
@@ -389,9 +408,10 @@ namespace LetheChat.Forms
             if (ready)
             {
                 UpdateServerStatus();
+                LLMEngine.Disconnect();
                 try
                 {
-                    LLMEngine.Setup($"http://127.0.0.1:{model.Settings.Port}", BackendAPI.LlamaCpp, null);
+                    LLMEngine.Setup($"http://127.0.0.1:{model.Settings.Port}", BackendAPI.LlamaCpp, null, LLMEngine.Settings.DefaultCompletionType);
                     await LLMEngine.Connect();
                     DialogResult = DialogResult.OK;
                     await Program.BigForm!.RefreshConnectionState();
@@ -426,6 +446,7 @@ namespace LetheChat.Forms
             lblServerStatus.ForeColor = ThemeManager.curthemeMutedText;
 
             await Program.LlamaCppProcess.KillAsync();
+            LLMEngine.Disconnect();
             UpdateServerStatus();
         }
 
