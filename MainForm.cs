@@ -237,7 +237,6 @@ namespace LetheChat
             // Initialize context plugins
             Program.ApplyContextPluginSettings();
             LLMEngine.ContextPlugins = [];
-            LLMEngine.ContextPlugins.Add(new BrowsePlugin());
             LLMEngine.ContextPlugins.Add(new LocationPlugin("Locations"));
             LLMEngine.ContextPlugins.Add(new WebSearchPlugin());
 

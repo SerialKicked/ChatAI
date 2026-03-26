@@ -132,8 +132,6 @@ namespace LetheChat.Forms
             ck_fixasterix.Checked = Program.Settings.AsteriskCheck;
             ck_antislop.Checked = Program.Settings.AntiSlop;
             num_antislopchance.Value = (decimal)Program.Settings.AntiSlopRatio;
-            ck_webkeyword.Checked = Program.Settings.WebsitePluginUseKeywords;
-            ck_webgrammar.Checked = Program.Settings.WebsitePluginGrammar;
             ck_unbold.Checked = Program.Settings.RoleplayFormatting.RemoveAllBoldedText;
             ck_noemphasisword.Checked = Program.Settings.RoleplayFormatting.RemoveSingleWorldEmphasis;
             ck_noquotes.Checked = Program.Settings.RoleplayFormatting.RemoveAllQuotes;
@@ -275,8 +273,6 @@ namespace LetheChat.Forms
                 Program.Settings.RemoveCutSentence = ck_remlastsentence.Checked;
                 Program.Settings.RoleplayFormatting.ParenthesizeToItalic = ckParenthesizeToItalic.Checked;
                 Program.Settings.StopGenerationOnFirstParagraph = ck_oneparagraph.Checked;
-                Program.Settings.WebsitePluginUseKeywords = ck_webkeyword.Checked;
-                Program.Settings.WebsitePluginGrammar = ck_webgrammar.Checked;
                 Program.Settings.SessionMemorySystem = ck_sessionmemory.Checked;
                 Program.Settings.SessionDetailedSummary = ckDetailedSum.Checked;
                 Program.Settings.RAGDistanceCutOff = (float)num_ragcutoff.Value;

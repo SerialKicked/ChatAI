@@ -151,8 +151,6 @@
             label30 = new Label();
             tabWeb = new TabPage();
             collapsibleGroupBox7 = new LetheChat.Controls.CollapsibleGroupBox();
-            ck_webgrammar = new LetheChat.Controls.ModernCheckBox();
-            ck_webkeyword = new LetheChat.Controls.ModernCheckBox();
             panel20 = new Panel();
             ck_alwayswebsearch = new LetheChat.Controls.ModernCheckBox();
             panel25 = new Panel();
@@ -350,7 +348,7 @@
             collapsibleGroupBox4.Location = new Point(6, 232);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox4.Size = new Size(780, 274);
+            collapsibleGroupBox4.Size = new Size(780, 280);
             collapsibleGroupBox4.TabIndex = 42;
             collapsibleGroupBox4.Text = "Managed Llama.cpp Default Settings";
             // 
@@ -367,7 +365,7 @@
             verticalStackPanel3.Location = new Point(329, 32);
             verticalStackPanel3.Name = "verticalStackPanel3";
             verticalStackPanel3.Padding = new Padding(4);
-            verticalStackPanel3.Size = new Size(439, 232);
+            verticalStackPanel3.Size = new Size(439, 238);
             verticalStackPanel3.TabIndex = 1;
             // 
             // ckLlamaMMProj
@@ -451,7 +449,7 @@
             verticalStackPanel2.Margin = new Padding(0);
             verticalStackPanel2.Name = "verticalStackPanel2";
             verticalStackPanel2.Padding = new Padding(0, 6, 0, 6);
-            verticalStackPanel2.Size = new Size(317, 232);
+            verticalStackPanel2.Size = new Size(317, 238);
             verticalStackPanel2.TabIndex = 0;
             // 
             // panel10
@@ -1760,12 +1758,10 @@
             // 
             collapsibleGroupBox7.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox7.CanCollapse = false;
-            collapsibleGroupBox7.Controls.Add(ck_webgrammar);
-            collapsibleGroupBox7.Controls.Add(ck_webkeyword);
-            collapsibleGroupBox7.Controls.Add(panel20);
             collapsibleGroupBox7.Controls.Add(ck_alwayswebsearch);
             collapsibleGroupBox7.Controls.Add(panel25);
             collapsibleGroupBox7.Controls.Add(ck_searchextract);
+            collapsibleGroupBox7.Controls.Add(panel20);
             collapsibleGroupBox7.Controls.Add(ed_searchkey);
             collapsibleGroupBox7.Controls.Add(label33);
             collapsibleGroupBox7.Controls.Add(panel21);
@@ -1775,49 +1771,27 @@
             collapsibleGroupBox7.Location = new Point(6, 6);
             collapsibleGroupBox7.Name = "collapsibleGroupBox7";
             collapsibleGroupBox7.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox7.Size = new Size(852, 278);
+            collapsibleGroupBox7.Size = new Size(780, 235);
             collapsibleGroupBox7.TabIndex = 1;
             collapsibleGroupBox7.Text = "Web Search API";
-            // 
-            // ck_webgrammar
-            // 
-            ck_webgrammar.Dock = DockStyle.Top;
-            ck_webgrammar.Font = new Font("Segoe UI", 9F);
-            ck_webgrammar.Location = new Point(12, 242);
-            ck_webgrammar.Name = "ck_webgrammar";
-            ck_webgrammar.Size = new Size(828, 26);
-            ck_webgrammar.TabIndex = 33;
-            ck_webgrammar.Text = "Browser - Enforce structured output";
-            ck_webgrammar.UseVisualStyleBackColor = true;
-            // 
-            // ck_webkeyword
-            // 
-            ck_webkeyword.Dock = DockStyle.Top;
-            ck_webkeyword.Font = new Font("Segoe UI", 9F);
-            ck_webkeyword.Location = new Point(12, 216);
-            ck_webkeyword.Name = "ck_webkeyword";
-            ck_webkeyword.Size = new Size(828, 26);
-            ck_webkeyword.TabIndex = 32;
-            ck_webkeyword.Text = "Browser - Require keyword activation";
-            ck_webkeyword.UseVisualStyleBackColor = true;
             // 
             // panel20
             // 
             panel20.Dock = DockStyle.Top;
-            panel20.Location = new Point(12, 206);
+            panel20.Location = new Point(12, 118);
             panel20.Margin = new Padding(8);
             panel20.Name = "panel20";
             panel20.Padding = new Padding(8);
-            panel20.Size = new Size(828, 10);
+            panel20.Size = new Size(756, 10);
             panel20.TabIndex = 52;
             // 
             // ck_alwayswebsearch
             // 
             ck_alwayswebsearch.Dock = DockStyle.Top;
             ck_alwayswebsearch.Font = new Font("Segoe UI", 9F);
-            ck_alwayswebsearch.Location = new Point(12, 180);
+            ck_alwayswebsearch.Location = new Point(12, 190);
             ck_alwayswebsearch.Name = "ck_alwayswebsearch";
-            ck_alwayswebsearch.Size = new Size(828, 26);
+            ck_alwayswebsearch.Size = new Size(756, 26);
             ck_alwayswebsearch.TabIndex = 35;
             ck_alwayswebsearch.Text = "Always attempt web search (slow)";
             ck_alwayswebsearch.UseVisualStyleBackColor = true;
@@ -1827,11 +1801,11 @@
             panel25.Controls.Add(numWebSearchDetailedMaxLength);
             panel25.Controls.Add(label39);
             panel25.Dock = DockStyle.Top;
-            panel25.Location = new Point(12, 144);
+            panel25.Location = new Point(12, 154);
             panel25.Margin = new Padding(8);
             panel25.Name = "panel25";
             panel25.Padding = new Padding(8);
-            panel25.Size = new Size(828, 36);
+            panel25.Size = new Size(756, 36);
             panel25.TabIndex = 57;
             // 
             // numWebSearchDetailedMaxLength
@@ -1862,9 +1836,9 @@
             // 
             ck_searchextract.Dock = DockStyle.Top;
             ck_searchextract.Font = new Font("Segoe UI", 9F);
-            ck_searchextract.Location = new Point(12, 118);
+            ck_searchextract.Location = new Point(12, 128);
             ck_searchextract.Name = "ck_searchextract";
-            ck_searchextract.Size = new Size(828, 26);
+            ck_searchextract.Size = new Size(756, 26);
             ck_searchextract.TabIndex = 40;
             ck_searchextract.Text = "Try to extract page content using jina.ai";
             ck_searchextract.UseVisualStyleBackColor = true;
@@ -1875,7 +1849,7 @@
             ed_searchkey.Location = new Point(12, 95);
             ed_searchkey.Name = "ed_searchkey";
             ed_searchkey.PlaceholderText = "Brave API Key";
-            ed_searchkey.Size = new Size(828, 23);
+            ed_searchkey.Size = new Size(756, 23);
             ed_searchkey.TabIndex = 38;
             // 
             // label33
@@ -1896,7 +1870,7 @@
             panel21.Margin = new Padding(8);
             panel21.Name = "panel21";
             panel21.Padding = new Padding(8);
-            panel21.Size = new Size(828, 10);
+            panel21.Size = new Size(756, 10);
             panel21.TabIndex = 51;
             // 
             // cb_searchapi
@@ -1910,7 +1884,7 @@
             cb_searchapi.MaxDropDownItems = 10;
             cb_searchapi.Name = "cb_searchapi";
             cb_searchapi.Padding = new Padding(1);
-            cb_searchapi.Size = new Size(828, 23);
+            cb_searchapi.Size = new Size(756, 23);
             cb_searchapi.TabIndex = 36;
             // 
             // label34
@@ -2958,8 +2932,6 @@
         private Controls.ModernComboBox ckGroupRouting;
         private Label label30;
         private Controls.CollapsibleGroupBox collapsibleGroupBox7;
-        private Controls.ModernCheckBox ck_webgrammar;
-        private Controls.ModernCheckBox ck_webkeyword;
         private Panel panel20;
         private Controls.ModernCheckBox ck_alwayswebsearch;
         private Controls.ModernCheckBox ck_searchextract;

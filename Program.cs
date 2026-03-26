@@ -47,11 +47,6 @@ namespace LetheChat
         public static void ApplyContextPluginSettings()
         {
 
-            if (LLMEngine.ContextPlugins.Find(e => e is BrowsePlugin) is BrowsePlugin webplug)
-            {
-                webplug.EnforceCorrectGrammar = Settings.WebsitePluginGrammar;
-                webplug.KeywordDetection = Settings.WebsitePluginUseKeywords;
-            }
         }
     }
 }
