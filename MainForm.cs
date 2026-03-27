@@ -1153,11 +1153,15 @@ namespace LetheChat
 
         private void mck_guidance_CheckedChanged(object sender, EventArgs e)
         {
+            if (_isinitloading)
+                return;
             LLMEngine.Bot.DisableBotGuidance = !mck_guidance.Checked;
         }
 
         private void ck_sessionmemory_CheckedChanged(object sender, EventArgs e)
         {
+            if (_isinitloading)
+                return;
             LLMEngine.Settings.SessionMemorySystem = mck_sessionmemory.Checked;
         }
 
@@ -1179,6 +1183,8 @@ namespace LetheChat
 
         private void ck_worldinfo_CheckedChanged(object sender, EventArgs e)
         {
+            if (_isinitloading) 
+                return;
             LLMEngine.Settings.AllowWorldInfo = mck_worldinfo.Checked;
         }
 
@@ -1249,16 +1255,22 @@ namespace LetheChat
 
         private void ck_disablethink_CheckedChanged(object sender, EventArgs e)
         {
+            if (_isinitloading)
+                return;
             LLMEngine.Settings.DisableThinking = mck_disablethink.Checked;
         }
 
         private void ck_ragtothink_CheckedChanged(object sender, EventArgs e)
         {
+            if (_isinitloading)
+                return;
             LLMEngine.Settings.RAGMoveToThinkBlock = mck_ragtothink.Checked;
         }
 
         private void ck_agentmode_CheckedChanged(object sender, EventArgs e)
         {
+            if (_isinitloading)
+                return;
             LLMEngine.Bot.AgentMode = mck_agentmode.Checked;
         }
 
@@ -1374,6 +1386,8 @@ namespace LetheChat
 
         private void ckNatMem_CheckedChanged(object sender, EventArgs e)
         {
+            if (_isinitloading)
+                return;
             LLMEngine.Bot.Brain.DisableEurekas = !mckNatMem.Checked;
         }
 

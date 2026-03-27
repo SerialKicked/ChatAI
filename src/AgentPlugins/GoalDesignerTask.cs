@@ -147,11 +147,11 @@ namespace LetheChat.AgentPlugins
 
 
             var availtokens = LLMEngine.MaxContextLength - 20; // leave 2k for response and buffer
-            availtokens -= promptbuild.GetTokenCount(AuthorRole.SysPrompt, systemprompt);
+            availtokens -= promptbuild.GetTokenCount(AuthorRole.System, systemprompt);
             availtokens -= promptbuild.GetTokenCount(AuthorRole.User, requestedTask);
 
             var replyln = (availtokens > 2048) ? 2048 : availtokens;
-            promptbuild.AddMessage(new SingleMessage(AuthorRole.SysPrompt, systemprompt));
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.System, systemprompt));
             promptbuild.AddMessage(new SingleMessage(AuthorRole.User, requestedTask));
             await promptbuild.SetStructuredOutput(goalrecord).ConfigureAwait(false);
             var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, replyln);
@@ -174,11 +174,11 @@ namespace LetheChat.AgentPlugins
             var requestedTask = query + LLMEngine.NewLine + goallist.GetQuery();
 
             var availtokens = LLMEngine.MaxContextLength - 20; // leave 2k for response and buffer
-            availtokens -= promptbuild.GetTokenCount(AuthorRole.SysPrompt, systemprompt);
+            availtokens -= promptbuild.GetTokenCount(AuthorRole.System, systemprompt);
             availtokens -= promptbuild.GetTokenCount(AuthorRole.User, requestedTask);
 
             var replyln = (availtokens > 2048) ? 2048 : availtokens;
-            promptbuild.AddMessage(new SingleMessage(AuthorRole.SysPrompt, systemprompt));
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.System, systemprompt));
             promptbuild.AddMessage(new SingleMessage(AuthorRole.User, requestedTask));
             await promptbuild.SetStructuredOutput(goallist).ConfigureAwait(false);
             var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 1.0) ? 1 : LLMEngine.Sampler.Temperature, replyln);
@@ -201,7 +201,7 @@ namespace LetheChat.AgentPlugins
                 "{{userbio}}" + LLMEngine.NewLine + LLMEngine.NewLine +
                 "## Chronological chat summaries:" + LLMEngine.NewLine + LLMEngine.NewLine;
 
-            availtokens -= promptbuild.GetTokenCount(AuthorRole.SysPrompt, sysprompt);
+            availtokens -= promptbuild.GetTokenCount(AuthorRole.System, sysprompt);
             var AllowRP = rpHandling == RPHandling.Always;
             var summaries = LLMEngine.History.GetPreviousSummaries(availtokens, allowRP: AllowRP, maxCount: maxsession);
             sysprompt += summaries;
@@ -232,7 +232,7 @@ namespace LetheChat.AgentPlugins
             }
             sysprompt += "## Chronological chat summaries:" + LLMEngine.NewLine + LLMEngine.NewLine;
 
-            availtokens -= promptbuild.GetTokenCount(AuthorRole.SysPrompt, sysprompt);
+            availtokens -= promptbuild.GetTokenCount(AuthorRole.System, sysprompt);
             if (availtokens <= 0)
                 return sysprompt.CleanupAndTrim();
 

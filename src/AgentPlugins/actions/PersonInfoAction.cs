@@ -106,7 +106,7 @@ namespace LetheChat.AgentPlugins
             }
 
 
-            promptbuild.AddMessage(new SingleMessage(AuthorRole.SysPrompt, str.ToString()));
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.System, str.ToString()));
             promptbuild.AddMessage(new SingleMessage(AuthorRole.User, request));
 
             return promptbuild;
@@ -133,7 +133,7 @@ namespace LetheChat.AgentPlugins
             {
                 str.AppendLinuxLine("## Chat Session: " + chatsession.Name).AppendLinuxLine();
 
-                availtokens -= promptbuild.GetTokenCount(AuthorRole.SysPrompt, str.ToString());
+                availtokens -= promptbuild.GetTokenCount(AuthorRole.System, str.ToString());
                 if (availtokens <= 1000)
                     return null;
                 var docs = chatsession.GetRawDialogs(availtokens, true, true, false, LLMEngine.Settings.CutInTheMiddleSummaryStrategy);
@@ -144,7 +144,7 @@ namespace LetheChat.AgentPlugins
                 str.AppendLinuxLine("## data.Name").AppendLinuxLine();
                 str.Append(data.Content);
             }
-            promptbuild.AddMessage(new SingleMessage(AuthorRole.SysPrompt, str.ToString()));
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.System, str.ToString()));
             promptbuild.AddMessage(new SingleMessage(AuthorRole.User, request));
 
             return promptbuild;

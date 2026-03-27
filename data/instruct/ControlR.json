@@ -1,6 +1,4 @@
 {
-	"SysPromptStart": "<|START_OF_TURN_TOKEN|><|SYSTEM_TOKEN|>",
-	"SysPromptEnd": "<|END_OF_TURN_TOKEN|>",
 	"SystemStart": "<|START_OF_TURN_TOKEN|><|SYSTEM_TOKEN|>",
 	"SystemEnd": "<|END_OF_TURN_TOKEN|>",
 	"UserStart": "<|START_OF_TURN_TOKEN|><|USER_TOKEN|>",

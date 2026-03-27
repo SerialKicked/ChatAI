@@ -953,7 +953,7 @@ namespace LetheChat.Forms
             collapsibleGroupBox6.Padding = new Padding(12, 32, 12, 10);
             collapsibleGroupBox6.Size = new Size(440, 299);
             collapsibleGroupBox6.TabIndex = 1;
-            collapsibleGroupBox6.Text = "Agent Settings";
+            collapsibleGroupBox6.Text = "Background Agent Settings";
             // 
             // ckAllowEurekas
             // 

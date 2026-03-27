@@ -20,11 +20,10 @@ namespace LetheChat
             return role switch
             {
                 AuthorRole.System => "",
-                AuthorRole.SysPrompt => "",
                 AuthorRole.Tool => "",
                 AuthorRole.User => "**" + LLMEngine.User.Name + ":** ",
                 AuthorRole.Assistant => "**" + LLMEngine.Bot.Name  + ":** ",
-                _ => "**Error:** ",
+                _ => "",
             };
         }
 
@@ -33,7 +32,6 @@ namespace LetheChat
             return message.Role switch
             {
                 AuthorRole.System => "**SYSTEM:** ",
-                AuthorRole.SysPrompt => "**SYS PROMPT:** ",
                 AuthorRole.User => "**" + message.User.Name + ":** ",
                 AuthorRole.Assistant => "**" + message.Bot.Name + ":** ",
                 AuthorRole.Tool => "**TOOL RESULT:** ",

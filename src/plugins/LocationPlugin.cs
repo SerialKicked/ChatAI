@@ -143,7 +143,7 @@ namespace LetheChat.Plugins
             prompt.AppendLinuxLine("User: I don't want to go to the Red Cinema.");
             prompt.AppendLinuxLine("Response: No").AppendLinuxLine();
 
-            builder.AddMessage(new SingleMessage(AuthorRole.SysPrompt, prompt.ToString()));
+            builder.AddMessage(new SingleMessage(AuthorRole.System, prompt.ToString()));
             builder.AddMessage(new SingleMessage(AuthorRole.User, "The user's input is: " + LLMEngine.NewLine + LLMEngine.NewLine + userinput));
             return builder.PromptToQuery(AuthorRole.Assistant, 0.5);
         }

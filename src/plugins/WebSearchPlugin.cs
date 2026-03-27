@@ -176,7 +176,7 @@ namespace LetheChat.Plugins
             prompt.AppendLinuxLine();
             prompt.AppendLinuxLine(userinput);
             prompt.AppendLinuxLine();
-            builder.AddMessage(new SingleMessage(AuthorRole.SysPrompt, prompt.ToString()));
+            builder.AddMessage(new SingleMessage(AuthorRole.System, prompt.ToString()));
             builder.AddMessage(new SingleMessage(AuthorRole.User, "If the input to evaluate directly asks you to search the internet, or if you think a web search would be beneficial, respond with Yes. Otherwise, just say No. Do not argue are add any more information. Just Yes or No."));
             return builder.PromptToQuery(AuthorRole.Assistant, 0.5);
         }
