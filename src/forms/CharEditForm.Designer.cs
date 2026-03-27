@@ -91,11 +91,8 @@ namespace LetheChat.Forms
             tbPrompt = new TabPage();
             tbAgent = new TabPage();
             collapsibleGroupBox8 = new CollapsibleGroupBox();
-            listNoRAGMemTypes = new ModernCheckedListBox();
-            label23 = new Label();
-            collapsibleGroupBox7 = new CollapsibleGroupBox();
-            listCanDecay = new ModernCheckedListBox();
-            label22 = new Label();
+            ckToolOverride = new ModernCheckBox();
+            listTools = new ModernCheckedListBox();
             collapsibleGroupBox6 = new CollapsibleGroupBox();
             ckAllowEurekas = new ModernCheckBox();
             ckAgent = new ModernCheckBox();
@@ -164,7 +161,6 @@ namespace LetheChat.Forms
             tbPrompt.SuspendLayout();
             tbAgent.SuspendLayout();
             collapsibleGroupBox8.SuspendLayout();
-            collapsibleGroupBox7.SuspendLayout();
             collapsibleGroupBox6.SuspendLayout();
             collapsibleGroupBox5.SuspendLayout();
             tbSettings.SuspendLayout();
@@ -598,11 +594,11 @@ namespace LetheChat.Forms
             // 
             label18.AutoSize = true;
             label18.Font = new Font("Segoe UI", 9F);
-            label18.Location = new Point(15, 32);
+            label18.Location = new Point(15, 40);
             label18.Name = "label18";
-            label18.Size = new Size(351, 15);
+            label18.Size = new Size(343, 15);
             label18.TabIndex = 0;
-            label18.Text = "Select the tasks this character is allowed to run in the background";
+            label18.Text = "Select the tasks this character is allowed to run when user is AFK";
             // 
             // panel1
             // 
@@ -854,7 +850,6 @@ namespace LetheChat.Forms
             // 
             tbAgent.BackColor = Color.FromArgb(37, 37, 37);
             tbAgent.Controls.Add(collapsibleGroupBox8);
-            tbAgent.Controls.Add(collapsibleGroupBox7);
             tbAgent.Controls.Add(collapsibleGroupBox6);
             tbAgent.Controls.Add(collapsibleGroupBox5);
             tbAgent.Font = new Font("Segoe UI", 9F);
@@ -863,75 +858,41 @@ namespace LetheChat.Forms
             tbAgent.Name = "tbAgent";
             tbAgent.Size = new Size(917, 618);
             tbAgent.TabIndex = 3;
-            tbAgent.Text = "Background Agent";
+            tbAgent.Text = "Agentic Abilities";
             // 
             // collapsibleGroupBox8
             // 
             collapsibleGroupBox8.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox8.CanCollapse = false;
-            collapsibleGroupBox8.Controls.Add(listNoRAGMemTypes);
-            collapsibleGroupBox8.Controls.Add(label23);
+            collapsibleGroupBox8.Controls.Add(ckToolOverride);
+            collapsibleGroupBox8.Controls.Add(listTools);
             collapsibleGroupBox8.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox8.Location = new Point(12, 324);
+            collapsibleGroupBox8.Location = new Point(458, 241);
             collapsibleGroupBox8.Name = "collapsibleGroupBox8";
             collapsibleGroupBox8.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox8.Size = new Size(440, 288);
+            collapsibleGroupBox8.Size = new Size(440, 371);
             collapsibleGroupBox8.TabIndex = 3;
-            collapsibleGroupBox8.Text = "Memories: No RAG";
+            collapsibleGroupBox8.Text = "Tool-calling Abilities";
             // 
-            // listNoRAGMemTypes
+            // ckToolOverride
             // 
-            listNoRAGMemTypes.BackColor = Color.FromArgb(64, 64, 64);
-            listNoRAGMemTypes.Font = new Font("Segoe UI", 9.25F);
-            listNoRAGMemTypes.Location = new Point(15, 50);
-            listNoRAGMemTypes.Name = "listNoRAGMemTypes";
-            listNoRAGMemTypes.Padding = new Padding(1);
-            listNoRAGMemTypes.Size = new Size(410, 226);
-            listNoRAGMemTypes.TabIndex = 18;
+            ckToolOverride.Font = new Font("Segoe UI", 9F);
+            ckToolOverride.Location = new Point(15, 37);
+            ckToolOverride.Name = "ckToolOverride";
+            ckToolOverride.Size = new Size(410, 26);
+            ckToolOverride.TabIndex = 19;
+            ckToolOverride.Text = "Override Standard Tool Access";
+            ckToolOverride.UseVisualStyleBackColor = true;
             // 
-            // label23
+            // listTools
             // 
-            label23.AutoSize = true;
-            label23.Font = new Font("Segoe UI", 9F);
-            label23.Location = new Point(15, 32);
-            label23.Name = "label23";
-            label23.Size = new Size(289, 15);
-            label23.TabIndex = 17;
-            label23.Text = "Memory types not allowed in the general RAG system";
-            // 
-            // collapsibleGroupBox7
-            // 
-            collapsibleGroupBox7.BackColor = Color.FromArgb(37, 38, 42);
-            collapsibleGroupBox7.CanCollapse = false;
-            collapsibleGroupBox7.Controls.Add(listCanDecay);
-            collapsibleGroupBox7.Controls.Add(label22);
-            collapsibleGroupBox7.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox7.Location = new Point(458, 324);
-            collapsibleGroupBox7.Name = "collapsibleGroupBox7";
-            collapsibleGroupBox7.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox7.Size = new Size(440, 288);
-            collapsibleGroupBox7.TabIndex = 2;
-            collapsibleGroupBox7.Text = "Memories: Decay Allowed";
-            // 
-            // listCanDecay
-            // 
-            listCanDecay.BackColor = Color.FromArgb(64, 64, 64);
-            listCanDecay.Font = new Font("Segoe UI", 9.25F);
-            listCanDecay.Location = new Point(15, 50);
-            listCanDecay.Name = "listCanDecay";
-            listCanDecay.Padding = new Padding(1);
-            listCanDecay.Size = new Size(410, 226);
-            listCanDecay.TabIndex = 19;
-            // 
-            // label22
-            // 
-            label22.AutoSize = true;
-            label22.Font = new Font("Segoe UI", 9F);
-            label22.Location = new Point(15, 32);
-            label22.Name = "label22";
-            label22.Size = new Size(378, 15);
-            label22.TabIndex = 17;
-            label22.Text = "Memories of those types will decay (ang get pruned) when left unused";
+            listTools.BackColor = Color.FromArgb(64, 64, 64);
+            listTools.Font = new Font("Segoe UI", 9.25F);
+            listTools.Location = new Point(15, 69);
+            listTools.Name = "listTools";
+            listTools.Padding = new Padding(1);
+            listTools.Size = new Size(410, 290);
+            listTools.TabIndex = 18;
             // 
             // collapsibleGroupBox6
             // 
@@ -951,7 +912,7 @@ namespace LetheChat.Forms
             collapsibleGroupBox6.Location = new Point(458, 19);
             collapsibleGroupBox6.Name = "collapsibleGroupBox6";
             collapsibleGroupBox6.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox6.Size = new Size(440, 299);
+            collapsibleGroupBox6.Size = new Size(440, 216);
             collapsibleGroupBox6.TabIndex = 1;
             collapsibleGroupBox6.Text = "Background Agent Settings";
             // 
@@ -985,7 +946,7 @@ namespace LetheChat.Forms
             collapsibleGroupBox5.Location = new Point(12, 19);
             collapsibleGroupBox5.Name = "collapsibleGroupBox5";
             collapsibleGroupBox5.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox5.Size = new Size(440, 299);
+            collapsibleGroupBox5.Size = new Size(440, 593);
             collapsibleGroupBox5.TabIndex = 0;
             collapsibleGroupBox5.Text = "Background Tasks";
             // 
@@ -993,10 +954,10 @@ namespace LetheChat.Forms
             // 
             listAgentTasks.BackColor = Color.FromArgb(64, 64, 64);
             listAgentTasks.Font = new Font("Segoe UI", 9.25F);
-            listAgentTasks.Location = new Point(15, 52);
+            listAgentTasks.Location = new Point(15, 67);
             listAgentTasks.Name = "listAgentTasks";
             listAgentTasks.Padding = new Padding(1);
-            listAgentTasks.Size = new Size(410, 226);
+            listAgentTasks.Size = new Size(410, 514);
             listAgentTasks.TabIndex = 1;
             // 
             // tbSettings
@@ -1620,9 +1581,6 @@ namespace LetheChat.Forms
             tbPrompt.PerformLayout();
             tbAgent.ResumeLayout(false);
             collapsibleGroupBox8.ResumeLayout(false);
-            collapsibleGroupBox8.PerformLayout();
-            collapsibleGroupBox7.ResumeLayout(false);
-            collapsibleGroupBox7.PerformLayout();
             collapsibleGroupBox6.ResumeLayout(false);
             collapsibleGroupBox6.PerformLayout();
             collapsibleGroupBox5.ResumeLayout(false);
@@ -1699,10 +1657,7 @@ namespace LetheChat.Forms
         private Controls.CollapsibleGroupBox collapsibleGroupBox5;
         private Controls.ModernCheckBox ckAgent;
         private Controls.ModernCheckBox ckAllowEurekas;
-        private Controls.CollapsibleGroupBox collapsibleGroupBox7;
-        private Label label22;
         private Controls.CollapsibleGroupBox collapsibleGroupBox8;
-        private Label label23;
         private Controls.CollapsibleGroupBox collapsibleGroupBox9;
         private Controls.CollapsibleGroupBox collapsibleGroupBox4;
         private Controls.ModernCheckBox ckPassword;
@@ -1716,8 +1671,7 @@ namespace LetheChat.Forms
         private Panel panel3;
         private Panel panel4;
         private Controls.ModernCheckedListBox listAgentTasks;
-        private Controls.ModernCheckedListBox listNoRAGMemTypes;
-        private Controls.ModernCheckedListBox listCanDecay;
+        private Controls.ModernCheckedListBox listTools;
         private Controls.ModernCheckedListBox ckl_worldinfo;
         private Controls.ModernCheckedListBox ckl_samplers;
         private Controls.ModernCheckedListBox ckl_plugins;
@@ -1766,5 +1720,6 @@ namespace LetheChat.Forms
         private TextBox edFriday;
         private Label lblSaturday;
         private TextBox edSaturday;
+        private ModernCheckBox ckToolOverride;
     }
 }

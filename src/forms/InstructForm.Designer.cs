@@ -52,13 +52,13 @@ namespace LetheChat.Forms
             panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(234, 738);
+            panel1.Size = new Size(234, 606);
             panel1.TabIndex = 1;
             // 
             // panel4
             // 
             panel4.Dock = DockStyle.Bottom;
-            panel4.Location = new Point(0, 661);
+            panel4.Location = new Point(0, 529);
             panel4.Margin = new Padding(8);
             panel4.Name = "panel4";
             panel4.Padding = new Padding(8);
@@ -69,7 +69,7 @@ namespace LetheChat.Forms
             // 
             edInstruct.BorderStyle = BorderStyle.FixedSingle;
             edInstruct.Dock = DockStyle.Bottom;
-            edInstruct.Location = new Point(0, 671);
+            edInstruct.Location = new Point(0, 539);
             edInstruct.Name = "edInstruct";
             edInstruct.Size = new Size(234, 23);
             edInstruct.TabIndex = 2;
@@ -77,7 +77,7 @@ namespace LetheChat.Forms
             // panel3
             // 
             panel3.Dock = DockStyle.Bottom;
-            panel3.Location = new Point(0, 694);
+            panel3.Location = new Point(0, 562);
             panel3.Margin = new Padding(8);
             panel3.Name = "panel3";
             panel3.Padding = new Padding(8);
@@ -90,7 +90,7 @@ namespace LetheChat.Forms
             btSave.Dock = DockStyle.Bottom;
             btSave.FlatStyle = FlatStyle.Flat;
             btSave.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btSave.Location = new Point(0, 704);
+            btSave.Location = new Point(0, 572);
             btSave.Name = "btSave";
             btSave.Size = new Size(234, 24);
             btSave.TabIndex = 3;
@@ -107,14 +107,14 @@ namespace LetheChat.Forms
             listInstruct.Location = new Point(0, 0);
             listInstruct.Name = "listInstruct";
             listInstruct.Padding = new Padding(1);
-            listInstruct.Size = new Size(234, 706);
+            listInstruct.Size = new Size(234, 578);
             listInstruct.TabIndex = 1;
             listInstruct.SelectedIndexChanged += listInstruct_SelectedIndexChanged;
             // 
             // panel2
             // 
             panel2.Dock = DockStyle.Bottom;
-            panel2.Location = new Point(0, 728);
+            panel2.Location = new Point(0, 596);
             panel2.Margin = new Padding(8);
             panel2.Name = "panel2";
             panel2.Padding = new Padding(8);
@@ -127,14 +127,14 @@ namespace LetheChat.Forms
             panContent.Dock = DockStyle.Fill;
             panContent.Location = new Point(234, 0);
             panContent.Name = "panContent";
-            panContent.Size = new Size(678, 738);
+            panContent.Size = new Size(678, 606);
             panContent.TabIndex = 2;
             // 
             // InstructForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(912, 738);
+            ClientSize = new Size(912, 606);
             Controls.Add(panContent);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.FixedSingle;

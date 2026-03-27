@@ -127,6 +127,8 @@ namespace LetheChat.Forms
             mychar.Brain.DailySchedule[(int)DayOfWeek.Thursday] = edThursday.Text;
             mychar.Brain.DailySchedule[(int)DayOfWeek.Friday] = edFriday.Text;
             mychar.Brain.DailySchedule[(int)DayOfWeek.Saturday] = edSaturday.Text;
+            mychar.OverrideDefaultToolset = ckToolOverride.Checked;
+            mychar.Tools = [.. listTools.CheckedItems.Cast<string>()];
 
             return mychar;
         }
@@ -174,6 +176,15 @@ namespace LetheChat.Forms
             ckTimerEnable.Checked = selectedCharacter.LockSettings.Enabled;
             ckTimerAddDuration.Checked = selectedCharacter.LockSettings.ShowLockDuration;
             ckStaticMood.Checked = selectedCharacter.Brain.StaticMood;
+
+            //tools
+            listTools.Items.Clear();
+            var avail = LLMEngine.ToolManager.GetRegisteredToolListIds();
+            foreach (var toolset in avail)
+            {
+                listTools.Items.Add(toolset, selectedCharacter.Tools.Contains(toolset));
+            }
+            ckToolOverride.Checked = selectedCharacter.OverrideDefaultToolset;
 
 
             edFilename.Text = selectedCharacter.UniqueName;
