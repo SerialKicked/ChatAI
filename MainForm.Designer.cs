@@ -1233,7 +1233,7 @@ namespace LetheChat
             mck_caninitchat.Name = "mck_caninitchat";
             mck_caninitchat.Size = new Size(184, 26);
             mck_caninitchat.TabIndex = 34;
-            mck_caninitchat.Text = "Bot can initiate chat";
+            mck_caninitchat.Text = "TODO: Bot can initiate chat";
             mck_caninitchat.UseVisualStyleBackColor = true;
             mck_caninitchat.CheckedChanged += ck_caninit_CheckedChanged;
             // 

@@ -46,8 +46,6 @@ namespace LetheChat.Files
             "you should decide"
         ];
 
-
-
         public static bool IsSubmissionTrigger(string input)
         {
             var lowered = input.ToLowerInvariant();

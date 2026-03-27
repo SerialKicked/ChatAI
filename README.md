@@ -1,44 +1,49 @@
 # Lethe AI Chat
 
-Windows-based high-performance front-end for [KoboldCPP](https://github.com/LostRuins/koboldcpp) and OpenAI API written in C#.NET. Using [Lethe AI](https://github.com/SerialKicked/Lethe-AI-Sharp) to do the heavy lifting.
+Lethe Chat is a Windows-based, high-performance, LLM chat program, supporting a variety of backends like Llama.cpp, KoboldCpp, LMStudio, and more. It is written in C# .NET 10 and is using [Lethe AI Sharp](https://github.com/SerialKicked/Lethe-AI-Sharp) to do the heavy lifting.
 
 ![WaifuAI_RjiqpbMiTq](https://github.com/user-attachments/assets/a4d1595d-a5f4-41f6-885e-5c50cd8fa619)
 
-## Main Features:
-- All-in-one program to edit characters, system prompts, instruction formats, and inference settings
+
+## ⭐ Main Features:
+
+- All-in-one program to edit characters, prompts, instruction formats, and inference settings
 - Chatlogs are divided into sessions, ability to switch back to previous sessions, insert or delete individual sessions
 - Chat sessions are automatically summarised and formatted for easy access
-- Compatible with CoT / Thinking models, implemented in a non-obstructive fashion
 - Extensive **long-term memory (LTM) system**
   - Vector Search done on previous sessions to retrieve contextual information based on user prompt
-  - Space can be reserved to insert the summaries of the last X sessions in chronological order, improving the model's contextual awareness notably
-  - Keyword-activated text insertion (or **World Info**) which can also be triggered using a keyword-less vector search
-- Characters can use a configurable part of the system prompt to write a small journal entry that changes over time based on their interactions with the user
-- TTS (text-to-speech) support through KoboldCPP API
-- Ability for the bot to augment its responses by searching on DuckDuckGo through KoboldCPP API (toggle)
+  - Space can be reserved to insert the summaries of the last X sessions in chronological order, improving the model's long-term memory 
+  - Characters learn and remember facts about the user over time naturally through conversation without the need for manual input
+  - Keyword-activated text insertion (or **WorldInfo/Lorebook**) which can also be triggered using a keyword-less vector search
+  - Tool-calling models can even store and retrieve memories on their own
+- Optional strong encryption of chatlogs and memories.
+- **Agentic abilities**, allowing you to create characters that can perform specific tasks or functions
+  -	Web search via DuckDuckGo or Brave API
+  - Extensible tool-calling, allowing the bot to interact with external programs and APIs to perform tasks or retrieve information
+  - Extensible background tasks, allowing the bot to perform tasks while the user is AFK
+- Detailed **character customisation** system, allowing you to create characters with unique personalities and knowledge bases
+  - Per character system prompt, TTS voice, inference settings, tools, background tasks, and more
+  - Optional evolving mood system, allowing characters to change behavior over time
+  - Optional daily schedule, and point systems 
+- Text-to-speech support (through KoboldCPP API only)
+- Group chat support (multi-character conversations)  
 - Customizable system allowing the bot to browse user-defined websites in search of requested information
-- Automatic insertion of dates into the prompt to give the model a better sense of time (toggle)
-- Ability for the bot to initiate chat (toggle)
-- Import chatlogs and world info files from Silly Tavern
 - Simple and intuitive UI
 
-## Supported Backend API
-- **KoboldCPP API**: Recommended, with the most functionalities
-- **OpenAI API**: Compatible with most backends, much less functionalities
+## 🧩 Supported Backends
+- **Llama.cpp:** Recommended, [Llama.cpp](https://github.com/ggml-org/llama.cpp) has the stronger feature-set and can be managed directly from LetheChat.
+- **Kobold API:** Powerful text completion API, used by [KoboldCpp](https://github.com/LostRuins/koboldcpp).
+- **OpenAI API:** Industry standard chat completion API, used by [LM Studio](https://lmstudio.ai/), [Text Gen WebUI](https://github.com/oobabooga/text-generation-webui), and many other backends.
+- **Internal**: You can also run LetheChat without an external backend. While sacrificing some features, this allows you to load a model directly into LetheChat without the need for a separate backend.
 
-This application is designed for local deployment. The backend must be running on your computer or on a local network. The following backends have been tested: KoboldCpp, LM Studio, and Text Generation Web UI.
+This application is designed for local deployment. The backend must be running on your computer or on a local network.
 
-## Current Limitations
-- No support for those drag & drop character cards/images (not planned, I use a very different system)
-- 1v1 chat only, no group mode (yet)
-- No RAG support for external documents (yet)
-
-## Notes and Requirements
-- Runs on Windows 10+ (may work on 7, untested)
-- To take full advantage of the LTM and dynamic character systems, a context window of at least 10K is required, 16K+ is *heavily* recommended
+## 🔎 Notes and Requirements
+- Runs on Windows 10+
+- To take full advantage of the LTM and dynamic character systems, a context window of at least 10K is necessary, 16K+ is *heavily* recommended
 - Small models (<=8B params), and models with poor instruction following, may struggle with some of the features
 - You can find a list of recommended models in my [Hugging Face Collections](https://huggingface.co/SerialKicked/collections)
-- For TTS and Web Search functionalities, KoboldCPP API is required
+- For TTS functionalities, KoboldCPP API is required
 
 ## License
 
