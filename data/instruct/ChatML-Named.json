@@ -7,7 +7,6 @@
   "BotStart": "<|im_start|>{{char}}\n",
   "BotEnd": "<|im_end|>",
   "StopSequence": "",
-  "AddNamesToPrompt": false,
   "NewLinesBetweenMessages": true,
   "StopStrings": [],
   "UniqueName": "ChatML Named"

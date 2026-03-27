@@ -233,7 +233,7 @@ namespace LetheChat
             ckToolCalls.Checked = LLMEngine.Settings.ToolCallsAllowed;
             mck_ragenabled.Checked = LLMEngine.Settings.RAGEnabled;
             mck_worldinfo.Checked = LLMEngine.Settings.AllowWorldInfo;
-            mck_forceNames.Checked = LLMEngine.Instruct.AddNamesToPrompt;
+            mck_forceNames.Checked = LLMEngine.Settings.AddNamesToPrompt;
 
             // Initialize context plugins
             Program.ApplyContextPluginSettings();
@@ -1125,7 +1125,6 @@ namespace LetheChat
                 LLMEngine.Instruct = DataFiles.Instruct[key];
                 if (_isinitloading)
                     return;
-                mck_forceNames.Checked = LLMEngine.Instruct.AddNamesToPrompt;
                 LLMEngine.InvalidatePromptCache();
             }
         }
@@ -1177,7 +1176,7 @@ namespace LetheChat
         {
             if (_isinitloading)
                 return;
-            LLMEngine.Instruct.AddNamesToPrompt = mck_forceNames.Checked;
+            LLMEngine.Settings.AddNamesToPrompt = mck_forceNames.Checked;
             LLMEngine.InvalidatePromptCache();
         }
 

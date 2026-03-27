@@ -9,7 +9,6 @@
   "StopSequence": "",
   "SysPromptStart": "<|start_header_id|>system<|end_header_id|>\n\n",
   "SysPromptEnd": "<|eot_id|>",
-  "AddNamesToPrompt": false,
   "NewLinesBetweenMessages": false,
   "StopStrings": [],
   "ThinkingStart": "",

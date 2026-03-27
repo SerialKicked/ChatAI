@@ -6,6 +6,5 @@
 	"BotStart": "",
 	"BotEnd": "</s>",
 	"BoSToken": "<s>",
-	"AddNamesToPrompt": false,
 	"NewLinesBetweenMessages": false
 }

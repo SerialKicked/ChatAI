@@ -7,6 +7,5 @@
 	"BotEnd": "<|END_OF_TURN_TOKEN|>",
 	"BoSToken": "<BOS_TOKEN>",
 	"StopSequence": "<|END_OF_TURN_TOKEN|>",
-	"AddNamesToPrompt": false,
 	"NewLinesBetweenMessages": true
 }

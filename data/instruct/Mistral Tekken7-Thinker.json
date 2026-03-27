@@ -7,11 +7,10 @@
   "BotStart": "",
   "BotEnd": "</s>",
   "StopSequence": "",
-  "AddNamesToPrompt": true,
   "NewLinesBetweenMessages": false,
   "StopStrings": [],
-  "ThinkingStart": "<think>\n",
-  "ThinkingEnd": "</think>",
+  "ThinkingStart": "[THINK]\n",
+  "ThinkingEnd": "[/THINK]",
   "PrefillThinking": true,
   "UniqueName": "Mistral Tekken7-Thinker"
 }
