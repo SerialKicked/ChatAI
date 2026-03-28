@@ -412,14 +412,17 @@ namespace LetheChat.Forms
                 );
         }
 
-        private void bt_importworld_Click(object sender, EventArgs e)
+        private async void bt_importworld_Click(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-                MessageBox.Show(
-                    ImportTools.ImportWorld(openFileDialog1.FileName, "exported_world.json") ?
-                        "Lorebook imported successfully to LetheChat's data/worlds folder." :
-                        "Something went wrong while opening or parsing the file."
-                );
+            if (openFileDialog1.ShowDialog() != DialogResult.OK)
+                return;
+            var res = await ImportTools.ImportWorld(openFileDialog1.FileName, "exported_world.json");
+            if (!res)
+            {
+                MessageBox.Show("Something went wrong while opening or parsing the file.");
+                return;
+            }
+            MessageBox.Show("Lorebook imported successfully to LetheChat's data/worlds folder.");
         }
 
         private async void ConvertChatToSessionList(object sender, EventArgs e)

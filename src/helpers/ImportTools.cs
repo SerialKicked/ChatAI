@@ -121,7 +121,7 @@ namespace LetheChat
     {
         public static int CPUCoreCount() => Environment.ProcessorCount;
 
-        internal static bool ImportWorld(string inputpath, string outputpath)
+        internal static async Task<bool> ImportWorld(string inputpath, string outputpath)
         {
             if (!File.Exists(inputpath))
                 return false;
@@ -163,7 +163,9 @@ namespace LetheChat
                     };
                     outputWorld.Entries.Add(entry);
                 }
+                await outputWorld.EmbedText();
                 (outputWorld as IFile).SaveToFile("data/worlds/"+ Path.GetFileNameWithoutExtension(inputpath) + ".json");
+                DataFiles.WorldInfos[Path.GetFileNameWithoutExtension(inputpath)] = outputWorld;
                 return true;
             }
             catch (Exception)
