@@ -229,7 +229,7 @@ namespace LetheChat.Files
                 if (ReasoningBudget >= 0)
                     args.Append($" --reasoning-budget {ReasoningBudget}");
                 if (ReasoningBudget >= 1)
-                    args.Append(" --reasoning-budget-message \"[Reasoning budget reached, I must start writing my answer.]\"");
+                    args.Append(" --reasoning-budget-message \"...\n\nI think I've explored this enough, time to respond.\n\"");
             }
 
             if (KVcacheToGPU)

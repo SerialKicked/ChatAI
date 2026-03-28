@@ -401,7 +401,7 @@ namespace LetheChat.Forms
 
             btLaunch.Enabled = false;
             btStop.Enabled = false;
-            lblServerStatus.Text = "⏳ Starting...";
+            lblServerStatus.Text = "⏳ Starting... Please wait...";
             lblServerStatus.ForeColor = ThemeManager.curthemeAccentColor;
             ClearServerLog();
 
