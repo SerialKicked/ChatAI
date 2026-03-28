@@ -121,13 +121,16 @@ namespace LetheChat
             };
 
             ed_input.SpellCheckLanguage = "en-US";
-
             HelptoolTip.SetToolTip(mck_ragenabled, "Use RAG functionalities to insert summaries of relevant previous sessions based on the user's input." + Environment.NewLine + "Configurable in the Program.Settings tab.");
             HelptoolTip.SetToolTip(mck_guidance, "Insert day and time information to prompt when relevant to give the bot a better understanding of time.");
             HelptoolTip.SetToolTip(mck_sessionmemory, "Use a set amount of tokens (set in Program.Settings) to insert summaries of previous chat sessions with this bot." + Environment.NewLine + "This drastically increases the bot's long-term memory.");
-            HelptoolTip.SetToolTip(mck_worldinfo, "Use the WorldInfo file(s) associated with this bot. WorldInfo is a list of keyword-triggered textual information that is inserted into the prompt when the conditions are met." + Environment.NewLine + "See the World Info tab for additional information.");
+            HelptoolTip.SetToolTip(mck_worldinfo, "Use the Lorebook file(s) associated with this bot. A Lorebook is a list of keyword-triggered textual information that is inserted into the prompt when the conditions are met." + Environment.NewLine + "See the Lorebook editor for additional information.");
             HelptoolTip.SetToolTip(mck_charsampler, "If checked, and when using a bot persona containing a list of compatible inference Program.Settings, the inference Program.Settings will be picked at random from that list each time the bot write a new message." + Environment.NewLine + Environment.NewLine + "Will lead to a more creative and less repetitive interaction, but also less consistent.");
-            HelptoolTip.SetToolTip(mck_onlinerag, "If checked, the bot may perform a web search (using DuckDuckGo) to improve its responses when asked to.");
+            HelptoolTip.SetToolTip(mck_onlinerag, "If checked, the bot may perform a web search (using DuckDuckGo or Brave) to improve its responses when asked to. Check settings for details." + Environment.NewLine + Environment.NewLine + "This is a custom system used when the web-search toolset is not available or enabled.");
+            HelptoolTip.SetToolTip(mck_guidance, "Depending on the characters' settings, they can have moods varying over time, can be aware of the time, or change the topic of discussion based on background activity." + Environment.NewLine + Environment.NewLine + "This is a global check allowing/disallowing all those features at once, so you don't have to change 4 different settings each time you want to toggle the guidance.");
+            HelptoolTip.SetToolTip(mckNatMem, "When a character can run background tasks (like goal setting or background websearch), the system can insert the results into the prompt when it feels its related to the current conversation." + Environment.NewLine + Environment.NewLine + "This allows you to toggle the behavior entirely.");
+            HelptoolTip.SetToolTip(ckToolCalls, "Whether to allow the use of tool-calls in the current conversation. If unchecked, the bot will not be able to call any tools, even if they are enabled in the settings." + Environment.NewLine + Environment.NewLine + "This is useful to quickly toggle tool access without having to change the settings.");
+            HelptoolTip.SetToolTip(mck_agentmode, "Allow the bot to use its background agent features when the user is AFK, such as setting goals, writing in their journal, or performing websearches based on discussion." + Environment.NewLine + Environment.NewLine + "This is only relevant if the character has background tasks setup.");
 
             // Load our agentic actions
             AgentRuntime.RegisterAction(new SessionMoodCheckAction());
@@ -227,7 +230,6 @@ namespace LetheChat
             mck_sessionmemory.Checked = LLMEngine.Settings.SessionMemorySystem;
             mck_ttstoggle.Checked = Program.Settings.UseTTS;
             mck_disablethink.Checked = Program.Settings.DisableThinking;
-            mck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
             mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
             mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
             ckToolCalls.Checked = LLMEngine.Settings.ToolCallsAllowed;
@@ -397,19 +399,8 @@ namespace LetheChat
             mck_sessionmemory.Checked = LLMEngine.Settings.SessionMemorySystem;
             mck_ttstoggle.Checked = Program.Settings.UseTTS;
             mck_disablethink.Checked = Program.Settings.DisableThinking;
-            mck_ragtothink.Checked = Program.Settings.RAGMoveToThinkBlock;
             mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
             mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
-
-            if (LLMEngine.CompletionAPIType == LetheAISharp.API.CompletionType.Text || (LLMEngine.Settings.BackendChatAllowPrefill ?? LLMEngine.Client?.AllowPrefill == true))
-            {
-                mck_ragtothink.Enabled = true;
-            }
-            else
-            {
-                mck_ragtothink.Enabled = false;
-                mck_ragtothink.Checked = false;
-            }
 
             if (!LLMEngine.SupportsToolCalls)
             {
@@ -969,7 +960,6 @@ namespace LetheChat
                 await webUI.RemoveLastMessage();
         }
 
-
         private void UseCharacterDefinedSampler()
         {
             if (!mck_charsampler.Checked || !mck_charsampler.Enabled || Bot == null)
@@ -1023,12 +1013,6 @@ namespace LetheChat
         {
             LLMEngine.Settings.RAGEnabled = mck_ragenabled.Checked;
         }
-
-        #endregion
-
-
-        #region *** WebView2 Handling ***
-
 
         #endregion
 
@@ -1095,6 +1079,182 @@ namespace LetheChat
         private void ck_ttstoggle_CheckedChanged(object sender, EventArgs e)
         {
             Program.Settings.UseTTS = mck_ttstoggle.Checked;
+        }
+
+        #endregion
+
+
+        #region *** Group Chat Functions ***
+
+        private void cbGroupSwitch_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_suppressGroupSwitchEvent || LLMEngine.Status == SystemStatus.Busy)
+                return;
+            if (Bot is GroupChar group)
+            {
+                var selectedName = cbGroupSwitch.SelectedItem as string;
+                var selectedChar = group.AllPersonas.Find(p => p.UniqueName == selectedName);
+                if (selectedChar != null)
+                {
+                    group.SetCurrentBot(selectedName!);
+                    LLMEngine.InvalidatePromptCache();
+                }
+            }
+        }
+
+        private void FillGroupMemberList()
+        {
+            lstGroupMembers.Items.Clear();
+            if (Bot is GroupChar group)
+            {
+                var lst = DataFiles.Characters.Values.Where(c => !c.IsUser).OrderBy(c => c.Name).ToList();
+                if (group.PrimaryBot is not null)
+                    lst.Remove(group.PrimaryBot);
+                foreach (var persona in lst)
+                {
+                    lstGroupMembers.Items.Add(persona.UniqueName, group.SecondaryPersonaNames.Contains(persona.UniqueName));
+                }
+            }
+        }
+
+        private async void ckGroupToggle_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_isinitloading || Bot is null)
+                return;
+            cbGroupSwitch.Enabled = ckGroupToggle.Checked;
+            lstGroupMembers.Enabled = ckGroupToggle.Checked;
+            if (ckGroupToggle.Checked)
+            {
+                if (Bot is GroupChar)
+                    return; // Already in group mode
+                var group = new GroupChar();
+                group.SetPrimaryPersona((Character)Bot!);
+                LLMEngine.Bot = group;
+                cbGroupSwitch.Items.Clear();
+                foreach (var name in group.AllPersonas)
+                {
+                    cbGroupSwitch.Items.Add(name.UniqueName);
+                }
+                await webUI.LoadHistoryToUI();
+                mck_guidance.Checked = !LLMEngine.Bot.DisableBotGuidance;
+                mck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
+                var searchplug = LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch");
+                if (searchplug != null)
+                {
+                    mck_onlinerag.Checked = searchplug.Enabled;
+                    mck_onlinerag.Enabled = true;
+                }
+                else
+                {
+                    mck_onlinerag.Enabled = false;
+                    mck_onlinerag.Checked = false;
+                }
+                _activityTimer?.Reset();
+                UpdateUIState();
+            }
+            else
+            {
+                if (Bot is not GroupChar curGroup)
+                    return; // Already in single mode
+                curGroup.ClearResponseQueue();
+                var gobackbot = curGroup.PrimaryBot;
+                // set the cb_bot checkbox to the primary bot
+                if (gobackbot is not null)
+                {
+                    cb_bot.SelectedItem = gobackbot?.UniqueName;
+                    cb_bot_SelectedIndexChanged(cb_bot, new EventArgs());
+                }
+                lstGroupMembers.Items.Clear();
+            }
+            FillGroupMemberList();
+            UpdateGroupSelection();
+        }
+
+        private void lstGroupMembers_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (Bot is not GroupChar group)
+                return;
+            var personaID = lstGroupMembers.Items[e.Index].ToString() ?? string.Empty;
+            if (e.NewValue == CheckState.Checked)
+            {
+                var persona = DataFiles.Characters[personaID];
+                group.AddSecondaryPersona(persona);
+            }
+            else
+            {
+                group.RemoveSecondaryPersona(personaID);
+            }
+            UpdateGroupSelection();
+            LLMEngine.InvalidatePromptCache();
+        }
+
+        private void UpdateGroupSelection()
+        {
+            if (Bot is not GroupChar group) return;
+            _suppressGroupSwitchEvent = true;
+            try
+            {
+                cbGroupSwitch.Items.Clear();
+                foreach (var name in group.AllPersonas)
+                    cbGroupSwitch.Items.Add(name.UniqueName);
+
+                cbGroupSwitch.SelectedItem = group.CurrentBotId;
+            }
+            finally
+            {
+                _suppressGroupSwitchEvent = false;
+            }
+        }
+
+        private async Task<bool> AdvanceGroupQueue()
+        {
+            if (LLMEngine.Bot is not GroupChar ggroup)
+                return false;
+
+            var lastUser = _lastUserMessageForGroupLoop;
+            if (lastUser is null)
+                return false;
+
+            var next = await ggroup.GetNextFromQueue();
+            if (next is null)
+                return false;
+
+            ggroup.SetCurrentBot(next.UniqueName);
+
+            // UI work must happen on the UI thread.
+            BeginInvoke(new Action(async () =>
+            {
+                try
+                {
+                    DragNDropExtension.DroppedFilePath = string.Empty;
+                    UpdateGroupSelection();
+                    LLMEngine.InvalidatePromptCache();
+                    PrepareResponse();
+                    await webUI.SendMessageToUI(new SingleMessage(
+                        AuthorRole.Assistant,
+                        "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("AdvanceGroupQueue UI block error: " + ex);
+                }
+            }));
+
+            // Fire-and-forget the actual generation. We do NOT await here, so the next
+            // OnStreamInferenceEnded after this bot finishes will run with no guard blockage.
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await LLMEngine.AddBotMessage().ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("AdvanceGroupQueue generation error: " + ex);
+                }
+            });
+
+            return true;
         }
 
         #endregion
@@ -1259,13 +1419,6 @@ namespace LetheChat
             LLMEngine.Settings.DisableThinking = mck_disablethink.Checked;
         }
 
-        private void ck_ragtothink_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_isinitloading)
-                return;
-            LLMEngine.Settings.RAGMoveToThinkBlock = mck_ragtothink.Checked;
-        }
-
         private void ck_agentmode_CheckedChanged(object sender, EventArgs e)
         {
             if (_isinitloading)
@@ -1358,7 +1511,6 @@ namespace LetheChat
             await webUI.ReloadFullChat();
         }
 
-
         private void btRawLog_Click(object sender, EventArgs e)
         {
             // Show a basic window with the ed_log content in a textbox and a close button
@@ -1369,13 +1521,6 @@ namespace LetheChat
             logForm.StartPosition = FormStartPosition.CenterParent;
             logForm.TopMost = true;
             logForm.ShowDialog();
-        }
-
-        private void dbgMood_Click(object sender, EventArgs e)
-        {
-            var mood = LLMEngine.Bot.Brain.Mood.Describe();
-            // show a simple message box
-            MessageBox.Show(this, $"{LLMEngine.Bot.ReplaceMacros(mood)}", "Mood State", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -1403,179 +1548,6 @@ namespace LetheChat
                 build.AppendLine(item.Memory.Name + " [ " + item.Duration + " ]");
             }
             MessageBox.Show(build.ToString(), "Current Prompt Inserts", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-
-        private void cbGroupSwitch_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_suppressGroupSwitchEvent || LLMEngine.Status == SystemStatus.Busy)
-                return;
-            if (Bot is GroupChar group)
-            {
-                var selectedName = cbGroupSwitch.SelectedItem as string;
-                var selectedChar = group.AllPersonas.Find(p => p.UniqueName == selectedName);
-                if (selectedChar != null)
-                {
-                    group.SetCurrentBot(selectedName!);
-                    LLMEngine.InvalidatePromptCache();
-                }
-            }
-        }
-
-        private void FillGroupMemberList()
-        {
-            lstGroupMembers.Items.Clear();
-            if (Bot is GroupChar group)
-            {
-                var lst = DataFiles.Characters.Values.Where(c => !c.IsUser).OrderBy(c => c.Name).ToList();
-                if (group.PrimaryBot is not null)
-                    lst.Remove(group.PrimaryBot);
-                foreach (var persona in lst)
-                {
-                    lstGroupMembers.Items.Add(persona.UniqueName, group.SecondaryPersonaNames.Contains(persona.UniqueName));
-                }
-            }
-        }
-
-        private async void ckGroupToggle_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_isinitloading || Bot is null)
-                return;
-            cbGroupSwitch.Enabled = ckGroupToggle.Checked;
-            lstGroupMembers.Enabled = ckGroupToggle.Checked;
-            if (ckGroupToggle.Checked)
-            {
-                if (Bot is GroupChar)
-                    return; // Already in group mode
-                var group = new GroupChar();
-                group.SetPrimaryPersona((Character)Bot!);
-                LLMEngine.Bot = group;
-                cbGroupSwitch.Items.Clear();
-                foreach (var name in group.AllPersonas)
-                {
-                    cbGroupSwitch.Items.Add(name.UniqueName);
-                }
-                await webUI.LoadHistoryToUI();
-                mck_guidance.Checked = !LLMEngine.Bot.DisableBotGuidance;
-                mck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
-                var searchplug = LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch");
-                if (searchplug != null)
-                {
-                    mck_onlinerag.Checked = searchplug.Enabled;
-                    mck_onlinerag.Enabled = true;
-                }
-                else
-                {
-                    mck_onlinerag.Enabled = false;
-                    mck_onlinerag.Checked = false;
-                }
-                _activityTimer?.Reset();
-                UpdateUIState();
-            }
-            else
-            {
-                if (Bot is not GroupChar curGroup)
-                    return; // Already in single mode
-                curGroup.ClearResponseQueue();
-                var gobackbot = curGroup.PrimaryBot;
-                // set the cb_bot checkbox to the primary bot
-                if (gobackbot is not null)
-                {
-                    cb_bot.SelectedItem = gobackbot?.UniqueName;
-                    cb_bot_SelectedIndexChanged(cb_bot, new EventArgs());
-                }
-                lstGroupMembers.Items.Clear();
-            }
-            FillGroupMemberList();
-            UpdateGroupSelection();
-        }
-
-        private void lstGroupMembers_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-            if (Bot is not GroupChar group)
-                return;
-            var personaID = lstGroupMembers.Items[e.Index].ToString() ?? string.Empty;
-            if (e.NewValue == CheckState.Checked)
-            {
-                var persona = DataFiles.Characters[personaID];
-                group.AddSecondaryPersona(persona);
-            }
-            else
-            {
-                group.RemoveSecondaryPersona(personaID);
-            }
-            UpdateGroupSelection();
-            LLMEngine.InvalidatePromptCache();
-        }
-
-        private void UpdateGroupSelection()
-        {
-            if (Bot is not GroupChar group) return;
-            _suppressGroupSwitchEvent = true;
-            try
-            {
-                cbGroupSwitch.Items.Clear();
-                foreach (var name in group.AllPersonas)
-                    cbGroupSwitch.Items.Add(name.UniqueName);
-
-                cbGroupSwitch.SelectedItem = group.CurrentBotId;
-            }
-            finally
-            {
-                _suppressGroupSwitchEvent = false;
-            }
-        }
-
-        // Add this helper inside MainForm (class scope)
-        private async Task<bool> AdvanceGroupQueue()
-        {
-            if (LLMEngine.Bot is not GroupChar ggroup)
-                return false;
-
-            var lastUser = _lastUserMessageForGroupLoop;
-            if (lastUser is null)
-                return false;
-
-            var next = await ggroup.GetNextFromQueue();
-            if (next is null)
-                return false;
-
-            ggroup.SetCurrentBot(next.UniqueName);
-
-            // UI work must happen on the UI thread.
-            BeginInvoke(new Action(async () =>
-            {
-                try
-                {
-                    DragNDropExtension.DroppedFilePath = string.Empty;
-                    UpdateGroupSelection();
-                    LLMEngine.InvalidatePromptCache();
-                    PrepareResponse();
-                    await webUI.SendMessageToUI(new SingleMessage(
-                        AuthorRole.Assistant,
-                        "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"));
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("AdvanceGroupQueue UI block error: " + ex);
-                }
-            }));
-
-            // Fire-and-forget the actual generation. We do NOT await here, so the next
-            // OnStreamInferenceEnded after this bot finishes will run with no guard blockage.
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    await LLMEngine.AddBotMessage().ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("AdvanceGroupQueue generation error: " + ex);
-                }
-            });
-
-            return true;
         }
 
         private async void button4_Click(object sender, EventArgs e)

@@ -159,7 +159,7 @@ namespace LetheChat.Forms
             label54.Name = "label54";
             label54.Size = new Size(143, 17);
             label54.TabIndex = 4;
-            label54.Text = "World Info Section Title";
+            label54.Text = "Memory Section Title";
             // 
             // ed_editsys_dialogs
             // 

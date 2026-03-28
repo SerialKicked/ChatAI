@@ -136,6 +136,7 @@ namespace LetheChat
                 {
                     Name = Path.GetFileNameWithoutExtension(inputpath),
                     Description = "Imported from Silly Tavern",
+                    UniqueName = Path.GetFileNameWithoutExtension(inputpath)
                 };
                 foreach (var (key, item) in importST.entries)
                 {
@@ -162,7 +163,7 @@ namespace LetheChat
                     };
                     outputWorld.Entries.Add(entry);
                 }
-                (outputWorld as IFile).SaveToFile(outputpath);
+                (outputWorld as IFile).SaveToFile("data/worlds/"+ Path.GetFileNameWithoutExtension(inputpath) + ".json");
                 return true;
             }
             catch (Exception)

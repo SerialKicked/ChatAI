@@ -182,11 +182,11 @@ namespace LetheChat.Forms
             var NewName = cb_worlds.Text;
             if (string.IsNullOrWhiteSpace(NewName))
             {
-                MessageBox.Show("Please select a valid name for the world info");
+                MessageBox.Show("Please select a valid name for the lorebook");
                 return false;
             }
             // If name already exists ask for confirmation
-            if (DataFiles.WorldInfos.ContainsKey(NewName) && (MessageBox.Show("This world info already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
+            if (DataFiles.WorldInfos.ContainsKey(NewName) && (MessageBox.Show("This lorebook already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
                 return false;
             await SelectedWorldEditor.EmbedText();
             SelectedWorldEditor.UniqueName = NewName;
@@ -217,7 +217,7 @@ namespace LetheChat.Forms
         {
             var saved = await SaveWorldInfo();
             if (saved)
-                MessageBox.Show("World Info Saved!");
+                MessageBox.Show("Lorebook Saved!");
         }
 
         private void bt_delwentry_Click(object sender, EventArgs e)

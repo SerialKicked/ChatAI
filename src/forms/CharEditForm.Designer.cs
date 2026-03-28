@@ -520,7 +520,7 @@ namespace LetheChat.Forms
             label6.Name = "label6";
             label6.Size = new Size(361, 15);
             label6.TabIndex = 0;
-            label6.Text = "Select the world info files this character is allowed to use. (optional)";
+            label6.Text = "Select the lore books this character is allowed to use. (optional)";
             // 
             // ed_sysprompt
             // 
@@ -781,7 +781,7 @@ namespace LetheChat.Forms
             collapsibleGroupBox1.Padding = new Padding(12, 32, 12, 10);
             collapsibleGroupBox1.Size = new Size(440, 312);
             collapsibleGroupBox1.TabIndex = 0;
-            collapsibleGroupBox1.Text = "World Info";
+            collapsibleGroupBox1.Text = "Lorebooks";
             // 
             // ckl_worldinfo
             // 

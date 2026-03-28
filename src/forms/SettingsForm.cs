@@ -26,7 +26,7 @@ namespace LetheChat.Forms
             HelptoolTip.SetToolTip(ck_sessionmemory, "If checked, the bot will remember previous chat sessions by having their summaries inserted into the system prompt.");
             HelptoolTip.SetToolTip(num_memtokens, "The number of tokens to reserve for session memory summaries. The more tokens you reserve, the more context the bot can remember from previous sessions, but the less tokens are available for the chatlog." + Environment.NewLine + "If you have a very large context window. A good rule of thumb is 2K per 16K of total context windows available.");
             HelptoolTip.SetToolTip(cb_pastsession, "Determines how the bot will handle past sessions when session memory is enabled." + Environment.NewLine + "FitAll: Fit as many sessions as possible into the chatlog. Older sessions are summarized." + Environment.NewLine + "CurrentOnly: Only the current session is kept in full, older sessions are summarized.");
-            HelptoolTip.SetToolTip(ck_sysrag, "If checked, any RAG insert (sessions triggers and world info) will be moved to the system prompt instead of being inserted into the chatlog." + Environment.NewLine + "Some models behave better while contextual info into the system prompt, while others prefer having system messages in the chatlog.");
+            HelptoolTip.SetToolTip(ck_sysrag, "If checked, any RAG insert (sessions triggers and lorebook entries) will be moved to the system prompt instead of being inserted into the chatlog." + Environment.NewLine + "Some models behave better while contextual info into the system prompt, while others prefer having system messages in the chatlog.");
             HelptoolTip.SetToolTip(num_ragcutoff, "The distance cutoff for RAG retrieval. The lower the value, the more similar the retrieved entries will be to the query." + Environment.NewLine + "A good starting point is between 0.07 and 0.1, assuming you're using the default embedding model.");
             HelptoolTip.SetToolTip(num_ragmaxretrieve, "The maximum number of RAG entries to retrieve for each query. The more entries you retrieve, the more context the bot will have." + Environment.NewLine + "A good starting point is between 2 and 5.");
             HelptoolTip.SetToolTip(num_ragindex, "The level in the chatlog where the entries will be inserted, 0 is just above the latest message pair. " + Environment.NewLine + "You can set it to -1 to put it into the system prompt.");
@@ -54,7 +54,7 @@ namespace LetheChat.Forms
             HelptoolTip.SetToolTip(cb_searchapi, "The search API to use for web searches. DuckDuckGo is free and does not require an API key, but may be less reliable." + Environment.NewLine + "Brave Search requires an API key (you can get one for free by creating a Brave account), but is generally more reliable and provides better results.");
             HelptoolTip.SetToolTip(ed_searchkey, "Your Brave Search API key. Only needed if you select Brave Search as your search API." + Environment.NewLine + "You can get a free API key by creating a Brave account and generating an API key in the Brave Search settings.");
             HelptoolTip.SetToolTip(ck_searchextract, "If checked, the bot will try to extract more detailed information from the search results." + Environment.NewLine + "This leads to much better results, but is also quite slow.");
-            HelptoolTip.SetToolTip(bt_importworld, "Import a worldinfo file exported from SillyTavern." + Environment.NewLine + "The worldinfo will be converted to the internal format and saved to 'exported_world.json' in this application's main folder.");
+            HelptoolTip.SetToolTip(bt_importworld, "Import a lorebook file exported from SillyTavern or another external website." + Environment.NewLine + "The lorebook will be converted to the internal format and saved to this application's data/worlds folder.");
             HelptoolTip.SetToolTip(bt_ImportSTChat, "Import a chatlog file exported from SillyTavern." + Environment.NewLine + "The chatlog will be converted to the internal format and saved to 'exported_chat.json' in this application's main folder.");
             HelptoolTip.SetToolTip(ck_forcePW, "Normally, when switching to a password-protected bot, the app will remember its password for as long as it's running, so you don't need to enter it multiple times. If checked, the application will always ask for the bot's password when switching.");
             HelptoolTip.SetToolTip(ckThirdPerson, "If checked, the bot will convert user messages to 3rd person when performing RAG searches. This tends to be more effective, especially to retrieve past sessions.");
@@ -417,7 +417,7 @@ namespace LetheChat.Forms
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 MessageBox.Show(
                     ImportTools.ImportWorld(openFileDialog1.FileName, "exported_world.json") ?
-                        "WorldInfo imported successfully to exported_world.json in this application's main folder." :
+                        "Lorebook imported successfully to LetheChat's data/worlds folder." :
                         "Something went wrong while opening or parsing the file."
                 );
         }

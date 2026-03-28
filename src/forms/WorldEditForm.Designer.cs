@@ -476,7 +476,7 @@ namespace LetheChat.Forms
             MinimizeBox = false;
             Name = "WorldEditForm";
             StartPosition = FormStartPosition.CenterParent;
-            Text = "World Info Editor";
+            Text = "Lorebook Editor";
             KeyDown += WorldEditForm_KeyDown;
             groupBox8.ResumeLayout(false);
             groupBox8.PerformLayout();
