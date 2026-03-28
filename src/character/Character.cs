@@ -7,6 +7,7 @@ using System.IO;
 using System.Text;
 using LetheChat.Plugins;
 using LetheChat.Security;
+using System.ComponentModel;
 
 namespace LetheChat.Files
 {
@@ -20,32 +21,41 @@ namespace LetheChat.Files
         /// It is contextually aware and may not always send a message. 
         /// A system to prevent spam is also in place, limiting the amount of messages that can be sent before the user responds.
         /// </summary>
+        [Description("TODO: If set to true, this character can initiate chat by sending a message when the user is idle. It is contextually aware and may not always send a message. A system to prevent spam is also in place, limiting the amount of messages that can be sent before the user responds.")]
         public bool CanInitiateChat { get; set; } = false;
 
+        [Description("A short bio for this character (should be a paragraph). This is only used for some slash commands and in group chats.")]
         public string MiniBio { get; set; } = string.Empty;
 
         /// <summary> Icon to be displayed in chat </summary>
+        [Description("Icon to be displayed in chat. Place the image file in the data/img folder and enter the filename here. If left blank or file not found, a default icon will be used.")]
         public string Icon { get; set; } = string.Empty;
 
         /// <summary>
         /// A list of prefered inference settings for this character. When enabled in the UI, the bot will cycle between these settings at random with each new message. This ensure a more diverse set of responses.
         /// </summary>
+        [Description("A list of prefered sampling settings for this character. When enabled in the main UI, the bot will cycle between these settings at random with each new message. This ensure a more diverse set of responses.")]
         public List<string> AllowedSamplers { get; set; } = [];
 
         /// <summary>
         /// Voice ID for for OuteTTS (if enabled)
         /// </summary>
+        [Description("Voice ID that will be used by text-to-speech for this character (if enabled, only available with KoboldCpp).")]
         public string TTSVoice { get; set; } = string.Empty;
 
         /// <summary> Reference to the point system </summary>
+        [Description("Reference to the point system this character uses (optional). See documentation.")]
         public string PointSystem { get; set; } = string.Empty;
 
         /// <summary> Current point value </summary>
+        [Description("Current points availables. See documentation.")]
         public int PointValue { get; set; } = 0;
 
         /// <summary> Whether this character's brain and chatlog files should be encrypted at rest </summary>
+        [Description("If set to true, this character's memory (brain) and chatlog files will be strongly encrypted behind a password. You will be prompted to enter a password when starting a chat with this character. If you forget the password, you will lose access to the character's history and memories permanently: there no recovery options.")]
         public bool Protected { get; set; } = false;
 
+        [Description("Toogle plugin. See documentation.")]
         public ToggleMonitorSettings LockSettings { get; set; } = new ToggleMonitorSettings();
 
         [JsonIgnore] public PointSystem MyPoints { get; set; } = new();

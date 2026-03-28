@@ -85,6 +85,10 @@
             cbDefaultCompletion = new LetheChat.Controls.ModernComboBox();
             label4 = new Label();
             tabCore = new TabPage();
+            collapsibleGroupBox16 = new LetheChat.Controls.CollapsibleGroupBox();
+            panel31 = new Panel();
+            numAFKDelay = new LetheChat.Controls.ModernNumericUpDown();
+            label41 = new Label();
             collapsibleGroupBox10 = new LetheChat.Controls.CollapsibleGroupBox();
             panel28 = new Panel();
             numImageRes = new LetheChat.Controls.ModernNumericUpDown();
@@ -242,6 +246,8 @@
             collapsibleGroupBox3.SuspendLayout();
             collapsibleGroupBox2.SuspendLayout();
             tabCore.SuspendLayout();
+            collapsibleGroupBox16.SuspendLayout();
+            panel31.SuspendLayout();
             collapsibleGroupBox10.SuspendLayout();
             panel28.SuspendLayout();
             panel14.SuspendLayout();
@@ -938,6 +944,7 @@
             // tabCore
             // 
             tabCore.BackColor = Color.FromArgb(37, 37, 37);
+            tabCore.Controls.Add(collapsibleGroupBox16);
             tabCore.Controls.Add(collapsibleGroupBox10);
             tabCore.Controls.Add(collapsibleGroupBox1);
             tabCore.Font = new Font("Segoe UI", 9F);
@@ -948,6 +955,56 @@
             tabCore.Size = new Size(798, 518);
             tabCore.TabIndex = 1;
             tabCore.Text = "Core LLM";
+            // 
+            // collapsibleGroupBox16
+            // 
+            collapsibleGroupBox16.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox16.CanCollapse = false;
+            collapsibleGroupBox16.Controls.Add(panel31);
+            collapsibleGroupBox16.Font = new Font("Segoe UI", 9F);
+            collapsibleGroupBox16.Location = new Point(6, 333);
+            collapsibleGroupBox16.Name = "collapsibleGroupBox16";
+            collapsibleGroupBox16.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox16.Size = new Size(780, 84);
+            collapsibleGroupBox16.TabIndex = 43;
+            collapsibleGroupBox16.Text = "Background Agent";
+            // 
+            // panel31
+            // 
+            panel31.Controls.Add(numAFKDelay);
+            panel31.Controls.Add(label41);
+            panel31.Dock = DockStyle.Top;
+            panel31.Location = new Point(12, 32);
+            panel31.Margin = new Padding(8);
+            panel31.Name = "panel31";
+            panel31.Padding = new Padding(8);
+            panel31.Size = new Size(756, 36);
+            panel31.TabIndex = 56;
+            // 
+            // numAFKDelay
+            // 
+            numAFKDelay.BackColor = Color.FromArgb(64, 64, 64);
+            numAFKDelay.DecimalPlaces = 2;
+            numAFKDelay.Font = new Font("Segoe UI", 9F);
+            numAFKDelay.Increment = new decimal(new int[] { 25, 0, 0, 131072 });
+            numAFKDelay.Location = new Point(11, 6);
+            numAFKDelay.Maximum = new decimal(new int[] { 1024, 0, 0, 0 });
+            numAFKDelay.Minimum = new decimal(new int[] { 25, 0, 0, 131072 });
+            numAFKDelay.Name = "numAFKDelay";
+            numAFKDelay.Padding = new Padding(1);
+            numAFKDelay.Size = new Size(117, 23);
+            numAFKDelay.TabIndex = 27;
+            numAFKDelay.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // label41
+            // 
+            label41.AutoSize = true;
+            label41.Font = new Font("Segoe UI", 9F);
+            label41.Location = new Point(134, 10);
+            label41.Name = "label41";
+            label41.Size = new Size(475, 15);
+            label41.TabIndex = 28;
+            label41.Text = "Hours the user has to be AFK before current character is allowed to run background tasks";
             // 
             // collapsibleGroupBox10
             // 
@@ -994,7 +1051,7 @@
             // 
             label40.AutoSize = true;
             label40.Font = new Font("Segoe UI", 9F);
-            label40.Location = new Point(134, 8);
+            label40.Location = new Point(134, 10);
             label40.Name = "label40";
             label40.Size = new Size(249, 15);
             label40.TabIndex = 28;
@@ -1028,7 +1085,7 @@
             // 
             label18.AutoSize = true;
             label18.Font = new Font("Segoe UI", 9F);
-            label18.Location = new Point(134, 8);
+            label18.Location = new Point(134, 10);
             label18.Name = "label18";
             label18.Size = new Size(179, 15);
             label18.TabIndex = 28;
@@ -1064,7 +1121,7 @@
             // 
             label19.AutoSize = true;
             label19.Font = new Font("Segoe UI", 9F);
-            label19.Location = new Point(134, 8);
+            label19.Location = new Point(134, 10);
             label19.Name = "label19";
             label19.Size = new Size(400, 15);
             label19.TabIndex = 28;
@@ -2747,6 +2804,9 @@
             collapsibleGroupBox2.ResumeLayout(false);
             collapsibleGroupBox2.PerformLayout();
             tabCore.ResumeLayout(false);
+            collapsibleGroupBox16.ResumeLayout(false);
+            panel31.ResumeLayout(false);
+            panel31.PerformLayout();
             collapsibleGroupBox10.ResumeLayout(false);
             panel28.ResumeLayout(false);
             panel28.PerformLayout();
@@ -3001,5 +3061,9 @@
         private Panel panel29;
         private Controls.ModernComboBox cbDefaultCompletion;
         private Label label4;
+        private Controls.CollapsibleGroupBox collapsibleGroupBox16;
+        private Panel panel31;
+        private Controls.ModernNumericUpDown numAFKDelay;
+        private Label label41;
     }
 }

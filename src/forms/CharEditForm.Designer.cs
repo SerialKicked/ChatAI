@@ -67,8 +67,6 @@ namespace LetheChat.Forms
             label6 = new Label();
             ed_sysprompt = new TextBox();
             textBox2 = new TextBox();
-            label19 = new Label();
-            numAgentDelay = new ModernNumericUpDown();
             label18 = new Label();
             panel1 = new Panel();
             panel2 = new Panel();
@@ -322,7 +320,7 @@ namespace LetheChat.Forms
             // 
             label17.AutoSize = true;
             label17.Font = new Font("Segoe UI", 9F);
-            label17.Location = new Point(138, 188);
+            label17.Location = new Point(139, 159);
             label17.Name = "label17";
             label17.Size = new Size(156, 15);
             label17.TabIndex = 17;
@@ -332,7 +330,7 @@ namespace LetheChat.Forms
             // 
             numKeepEurekas.BackColor = Color.FromArgb(64, 64, 64);
             numKeepEurekas.Font = new Font("Segoe UI", 9F);
-            numKeepEurekas.Location = new Point(38, 186);
+            numKeepEurekas.Location = new Point(39, 157);
             numKeepEurekas.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numKeepEurekas.Name = "numKeepEurekas";
             numKeepEurekas.Padding = new Padding(1);
@@ -346,7 +344,7 @@ namespace LetheChat.Forms
             numEurekaMinTime.DecimalPlaces = 2;
             numEurekaMinTime.Font = new Font("Segoe UI", 9F);
             numEurekaMinTime.Increment = new decimal(new int[] { 25, 0, 0, 131072 });
-            numEurekaMinTime.Location = new Point(38, 157);
+            numEurekaMinTime.Location = new Point(39, 128);
             numEurekaMinTime.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             numEurekaMinTime.Name = "numEurekaMinTime";
             numEurekaMinTime.Padding = new Padding(1);
@@ -358,7 +356,7 @@ namespace LetheChat.Forms
             // 
             label16.AutoSize = true;
             label16.Font = new Font("Segoe UI", 9F);
-            label16.Location = new Point(138, 159);
+            label16.Location = new Point(139, 130);
             label16.Name = "label16";
             label16.Size = new Size(230, 15);
             label16.TabIndex = 14;
@@ -368,7 +366,7 @@ namespace LetheChat.Forms
             // 
             label15.AutoSize = true;
             label15.Font = new Font("Segoe UI", 9F);
-            label15.Location = new Point(138, 130);
+            label15.Location = new Point(139, 101);
             label15.Name = "label15";
             label15.Size = new Size(233, 15);
             label15.TabIndex = 12;
@@ -378,7 +376,7 @@ namespace LetheChat.Forms
             // 
             numEurekaMinMess.BackColor = Color.FromArgb(64, 64, 64);
             numEurekaMinMess.Font = new Font("Segoe UI", 9F);
-            numEurekaMinMess.Location = new Point(38, 128);
+            numEurekaMinMess.Location = new Point(39, 99);
             numEurekaMinMess.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numEurekaMinMess.Name = "numEurekaMinMess";
             numEurekaMinMess.Padding = new Padding(1);
@@ -565,31 +563,6 @@ namespace LetheChat.Forms
             textBox2.Tag = "no-theme";
             textBox2.Text = resources.GetString("textBox2.Text");
             // 
-            // label19
-            // 
-            label19.AutoSize = true;
-            label19.Font = new Font("Segoe UI", 9F);
-            label19.Location = new Point(138, 69);
-            label19.Name = "label19";
-            label19.Size = new Size(174, 15);
-            label19.TabIndex = 12;
-            label19.Text = "Hours AFK before running tasks";
-            // 
-            // numAgentDelay
-            // 
-            numAgentDelay.BackColor = Color.FromArgb(64, 64, 64);
-            numAgentDelay.DecimalPlaces = 2;
-            numAgentDelay.Font = new Font("Segoe UI", 9F);
-            numAgentDelay.Increment = new decimal(new int[] { 25, 0, 0, 131072 });
-            numAgentDelay.Location = new Point(38, 67);
-            numAgentDelay.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
-            numAgentDelay.Minimum = new decimal(new int[] { 25, 0, 0, 131072 });
-            numAgentDelay.Name = "numAgentDelay";
-            numAgentDelay.Padding = new Padding(1);
-            numAgentDelay.Size = new Size(94, 23);
-            numAgentDelay.TabIndex = 11;
-            numAgentDelay.Value = new decimal(new int[] { 125, 0, 0, 131072 });
-            // 
             // label18
             // 
             label18.AutoSize = true;
@@ -750,11 +723,11 @@ namespace LetheChat.Forms
             // ckNoGuidance
             // 
             ckNoGuidance.AutoSize = true;
-            ckNoGuidance.Location = new Point(488, 31);
+            ckNoGuidance.Location = new Point(473, 32);
             ckNoGuidance.Name = "ckNoGuidance";
-            ckNoGuidance.Size = new Size(116, 19);
+            ckNoGuidance.Size = new Size(139, 19);
             ckNoGuidance.TabIndex = 17;
-            ckNoGuidance.Text = "No Bot Guidance";
+            ckNoGuidance.Text = "Disable All Guidances";
             ckNoGuidance.UseVisualStyleBackColor = true;
             // 
             // tbStyle
@@ -902,9 +875,7 @@ namespace LetheChat.Forms
             collapsibleGroupBox6.Controls.Add(label17);
             collapsibleGroupBox6.Controls.Add(ckAgent);
             collapsibleGroupBox6.Controls.Add(numKeepEurekas);
-            collapsibleGroupBox6.Controls.Add(numAgentDelay);
             collapsibleGroupBox6.Controls.Add(numEurekaMinTime);
-            collapsibleGroupBox6.Controls.Add(label19);
             collapsibleGroupBox6.Controls.Add(label16);
             collapsibleGroupBox6.Controls.Add(label15);
             collapsibleGroupBox6.Controls.Add(numEurekaMinMess);
@@ -912,18 +883,18 @@ namespace LetheChat.Forms
             collapsibleGroupBox6.Location = new Point(458, 19);
             collapsibleGroupBox6.Name = "collapsibleGroupBox6";
             collapsibleGroupBox6.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox6.Size = new Size(440, 216);
+            collapsibleGroupBox6.Size = new Size(440, 205);
             collapsibleGroupBox6.TabIndex = 1;
             collapsibleGroupBox6.Text = "Background Agent Settings";
             // 
             // ckAllowEurekas
             // 
             ckAllowEurekas.Font = new Font("Segoe UI", 9F);
-            ckAllowEurekas.Location = new Point(15, 96);
+            ckAllowEurekas.Location = new Point(15, 67);
             ckAllowEurekas.Name = "ckAllowEurekas";
             ckAllowEurekas.Size = new Size(410, 26);
             ckAllowEurekas.TabIndex = 18;
-            ckAllowEurekas.Text = "Allow tasks to insert system messages as \"memories\"";
+            ckAllowEurekas.Text = "Allow tasks to forcefully insert \"memories\" into prompt";
             ckAllowEurekas.UseVisualStyleBackColor = true;
             // 
             // ckAgent
@@ -1642,8 +1613,6 @@ namespace LetheChat.Forms
         private Label label17;
         private ModernNumericUpDown numKeepEurekas;
         private Label label18;
-        private Label label19;
-        private ModernNumericUpDown numAgentDelay;
         private Controls.ModernTabControl TabControl;
         private TabPage tbGeneral;
         private TabPage tbStyle;

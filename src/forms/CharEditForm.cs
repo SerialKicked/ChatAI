@@ -110,8 +110,6 @@ namespace LetheChat.Forms
             mychar.AgentTasks = [.. listAgentTasks.CheckedItems.Cast<string>()];
             mychar.DisableBotGuidance = ckNoGuidance.Checked;
             mychar.MiniBio = edMiniBio.Text.ToLinuxFormat();
-            if (mychar.AgentSystem is not null)
-                mychar.AgentSystem.Config.MinInactivityTime = TimeSpan.FromHours((double)numAgentDelay.Value);
             mychar.LockSettings.Enabled = ckTimerEnable.Checked;
             mychar.LockSettings.StatusUnlockedMessage = edTimerOff.Text.ToLinuxFormat();
             mychar.LockSettings.StatusLockedMessage = edTimerOn.Text.ToLinuxFormat();
@@ -159,7 +157,6 @@ namespace LetheChat.Forms
             numEurekaMinTime.Value = (decimal)selectedCharacter.Brain.MinInsertDelay.TotalHours;
             numKeepEurekas.Value = (decimal)selectedCharacter.Brain.EurekaCutOff.TotalDays;
             ckAgent.Checked = selectedCharacter.AgentMode;
-            numAgentDelay.Value = (decimal)(selectedCharacter.AgentSystem?.Config.MinInactivityTime.TotalHours ?? 0.5);
             ckNoGuidance.Checked = selectedCharacter.DisableBotGuidance;
             moodCheer.Value = (decimal)selectedCharacter.Brain.Mood.Cheer;
             moodCuriosity.Value = (decimal)selectedCharacter.Brain.Mood.Curiosity;
