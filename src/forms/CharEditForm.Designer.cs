@@ -41,7 +41,6 @@ namespace LetheChat.Forms
             label14 = new Label();
             ed_outetts = new TextBox();
             label11 = new Label();
-            label9 = new Label();
             label8 = new Label();
             num_minAFK = new ModernNumericUpDown();
             label17 = new Label();
@@ -109,8 +108,6 @@ namespace LetheChat.Forms
             edTimerOn = new TextBox();
             ckTimerEnable = new ModernCheckBox();
             collapsibleGroupBox10 = new CollapsibleGroupBox();
-            collapsibleGroupBox9 = new CollapsibleGroupBox();
-            ckl_plugins = new ModernCheckedListBox();
             collapsibleGroupBox4 = new CollapsibleGroupBox();
             ckPassword = new ModernCheckBox();
             ck_senseoftime = new ModernCheckBox();
@@ -132,6 +129,7 @@ namespace LetheChat.Forms
             label10 = new Label();
             moodEnergy = new ModernNumericUpDown();
             tabSchedule = new TabPage();
+            textBox1 = new TextBox();
             lblSchedulePrefix = new Label();
             edSchedulePrefix = new TextBox();
             lblSunday = new Label();
@@ -164,7 +162,6 @@ namespace LetheChat.Forms
             tbSettings.SuspendLayout();
             collapsibleGroupBox11.SuspendLayout();
             collapsibleGroupBox10.SuspendLayout();
-            collapsibleGroupBox9.SuspendLayout();
             collapsibleGroupBox4.SuspendLayout();
             tabMood.SuspendLayout();
             tabSchedule.SuspendLayout();
@@ -173,7 +170,7 @@ namespace LetheChat.Forms
             // btRegenBio
             // 
             btRegenBio.FlatStyle = FlatStyle.Flat;
-            btRegenBio.Location = new Point(235, 271);
+            btRegenBio.Location = new Point(692, 96);
             btRegenBio.Name = "btRegenBio";
             btRegenBio.Size = new Size(190, 27);
             btRegenBio.TabIndex = 16;
@@ -185,7 +182,7 @@ namespace LetheChat.Forms
             // 
             label13.AutoSize = true;
             label13.Font = new Font("Segoe UI", 9F);
-            label13.Location = new Point(15, 257);
+            label13.Location = new Point(692, 49);
             label13.Name = "label13";
             label13.Size = new Size(170, 15);
             label13.TabIndex = 15;
@@ -197,7 +194,7 @@ namespace LetheChat.Forms
             num_selfedittokens.BorderStyle = BorderStyle.FixedSingle;
             num_selfedittokens.Font = new Font("Segoe UI", 9F);
             num_selfedittokens.Increment = new decimal(new int[] { 128, 0, 0, 0 });
-            num_selfedittokens.Location = new Point(15, 275);
+            num_selfedittokens.Location = new Point(692, 67);
             num_selfedittokens.Maximum = new decimal(new int[] { 2048, 0, 0, 0 });
             num_selfedittokens.Name = "num_selfedittokens";
             num_selfedittokens.Padding = new Padding(1);
@@ -208,19 +205,19 @@ namespace LetheChat.Forms
             // 
             ed_selfedit.BorderStyle = BorderStyle.FixedSingle;
             ed_selfedit.Font = new Font("Segoe UI", 9F);
-            ed_selfedit.Location = new Point(15, 50);
+            ed_selfedit.Location = new Point(15, 67);
             ed_selfedit.Multiline = true;
             ed_selfedit.Name = "ed_selfedit";
             ed_selfedit.ReadOnly = true;
             ed_selfedit.ScrollBars = ScrollBars.Vertical;
-            ed_selfedit.Size = new Size(410, 204);
+            ed_selfedit.Size = new Size(671, 207);
             ed_selfedit.TabIndex = 13;
             // 
             // label12
             // 
             label12.AutoSize = true;
             label12.Font = new Font("Segoe UI", 9F);
-            label12.Location = new Point(15, 32);
+            label12.Location = new Point(15, 49);
             label12.Name = "label12";
             label12.Size = new Size(373, 15);
             label12.TabIndex = 0;
@@ -279,16 +276,6 @@ namespace LetheChat.Forms
             label11.Size = new Size(257, 15);
             label11.TabIndex = 1;
             label11.Text = "Voice ID for KoboldCPP's Text-To-Speech API";
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Font = new Font("Segoe UI", 9F);
-            label9.Location = new Point(15, 32);
-            label9.Name = "label9";
-            label9.Size = new Size(248, 15);
-            label9.TabIndex = 0;
-            label9.Text = "Plugins this character has access to by default";
             // 
             // label8
             // 
@@ -936,7 +923,6 @@ namespace LetheChat.Forms
             tbSettings.BackColor = Color.FromArgb(37, 37, 37);
             tbSettings.Controls.Add(collapsibleGroupBox11);
             tbSettings.Controls.Add(collapsibleGroupBox10);
-            tbSettings.Controls.Add(collapsibleGroupBox9);
             tbSettings.Controls.Add(collapsibleGroupBox4);
             tbSettings.Font = new Font("Segoe UI", 9F);
             tbSettings.ForeColor = Color.FromArgb(230, 230, 230);
@@ -961,10 +947,10 @@ namespace LetheChat.Forms
             collapsibleGroupBox11.Controls.Add(edTimerOn);
             collapsibleGroupBox11.Controls.Add(ckTimerEnable);
             collapsibleGroupBox11.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox11.Location = new Point(458, 312);
+            collapsibleGroupBox11.Location = new Point(458, 19);
             collapsibleGroupBox11.Name = "collapsibleGroupBox11";
             collapsibleGroupBox11.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox11.Size = new Size(440, 298);
+            collapsibleGroupBox11.Size = new Size(451, 298);
             collapsibleGroupBox11.TabIndex = 4;
             collapsibleGroupBox11.Text = "Timer Plugin";
             // 
@@ -1075,36 +1061,12 @@ namespace LetheChat.Forms
             collapsibleGroupBox10.Controls.Add(num_selfedittokens);
             collapsibleGroupBox10.Controls.Add(ed_selfedit);
             collapsibleGroupBox10.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox10.Location = new Point(12, 312);
+            collapsibleGroupBox10.Location = new Point(12, 323);
             collapsibleGroupBox10.Name = "collapsibleGroupBox10";
             collapsibleGroupBox10.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox10.Size = new Size(440, 298);
+            collapsibleGroupBox10.Size = new Size(897, 287);
             collapsibleGroupBox10.TabIndex = 3;
             collapsibleGroupBox10.Text = "Character's Personal Field";
-            // 
-            // collapsibleGroupBox9
-            // 
-            collapsibleGroupBox9.BackColor = Color.FromArgb(37, 38, 42);
-            collapsibleGroupBox9.CanCollapse = false;
-            collapsibleGroupBox9.Controls.Add(ckl_plugins);
-            collapsibleGroupBox9.Controls.Add(label9);
-            collapsibleGroupBox9.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox9.Location = new Point(458, 19);
-            collapsibleGroupBox9.Name = "collapsibleGroupBox9";
-            collapsibleGroupBox9.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox9.Size = new Size(440, 287);
-            collapsibleGroupBox9.TabIndex = 2;
-            collapsibleGroupBox9.Text = "Context Plugins";
-            // 
-            // ckl_plugins
-            // 
-            ckl_plugins.BackColor = Color.FromArgb(64, 64, 64);
-            ckl_plugins.Font = new Font("Segoe UI", 9.25F);
-            ckl_plugins.Location = new Point(15, 50);
-            ckl_plugins.Name = "ckl_plugins";
-            ckl_plugins.Padding = new Padding(1);
-            ckl_plugins.Size = new Size(410, 226);
-            ckl_plugins.TabIndex = 1;
             // 
             // collapsibleGroupBox4
             // 
@@ -1124,7 +1086,7 @@ namespace LetheChat.Forms
             collapsibleGroupBox4.Location = new Point(12, 19);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox4.Size = new Size(440, 287);
+            collapsibleGroupBox4.Size = new Size(440, 298);
             collapsibleGroupBox4.TabIndex = 1;
             collapsibleGroupBox4.Text = "General Settings";
             // 
@@ -1352,6 +1314,7 @@ namespace LetheChat.Forms
             // tabSchedule
             // 
             tabSchedule.BackColor = Color.FromArgb(37, 37, 37);
+            tabSchedule.Controls.Add(textBox1);
             tabSchedule.Controls.Add(lblSchedulePrefix);
             tabSchedule.Controls.Add(edSchedulePrefix);
             tabSchedule.Controls.Add(lblSunday);
@@ -1376,6 +1339,21 @@ namespace LetheChat.Forms
             tabSchedule.Size = new Size(917, 618);
             tabSchedule.TabIndex = 6;
             tabSchedule.Text = "Daily Schedule";
+            // 
+            // textBox1
+            // 
+            textBox1.BackColor = SystemColors.Info;
+            textBox1.BorderStyle = BorderStyle.FixedSingle;
+            textBox1.ForeColor = Color.Black;
+            textBox1.Location = new Point(20, 444);
+            textBox1.Multiline = true;
+            textBox1.Name = "textBox1";
+            textBox1.ReadOnly = true;
+            textBox1.Size = new Size(870, 46);
+            textBox1.TabIndex = 17;
+            textBox1.TabStop = false;
+            textBox1.Tag = "no-theme";
+            textBox1.Text = resources.GetString("textBox1.Text");
             // 
             // lblSchedulePrefix
             // 
@@ -1561,8 +1539,6 @@ namespace LetheChat.Forms
             collapsibleGroupBox11.PerformLayout();
             collapsibleGroupBox10.ResumeLayout(false);
             collapsibleGroupBox10.PerformLayout();
-            collapsibleGroupBox9.ResumeLayout(false);
-            collapsibleGroupBox9.PerformLayout();
             collapsibleGroupBox4.ResumeLayout(false);
             collapsibleGroupBox4.PerformLayout();
             tabMood.ResumeLayout(false);
@@ -1588,7 +1564,6 @@ namespace LetheChat.Forms
         private Label label5;
         private TextBox ed_writingstyle;
         private Label label7;
-        private Label label9;
         private TextBox ed_outetts;
         private Label label11;
         private ModernComboBox cb_icon;
@@ -1627,7 +1602,6 @@ namespace LetheChat.Forms
         private Controls.ModernCheckBox ckAgent;
         private Controls.ModernCheckBox ckAllowEurekas;
         private Controls.CollapsibleGroupBox collapsibleGroupBox8;
-        private Controls.CollapsibleGroupBox collapsibleGroupBox9;
         private Controls.CollapsibleGroupBox collapsibleGroupBox4;
         private Controls.ModernCheckBox ckPassword;
         private Controls.ModernCheckBox ck_senseoftime;
@@ -1643,7 +1617,6 @@ namespace LetheChat.Forms
         private Controls.ModernCheckedListBox listTools;
         private Controls.ModernCheckedListBox ckl_worldinfo;
         private Controls.ModernCheckedListBox ckl_samplers;
-        private Controls.ModernCheckedListBox ckl_plugins;
         private CheckBox ckNoGuidance;
         private TabPage tabMood;
         private Label label10;
@@ -1690,5 +1663,6 @@ namespace LetheChat.Forms
         private Label lblSaturday;
         private TextBox edSaturday;
         private ModernCheckBox ckToolOverride;
+        private TextBox textBox1;
     }
 }

@@ -3,6 +3,7 @@ using LetheAISharp.Agent;
 using LetheAISharp.Files;
 using LetheAISharp.LLM;
 using LetheAISharp.Memory;
+using LetheChat.Plugins;
 using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -21,11 +23,78 @@ namespace LetheChat.Forms
     public partial class CharEditForm : Form
     {
         private Character SelectedCharacter = new();
+        private readonly ToolTip _toolTip = new() { AutoPopDelay = 12000, InitialDelay = 400, ReshowDelay = 200 };
 
         public CharEditForm()
         {
             InitializeComponent();
             KeyPreview = true;
+            SetupTooltips();
+        }
+
+        private static string Desc<T>(string propertyName) =>
+            typeof(T).GetProperty(propertyName)
+                     ?.GetCustomAttribute<DescriptionAttribute>()
+                     ?.Description ?? string.Empty;
+
+        private void SetupTooltips()
+        {
+            // General tab
+            _toolTip.SetToolTip(ed_name,          Desc<BasePersona>(nameof(BasePersona.Name)));
+            _toolTip.SetToolTip(ck_isuser,         Desc<BasePersona>(nameof(BasePersona.IsUser)));
+            _toolTip.SetToolTip(ed_bio,            Desc<BasePersona>(nameof(BasePersona.Bio)));
+            _toolTip.SetToolTip(edMiniBio,         Desc<Character>(nameof(Character.MiniBio)));
+            _toolTip.SetToolTip(ckNoGuidance,      Desc<BasePersona>(nameof(BasePersona.DisableBotGuidance)));
+            _toolTip.SetToolTip(ed_scenario,       Desc<BasePersona>(nameof(BasePersona.Scenario)));
+            _toolTip.SetToolTip(ed_firstmessage,   Desc<BasePersona>(nameof(BasePersona.FirstMessage)));
+            _toolTip.SetToolTip(cb_icon,           Desc<Character>(nameof(Character.Icon)));
+            _toolTip.SetToolTip(ed_outetts,        Desc<Character>(nameof(Character.TTSVoice)));
+
+            // Style tab
+            _toolTip.SetToolTip(ed_writingstyle,   Desc<BasePersona>(nameof(BasePersona.ExampleDialogs)));
+            _toolTip.SetToolTip(ckl_worldinfo,     Desc<BasePersona>(nameof(BasePersona.Worlds)));
+            _toolTip.SetToolTip(ckl_samplers,      Desc<Character>(nameof(Character.AllowedSamplers)));
+
+            // System Prompt tab
+            _toolTip.SetToolTip(ed_sysprompt,      Desc<BasePersona>(nameof(BasePersona.SystemPrompt)));
+
+            // Agent tab
+            _toolTip.SetToolTip(ckAgent,           Desc<BasePersona>(nameof(BasePersona.AgentMode)));
+            _toolTip.SetToolTip(listAgentTasks,    Desc<BasePersona>(nameof(BasePersona.AgentTasks)));
+            _toolTip.SetToolTip(ckAllowEurekas,    Desc<Brain>(nameof(Brain.DisableEurekas)));
+            _toolTip.SetToolTip(numEurekaMinMess,  Desc<Brain>(nameof(Brain.MinMessageDelay)));
+            _toolTip.SetToolTip(numEurekaMinTime,  Desc<Brain>(nameof(Brain.MinInsertDelay)));
+            _toolTip.SetToolTip(numKeepEurekas,    Desc<Brain>(nameof(Brain.EurekaCutOff)));
+            _toolTip.SetToolTip(ckToolOverride,    Desc<BasePersona>(nameof(BasePersona.OverrideDefaultToolset)));
+            _toolTip.SetToolTip(listTools,         Desc<BasePersona>(nameof(BasePersona.Tools)));
+
+            // Settings tab
+            _toolTip.SetToolTip(ck_caninitchat,    Desc<Character>(nameof(Character.CanInitiateChat)));
+            _toolTip.SetToolTip(ckMoodSystem,      Desc<Brain>(nameof(Brain.MoodHandling)));
+            _toolTip.SetToolTip(ck_senseoftime,    Desc<BasePersona>(nameof(BasePersona.SenseOfTime)));
+            _toolTip.SetToolTip(ck_irldates,       Desc<BasePersona>(nameof(BasePersona.DatesInSessionSummaries)));
+            _toolTip.SetToolTip(ckPassword,        Desc<Character>(nameof(Character.Protected)));
+            _toolTip.SetToolTip(cb_pointsystems,   Desc<Character>(nameof(Character.PointSystem)));
+            _toolTip.SetToolTip(num_ptvalue,       Desc<Character>(nameof(Character.PointValue)));
+            _toolTip.SetToolTip(num_minAFK,        Desc<Brain>(nameof(Brain.HoursBeforeAFK)));
+            _toolTip.SetToolTip(num_selfedittokens,Desc<BasePersona>(nameof(BasePersona.SelfEditTokens)));
+            _toolTip.SetToolTip(ed_selfedit,       Desc<BasePersona>(nameof(BasePersona.SelfEditField)));
+
+            // Timer Plugin
+            _toolTip.SetToolTip(ckTimerEnable,     Desc<ToggleMonitorSettings>(nameof(ToggleMonitorSettings.Enabled)));
+            _toolTip.SetToolTip(edTimerOn,         Desc<ToggleMonitorSettings>(nameof(ToggleMonitorSettings.StatusLockedMessage)));
+            _toolTip.SetToolTip(edTimerOff,        Desc<ToggleMonitorSettings>(nameof(ToggleMonitorSettings.StatusUnlockedMessage)));
+            _toolTip.SetToolTip(edTimerExpired,    Desc<ToggleMonitorSettings>(nameof(ToggleMonitorSettings.StatusLockOverMessage)));
+            _toolTip.SetToolTip(ckTimerActive,     Desc<ToggleMonitorSettings>(nameof(ToggleMonitorSettings.IsLocked)));
+            _toolTip.SetToolTip(ckTimerAutoExpire, Desc<ToggleMonitorSettings>(nameof(ToggleMonitorSettings.AutomaticUnlockOnDurationEnd)));
+            _toolTip.SetToolTip(ckTimerAddDuration,Desc<ToggleMonitorSettings>(nameof(ToggleMonitorSettings.ShowLockDuration)));
+
+            // Mood tab
+            _toolTip.SetToolTip(ckStaticMood,      Desc<Brain>(nameof(Brain.StaticMood)));
+
+            _toolTip.IsBalloon = true;
+            _toolTip.ToolTipIcon = ToolTipIcon.Info;
+            _toolTip.ToolTipTitle = "Help";
         }
 
         public void SetupCharacterEditor(string Forceid = "", bool addEvents = true)
@@ -85,7 +154,6 @@ namespace LetheChat.Forms
             mychar.SelfEditTokens = (int)num_selfedittokens.Value;
             mychar.SelfEditField = ed_selfedit.Text.ToLinuxFormat();
             mychar.Icon = cb_icon.SelectedText ?? string.Empty;
-            mychar.Plugins = [.. ckl_plugins.CheckedItems.Cast<string>()];
             mychar.Worlds = [.. ckl_worldinfo.CheckedItems.Cast<string>()];
             mychar.AllowedSamplers = [.. ckl_samplers.CheckedItems.Cast<string>()];
             mychar.PointSystem = (cb_pointsystems.SelectedIndex != -1) ? cb_pointsystems.Text : string.Empty;
@@ -185,11 +253,7 @@ namespace LetheChat.Forms
 
 
             edFilename.Text = selectedCharacter.UniqueName;
-            ckl_plugins.Items.Clear();
-            foreach (var item in LLMEngine.ContextPlugins)
-            {
-                ckl_plugins.Items.Add(item.PluginID, selectedCharacter.Plugins.Contains(item.PluginID));
-            }
+            
             ckl_worldinfo.Items.Clear();
             foreach (var item in DataFiles.WorldInfos)
             {

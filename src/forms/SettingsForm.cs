@@ -553,5 +553,10 @@ namespace LetheChat.Forms
                 edToolinfo.Text += $"- {tool.Function?.Name ?? "Unknown"}: {tool.Function?.Description ?? "No description"}" + Environment.NewLine + Environment.NewLine;
             }
         }
+
+        private void ckLlamaMLock_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

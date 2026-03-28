@@ -417,6 +417,7 @@
             ckLlamaMLock.TabIndex = 40;
             ckLlamaMLock.Text = "Memory Lock";
             ckLlamaMLock.UseVisualStyleBackColor = true;
+            ckLlamaMLock.CheckedChanged += ckLlamaMLock_CheckedChanged;
             // 
             // ckLlamaKV
             // 
