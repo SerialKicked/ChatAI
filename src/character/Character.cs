@@ -144,7 +144,11 @@ namespace LetheChat.Files
                     return;
                 }
 
-                throw new UnauthorizedAccessException("Wrong password or corrupted file. Shutting Down.");
+                // Show dialog box telling the password is wrong and then exit the app forcefully to prevent any further damage to the file
+                MessageBox.Show("Incorrect password. The file could not be decrypted (wrong password or corrupted file). The app will shut down to prevent damage.", "Decryption Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // error code 86 = incorrect password
+                Environment.Exit(86);
+                return;
             }
 
             // Not protected or no encrypted files - use base implementation

@@ -66,6 +66,7 @@ namespace LetheChat.Forms
             bt_worldsave = new Button();
             cb_worlds = new ComboBox();
             groupBox1 = new GroupBox();
+            button1 = new Button();
             groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numWItriggerchance).BeginInit();
             ((System.ComponentModel.ISupportInitialize)num_wentrypriority).BeginInit();
@@ -317,6 +318,7 @@ namespace LetheChat.Forms
             // 
             // groupBox6
             // 
+            groupBox6.Controls.Add(button1);
             groupBox6.Controls.Add(bt_delwentry);
             groupBox6.Controls.Add(bt_addwentry);
             groupBox6.Controls.Add(lb_worldentries);
@@ -329,9 +331,9 @@ namespace LetheChat.Forms
             // 
             // bt_delwentry
             // 
-            bt_delwentry.Location = new Point(143, 409);
+            bt_delwentry.Location = new Point(160, 409);
             bt_delwentry.Name = "bt_delwentry";
-            bt_delwentry.Size = new Size(90, 23);
+            bt_delwentry.Size = new Size(73, 23);
             bt_delwentry.TabIndex = 7;
             bt_delwentry.Text = "Delete";
             bt_delwentry.UseVisualStyleBackColor = true;
@@ -341,7 +343,7 @@ namespace LetheChat.Forms
             // 
             bt_addwentry.Location = new Point(4, 409);
             bt_addwentry.Name = "bt_addwentry";
-            bt_addwentry.Size = new Size(90, 23);
+            bt_addwentry.Size = new Size(73, 23);
             bt_addwentry.TabIndex = 6;
             bt_addwentry.Text = "Add New";
             bt_addwentry.UseVisualStyleBackColor = true;
@@ -460,6 +462,16 @@ namespace LetheChat.Forms
             groupBox1.TabStop = false;
             groupBox1.Text = "World Settings";
             // 
+            // button1
+            // 
+            button1.Location = new Point(81, 409);
+            button1.Name = "button1";
+            button1.Size = new Size(73, 23);
+            button1.TabIndex = 8;
+            button1.Text = "To Brain";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // WorldEditForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -532,5 +544,6 @@ namespace LetheChat.Forms
         private ComboBox cb_worlds;
         private GroupBox groupBox1;
         private CheckBox ckSticky;
+        private Button button1;
     }
 }

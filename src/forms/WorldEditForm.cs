@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using LetheAISharp.LLM;
 
 namespace LetheChat.Forms
 {
@@ -269,6 +270,19 @@ namespace LetheChat.Forms
             {
                 DialogResult = DialogResult.Cancel;
                 Close();
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // Copy current entry to the loaded character's brain
+            if (SelectedWorldEntryEditor != null)
+            {
+                LLMEngine.Bot.Brain.Memorize(SelectedWorldEntryEditor, true);
+                if (MessageBox.Show("Current entry copied to character's brain! Do you want to remove this one from the lorebook?", "Entry Copied", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    bt_delwentry_Click(sender, e);
+                }
             }
         }
     }
