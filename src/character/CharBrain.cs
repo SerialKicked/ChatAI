@@ -12,7 +12,6 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using LetheChat.AgentPlugins;
-using LetheChat.GBNF;
 using LetheAISharp.Moods;
 
 namespace LetheChat.Files
@@ -73,7 +72,7 @@ namespace LetheChat.Files
             var prevsession = Owner.History.Sessions[^2];
 
             // Analyze previous session for triggers
-            var action = AgentRuntime.GetAction<MoodAnalysis?, SessionMoodCheckParams>("SessionMoodCheckAction");
+            var action = AgentRuntime.GetAction<Dictionary<string, Modifier>?, SessionMoodCheckParams>("SessionMoodCheckAction");
             if (action is null)
                 return;
 
@@ -81,21 +80,9 @@ namespace LetheChat.Files
             if (result is null)
                 return;
 
-            static double Delta(Modifier m) => m switch
-            {
-                Modifier.HighReduction  => -0.2,
-                Modifier.SmallReduction => -0.1,
-                Modifier.SmallIncrease  =>  0.1,
-                Modifier.HighIncrease   =>  0.2,
-                _ => 0.0
-            };
-
-            foreach (var moodlet in Mood.MoodData)
-                if (MoodManager.Moodlets.TryGetValue(moodlet.Key, out var m))
-                {
-                    // TODO: Update moodstates
-                    // Mood.MoodData[moodlet.Key] = m.ProcessNewSession(moodlet.Value, result.Horniness);
-                }
+            foreach (var (key, modifier) in result)
+                if (MoodManager.Moodlets.TryGetValue(key, out var m) && Mood.MoodData.ContainsKey(key))
+                    Mood.MoodData[key] = m.ProcessNewSession(Mood.MoodData[key], modifier);
         }
 
         public override async Task<List<VaultResult>> Search(string message, int maxRes, float maxDist)

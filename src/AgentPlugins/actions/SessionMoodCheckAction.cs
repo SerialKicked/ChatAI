@@ -4,6 +4,7 @@ using LetheAISharp.API;
 using LetheAISharp.Files;
 using LetheAISharp.GBNF;
 using LetheAISharp.LLM;
+using LetheAISharp.Moods;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Text;
@@ -20,20 +21,32 @@ namespace LetheChat.AgentPlugins
     /// Represents an action that analyzes the mood of a session based on its transcript and context.
     /// </summary>
     /// <remarks>This action uses a language model to evaluate the mood and feelings expressed during a
-    /// session.  The analysis is returned as a <see cref="MoodAnalysis"/> object, which provides structured feedback 
-    /// on mood changes. The action requires specific agent capabilities, including having a language model loaded and a
-    /// backend with structure output functionalities.</remarks>
-    public class SessionMoodCheckAction : IAgentAction<MoodAnalysis?, SessionMoodCheckParams>
+    /// session. The analysis is returned as a dictionary mapping mood keys to <see cref="Modifier"/> values,
+    /// built dynamically from the currently loaded moodlets. The action requires specific agent capabilities,
+    /// including having a language model loaded and a backend with structured output functionalities.</remarks>
+    public class SessionMoodCheckAction : IAgentAction<Dictionary<string, Modifier>?, SessionMoodCheckParams>
     {
         public string Id => "SessionMoodCheckAction";
         public HashSet<AgentActionRequirements> Requirements => [AgentActionRequirements.LLM, AgentActionRequirements.Grammar];
 
-        public async Task<MoodAnalysis?> Execute(SessionMoodCheckParams param, CancellationToken ct)
+        public async Task<Dictionary<string, Modifier>?> Execute(SessionMoodCheckParams param, CancellationToken ct)
         {
             if (ct.IsCancellationRequested)
                 return null;
 
-            var moodformat = new MoodAnalysis();
+            if (LLMEngine.Bot.Brain.Mood.MoodData.Count == 0)
+                return null;
+
+            var moodlsts = new Dictionary<string, IMoodlet>();
+            foreach (var moodinfo in LLMEngine.Bot.Brain.Mood.MoodData)
+            {
+                if (MoodManager.Moodlets.TryGetValue(moodinfo.Key, out var moodlet))
+                {
+                    moodlsts[moodinfo.Key] = moodlet;
+                }
+            }
+
+            var moodformat = new DynamicMoodAnalysis(moodlsts);
             var request = "Based on the transcript of the session, update your mood and feelings." + moodformat.GetQuery() + LLMEngine.NewLine + "The values are as follows:\n 0: High reduction\n 1: Small reduction\n 2: No change\n 3: Small increase\n 4: High increase \n\n Only answer with the JSON, nothing else.";
 
             var prompt = GetSystemPromt(param.Session, request);
@@ -41,16 +54,16 @@ namespace LetheChat.AgentPlugins
             var fullprompt = prompt.PromptToQuery(AuthorRole.Assistant, LLMEngine.Sampler.Temperature, 1024);
             var response = await LLMEngine.SimpleQuery(fullprompt, ct).ConfigureAwait(false);
 
+            Dictionary<string, Modifier>? result = null;
             try
             {
-                moodformat = JsonConvert.DeserializeObject<MoodAnalysis>(response);
+                result = DynamicMoodAnalysis.ParseResponse(response);
             }
             catch (Exception ex)
             {
-                moodformat = null;
                 LLMEngine.Logger?.LogError(ex, "Error parsing mood analysis response: {Response}", response);
             }
-            return moodformat;
+            return result;
         }
 
         private static IPromptBuilder GetSystemPromt(ChatSession param, string request)

@@ -13,7 +13,7 @@ using System.IO;
 using System.Text;
 using LetheChat.AgentPlugins;
 using LetheChat.Files;
-using LetheChat.GBNF;
+using LetheAISharp.Moods;
 using LetheChat.Forms;
 
 namespace LetheChat.Forms
@@ -589,19 +589,15 @@ namespace LetheChat.Forms
             if (_selectedSession == null)
                 return;
 
-            var action = AgentRuntime.GetAction<MoodAnalysis?, SessionMoodCheckParams>("SessionMoodCheckAction");
+            var action = AgentRuntime.GetAction<Dictionary<string, Modifier>?, SessionMoodCheckParams>("SessionMoodCheckAction");
             if (action is not null)
             {
                 var result = await action.Execute(new SessionMoodCheckParams(_selectedSession), CancellationToken.None);
                 if (result is not null)
                 {
                     var strb = new StringBuilder();
-                    strb.AppendLine($"Horniness: {result.Horniness.ToString()}");
-                    strb.AppendLine($"Submission: {result.Submission.ToString()}");
-                    strb.AppendLine($"Energy: {result.Energy.ToString()}");
-                    strb.AppendLine($"Cheer: {result.Happy.ToString()}");
-                    strb.AppendLine($"Curiosity: {result.Curiosity.ToString()}");
-                    strb.AppendLine($"Sanity: {result.Sanity.ToString()}");
+                    foreach (var (key, modifier) in result)
+                        strb.AppendLine($"{key}: {modifier}");
                     MessageBox.Show(strb.ToString(), "Mood Analysis Results");
                 }
                 else
