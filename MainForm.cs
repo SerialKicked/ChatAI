@@ -26,6 +26,7 @@ using LetheChat.Game;
 using LetheChat.Plugins;
 using LetheChat.Slash;
 using LetheChat.Forms;
+using LetheAISharp.Moods;
 
 namespace LetheChat
 {
@@ -132,6 +133,7 @@ namespace LetheChat
             HelptoolTip.SetToolTip(ckToolCalls, "Whether to allow the use of tool-calls in the current conversation. If unchecked, the bot will not be able to call any tools, even if they are enabled in the settings." + Environment.NewLine + Environment.NewLine + "This is useful to quickly toggle tool access without having to change the settings.");
             HelptoolTip.SetToolTip(mck_agentmode, "Allow the bot to use its background agent features when the user is AFK, such as setting goals, writing in their journal, or performing websearches based on discussion." + Environment.NewLine + Environment.NewLine + "This is only relevant if the character has background tasks setup.");
 
+            MoodManager.LoadDefaultMoods();
             // Load our agentic actions
             AgentRuntime.RegisterAction(new SessionMoodCheckAction());
             AgentRuntime.RegisterAction(new ImageInfoAction());

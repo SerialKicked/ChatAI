@@ -115,19 +115,8 @@ namespace LetheChat.Forms
             ckMoodSystem = new ModernCheckBox();
             ck_caninitchat = new ModernCheckBox();
             tabMood = new TabPage();
+            dgvMoods = new DataGridView();
             ckStaticMood = new ModernCheckBox();
-            label24 = new Label();
-            moodSanity = new ModernNumericUpDown();
-            label25 = new Label();
-            moodSub = new ModernNumericUpDown();
-            label26 = new Label();
-            moodHorny = new ModernNumericUpDown();
-            label21 = new Label();
-            moodCuriosity = new ModernNumericUpDown();
-            label20 = new Label();
-            moodCheer = new ModernNumericUpDown();
-            label10 = new Label();
-            moodEnergy = new ModernNumericUpDown();
             tabSchedule = new TabPage();
             textBox1 = new TextBox();
             lblSchedulePrefix = new Label();
@@ -164,6 +153,7 @@ namespace LetheChat.Forms
             collapsibleGroupBox10.SuspendLayout();
             collapsibleGroupBox4.SuspendLayout();
             tabMood.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvMoods).BeginInit();
             tabSchedule.SuspendLayout();
             SuspendLayout();
             // 
@@ -518,7 +508,7 @@ namespace LetheChat.Forms
             label6.Font = new Font("Segoe UI", 9F);
             label6.Location = new Point(15, 32);
             label6.Name = "label6";
-            label6.Size = new Size(361, 15);
+            label6.Size = new Size(338, 15);
             label6.TabIndex = 0;
             label6.Text = "Select the lore books this character is allowed to use. (optional)";
             // 
@@ -1147,19 +1137,8 @@ namespace LetheChat.Forms
             // tabMood
             // 
             tabMood.BackColor = Color.FromArgb(37, 37, 37);
+            tabMood.Controls.Add(dgvMoods);
             tabMood.Controls.Add(ckStaticMood);
-            tabMood.Controls.Add(label24);
-            tabMood.Controls.Add(moodSanity);
-            tabMood.Controls.Add(label25);
-            tabMood.Controls.Add(moodSub);
-            tabMood.Controls.Add(label26);
-            tabMood.Controls.Add(moodHorny);
-            tabMood.Controls.Add(label21);
-            tabMood.Controls.Add(moodCuriosity);
-            tabMood.Controls.Add(label20);
-            tabMood.Controls.Add(moodCheer);
-            tabMood.Controls.Add(label10);
-            tabMood.Controls.Add(moodEnergy);
             tabMood.Font = new Font("Segoe UI", 9F);
             tabMood.ForeColor = Color.FromArgb(230, 230, 230);
             tabMood.Location = new Point(4, 40);
@@ -1168,6 +1147,26 @@ namespace LetheChat.Forms
             tabMood.Size = new Size(917, 618);
             tabMood.TabIndex = 5;
             tabMood.Text = "Mood Values";
+            // 
+            // dgvMoods
+            // 
+            dgvMoods.AllowUserToAddRows = false;
+            dgvMoods.AllowUserToDeleteRows = false;
+            dgvMoods.AllowUserToResizeRows = false;
+            dgvMoods.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvMoods.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvMoods.BackgroundColor = Color.FromArgb(37, 37, 37);
+            dgvMoods.BorderStyle = BorderStyle.None;
+            dgvMoods.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgvMoods.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgvMoods.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvMoods.GridColor = Color.FromArgb(64, 64, 64);
+            dgvMoods.Location = new Point(20, 50);
+            dgvMoods.Name = "dgvMoods";
+            dgvMoods.RowHeadersVisible = false;
+            dgvMoods.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvMoods.Size = new Size(875, 555);
+            dgvMoods.TabIndex = 13;
             // 
             // ckStaticMood
             // 
@@ -1178,138 +1177,6 @@ namespace LetheChat.Forms
             ckStaticMood.TabIndex = 12;
             ckStaticMood.Text = "Static Mood Values";
             ckStaticMood.UseVisualStyleBackColor = true;
-            // 
-            // label24
-            // 
-            label24.AutoSize = true;
-            label24.Location = new Point(20, 282);
-            label24.Name = "label24";
-            label24.Size = new Size(39, 15);
-            label24.TabIndex = 11;
-            label24.Text = "Sanity";
-            // 
-            // moodSanity
-            // 
-            moodSanity.BackColor = Color.FromArgb(64, 64, 64);
-            moodSanity.DecimalPlaces = 5;
-            moodSanity.Font = new Font("Segoe UI", 9F);
-            moodSanity.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
-            moodSanity.Location = new Point(20, 300);
-            moodSanity.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
-            moodSanity.Name = "moodSanity";
-            moodSanity.Padding = new Padding(1);
-            moodSanity.Size = new Size(120, 24);
-            moodSanity.TabIndex = 10;
-            // 
-            // label25
-            // 
-            label25.AutoSize = true;
-            label25.Location = new Point(20, 237);
-            label25.Name = "label25";
-            label25.Size = new Size(68, 15);
-            label25.TabIndex = 9;
-            label25.Text = "Submission";
-            // 
-            // moodSub
-            // 
-            moodSub.BackColor = Color.FromArgb(64, 64, 64);
-            moodSub.DecimalPlaces = 5;
-            moodSub.Font = new Font("Segoe UI", 9F);
-            moodSub.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
-            moodSub.Location = new Point(20, 255);
-            moodSub.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
-            moodSub.Name = "moodSub";
-            moodSub.Padding = new Padding(1);
-            moodSub.Size = new Size(120, 24);
-            moodSub.TabIndex = 8;
-            // 
-            // label26
-            // 
-            label26.AutoSize = true;
-            label26.Location = new Point(20, 192);
-            label26.Name = "label26";
-            label26.Size = new Size(60, 15);
-            label26.TabIndex = 7;
-            label26.Text = "Horniness";
-            // 
-            // moodHorny
-            // 
-            moodHorny.BackColor = Color.FromArgb(64, 64, 64);
-            moodHorny.DecimalPlaces = 5;
-            moodHorny.Font = new Font("Segoe UI", 9F);
-            moodHorny.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
-            moodHorny.Location = new Point(20, 210);
-            moodHorny.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
-            moodHorny.Name = "moodHorny";
-            moodHorny.Padding = new Padding(1);
-            moodHorny.Size = new Size(120, 24);
-            moodHorny.TabIndex = 6;
-            // 
-            // label21
-            // 
-            label21.AutoSize = true;
-            label21.Location = new Point(20, 147);
-            label21.Name = "label21";
-            label21.Size = new Size(54, 15);
-            label21.TabIndex = 5;
-            label21.Text = "Curiosity";
-            // 
-            // moodCuriosity
-            // 
-            moodCuriosity.BackColor = Color.FromArgb(64, 64, 64);
-            moodCuriosity.DecimalPlaces = 5;
-            moodCuriosity.Font = new Font("Segoe UI", 9F);
-            moodCuriosity.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
-            moodCuriosity.Location = new Point(20, 165);
-            moodCuriosity.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
-            moodCuriosity.Name = "moodCuriosity";
-            moodCuriosity.Padding = new Padding(1);
-            moodCuriosity.Size = new Size(120, 24);
-            moodCuriosity.TabIndex = 4;
-            // 
-            // label20
-            // 
-            label20.AutoSize = true;
-            label20.Location = new Point(20, 102);
-            label20.Name = "label20";
-            label20.Size = new Size(38, 15);
-            label20.TabIndex = 3;
-            label20.Text = "Cheer";
-            // 
-            // moodCheer
-            // 
-            moodCheer.BackColor = Color.FromArgb(64, 64, 64);
-            moodCheer.DecimalPlaces = 5;
-            moodCheer.Font = new Font("Segoe UI", 9F);
-            moodCheer.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
-            moodCheer.Location = new Point(20, 120);
-            moodCheer.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
-            moodCheer.Name = "moodCheer";
-            moodCheer.Padding = new Padding(1);
-            moodCheer.Size = new Size(120, 24);
-            moodCheer.TabIndex = 2;
-            // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.Location = new Point(20, 57);
-            label10.Name = "label10";
-            label10.Size = new Size(43, 15);
-            label10.TabIndex = 1;
-            label10.Text = "Energy";
-            // 
-            // moodEnergy
-            // 
-            moodEnergy.BackColor = Color.FromArgb(64, 64, 64);
-            moodEnergy.DecimalPlaces = 5;
-            moodEnergy.Font = new Font("Segoe UI", 9F);
-            moodEnergy.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
-            moodEnergy.Location = new Point(20, 75);
-            moodEnergy.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
-            moodEnergy.Name = "moodEnergy";
-            moodEnergy.Padding = new Padding(1);
-            moodEnergy.Size = new Size(120, 24);
-            moodEnergy.TabIndex = 0;
             // 
             // tabSchedule
             // 
@@ -1542,7 +1409,7 @@ namespace LetheChat.Forms
             collapsibleGroupBox4.ResumeLayout(false);
             collapsibleGroupBox4.PerformLayout();
             tabMood.ResumeLayout(false);
-            tabMood.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvMoods).EndInit();
             tabSchedule.ResumeLayout(false);
             tabSchedule.PerformLayout();
             ResumeLayout(false);
@@ -1619,18 +1486,7 @@ namespace LetheChat.Forms
         private Controls.ModernCheckedListBox ckl_samplers;
         private CheckBox ckNoGuidance;
         private TabPage tabMood;
-        private Label label10;
-        private ModernNumericUpDown moodEnergy;
-        private Label label21;
-        private ModernNumericUpDown moodCuriosity;
-        private Label label20;
-        private ModernNumericUpDown moodCheer;
-        private Label label24;
-        private ModernNumericUpDown moodSanity;
-        private Label label25;
-        private ModernNumericUpDown moodSub;
-        private Label label26;
-        private ModernNumericUpDown moodHorny;
+        private DataGridView dgvMoods;
         private Label label27;
         private TextBox edMiniBio;
         private CollapsibleGroupBox collapsibleGroupBox11;

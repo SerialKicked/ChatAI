@@ -3,6 +3,7 @@ using LetheAISharp.Agent;
 using LetheAISharp.Files;
 using LetheAISharp.LLM;
 using LetheAISharp.Memory;
+using LetheAISharp.Moods;
 using LetheChat.Plugins;
 using Microsoft.VisualBasic.ApplicationServices;
 using System;
@@ -168,6 +169,7 @@ namespace LetheChat.Forms
             mychar.Brain.MinInsertDelay = TimeSpan.FromHours((double)numEurekaMinTime.Value);
             mychar.Brain.EurekaCutOff = TimeSpan.FromDays((int)numKeepEurekas.Value);
             mychar.Brain.StaticMood = ckStaticMood.Checked;
+            mychar.Brain.Mood.MoodData = ReadMoodGridData();
             mychar.AgentMode = ckAgent.Checked;
             mychar.AgentTasks = [.. listAgentTasks.CheckedItems.Cast<string>()];
             mychar.DisableBotGuidance = ckNoGuidance.Checked;
@@ -273,6 +275,78 @@ namespace LetheChat.Forms
             edThursday.Text = selectedCharacter.Brain.DailySchedule[(int)DayOfWeek.Thursday] ?? string.Empty;
             edFriday.Text = selectedCharacter.Brain.DailySchedule[(int)DayOfWeek.Friday] ?? string.Empty;
             edSaturday.Text = selectedCharacter.Brain.DailySchedule[(int)DayOfWeek.Saturday] ?? string.Empty;
+
+            PopulateMoodGrid(selectedCharacter);
+        }
+
+        private void PopulateMoodGrid(Character character)
+        {
+            dgvMoods.Columns.Clear();
+            dgvMoods.Rows.Clear();
+
+            dgvMoods.Columns.Add(new DataGridViewCheckBoxColumn
+            {
+                Name = "colEnabled",
+                HeaderText = "Enabled",
+                Width = 60,
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.None,
+            });
+            dgvMoods.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colName",
+                HeaderText = "Mood",
+                ReadOnly = true,
+                FillWeight = 40,
+            });
+            dgvMoods.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colDescription",
+                HeaderText = "Description",
+                ReadOnly = true,
+                FillWeight = 60,
+            });
+            dgvMoods.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colValue",
+                HeaderText = "Value",
+                Width = 100,
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.None,
+            });
+
+            var moodData = character.Brain.Mood.MoodData;
+
+            foreach (var kvp in MoodManager.Moodlets)
+            {
+                bool enabled = moodData.ContainsKey(kvp.Key);
+                double value = enabled ? moodData[kvp.Key] : kvp.Value.StartingValue;
+                dgvMoods.Rows.Add(enabled, kvp.Key, kvp.Value.Description, value.ToString("F5"));
+            }
+
+            // Apply dark theme styling
+            dgvMoods.EnableHeadersVisualStyles = false;
+            dgvMoods.DefaultCellStyle.BackColor = Color.FromArgb(37, 37, 37);
+            dgvMoods.DefaultCellStyle.ForeColor = Color.FromArgb(230, 230, 230);
+            dgvMoods.DefaultCellStyle.SelectionBackColor = Color.FromArgb(60, 60, 60);
+            dgvMoods.DefaultCellStyle.SelectionForeColor = Color.FromArgb(230, 230, 230);
+            dgvMoods.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(45, 45, 45);
+            dgvMoods.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(230, 230, 230);
+        }
+
+        private Dictionary<string, double> ReadMoodGridData()
+        {
+            var data = new Dictionary<string, double>();
+            foreach (DataGridViewRow row in dgvMoods.Rows)
+            {
+                if (row.IsNewRow) continue;
+                bool enabled = row.Cells["colEnabled"].Value is true;
+                if (!enabled) continue;
+
+                string name = row.Cells["colName"].Value?.ToString() ?? string.Empty;
+                string valStr = row.Cells["colValue"].Value?.ToString() ?? "0";
+                if (double.TryParse(valStr, out double val))
+                    data[name] = val;
+            }
+            return data;
         }
 
         private void bt_worldsave_Click(object sender, EventArgs e)
