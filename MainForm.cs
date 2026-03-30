@@ -353,6 +353,7 @@ namespace LetheChat
                 cb_user.Enabled = true;
                 ckToolCalls.Enabled = true;
                 bt_backend.Enabled = true;
+                btMainSettings.Enabled = true;
                 var (tokens, duration) = LLMEngine.History.GetCurrentChatSessionInfo();
                 statusbar.Items[0].Text = $"Current Session: {duration.TotalDays:F2} days ({tokens} tokens)";
             }
@@ -372,6 +373,7 @@ namespace LetheChat
                 cb_bot.Enabled = false;
                 cb_user.Enabled = false;
                 ckToolCalls.Enabled = false;
+                btMainSettings.Enabled = false;
             }
             else if (LLMEngine.Status == SystemStatus.NotInit)
             {
@@ -388,6 +390,7 @@ namespace LetheChat
                 cboxGroup.Enabled = false;
                 cb_bot.Enabled = true;
                 cb_user.Enabled = true;
+                btMainSettings.Enabled = true;
             }
             if (Bot?.AllowedSamplers.Count > 0)
             {
