@@ -13,24 +13,13 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using LetheChat.AgentPlugins;
 using LetheChat.GBNF;
+using LetheAISharp.Moods;
 
 namespace LetheChat.Files
 {
     public class CharBrain(BasePersona basePersona) : Brain(basePersona)
     {
         [JsonIgnore] protected new Character Owner => (Character)base.Owner;
-
-        [JsonIgnore]
-        public new AdvancedMoodState Mood
-        {
-            get
-            {
-                if (base.Mood is not AdvancedMoodState)
-                    base.Mood = new AdvancedMoodState();
-                return (AdvancedMoodState)base.Mood;
-            }
-            set => base.Mood = value;
-        }
 
         [JsonIgnore] private MemoryVault fileSystem { get; set; } = new();
 
@@ -82,9 +71,6 @@ namespace LetheChat.Files
                 return;
 
             var prevsession = Owner.History.Sessions[^2];
-            
-            if (prevsession.MetaData.IsRoleplaySession && prevsession.Messages.Count >= 10)
-                Mood.Horniness -= (0.015 * prevsession.Messages.Count);
 
             // Analyze previous session for triggers
             var action = AgentRuntime.GetAction<MoodAnalysis?, SessionMoodCheckParams>("SessionMoodCheckAction");
@@ -104,12 +90,12 @@ namespace LetheChat.Files
                 _ => 0.0
             };
 
-            Mood.Horniness  += Delta(result.Horniness);
-            Mood.Submission += Delta(result.Submission);
-            Mood.Energy     += Delta(result.Energy);
-            Mood.Cheer      += Delta(result.Happy);
-            Mood.Curiosity  += Delta(result.Curiosity);
-            Mood.Sanity     += Delta(result.Sanity);
+            foreach (var moodlet in Mood.MoodData)
+                if (MoodManager.Moodlets.TryGetValue(moodlet.Key, out var m))
+                {
+                    // TODO: Update moodstates
+                    // Mood.MoodData[moodlet.Key] = m.ProcessNewSession(moodlet.Value, result.Horniness);
+                }
         }
 
         public override async Task<List<VaultResult>> Search(string message, int maxRes, float maxDist)

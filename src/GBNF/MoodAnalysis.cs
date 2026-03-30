@@ -1,5 +1,6 @@
 ﻿using LetheAISharp;
 using LetheAISharp.LLM;
+using LetheAISharp.Moods;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,6 @@ using System.Threading.Tasks;
 
 namespace LetheChat.GBNF
 {
-    public enum Modifier { HighReduction, SmallReduction, None, SmallIncrease, HighIncrease }
-
     public class MoodAnalysis : LLMExtractableBase<MoodAnalysis>
     {
         [JsonIgnore] private static string Schema = string.Empty;
