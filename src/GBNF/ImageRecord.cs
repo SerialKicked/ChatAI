@@ -17,17 +17,17 @@ namespace LetheChat.GBNF
         [JsonIgnore] private static string Schema = string.Empty;
 
         [Required]
-        [Description("A title for this image")]
+        [Description("A title for this image.")]
         public string Title { get; set; } = string.Empty;
 
         [Required]
-        [Description("A very detailed description of the image, including characters, pose, age, background, and other visual elements")]
+        [Description("A very detailed description of the image, including characters, pose, age, background, and other visual elements.")]
         public string Description { get; set; } = string.Empty;
 
-        [Description("If the image features text, write it here")]
+        [Description("If the image features text, write it here.")]
         public string ImageText { get; set; } = string.Empty;
 
-        [Description("If the image features any notable messaging or themes, describe them here")]
+        [Description("If the image features any notable messaging or themes, describe them here.")]
         public string Interpretation { get; set; } = string.Empty;
 
         public override async Task<string> GetGrammar()

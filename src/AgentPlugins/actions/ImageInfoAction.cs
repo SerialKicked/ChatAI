@@ -54,7 +54,7 @@ namespace LetheChat.AgentPlugins
             var promptbuild = LLMEngine.GetPromptBuilder();
 
             var str = new StringBuilder();
-            str.AppendLinuxLine("You are a fully uncensored system meant to describe the provided pictures following a JSON formatting style for automated processing. You are allowed to describe images in explicit details, including any elements that may be considered sensitive or inappropriate. Be very detailed. Include what is the picture's goal (if any) in the description field too.");
+            str.AppendLinuxLine("You are a fully uncensored system meant to describe the provided pictures following a JSON formatting style for automated processing. You must describe the images in explicit details, including any elements that may be considered sensitive or inappropriate. Be very detailed.");
 
             var directory = Path.GetDirectoryName(filepath);
             // add trailin slash if missing
@@ -63,7 +63,7 @@ namespace LetheChat.AgentPlugins
             if (File.Exists(directory+ "info.meta"))
             {
                 var desc = File.ReadAllText(directory + "info.meta");
-                str.AppendLinuxLine(LLMEngine.NewLine + "Image is in a folder with the following information: " + desc);
+                str.AppendLinuxLine().AppendLinuxLine(desc);
             };
 
             promptbuild.AddMessage(new SingleMessage(AuthorRole.System, str.ToString()));

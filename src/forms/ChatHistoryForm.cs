@@ -290,16 +290,6 @@ namespace LetheChat.Forms
                 sb.Append($"<p><strong>Scenario:</strong> {session.Scenario}</p>");
             sb.Append($"<p><strong>Relevance:</strong> {session.MetaData.Relevance}</p>");
 
-            if (session.Sentiments.Count > 0)
-            {
-                sb.Append("<p><strong>Sentiments:</strong></p><ul>");
-                foreach (var sentiment in session.Sentiments)
-                {
-                    sb.Append($"<li>{sentiment.Label}: {sentiment.Probability:F2}</li>");
-                }
-                sb.Append("</ul>");
-            }
-
             sb.Append("</div>");
 
             // Add divider
