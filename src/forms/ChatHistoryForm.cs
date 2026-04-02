@@ -173,9 +173,10 @@ namespace LetheChat.Forms
             listSession.Items.Clear();
             if (LLMEngine.History.Sessions.Count == 0)
                 return;
-            foreach (var session in LLMEngine.History.Sessions)
+            for (int i = 0; i < LLMEngine.History.Sessions.Count; i++)
             {
-                var item = new ListViewItem([session.Name, session.StartTime.ToString("g")])
+                var session = LLMEngine.History.Sessions[i];
+                var item = new ListViewItem([session.Name, session.StartTime.ToString("g"), i.ToString()])
                 {
                     Tag = session
                 };
@@ -188,6 +189,10 @@ namespace LetheChat.Forms
                     item.ForeColor = Color.Red;
                 }
                 listSession.Items.Add(item);
+            }
+
+            foreach (var session in LLMEngine.History.Sessions)
+            {
             }
 
             // Apply current sorting after loading
@@ -505,7 +510,7 @@ namespace LetheChat.Forms
         {
             if (_selectedSession == null)
                 return;
-            await _selectedSession.EmbedText();
+            await _selectedSession.BuildEmbedding();
             DisplaySessionDetails(_selectedSession);
             LoadChatHistoryTab();
             MainForm.Bot?.SaveChatHistory();
@@ -611,6 +616,18 @@ namespace LetheChat.Forms
                 Close();
             }
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            // Move the selected session, if any, at the very end of the list to make it the most recent session without changing its date
+            if (_selectedSession == null)
+                return;
+
+            // Move the selected session to the end of the list
+            LLMEngine.History.Sessions.Remove(_selectedSession);
+            LLMEngine.History.Sessions.Add(_selectedSession);
+            LoadChatHistoryTab();
+        }
     }
 
     /// <summary>
@@ -644,7 +661,11 @@ namespace LetheChat.Forms
                     var dateB = sessionB?.StartTime ?? ParseDateString(b.SubItems.Count > 1 ? b.SubItems[1].Text : "");
                     result = DateTime.Compare(dateA, dateB);
                     break;
-
+                case 2: // List ID
+                    var idA = sessionA != null ? LLMEngine.History.Sessions.IndexOf(sessionA) : -1;
+                    var idB = sessionB != null ? LLMEngine.History.Sessions.IndexOf(sessionB) : -1;
+                    result = idA.CompareTo(idB);
+                    break;
                 default:
                     result = string.Compare(a.SubItems[_columnIndex].Text, b.SubItems[_columnIndex].Text, StringComparison.OrdinalIgnoreCase);
                     break;

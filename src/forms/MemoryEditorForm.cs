@@ -253,7 +253,7 @@ namespace LetheChat.Forms
 
             try
             {
-                await _editingMemory.EmbedText();
+                await _editingMemory.BuildEmbedding();
                 MessageBox.Show(this, "Embedding generated successfully.", "Success",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }

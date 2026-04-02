@@ -60,7 +60,9 @@ namespace LetheChat.Forms
             verticalStackPanel1 = new Panel();
             modernTabControl1 = new ModernTabControl();
             tabPage1 = new TabPage();
+            button2 = new Button();
             tabPage2 = new TabPage();
+            columnHeader3 = new ColumnHeader();
             collapsibleGroupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_sessioncontent).BeginInit();
             panel4.SuspendLayout();
@@ -302,7 +304,7 @@ namespace LetheChat.Forms
             // 
             // listSession
             // 
-            listSession.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2 });
+            listSession.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3 });
             listSession.Dock = DockStyle.Fill;
             listSession.FullRowSelect = true;
             listSession.Location = new Point(0, 0);
@@ -316,12 +318,12 @@ namespace LetheChat.Forms
             // columnHeader1
             // 
             columnHeader1.Text = "Title";
-            columnHeader1.Width = 280;
+            columnHeader1.Width = 240;
             // 
             // columnHeader2
             // 
             columnHeader2.Text = "Date";
-            columnHeader2.Width = 80;
+            columnHeader2.Width = 90;
             // 
             // panel5
             // 
@@ -393,6 +395,7 @@ namespace LetheChat.Forms
             // tabPage1
             // 
             tabPage1.BackColor = Color.FromArgb(37, 37, 37);
+            tabPage1.Controls.Add(button2);
             tabPage1.Controls.Add(bt_historyupdate);
             tabPage1.Controls.Add(label64);
             tabPage1.Controls.Add(button1);
@@ -409,6 +412,18 @@ namespace LetheChat.Forms
             tabPage1.Size = new Size(815, 221);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Session Info";
+            // 
+            // button2
+            // 
+            button2.FlatStyle = FlatStyle.Flat;
+            button2.Location = new Point(216, 186);
+            button2.Name = "button2";
+            button2.Size = new Size(119, 28);
+            button2.TabIndex = 22;
+            button2.Tag = "no-theme";
+            button2.Text = "Move to top";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // tabPage2
             // 
@@ -430,6 +445,10 @@ namespace LetheChat.Forms
             tabPage2.Size = new Size(815, 221);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Activation";
+            // 
+            // columnHeader3
+            // 
+            columnHeader3.Text = "ID";
             // 
             // ChatHistoryForm
             // 
@@ -492,5 +511,7 @@ namespace LetheChat.Forms
         private ModernTabControl modernTabControl1;
         private TabPage tabPage1;
         private TabPage tabPage2;
+        private Button button2;
+        private ColumnHeader columnHeader3;
     }
 }

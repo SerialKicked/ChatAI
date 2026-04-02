@@ -118,7 +118,7 @@ namespace LetheChat.AgentPlugins
                     Priority = Math.Clamp((6 - i) / 2 , 0, 3)
                 };
                 if (LLMEngine.Settings.RAGEnabled)
-                    await memunit.EmbedText().ConfigureAwait(false);
+                    await memunit.BuildEmbedding().ConfigureAwait(false);
                 owner.Brain.Memorize(memunit);
                 if (ct.IsCancellationRequested)
                     return;
