@@ -714,6 +714,7 @@ namespace LetheChat
             if (LLMEngine.Status == SystemStatus.Busy)
             {
                 LLMEngine.CancelGeneration();
+                LLMEngine.Bot.AgentSystem?.CancelWork();
                 if (LLMEngine.Bot is GroupChar mygroup)
                     mygroup.ClearResponseQueue();
                 UpdateUIState();
