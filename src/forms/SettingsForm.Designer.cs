@@ -144,6 +144,7 @@
             ck_sessionmemory = new LetheChat.Controls.ModernCheckBox();
             TabGroup = new TabPage();
             collapsibleGroupBox8 = new LetheChat.Controls.CollapsibleGroupBox();
+            ckGroupThinkPrompt = new LetheChat.Controls.ModernCheckBox();
             ckGroupCommit = new LetheChat.Controls.ModernCheckBox();
             ckGroupAltern = new LetheChat.Controls.ModernCheckBox();
             cbGroupSessionStrategy = new LetheChat.Controls.ModernComboBox();
@@ -1683,6 +1684,7 @@
             // 
             collapsibleGroupBox8.BackColor = Color.FromArgb(37, 37, 37);
             collapsibleGroupBox8.CanCollapse = false;
+            collapsibleGroupBox8.Controls.Add(ckGroupThinkPrompt);
             collapsibleGroupBox8.Controls.Add(ckGroupCommit);
             collapsibleGroupBox8.Controls.Add(ckGroupAltern);
             collapsibleGroupBox8.Controls.Add(cbGroupSessionStrategy);
@@ -1692,9 +1694,20 @@
             collapsibleGroupBox8.Location = new Point(6, 6);
             collapsibleGroupBox8.Name = "collapsibleGroupBox8";
             collapsibleGroupBox8.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox8.Size = new Size(780, 192);
+            collapsibleGroupBox8.Size = new Size(780, 225);
             collapsibleGroupBox8.TabIndex = 2;
             collapsibleGroupBox8.Text = "Group Chat";
+            // 
+            // ckGroupThinkPrompt
+            // 
+            ckGroupThinkPrompt.Dock = DockStyle.Top;
+            ckGroupThinkPrompt.Font = new Font("Segoe UI", 9F);
+            ckGroupThinkPrompt.Location = new Point(12, 183);
+            ckGroupThinkPrompt.Name = "ckGroupThinkPrompt";
+            ckGroupThinkPrompt.Size = new Size(756, 26);
+            ckGroupThinkPrompt.TabIndex = 63;
+            ckGroupThinkPrompt.Text = "Attempt to set who is talking in thinking block";
+            ckGroupThinkPrompt.UseVisualStyleBackColor = true;
             // 
             // ckGroupCommit
             // 
@@ -3066,5 +3079,6 @@
         private Panel panel31;
         private Controls.ModernNumericUpDown numAFKDelay;
         private Label label41;
+        private Controls.ModernCheckBox ckGroupThinkPrompt;
     }
 }

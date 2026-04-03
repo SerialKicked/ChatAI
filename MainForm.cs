@@ -556,7 +556,7 @@ namespace LetheChat
                     Invoke((System.Windows.Forms.MethodInvoker)delegate
                     {
                         statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
-                        ed_input.Text = _currentgeneration.ToString();
+                        ed_input.Text = _currentgenerationThink.ToString() + _currentgeneration.ToString();
                     });
                 }
             }
@@ -572,14 +572,34 @@ namespace LetheChat
                 _impersonatemode = false;
                 Invoke((System.Windows.Forms.MethodInvoker)delegate
                 {
-                    ed_input.Text = e.Response.ToWinFormat();
+                    ed_input.Text = e.ThinkingContent?.ToWinFormat() ?? string.Empty + e.Response.ToWinFormat();
                     statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                 });
                 LLMEngine.InvalidatePromptCache();
             }
             else
             {
-                var stringfix = Program.Settings.AsteriskCheck ? e.Response.FixAsterisks() : e.Response;
+                var activebot = (LLMEngine.Bot is GroupPersonaBase grp ? grp.GetCurrentPersona()?.Name : LLMEngine.Bot.Name) ?? LLMEngine.Bot.Name;
+                var statcheck = activebot + ": ";
+                var stringfix = e.Response;
+                if (stringfix.StartsWith(statcheck))
+                {
+                    // remove the statcheck string at the start of e.Response. Like "Bob: Hello!" becomes "Hello!" if statcheck contains "Bob: "
+                    var x = stringfix[statcheck.Length..];
+                    stringfix = x;
+                }
+                else
+                {
+                    statcheck = "**" + activebot + ":** ";
+                    if (stringfix.StartsWith(statcheck))
+                    {
+                        // remove the statcheck string at the start of e.Response. Like "Bob: Hello!" becomes "Hello!" if statcheck contains "Bob: "
+                        var x = stringfix[statcheck.Length..];
+                        stringfix = x;
+                    }
+                }
+                if (Program.Settings.AsteriskCheck)
+                    stringfix = stringfix.FixAsterisks();
 
                 if (Program.Settings.RemoveCutSentence)
                     stringfix = stringfix.RemoveUnfinishedSentence();

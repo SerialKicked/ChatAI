@@ -242,6 +242,7 @@ namespace LetheChat.Forms
             }
             cbGroupSessionStrategy.SelectedIndex = (int)Program.Settings.GroupSecondaryPersonaSeePastSessions;
             ckGroupAltern.Checked = Program.Settings.GroupInstructFormatAdapter;
+            ckGroupThinkPrompt.Checked = Program.Settings.GroupChatInfoThinkingBlock;
             ckDetailedSum.Checked = Program.Settings.SessionDetailedSummary;
             ckGroupCommit.Checked = Program.Settings.CommitGroupSessionToSecondaryPersonaHistory;
             numAFKDelay.Value = (decimal)Program.Settings.BackgroundAgentMinInactivityTime.TotalHours;
@@ -293,6 +294,7 @@ namespace LetheChat.Forms
                 Program.Settings.GroupChatAutoResponseLimit = (int)numGroupQueue.Value;
                 Program.Settings.GroupSecondaryPersonaSeePastSessions = (GroupChatPastSessionMode)cbGroupSessionStrategy.SelectedIndex;
                 Program.Settings.GroupInstructFormatAdapter = ckGroupAltern.Checked;
+                Program.Settings.GroupChatInfoThinkingBlock = ckGroupThinkPrompt.Checked;
                 Program.Settings.CommitGroupSessionToSecondaryPersonaHistory = ckGroupCommit.Checked;
                 Program.Settings.ForceInternalGrammar = ckForceInternalGram.Checked;
                 Program.Settings.FactRetrievalEnabled = ckFactRetrieval.Checked;
