@@ -542,14 +542,14 @@ namespace LetheChat
                     {
                         statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                     });
-                    var stringfix = _currentgeneration.ToString();
+                    var stringfix = _currentgeneration.ToString().StripThinkTags();
                     if (string.IsNullOrEmpty(stringfix))
                          stringfix = $"*{LLMEngine.Bot.GetIdentifier()} is thinking...*";
                     else
                         stringfix = stringfix.FixRoleplayString(Program.Settings.RoleplayFormatting, true);
 
                     var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
-                    await webUI.EditMessage(MsgPrefix + stringfix, _currentgenerationThink.ToString());
+                    await webUI.EditMessage(MsgPrefix + stringfix, _currentgenerationThink.ToString().StripThinkTags());
                 }
                 else
                 {

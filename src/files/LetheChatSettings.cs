@@ -133,6 +133,10 @@ namespace LetheChat.Files
         [Description("Memory-maps the model file (--mmap). Disabling is slower to load but may reduce page-outs when mlock is not in use.")]
         public bool mmap { get; set; } = true;
 
+        //--swa-full
+        [Description("use full-size SWA cache (--swa-full).")]
+        public bool swafull { get; set; } = false;
+
         /// <summary>
         /// Additional command-line arguments to pass to the Llama.cpp server. 
         /// This allows for further customization of the server's behavior by specifying any additional arguments supported by Llama.cpp that are not explicitly exposed as properties in this class.
@@ -239,6 +243,9 @@ namespace LetheChat.Files
 
             if (mlock)
                 args.Append(" --mlock");
+
+            if (swafull)
+                args.Append(" --swa-full");
 
             if (mmap)
                 args.Append(" --mmap");

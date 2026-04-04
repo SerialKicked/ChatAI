@@ -76,7 +76,7 @@ namespace LetheChat
         /// <param name="model">The model to launch.</param>
         /// <param name="ct">Optional cancellation token.</param>
         /// <param name="timeoutSeconds">Seconds to wait for the server to become ready (default 120).</param>
-        public async Task<bool> LaunchAsync(LocalModel model, CancellationToken ct = default, int timeoutSeconds = 120)
+        public async Task<bool> LaunchAsync(LocalModel model, CancellationToken ct = default, int timeoutSeconds = 300)
         {
             if (!IsManaged)
                 return false;
