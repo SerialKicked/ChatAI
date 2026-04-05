@@ -1,0 +1,22 @@
+{
+  "BoSToken": "<bos>",
+  "UserStart": "<|turn>user\n",
+  "UserEnd": "<turn|>",
+  "BotStart": "<|turn>model\n",
+  "BotEnd": "<turn|>",
+  "StopSequence": "",
+  "SystemStart": "<|turn>system\n",
+  "SystemEnd": "<turn|>",
+  "NewLinesBetweenMessages": true,
+  "StopStrings": [],
+  "ThinkingStart": "",
+  "ThinkingEnd": "",
+  "ThinkingForcedThought": "",
+  "PrefillThinking": false,
+  "ForceRAGToThinkingPrompt": false,
+  "BotStartOverride": "",
+  "BotEndOverride": "",
+  "NoInstructInStopString": false,
+  "GroupThinkingPrefix": "\n- Current Actor: {{char}}.",
+  "UniqueName": "Gemma4"
+}
