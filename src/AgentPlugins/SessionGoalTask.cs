@@ -80,6 +80,8 @@ namespace LetheChat.AgentPlugins
             for (var i = 0; i < goaldetails.Count; i++)
             {
                 var item = goaldetails[i];
+                if (item == null)
+                    continue;
                 var memunit = new MemoryUnit()
                 {
                     Name = item.GoalTitle,

@@ -5,12 +5,12 @@
   "BotStart": "<|turn>model\n",
   "BotEnd": "<turn|>",
   "StopSequence": "",
-  "SystemStart": "<|turn>system\n",
+  "SystemStart": "<|turn>system\n<|think|>\n",
   "SystemEnd": "<turn|>",
   "NewLinesBetweenMessages": true,
   "StopStrings": [],
-  "ThinkingStart": "",
-  "ThinkingEnd": "",
+  "ThinkingStart": "<|channel>thought\n",
+  "ThinkingEnd": "<channel|>",
   "ThinkingForcedThought": "",
   "PrefillThinking": false,
   "ForceRAGToThinkingPrompt": false,
@@ -18,5 +18,5 @@
   "BotEndOverride": "",
   "NoInstructInStopString": false,
   "GroupThinkingPrefix": "\n- Current Actor: {{char}}.",
-  "UniqueName": "Gemma4"
+  "UniqueName": "Gemma4-Thinker"
 }

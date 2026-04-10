@@ -161,7 +161,7 @@ namespace LetheChat.Forms
             numFactTokens.Value = Program.Settings.CoreFactsTokenBudget;
             num_imgEmbed.Value = Program.Settings.ImageEmbeddingSize;
             num_ImgCount.Value = Program.Settings.MaxImageCount;
-            ckLlamaCppSamplers.Checked = Program.Settings.BackendLLamaCppAllowAllSamplers;
+            ckLlamaCppSamplers.Checked = Program.Settings.BackendLLamaCppUseProps;
             numWebSearchDetailedMaxLength.Value = (decimal)Program.Settings.WebSearchDetailedMaxLength;
 
             ckManagedLlama.Checked = Program.Settings.ManagedLlama;
@@ -304,7 +304,7 @@ namespace LetheChat.Forms
                 Program.Settings.CoreFactsTokenBudget = (int)numFactTokens.Value;
                 Program.Settings.ImageEmbeddingSize = (int)num_imgEmbed.Value;
                 Program.Settings.MaxImageCount = (int)num_ImgCount.Value;
-                Program.Settings.BackendLLamaCppAllowAllSamplers = ckLlamaCppSamplers.Checked;
+                Program.Settings.BackendLLamaCppUseProps = ckLlamaCppSamplers.Checked;
                 Program.Settings.ToolCallsAlwaysManualConfirm = ckToolAlwaysAsk.Checked;
                 Program.Settings.BackgroundAgentMinInactivityTime = TimeSpan.FromHours((double)numAFKDelay.Value);
 

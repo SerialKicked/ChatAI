@@ -106,6 +106,12 @@
     <None Update="data\instruct\Deepseek.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="data\instruct\Gemma4-Thinker.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="data\instruct\Gemma4.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="data\instruct\Llama3-Named.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
