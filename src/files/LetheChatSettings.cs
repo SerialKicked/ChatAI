@@ -202,7 +202,7 @@ namespace LetheChat.Files
 
         public string GetArgs()
         {
-            var args = new StringBuilder($" --no-webui --reasoning-format none --port {Port}");
+            var args = new StringBuilder($" --no-webui --reasoning-format none --port {Port} -np 1");
             if (Props)
                 args.Append(" --props");
 
