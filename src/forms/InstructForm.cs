@@ -1,9 +1,11 @@
-﻿using LetheAISharp.Files;
+﻿using LetheAISharp;
+using LetheAISharp.Files;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -37,10 +39,10 @@ namespace LetheChat.Forms
             if (listInstruct.Items.Count > 0 && idwant != -1)
             {
                 listInstruct.SelectedIndex = idwant;
-                SelectedInstructEditor = DataFiles.Instruct[listInstruct.SelectedItem!.ToString()!].Copy<InstructFormat>()!;
+                SelectedInstructEditor = DataFiles.Instruct[listInstruct.SelectedItem!.ToString()!];
             }
             edInstruct.Text = SelectedInstructEditor.UniqueName;
-            CreateInstructControls(panContent, SelectedInstructEditor);
+            InstructToUI(SelectedInstructEditor);
             disableevents = false;
         }
 
@@ -49,70 +51,66 @@ namespace LetheChat.Forms
         /// </summary>
         /// <param name="target"></param>
         /// <param name="instructsetting"></param>
-        private static void CreateInstructControls(Control target, InstructFormat instructsetting)
+        private void InstructToUI(InstructFormat instructsetting)
         {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8605 // Converting null literal or possible null value to non-nullable type.
-            target.Controls.Clear();
-            int yPos = 10;
-            Type type = typeof(InstructFormat);
-            PropertyInfo[] properties = type.GetProperties();
-            string[] ignore = ["UniqueName"];
+            // Message Settings
+            ed_bos.Text = instructsetting.BoSToken.Replace("\n", "\\n");
+            ed_botprefix.Text = instructsetting.BotStart.Replace("\n", "\\n");
+            ed_botsuffix.Text = instructsetting.BotEnd.Replace("\n", "\\n");
+            ed_userprefix.Text = instructsetting.UserStart.Replace("\n", "\\n");
+            ed_usersuffix.Text = instructsetting.UserEnd.Replace("\n", "\\n");
+            ed_sysprefix.Text = instructsetting.SystemStart.Replace("\n", "\\n");
+            ed_syssuffix.Text = instructsetting.SystemEnd.Replace("\n", "\\n");
+            ck_newlines.Checked = instructsetting.NewLinesBetweenMessages;
 
-            var lst = new List<PropertyInfo>(properties);
-            // sort lst to match the order in InstructFormat.Properties
+            // Thinking settings
+            ed_thinkstart.Text = instructsetting.ThinkingStart.Replace("\n", "\\n");
+            ed_thinkend.Text = instructsetting.ThinkingEnd.Replace("\n", "\\n");
+            ed_thinkgroup.Text = instructsetting.GroupThinkingPrefix.Replace("\n", "\\n");
+            ed_thinksysprefix.Text = instructsetting.ThinkingSystemPromptPrefix.Replace("\n", "\\n");
+            ed_thinksyssuffix.Text = instructsetting.ThinkingSystemPromptSuffix.Replace("\n", "\\n");
+            ed_thinkprefill.Text = instructsetting.ThinkingForcedThought.Replace("\n", "\\n");
+            ck_thinkprefill.Checked = instructsetting.PrefillThinking;
+            ck_emptythink.Checked = instructsetting.RequireEmptyThinkBlockWhenThinkingDisabled;
 
-            foreach (var propertyName in InstructFormat.Properties)
+            // Flow Control settings
+            ed_stopsequence.Text = instructsetting.StopSequence.Replace("\n", "\\n");
+            ed_stopstrings.Text = string.Join(",", instructsetting.StopStrings);
+            ed_botprefixoverride.Text = instructsetting.BotStartOverride.Replace("\n", "\\n");
+            ed_botsuffixoverride.Text = instructsetting.BotEndOverride.Replace("\n", "\\n");
+            ck_disablinstructstopstrings.Checked = instructsetting.NoInstructInStopString;
+        }
+
+        private InstructFormat UIToInstruct()
+        {
+            var instructsetting = new InstructFormat
             {
-                if (ignore.Contains(propertyName))
-                    continue;
-                var property = lst.Find(p => p.Name == propertyName);
-                if (property == null)
-                    continue;
-                Label label = new() { Text = property.Name + ":", Location = new Point(10, yPos), Width = 240 };
-                Control? control = null;
-                if (property.PropertyType == typeof(int))
-                {
-                    control = new NumericUpDown { Minimum = -1, Maximum = int.MaxValue, Value = (int)property.GetValue(instructsetting), Location = new System.Drawing.Point(150, yPos), Width = 100 };
-                    ((NumericUpDown)control).ValueChanged += (sender, e) => property.SetValue(instructsetting, (int)((NumericUpDown)control).Value);
-                }
-                else if (property.PropertyType == typeof(double))
-                {
-                    control = new NumericUpDown { Value = (decimal)(double)property.GetValue(instructsetting), Location = new Point(150, yPos), Width = 100, DecimalPlaces = 2, Increment = 0.01M };
-                    ((NumericUpDown)control).ValueChanged += (sender, e) => property.SetValue(instructsetting, (double)((NumericUpDown)control).Value);
-                }
-                else if (property.PropertyType == typeof(string))
-                {
-                    control = new TextBox { Text = ((string)property.GetValue(instructsetting)!).Replace("\n", "\\n"), Location = new Point(150, yPos), Width = 400 };
-                    ((TextBox)control).TextChanged += (sender, e) => property.SetValue(instructsetting, ((TextBox)control).Text.Replace("\\n", "\n"));
-                }
-                else if (property.PropertyType == typeof(bool))
-                {
-                    control = new CheckBox { Checked = (bool)property.GetValue(instructsetting), Location = new Point(150, yPos) };
-                    ((CheckBox)control).CheckedChanged += (sender, e) => property.SetValue(instructsetting, ((CheckBox)control).Checked);
-                }
-                else if (property.PropertyType == typeof(ICollection<int>))
-                {
-                    control = new TextBox { Text = string.Join(",", (ICollection<int>)property.GetValue(instructsetting)!), Location = new Point(150, yPos), Width = 400 };
-                    ((TextBox)control).TextChanged += (sender, e) => property.SetValue(instructsetting, ((TextBox)control).Text.Split(',').Select(int.Parse).ToList());
-                }
-                else if (property.PropertyType == typeof(List<string>))
-                {
-                    control = new TextBox { Text = string.Join(",", (List<string>)property.GetValue(instructsetting) ?? []), Location = new Point(150, yPos), Width = 400 };
-                    ((TextBox)control).TextChanged += (sender, e) => property.SetValue(instructsetting, ((TextBox)control).Text.Split(',').ToList());
-                }
-
-                if (control != null)
-                {
-                    label.Location = new Point(10, yPos);
-                    control.Location = new Point(250, yPos);
-                    target.Controls.Add(label);
-                    target.Controls.Add(control);
-                    yPos += 30;
-                }
-            }
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning restore CS8605 // Converting null literal or possible null value to non-nullable type.
+                // Message Settings
+                BoSToken = ed_bos.Text.Replace("\\n", "\n"),
+                BotStart = ed_botprefix.Text.Replace("\\n", "\n"),
+                BotEnd = ed_botsuffix.Text.Replace("\\n", "\n"),
+                UserStart = ed_userprefix.Text.Replace("\\n", "\n"),
+                UserEnd = ed_usersuffix.Text.Replace("\\n", "\n"),
+                SystemStart = ed_sysprefix.Text.Replace("\\n", "\n"),
+                SystemEnd = ed_syssuffix.Text.Replace("\\n", "\n"),
+                NewLinesBetweenMessages = ck_newlines.Checked,
+                // Thinking settings
+                ThinkingStart = ed_thinkstart.Text.Replace("\\n", "\n"),
+                ThinkingEnd = ed_thinkend.Text.Replace("\\n", "\n"),
+                GroupThinkingPrefix = ed_thinkgroup.Text.Replace("\\n", "\n"),
+                ThinkingSystemPromptPrefix = ed_thinksysprefix.Text.Replace("\\n", "\n"),
+                ThinkingSystemPromptSuffix = ed_thinksyssuffix.Text.Replace("\\n", "\n"),
+                ThinkingForcedThought = ed_thinkprefill.Text.Replace("\\n", "\n"),
+                PrefillThinking = ck_thinkprefill.Checked,
+                RequireEmptyThinkBlockWhenThinkingDisabled = ck_emptythink.Checked,
+                // Flow Control settings
+                StopSequence = ed_stopsequence.Text.Replace("\\n", "\n"),
+                StopStrings = [.. ed_stopstrings.Text.Split(',').Select(x => x.Trim())],
+                BotStartOverride = ed_botprefixoverride.Text.Replace("\\n", "\n"),
+                BotEndOverride = ed_botsuffixoverride.Text.Replace("\\n", "\n"),
+                NoInstructInStopString = ck_disablinstructstopstrings.Checked
+            };
+            return instructsetting;
         }
 
         private void listInstruct_SelectedIndexChanged(object sender, EventArgs e)
@@ -121,25 +119,25 @@ namespace LetheChat.Forms
                 return;
             SelectedInstructEditor = DataFiles.Instruct[listInstruct.SelectedItem!.ToString()!].Copy<InstructFormat>()!;
             edInstruct.Text = listInstruct.SelectedItem!.ToString();
-            CreateInstructControls(panContent, SelectedInstructEditor);
+            InstructToUI(SelectedInstructEditor);
         }
 
         private void btSave_Click(object sender, EventArgs e)
         {
             var NewName = edInstruct.Text;
-            if (string.IsNullOrWhiteSpace(NewName))
+            if (string.IsNullOrWhiteSpace(NewName) || NewName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
             {
-                MessageBox.Show("Please select a valide name for the new instruction format.");
+                MessageBox.Show("Please select a valid file name for the new instruction format.");
                 return;
             }
             // If name already exists ask for confirmation
             if (DataFiles.Instruct.ContainsKey(NewName) && (MessageBox.Show("This instruction format already exists, do you want to overwrite it?", "Overwrite?", MessageBoxButtons.YesNo) == DialogResult.No))
                 return;
-            SelectedInstructEditor.UniqueName = NewName;
-            DataFiles.Instruct[NewName] = SelectedInstructEditor;
-            (SelectedInstructEditor as IFile).SaveToFile("data/instruct/" + NewName + ".json");
+            var newsetting = UIToInstruct();
+            newsetting.UniqueName = NewName;
+            DataFiles.Instruct[NewName] = newsetting;
+            (newsetting as IFile).SaveToFile("data/instruct/" + NewName + ".json");
             SetupInstructEditor(NewName);
-
         }
 
         private void InstructForm_KeyDown(object sender, KeyEventArgs e)
@@ -149,6 +147,20 @@ namespace LetheChat.Forms
                 DialogResult = DialogResult.Cancel;
                 Close();
             }
+        }
+
+        private void bt_delete_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(listInstruct.SelectedItem?.ToString()) || !DataFiles.Instruct.ContainsKey(listInstruct.SelectedItem!.ToString()!))
+                return;
+            if (MessageBox.Show($"Are you sure you want to delete this instruction format: '{listInstruct.SelectedItem}'?", "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                return;
+            var name = listInstruct.SelectedItem!.ToString()!;
+            DataFiles.Instruct.Remove(name);
+            var path = "data/instruct/" + name + ".json";
+            if (File.Exists(path))
+                File.Delete(path);
+            SetupInstructEditor();
         }
     }
 }

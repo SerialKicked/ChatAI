@@ -36,7 +36,7 @@ namespace LetheChat.AgentPlugins
             await prompt.SetStructuredOutput(imageRecord).ConfigureAwait(false);
             var fullprompt = prompt.PromptToQuery(AuthorRole.Assistant, LLMEngine.Sampler.Temperature, 2048);
             var response = await LLMEngine.SimpleQuery(fullprompt, ct).ConfigureAwait(false);
-
+            response = response.RemoveThinkingBlocks();
             try
             {
                 imageRecord = JsonConvert.DeserializeObject<ImageRecord>(response);

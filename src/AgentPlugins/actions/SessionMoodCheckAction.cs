@@ -53,6 +53,7 @@ namespace LetheChat.AgentPlugins
             await prompt.SetStructuredOutput(moodformat).ConfigureAwait(false);
             var fullprompt = prompt.PromptToQuery(AuthorRole.Assistant, LLMEngine.Sampler.Temperature, 1024);
             var response = await LLMEngine.SimpleQuery(fullprompt, ct).ConfigureAwait(false);
+            response = response.RemoveThinkingBlocks();
 
             Dictionary<string, Modifier>? result = null;
             try

@@ -1,26 +1,26 @@
 {
-  "BoSToken": "",
-  "UserStart": "<|im_start|>{{user}}\n",
-  "UserEnd": "<|im_end|>",
-  "BotStart": "<|im_start|>{{char}}\n",
-  "BotEnd": "<|im_end|>",
-  "SystemStart": "<|im_start|>system\n",
-  "SystemEnd": "<|im_end|>",
+  "BoSToken": "<s>",
+  "UserStart": "[INST]",
+  "UserEnd": "[/INST]",
+  "BotStart": "",
+  "BotEnd": "</s>",
+  "SystemStart": "[SYSTEM_PROMPT]",
+  "SystemEnd": "[/SYSTEM_PROMPT]",
   "ThinkingStart": "<think>\n",
   "ThinkingEnd": "</think>",
   "RequireEmptyThinkBlockWhenThinkingDisabled": false,
   "ThinkingForcedThought": "",
   "PrefillThinking": true,
-  "GroupThinkingPrefix": "",
+  "GroupThinkingPrefix": "First, I should respond as {{char}}.",
   "ThinkingSystemPromptPrefix": "",
   "ThinkingSystemPromptSuffix": "",
   "StopSequence": "",
   "StopStrings": [
     ""
   ],
-  "NewLinesBetweenMessages": true,
+  "NewLinesBetweenMessages": false,
   "BotStartOverride": "",
   "BotEndOverride": "",
   "NoInstructInStopString": false,
-  "UniqueName": "ChatML-Named"
+  "UniqueName": "Mistral Tekken7-RP"
 }

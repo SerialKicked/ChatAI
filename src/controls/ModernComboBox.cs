@@ -52,6 +52,7 @@ namespace LetheChat.Controls
             {
                 BorderStyle = BorderStyle.None,
                 Dock = DockStyle.Fill,
+                //TextAlign = HorizontalAlignment.Right,
                 ReadOnly = true
             };
             _textBox.MouseDown += TextBox_MouseDown;

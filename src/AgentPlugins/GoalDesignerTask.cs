@@ -156,6 +156,7 @@ namespace LetheChat.AgentPlugins
             await promptbuild.SetStructuredOutput(goalrecord).ConfigureAwait(false);
             var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 0.75) ? 0.75 : LLMEngine.Sampler.Temperature, replyln);
             var finalstr = await LLMEngine.SimpleQuery(ct).ConfigureAwait(false);
+            finalstr = finalstr.RemoveThinkingBlocks();
             goalrecord = JsonConvert.DeserializeObject<GoalRecord>(finalstr);
             LLMEngine.NamesInPromptOverride = null;
             LLMEngine.Instruct.PrefillThinking = prefill;
@@ -183,6 +184,7 @@ namespace LetheChat.AgentPlugins
             await promptbuild.SetStructuredOutput(goallist).ConfigureAwait(false);
             var ct = promptbuild.PromptToQuery(AuthorRole.Assistant, (LLMEngine.Sampler.Temperature > 1.0) ? 1 : LLMEngine.Sampler.Temperature, replyln);
             var finalstr = await LLMEngine.SimpleQuery(ct).ConfigureAwait(false);
+            finalstr = finalstr.RemoveThinkingBlocks();
             goallist = JsonConvert.DeserializeObject<GoalList>(finalstr);
             LLMEngine.NamesInPromptOverride = null;
             LLMEngine.Instruct.PrefillThinking = prefill;

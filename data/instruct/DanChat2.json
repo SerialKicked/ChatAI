@@ -1,26 +1,26 @@
 {
   "BoSToken": "",
-  "UserStart": "<|im_start|>{{user}}\n",
-  "UserEnd": "<|im_end|>",
-  "BotStart": "<|im_start|>{{char}}\n",
-  "BotEnd": "<|im_end|>",
-  "SystemStart": "<|im_start|>system\n",
-  "SystemEnd": "<|im_end|>",
+  "UserStart": "<|user|>",
+  "UserEnd": "<|endoftext|>",
+  "BotStart": "<|assistant|>",
+  "BotEnd": "<|endoftext|>",
+  "SystemStart": "<|system|>",
+  "SystemEnd": "<|endoftext|>",
   "ThinkingStart": "<think>\n",
   "ThinkingEnd": "</think>",
   "RequireEmptyThinkBlockWhenThinkingDisabled": false,
   "ThinkingForcedThought": "",
   "PrefillThinking": true,
-  "GroupThinkingPrefix": "",
+  "GroupThinkingPrefix": "I should respond as {{char}} here.",
   "ThinkingSystemPromptPrefix": "",
   "ThinkingSystemPromptSuffix": "",
   "StopSequence": "",
   "StopStrings": [
     ""
   ],
-  "NewLinesBetweenMessages": true,
+  "NewLinesBetweenMessages": false,
   "BotStartOverride": "",
   "BotEndOverride": "",
   "NoInstructInStopString": false,
-  "UniqueName": "ChatML-Named"
+  "UniqueName": "DanChat2"
 }

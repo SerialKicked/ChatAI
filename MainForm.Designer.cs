@@ -440,7 +440,7 @@ namespace LetheChat
             btSampleEditor.FlatStyle = FlatStyle.Flat;
             btSampleEditor.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Pixel);
             btSampleEditor.ForeColor = Color.Black;
-            btSampleEditor.Location = new Point(127, 92);
+            btSampleEditor.Location = new Point(130, 92);
             btSampleEditor.Name = "btSampleEditor";
             btSampleEditor.Size = new Size(62, 20);
             btSampleEditor.TabIndex = 30;
@@ -645,7 +645,7 @@ namespace LetheChat
             bt_llama.Size = new Size(184, 27);
             bt_llama.TabIndex = 55;
             bt_llama.Tag = "no-theme";
-            bt_llama.Text = "Managed llama.cpp";
+            bt_llama.Text = "Connect with Llama.cpp";
             bt_llama.UseVisualStyleBackColor = false;
             bt_llama.Click += bt_llama_Click;
             // 
@@ -662,7 +662,7 @@ namespace LetheChat
             bt_backend.Size = new Size(184, 27);
             bt_backend.TabIndex = 20;
             bt_backend.Tag = "no-theme";
-            bt_backend.Text = "Connect to Backend";
+            bt_backend.Text = "Connect to Server";
             bt_backend.UseVisualStyleBackColor = false;
             bt_backend.Click += bt_backend_Click;
             // 

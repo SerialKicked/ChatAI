@@ -40,6 +40,7 @@ namespace LetheChat.AgentPlugins
             var query = await GetQueryPrompt(owner);
 
             var result = await LLMEngine.SimpleQuery(query, ct).ConfigureAwait(false);
+            result = result.RemoveThinkingBlocks();
             JournalRecord? response;
             try
             {

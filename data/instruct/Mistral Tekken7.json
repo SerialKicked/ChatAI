@@ -1,13 +1,26 @@
 {
   "BoSToken": "<s>",
-  "SystemStart": "[SYSTEM_PROMPT]",
-  "SystemEnd": "[/SYSTEM_PROMPT]",
   "UserStart": "[INST]",
   "UserEnd": "[/INST]",
   "BotStart": "",
   "BotEnd": "</s>",
+  "SystemStart": "[SYSTEM_PROMPT]",
+  "SystemEnd": "[/SYSTEM_PROMPT]",
+  "ThinkingStart": "[THINK]\n",
+  "ThinkingEnd": "[/THINK]",
+  "RequireEmptyThinkBlockWhenThinkingDisabled": false,
+  "ThinkingForcedThought": "",
+  "PrefillThinking": true,
+  "GroupThinkingPrefix": "First, I should respond as {{char}}.",
+  "ThinkingSystemPromptPrefix": "",
+  "ThinkingSystemPromptSuffix": "",
   "StopSequence": "",
+  "StopStrings": [
+    ""
+  ],
   "NewLinesBetweenMessages": false,
-  "StopStrings": [],
+  "BotStartOverride": "",
+  "BotEndOverride": "",
+  "NoInstructInStopString": false,
   "UniqueName": "Mistral Tekken7"
 }

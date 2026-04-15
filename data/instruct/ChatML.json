@@ -1,9 +1,26 @@
 {
-	"SystemStart": "<|im_start|>system\n",
-	"SystemEnd": "<|im_end|>",
-	"UserStart": "<|im_start|>user\n",
-	"UserEnd": "<|im_end|>",
-	"BotStart": "<|im_start|>assistant\n",
-	"BotEnd": "<|im_end|>",
-	"NewLinesBetweenMessages": true
+  "BoSToken": "",
+  "UserStart": "<|im_start|>user\n",
+  "UserEnd": "<|im_end|>",
+  "BotStart": "<|im_start|>assistant\n",
+  "BotEnd": "<|im_end|>",
+  "SystemStart": "<|im_start|>system\n",
+  "SystemEnd": "<|im_end|>",
+  "ThinkingStart": "<think>\n",
+  "ThinkingEnd": "</think>",
+  "RequireEmptyThinkBlockWhenThinkingDisabled": false,
+  "ThinkingForcedThought": "",
+  "PrefillThinking": true,
+  "GroupThinkingPrefix": "First, I should respond as {{char}} is this situation.",
+  "ThinkingSystemPromptPrefix": "",
+  "ThinkingSystemPromptSuffix": "",
+  "StopSequence": "",
+  "StopStrings": [
+    ""
+  ],
+  "NewLinesBetweenMessages": true,
+  "BotStartOverride": "",
+  "BotEndOverride": "",
+  "NoInstructInStopString": false,
+  "UniqueName": "ChatML"
 }

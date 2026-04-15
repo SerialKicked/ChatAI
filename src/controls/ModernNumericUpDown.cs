@@ -59,7 +59,7 @@ namespace LetheChat.Controls
             _textBox = new TextBox
             {
                 BorderStyle = BorderStyle.None,
-                TextAlign = HorizontalAlignment.Right,
+                //TextAlign = HorizontalAlignment.Right,
                 Dock = DockStyle.Fill
             };
             _textBox.KeyPress += TextBox_KeyPress;

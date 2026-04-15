@@ -463,7 +463,7 @@ namespace LetheChat.Forms
             groupBox19.Location = new Point(724, 221);
             groupBox19.Name = "groupBox19";
             groupBox19.Padding = new Padding(12, 32, 12, 10);
-            groupBox19.Size = new Size(243, 120);
+            groupBox19.Size = new Size(243, 187);
             groupBox19.TabIndex = 10;
             groupBox19.TabStop = false;
             groupBox19.Text = "Exclude Top Tokens (XTC)";

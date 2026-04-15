@@ -267,6 +267,7 @@ namespace LetheChat
             LLMEngine.OnInferenceCompleted += LLMEngine_OnInferenceCompleted;
             LLMEngine.OnFullPromptReady += OnFullPromptReady;
             LLMEngine.OnStatusChanged += OnStatusChanged;
+            LLMEngine.OnHistoryLogged += LLMEngine_OnHistoryLogged;
         }
 
         private void UnsubscribeLLMEvents()
@@ -275,6 +276,13 @@ namespace LetheChat
             LLMEngine.OnInferenceCompleted -= LLMEngine_OnInferenceCompleted;
             LLMEngine.OnFullPromptReady -= OnFullPromptReady;
             LLMEngine.OnStatusChanged -= OnStatusChanged;
+            LLMEngine.OnHistoryLogged -= LLMEngine_OnHistoryLogged;
+        }
+
+        private void LLMEngine_OnHistoryLogged(object? sender, SingleMessage e)
+        {
+            if (e.Hidden && Program.Settings.ShowHiddenMessages)
+                _forcereload = true;
         }
 
         private async void bt_backend_Click(object sender, EventArgs e)
@@ -299,6 +307,7 @@ namespace LetheChat
                     mck_onlinerag.Enabled = LLMEngine.SupportsWebSearch;
                     cboxVLM.Enabled = LLMEngine.SupportsVision;
                     cboxVLM.Expanded = LLMEngine.SupportsVision;
+                    await RefreshConnectionState();
                 }
                 UpdateUIState();
                 await webUI.LoadHistoryToUI();
@@ -688,6 +697,8 @@ namespace LetheChat
 
         private void Ed_input_KeyPress(object sender, KeyPressEventArgs e)
         {
+            if (LLMEngine.Status == SystemStatus.NotInit)
+                return;
             // never triggered on Enter
             if (e.KeyChar == (char)13)
             {
@@ -728,6 +739,8 @@ namespace LetheChat
 
         private async void SendMessage(object sender, EventArgs e)
         {
+            if (LLMEngine.Status == SystemStatus.NotInit)
+                return;
             LLMEngine.Bot.AgentSystem?.NotifyUserActivity();
             _activityTimer?.Reset();
             _afkmessagecount = 0;

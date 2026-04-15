@@ -1,12 +1,12 @@
 {
-  "BoSToken": "",
-  "UserStart": "<|im_start|>{{user}}\n",
-  "UserEnd": "<|im_end|>",
-  "BotStart": "<|im_start|>{{char}}\n",
-  "BotEnd": "<|im_end|>",
-  "SystemStart": "<|im_start|>system\n",
-  "SystemEnd": "<|im_end|>",
-  "ThinkingStart": "<think>\n",
+  "BoSToken": "[gMASK]<sop>\n",
+  "UserStart": "<|user|>",
+  "UserEnd": "",
+  "BotStart": "<|assistant|>",
+  "BotEnd": "",
+  "SystemStart": "<|system|>",
+  "SystemEnd": "",
+  "ThinkingStart": "<think>",
   "ThinkingEnd": "</think>",
   "RequireEmptyThinkBlockWhenThinkingDisabled": false,
   "ThinkingForcedThought": "",
@@ -18,9 +18,9 @@
   "StopStrings": [
     ""
   ],
-  "NewLinesBetweenMessages": true,
+  "NewLinesBetweenMessages": false,
   "BotStartOverride": "",
   "BotEndOverride": "",
   "NoInstructInStopString": false,
-  "UniqueName": "ChatML-Named"
+  "UniqueName": "GLM4"
 }

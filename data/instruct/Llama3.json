@@ -1,9 +1,26 @@
 {
-	"SystemStart": "<|start_header_id|>system<|end_header_id|>\n\n",
-	"SystemEnd": "<|eot_id|>",
-	"UserStart": "<|start_header_id|>user<|end_header_id|>\n\n",
-	"UserEnd": "<|eot_id|>",
-	"BotStart": "<|start_header_id|>assistant<|end_header_id|>\n\n",
-	"BotEnd": "<|eot_id|>",
-	"NewLinesBetweenMessages": false
+  "BoSToken": "<|begin_of_text|>",
+  "UserStart": "<|start_header_id|>user<|end_header_id|>\n\n",
+  "UserEnd": "<|eot_id|>",
+  "BotStart": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+  "BotEnd": "<|eot_id|>",
+  "SystemStart": "<|start_header_id|>system<|end_header_id|>\n\n",
+  "SystemEnd": "<|eot_id|>",
+  "ThinkingStart": "<think>",
+  "ThinkingEnd": "</think>",
+  "RequireEmptyThinkBlockWhenThinkingDisabled": false,
+  "ThinkingForcedThought": "",
+  "PrefillThinking": true,
+  "GroupThinkingPrefix": "First, I should respond as {{char}}.",
+  "ThinkingSystemPromptPrefix": "",
+  "ThinkingSystemPromptSuffix": "",
+  "StopSequence": "",
+  "StopStrings": [
+    ""
+  ],
+  "NewLinesBetweenMessages": false,
+  "BotStartOverride": "",
+  "BotEndOverride": "",
+  "NoInstructInStopString": false,
+  "UniqueName": "Llama3"
 }

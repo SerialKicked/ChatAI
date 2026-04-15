@@ -83,7 +83,7 @@ namespace LetheChat.AgentPlugins
             }
 
             var finalstr = await LLMEngine.SimpleQuery(query, ct).ConfigureAwait(false);
-            finalstr = finalstr.Trim();
+            finalstr = finalstr.RemoveThinkingBlocks().Trim();
             if (string.IsNullOrWhiteSpace(finalstr))
                 return null;
             if (param.AllowFullAnalysis)
