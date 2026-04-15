@@ -83,7 +83,7 @@ namespace LetheChat.Slash
     {
         public override string ID => "/lock";
         public override string Description => "Core - Lock the togglable device";
-        public override string Slash => "/lock [duration in days](optional)";
+        public override string Slash => "/lock [duration in days] (optional)";
         public override SlashReturn Execute(string userinput)
         {
             MainForm.Bot!.LockManager.Settings.Enabled = true;
@@ -93,12 +93,13 @@ namespace LetheChat.Slash
             if (string.IsNullOrWhiteSpace(durationstring))
             {
                 MainForm.Bot.LockManager.LockItem();
+                return new SlashReturn(new SingleMessage(AuthorRole.System, MainForm.Bot.LockManager.GetStatusMessage()), false, true, true);
             }
             if (!int.TryParse(durationstring, out int durationdays) || durationdays <= 0)
                 return new SlashReturn(GetHelpMessage(), false, false, true);
             MainForm.Bot.LockManager.LockItem(new TimeSpan(durationdays,0,0,0));
             var msg = new SingleMessage(AuthorRole.System, MainForm.Bot.LockManager.GetStatusMessage());
-            return new SlashReturn(msg, true, true, false);
+            return new SlashReturn(msg, false, true, true);
         }
     }
 
@@ -113,7 +114,7 @@ namespace LetheChat.Slash
             MainForm.Bot!.LockManager.Settings.Enabled = true;
             MainForm.Bot.LockManager.UnlockItem();
             var msg = new SingleMessage(AuthorRole.System, MainForm.Bot.LockManager.GetStatusMessage());
-            return new SlashReturn(msg, true, true, false);
+            return new SlashReturn(msg, false, true, true);
         }
     }
     internal class CmdMainLockInfo(ISlashCommand owner) : SlashCommandInfo(owner)

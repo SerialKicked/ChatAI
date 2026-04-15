@@ -46,6 +46,14 @@ namespace LetheChat.Files
         public string PathToLlamaCppServer { get; set; } = string.Empty;
 
         /// <summary>
+        /// Set to true if the backend is using ik_llama.cpp instead of the original llama.cpp. 
+        /// This is required to ensure compatibility with ik_llama.cpp, which has some differences in supported command-line arguments compared to the original llama.cpp.
+        /// </summary>
+        [Description("Only set to true if you're using ik_llama.cpp instead of the original llama.cpp. This ensures compatibility with ik_llama.cpp's supported command-line arguments. Do not check otherwise.")]
+        public bool IsIkLlama { get; set; } = false;
+
+
+        /// <summary>
         /// List of directories to search for GGUF models.
         /// </summary>
         public List<string> ModelDirectories { get; set; } = [];
@@ -56,8 +64,17 @@ namespace LetheChat.Files
         public LlamaCppSettings DefaultLLamaCppSettings { get; set; } = new LlamaCppSettings();
     }
 
+    public enum KVCacheQuantization
+    {
+        f16,
+        q8_0,
+        q5_0,
+        q4_0
+    }
+
     public class LlamaCppSettings : BaseFile
     {
+
         /// <summary>
         /// Port is the port that the Llama.cpp server will listen on. The default is 8080, but it can be changed if needed.
         /// </summary>
@@ -93,6 +110,14 @@ namespace LetheChat.Files
         /// </summary>
         [Description("Number of model layers to offload to the GPU (-ngl). Set to 255 to offload all layers. Reduce if you run out of VRAM.")]
         public int GpuLayers { get; set; } = 255;
+
+        /// <summary>
+        /// Quantization format for the KV cache. The default is f16, which means that the KV cache will be stored in 16-bit floating point format.
+        /// </summary>
+        [Description("Quantization format for the KV cache. Options: f16 (default), q8_0, q5_0, q4_0.\n\n" + 
+            "Lower precision formats reduce GPU memory usage but makes the model less coherent the longer the context is. As such, this is the worst way to free room for the context size.\n\n" +
+            "Keep this to F16, or if you're desperate and quality is of little concern to you, Q8_0.")]
+        public KVCacheQuantization KVCacheQuantization { get; set; } = KVCacheQuantization.f16;
 
         /// <summary>
         /// Context size for the model
@@ -133,9 +158,18 @@ namespace LetheChat.Files
         [Description("Memory-maps the model file (--mmap). Disabling is slower to load but may reduce page-outs when mlock is not in use.")]
         public bool mmap { get; set; } = true;
 
-        //--swa-full
-        [Description("use full-size SWA cache (--swa-full).")]
+        /// <summary>
+        /// Use a full size SWA cache instead of the default smaller one. This massively increases memory usage.
+        /// </summary>
+        [Description("use full-size SWA cache (--swa-full). You probably should leave this alone unless you know what you're doing.")]
         public bool swafull { get; set; } = false;
+
+        /// <summary>
+        /// Max number of context checkpoints to create. It's meant to save computation time, but only really works when the model has a fixed system prompt and when the context is not full.
+        /// This makes it practically useless, and often counter-productive with Lethe Chat.
+        /// </summary>
+        [Description("Max number of context checkpoints to create. Only useful if you have a fixed system prompt and your context is not full. Counter-productive with Lethe Chat, so keep this at 0 unless you know what you're doing. Also keep to zero on Gemma4 models.")]
+        public int CheckpointCount { get; set; } = 0;
 
         /// <summary>
         /// Additional command-line arguments to pass to the Llama.cpp server. 
@@ -162,7 +196,8 @@ namespace LetheChat.Files
         /// Instruction template UniqueID (filename without extension) to use for selected local models. 
         /// </summary>
         /// <remarks>In chat-completion mode, this will ensure better token estimation count and will handle thinking messages properly. In text-completion mode, it is required for the model to work at all.</remarks>
-        [Description("Instruction template to use for selected local models. \nIn chat-completion mode, this will ensure better token estimation count and will handle thinking messages properly. In text-completion mode, it is required for the model to work at all.")]
+        [Description("Instruction template to use for selected local models. \n\n" +
+            "In chat-completion mode, this will ensure better token estimation count and will handle thinking messages properly. In text-completion mode, it is required for the model to work at all.")]
         public string LocalInstructTemplateID { get; set;  } = string.Empty;
 
         public string GetArgsForDirectory(string modelPath)
@@ -202,9 +237,12 @@ namespace LetheChat.Files
 
         public string GetArgs()
         {
-            var args = new StringBuilder($" --no-webui --reasoning-format none --port {Port} -np 1");
-            if (Props)
+            var args = new StringBuilder($" {(Program.Settings.IsIkLlama ? string.Empty : "--no-webui")} --reasoning-format none --port {Port} -np 1");
+            if (Props && !Program.Settings.IsIkLlama)
                 args.Append(" --props");
+
+            if (KVCacheQuantization != KVCacheQuantization.f16)
+                args.Append($" -ctk {KVCacheQuantization.ToString()} -ctv {KVCacheQuantization.ToString()}");
 
             if (FlashAttention.HasValue)
             {
@@ -213,6 +251,9 @@ namespace LetheChat.Files
                 else
                     args.Append(" -fa off");
             }
+
+            args.Append($" --ctx-checkpoints {CheckpointCount}");
+
             if (Threads > 0)
                 args.Append($" --threads {Threads}");
 
@@ -221,7 +262,7 @@ namespace LetheChat.Files
 
             if (ContextSize > 0)
                 args.Append($" -c {ContextSize}");
-            if (Reasoning.HasValue)
+            if (Reasoning.HasValue && !Program.Settings.IsIkLlama)
             {
                 if (Reasoning.Value)
                     args.Append(" -rea on");
@@ -236,10 +277,13 @@ namespace LetheChat.Files
                     args.Append(" --reasoning-budget-message \"...\n\nI think I've explored this enough, time to respond.\n\"");
             }
 
-            if (KVcacheToGPU)
-                args.Append(" -kvo");
-            else
+            if (!KVcacheToGPU)
                 args.Append(" -nkvo");
+            else
+            {
+                if (!Program.Settings.IsIkLlama)
+                    args.Append(" -kvo");
+            }
 
             if (mlock)
                 args.Append(" --mlock");
@@ -248,7 +292,10 @@ namespace LetheChat.Files
                 args.Append(" --swa-full");
 
             if (mmap)
-                args.Append(" --mmap");
+            {
+                if (!Program.Settings.IsIkLlama)
+                    args.Append(" --mmap");
+            }
             else
                 args.Append(" --no-mmap");
 

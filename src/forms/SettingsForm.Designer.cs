@@ -43,6 +43,9 @@
             ckLlamaKV = new LetheChat.Controls.ModernCheckBox();
             ckLlamaProps = new LetheChat.Controls.ModernCheckBox();
             verticalStackPanel2 = new LetheChat.Controls.VerticalStackPanel();
+            panel2 = new Panel();
+            cbLlamaKV = new LetheChat.Controls.ModernComboBox();
+            label3 = new Label();
             panel10 = new Panel();
             numLlamaReasonBudget = new LetheChat.Controls.ModernNumericUpDown();
             label10 = new Label();
@@ -65,17 +68,13 @@
             numLlamaPort = new LetheChat.Controls.ModernNumericUpDown();
             label6 = new Label();
             collapsibleGroupBox3 = new LetheChat.Controls.CollapsibleGroupBox();
-            label13 = new Label();
-            label12 = new Label();
-            label11 = new Label();
+            ckUseIkLlama = new LetheChat.Controls.ModernCheckBox();
             btModelFolders = new Button();
             btFindLlamaExe = new Button();
             edLlamaPath = new TextBox();
             label5 = new Label();
             ckManagedLlama = new LetheChat.Controls.ModernCheckBox();
             collapsibleGroupBox2 = new LetheChat.Controls.CollapsibleGroupBox();
-            ckLlamaCppSamplers = new LetheChat.Controls.ModernCheckBox();
-            panel2 = new Panel();
             cbChatAllowPrefill = new LetheChat.Controls.ModernComboBox();
             label2 = new Label();
             panel3 = new Panel();
@@ -106,6 +105,7 @@
             ck_sysrag = new LetheChat.Controls.ModernCheckBox();
             tabMemory = new TabPage();
             collapsibleGroupBox9 = new LetheChat.Controls.CollapsibleGroupBox();
+            ckFactRoleplay = new LetheChat.Controls.ModernCheckBox();
             panel13 = new Panel();
             numFactSuper = new LetheChat.Controls.ModernNumericUpDown();
             label17 = new Label();
@@ -237,6 +237,7 @@
             collapsibleGroupBox4.SuspendLayout();
             verticalStackPanel3.SuspendLayout();
             verticalStackPanel2.SuspendLayout();
+            panel2.SuspendLayout();
             panel10.SuspendLayout();
             panel12.SuspendLayout();
             panel11.SuspendLayout();
@@ -352,10 +353,10 @@
             collapsibleGroupBox4.Controls.Add(verticalStackPanel3);
             collapsibleGroupBox4.Controls.Add(verticalStackPanel2);
             collapsibleGroupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox4.Location = new Point(6, 232);
+            collapsibleGroupBox4.Location = new Point(6, 194);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox4.Size = new Size(780, 280);
+            collapsibleGroupBox4.Size = new Size(780, 318);
             collapsibleGroupBox4.TabIndex = 42;
             collapsibleGroupBox4.Text = "Managed Llama.cpp Default Settings";
             // 
@@ -372,7 +373,7 @@
             verticalStackPanel3.Location = new Point(329, 32);
             verticalStackPanel3.Name = "verticalStackPanel3";
             verticalStackPanel3.Padding = new Padding(4);
-            verticalStackPanel3.Size = new Size(439, 238);
+            verticalStackPanel3.Size = new Size(439, 276);
             verticalStackPanel3.TabIndex = 1;
             // 
             // ckLlamaMMProj
@@ -444,6 +445,7 @@
             // 
             // verticalStackPanel2
             // 
+            verticalStackPanel2.Controls.Add(panel2);
             verticalStackPanel2.Controls.Add(panel10);
             verticalStackPanel2.Controls.Add(panel12);
             verticalStackPanel2.Controls.Add(panel11);
@@ -457,8 +459,42 @@
             verticalStackPanel2.Margin = new Padding(0);
             verticalStackPanel2.Name = "verticalStackPanel2";
             verticalStackPanel2.Padding = new Padding(0, 6, 0, 6);
-            verticalStackPanel2.Size = new Size(317, 238);
+            verticalStackPanel2.Size = new Size(317, 276);
             verticalStackPanel2.TabIndex = 0;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(cbLlamaKV);
+            panel2.Controls.Add(label3);
+            panel2.Dock = DockStyle.Top;
+            panel2.Location = new Point(0, 244);
+            panel2.Margin = new Padding(0);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(317, 30);
+            panel2.TabIndex = 64;
+            // 
+            // cbLlamaKV
+            // 
+            cbLlamaKV.BackColor = Color.FromArgb(64, 64, 64);
+            cbLlamaKV.DropDownHeight = 180;
+            cbLlamaKV.Font = new Font("Segoe UI", 9F);
+            cbLlamaKV.Items.AddRange(new object[] { "Full", "Q8_0", "Q5_0", "Q4_0" });
+            cbLlamaKV.Location = new Point(189, 3);
+            cbLlamaKV.MaxDropDownItems = 10;
+            cbLlamaKV.Name = "cbLlamaKV";
+            cbLlamaKV.Padding = new Padding(1);
+            cbLlamaKV.Size = new Size(117, 24);
+            cbLlamaKV.TabIndex = 29;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 9F);
+            label3.Location = new Point(3, 8);
+            label3.Name = "label3";
+            label3.Size = new Size(128, 15);
+            label3.TabIndex = 28;
+            label3.Text = "KV Cache Quantization";
             // 
             // panel10
             // 
@@ -488,7 +524,7 @@
             // 
             label10.AutoSize = true;
             label10.Font = new Font("Segoe UI", 9F);
-            label10.Location = new Point(0, 8);
+            label10.Location = new Point(3, 8);
             label10.Name = "label10";
             label10.Size = new Size(103, 15);
             label10.TabIndex = 28;
@@ -522,7 +558,7 @@
             // 
             label15.AutoSize = true;
             label15.Font = new Font("Segoe UI", 9F);
-            label15.Location = new Point(0, 8);
+            label15.Location = new Point(3, 8);
             label15.Name = "label15";
             label15.Size = new Size(62, 15);
             label15.TabIndex = 28;
@@ -556,7 +592,7 @@
             // 
             label14.AutoSize = true;
             label14.Font = new Font("Segoe UI", 9F);
-            label14.Location = new Point(0, 8);
+            label14.Location = new Point(3, 8);
             label14.Name = "label14";
             label14.Size = new Size(87, 15);
             label14.TabIndex = 28;
@@ -591,7 +627,7 @@
             // 
             label9.AutoSize = true;
             label9.Font = new Font("Segoe UI", 9F);
-            label9.Location = new Point(0, 8);
+            label9.Location = new Point(3, 8);
             label9.Name = "label9";
             label9.Size = new Size(71, 15);
             label9.TabIndex = 28;
@@ -624,7 +660,7 @@
             // 
             label8.AutoSize = true;
             label8.Font = new Font("Segoe UI", 9F);
-            label8.Location = new Point(0, 8);
+            label8.Location = new Point(3, 8);
             label8.Name = "label8";
             label8.Size = new Size(65, 15);
             label8.TabIndex = 28;
@@ -658,7 +694,7 @@
             // 
             label7.AutoSize = true;
             label7.Font = new Font("Segoe UI", 9F);
-            label7.Location = new Point(0, 8);
+            label7.Location = new Point(3, 8);
             label7.Name = "label7";
             label7.Size = new Size(49, 15);
             label7.TabIndex = 28;
@@ -691,7 +727,7 @@
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 9F);
-            label6.Location = new Point(0, 8);
+            label6.Location = new Point(3, 8);
             label6.Name = "label6";
             label6.Size = new Size(94, 15);
             label6.TabIndex = 28;
@@ -701,9 +737,7 @@
             // 
             collapsibleGroupBox3.BackColor = Color.FromArgb(37, 37, 37);
             collapsibleGroupBox3.CanCollapse = false;
-            collapsibleGroupBox3.Controls.Add(label13);
-            collapsibleGroupBox3.Controls.Add(label12);
-            collapsibleGroupBox3.Controls.Add(label11);
+            collapsibleGroupBox3.Controls.Add(ckUseIkLlama);
             collapsibleGroupBox3.Controls.Add(btModelFolders);
             collapsibleGroupBox3.Controls.Add(btFindLlamaExe);
             collapsibleGroupBox3.Controls.Add(edLlamaPath);
@@ -713,39 +747,19 @@
             collapsibleGroupBox3.Location = new Point(6, 6);
             collapsibleGroupBox3.Name = "collapsibleGroupBox3";
             collapsibleGroupBox3.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox3.Size = new Size(407, 220);
+            collapsibleGroupBox3.Size = new Size(407, 182);
             collapsibleGroupBox3.TabIndex = 41;
             collapsibleGroupBox3.Text = "Managed Llama.cpp";
             // 
-            // label13
+            // ckUseIkLlama
             // 
-            label13.AutoSize = true;
-            label13.Font = new Font("Segoe UI", 9F);
-            label13.Location = new Point(12, 201);
-            label13.Name = "label13";
-            label13.Size = new Size(295, 15);
-            label13.TabIndex = 61;
-            label13.Text = "option, unless you wish to use another backend server.";
-            // 
-            // label12
-            // 
-            label12.AutoSize = true;
-            label12.Font = new Font("Segoe UI", 9F);
-            label12.Location = new Point(12, 180);
-            label12.Name = "label12";
-            label12.Size = new Size(377, 15);
-            label12.TabIndex = 60;
-            label12.Text = "It lets you switch LLM directly from this app. This is the recommended";
-            // 
-            // label11
-            // 
-            label11.AutoSize = true;
-            label11.Font = new Font("Segoe UI", 9F);
-            label11.Location = new Point(12, 161);
-            label11.Name = "label11";
-            label11.Size = new Size(365, 15);
-            label11.TabIndex = 59;
-            label11.Text = "This allows Lethe Chat to launch and kill llama-server automatically.";
+            ckUseIkLlama.Font = new Font("Segoe UI", 9F);
+            ckUseIkLlama.Location = new Point(15, 115);
+            ckUseIkLlama.Name = "ckUseIkLlama";
+            ckUseIkLlama.Size = new Size(377, 26);
+            ckUseIkLlama.TabIndex = 8;
+            ckUseIkLlama.Text = "Using ik_llama.cpp instead of llama.cpp";
+            ckUseIkLlama.UseVisualStyleBackColor = true;
             // 
             // btModelFolders
             // 
@@ -754,7 +768,7 @@
             btModelFolders.FlatStyle = FlatStyle.Flat;
             btModelFolders.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btModelFolders.ForeColor = Color.Black;
-            btModelFolders.Location = new Point(15, 124);
+            btModelFolders.Location = new Point(15, 147);
             btModelFolders.Name = "btModelFolders";
             btModelFolders.Size = new Size(377, 27);
             btModelFolders.TabIndex = 7;
@@ -770,9 +784,9 @@
             btFindLlamaExe.FlatStyle = FlatStyle.Flat;
             btFindLlamaExe.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btFindLlamaExe.ForeColor = Color.Black;
-            btFindLlamaExe.Location = new Point(351, 83);
+            btFindLlamaExe.Location = new Point(351, 87);
             btFindLlamaExe.Name = "btFindLlamaExe";
-            btFindLlamaExe.Size = new Size(41, 27);
+            btFindLlamaExe.Size = new Size(41, 23);
             btFindLlamaExe.TabIndex = 6;
             btFindLlamaExe.Tag = "no-theme";
             btFindLlamaExe.Text = "...";
@@ -800,7 +814,7 @@
             ckManagedLlama.Font = new Font("Segoe UI", 9F);
             ckManagedLlama.Location = new Point(15, 35);
             ckManagedLlama.Name = "ckManagedLlama";
-            ckManagedLlama.Size = new Size(392, 26);
+            ckManagedLlama.Size = new Size(377, 26);
             ckManagedLlama.TabIndex = 0;
             ckManagedLlama.Text = "Allow Lethe Chat to manage Llama.cpp directly";
             ckManagedLlama.UseVisualStyleBackColor = true;
@@ -809,8 +823,6 @@
             // 
             collapsibleGroupBox2.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox2.CanCollapse = false;
-            collapsibleGroupBox2.Controls.Add(ckLlamaCppSamplers);
-            collapsibleGroupBox2.Controls.Add(panel2);
             collapsibleGroupBox2.Controls.Add(cbChatAllowPrefill);
             collapsibleGroupBox2.Controls.Add(label2);
             collapsibleGroupBox2.Controls.Add(panel3);
@@ -823,30 +835,9 @@
             collapsibleGroupBox2.Location = new Point(419, 6);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox2.Size = new Size(367, 220);
+            collapsibleGroupBox2.Size = new Size(367, 182);
             collapsibleGroupBox2.TabIndex = 40;
             collapsibleGroupBox2.Text = "Backend-Compatibility Settings";
-            // 
-            // ckLlamaCppSamplers
-            // 
-            ckLlamaCppSamplers.Dock = DockStyle.Top;
-            ckLlamaCppSamplers.Font = new Font("Segoe UI", 9F);
-            ckLlamaCppSamplers.Location = new Point(12, 173);
-            ckLlamaCppSamplers.Name = "ckLlamaCppSamplers";
-            ckLlamaCppSamplers.Size = new Size(343, 26);
-            ckLlamaCppSamplers.TabIndex = 58;
-            ckLlamaCppSamplers.Text = "Allow advanced samplers in Llama.cpp (requires --props)";
-            ckLlamaCppSamplers.UseVisualStyleBackColor = true;
-            // 
-            // panel2
-            // 
-            panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(12, 165);
-            panel2.Margin = new Padding(8);
-            panel2.Name = "panel2";
-            panel2.Padding = new Padding(8);
-            panel2.Size = new Size(343, 8);
-            panel2.TabIndex = 56;
             // 
             // cbChatAllowPrefill
             // 
@@ -1207,6 +1198,7 @@
             // 
             collapsibleGroupBox9.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox9.CanCollapse = false;
+            collapsibleGroupBox9.Controls.Add(ckFactRoleplay);
             collapsibleGroupBox9.Controls.Add(panel13);
             collapsibleGroupBox9.Controls.Add(panel15);
             collapsibleGroupBox9.Controls.Add(panel16);
@@ -1216,9 +1208,20 @@
             collapsibleGroupBox9.Location = new Point(410, 6);
             collapsibleGroupBox9.Name = "collapsibleGroupBox9";
             collapsibleGroupBox9.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox9.Size = new Size(376, 211);
+            collapsibleGroupBox9.Size = new Size(376, 235);
             collapsibleGroupBox9.TabIndex = 38;
             collapsibleGroupBox9.Text = "Fact-Based Retrieval";
+            // 
+            // ckFactRoleplay
+            // 
+            ckFactRoleplay.Dock = DockStyle.Top;
+            ckFactRoleplay.Font = new Font("Segoe UI", 9F);
+            ckFactRoleplay.Location = new Point(12, 199);
+            ckFactRoleplay.Name = "ckFactRoleplay";
+            ckFactRoleplay.Size = new Size(352, 26);
+            ckFactRoleplay.TabIndex = 62;
+            ckFactRoleplay.Text = "Allow Fact Retrieval for roleplay sessions";
+            ckFactRoleplay.UseVisualStyleBackColor = true;
             // 
             // panel13
             // 
@@ -2799,6 +2802,8 @@
             collapsibleGroupBox4.ResumeLayout(false);
             verticalStackPanel3.ResumeLayout(false);
             verticalStackPanel2.ResumeLayout(false);
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             panel10.ResumeLayout(false);
             panel10.PerformLayout();
             panel12.ResumeLayout(false);
@@ -2898,8 +2903,6 @@
         private Label label2;
         private Controls.ModernComboBox cbParallel;
         private Controls.ModernComboBox cbChatAllowPrefill;
-        private Controls.ModernCheckBox ckLlamaCppSamplers;
-        private Panel panel2;
         private Panel panel3;
         private Controls.VerticalStackPanel MainButtonStack;
         private Button btBackend;
@@ -2943,9 +2946,6 @@
         private Panel panel7;
         private Controls.ModernNumericUpDown numLlamaLayers;
         private Label label8;
-        private Label label13;
-        private Label label12;
-        private Label label11;
         private Panel panel11;
         private Label label14;
         private Controls.ModernComboBox cbLlamaFlash;
@@ -3080,5 +3080,10 @@
         private Controls.ModernNumericUpDown numAFKDelay;
         private Label label41;
         private Controls.ModernCheckBox ckGroupThinkPrompt;
+        private Controls.ModernCheckBox ckFactRoleplay;
+        private Controls.ModernCheckBox ckUseIkLlama;
+        private Panel panel2;
+        private Controls.ModernComboBox cbLlamaKV;
+        private Label label3;
     }
 }

@@ -161,11 +161,12 @@ namespace LetheChat.Forms
             numFactTokens.Value = Program.Settings.CoreFactsTokenBudget;
             num_imgEmbed.Value = Program.Settings.ImageEmbeddingSize;
             num_ImgCount.Value = Program.Settings.MaxImageCount;
-            ckLlamaCppSamplers.Checked = Program.Settings.BackendLLamaCppUseProps;
+            ckFactRoleplay.Checked = Program.Settings.RecordFactsDuringRoleplay;
             numWebSearchDetailedMaxLength.Value = (decimal)Program.Settings.WebSearchDetailedMaxLength;
 
             ckManagedLlama.Checked = Program.Settings.ManagedLlama;
             edLlamaPath.Text = Program.Settings.PathToLlamaCppServer;
+            ckUseIkLlama.Checked = Program.Settings.IsIkLlama;
 
             numLlamaPort.Value = (decimal)Program.Settings.DefaultLLamaCppSettings.Port;
             numLlamaThreads.Value = (decimal)Program.Settings.DefaultLLamaCppSettings.Threads;
@@ -186,6 +187,8 @@ namespace LetheChat.Forms
                 true => 1,
                 false => 2,
             };
+
+            cbLlamaKV.SelectedIndex = (int)Program.Settings.DefaultLLamaCppSettings.KVCacheQuantization;
 
             cbLlamaReason.SelectedIndex = Program.Settings.DefaultLLamaCppSettings.Reasoning switch
             {
@@ -302,9 +305,9 @@ namespace LetheChat.Forms
                 Program.Settings.FactRetrievalThreshold = (float)numFactRetrieval.Value;
                 Program.Settings.FactSupersessionThreshold = (float)numFactSuper.Value;
                 Program.Settings.CoreFactsTokenBudget = (int)numFactTokens.Value;
+                Program.Settings.RecordFactsDuringRoleplay = ckFactRoleplay.Checked;
                 Program.Settings.ImageEmbeddingSize = (int)num_imgEmbed.Value;
                 Program.Settings.MaxImageCount = (int)num_ImgCount.Value;
-                Program.Settings.BackendLLamaCppUseProps = ckLlamaCppSamplers.Checked;
                 Program.Settings.ToolCallsAlwaysManualConfirm = ckToolAlwaysAsk.Checked;
                 Program.Settings.BackgroundAgentMinInactivityTime = TimeSpan.FromHours((double)numAFKDelay.Value);
 
@@ -335,6 +338,7 @@ namespace LetheChat.Forms
                 // Llama.cpp settings
                 Program.Settings.ManagedLlama = ckManagedLlama.Checked;
                 Program.Settings.PathToLlamaCppServer = edLlamaPath.Text;
+                Program.Settings.IsIkLlama = ckUseIkLlama.Checked;
                 Program.Settings.DefaultLLamaCppSettings.Port = (int)numLlamaPort.Value;
                 Program.Settings.DefaultLLamaCppSettings.mlock = ckLlamaMLock.Checked;
                 Program.Settings.DefaultLLamaCppSettings.mmap = ckLlamaMMap.Checked;
@@ -368,6 +372,8 @@ namespace LetheChat.Forms
                     2 => CompletionType.Chat,
                     _ => null,
                 };
+
+                Program.Settings.DefaultLLamaCppSettings.KVCacheQuantization = (KVCacheQuantization)cbLlamaKV.SelectedIndex;
 
                 Program.Settings.AllowedToolsets = [.. cklToolsets.CheckedItems.Cast<string>()];
                 Program.Settings.ToolCallsAllowed = ckAllowtools.Checked;

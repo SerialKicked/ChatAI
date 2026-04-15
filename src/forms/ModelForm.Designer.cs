@@ -59,7 +59,7 @@
             verticalStackPanel1.Location = new Point(0, 0);
             verticalStackPanel1.Name = "verticalStackPanel1";
             verticalStackPanel1.Padding = new Padding(8);
-            verticalStackPanel1.Size = new Size(297, 663);
+            verticalStackPanel1.Size = new Size(324, 667);
             verticalStackPanel1.TabIndex = 35;
             verticalStackPanel1.Paint += verticalStackPanel1_Paint;
             // 
@@ -72,7 +72,7 @@
             bt_loaddirs.ForeColor = Color.Black;
             bt_loaddirs.Location = new Point(8, 629);
             bt_loaddirs.Name = "bt_loaddirs";
-            bt_loaddirs.Size = new Size(281, 27);
+            bt_loaddirs.Size = new Size(308, 27);
             bt_loaddirs.TabIndex = 23;
             bt_loaddirs.Tag = "no-theme";
             bt_loaddirs.Text = "Manage GGUF Folders";
@@ -88,10 +88,10 @@
             bt_refreshlist.ForeColor = Color.White;
             bt_refreshlist.Location = new Point(8, 594);
             bt_refreshlist.Name = "bt_refreshlist";
-            bt_refreshlist.Size = new Size(281, 27);
+            bt_refreshlist.Size = new Size(308, 27);
             bt_refreshlist.TabIndex = 22;
             bt_refreshlist.Tag = "no-theme";
-            bt_refreshlist.Text = "Refresh Model List";
+            bt_refreshlist.Text = "Refresh Model List ";
             bt_refreshlist.UseVisualStyleBackColor = false;
             bt_refreshlist.Click += bt_newsession_Click_1;
             // 
@@ -104,7 +104,7 @@
             listModels.Location = new Point(8, 8);
             listModels.Name = "listModels";
             listModels.Padding = new Padding(1);
-            listModels.Size = new Size(281, 578);
+            listModels.Size = new Size(308, 578);
             listModels.TabIndex = 0;
             // 
             // verticalStackPanel2
@@ -114,10 +114,10 @@
             verticalStackPanel2.Controls.Add(lvServerLog);
             verticalStackPanel2.Controls.Add(boxSettings);
             verticalStackPanel2.Dock = DockStyle.Fill;
-            verticalStackPanel2.Location = new Point(297, 0);
+            verticalStackPanel2.Location = new Point(324, 0);
             verticalStackPanel2.Name = "verticalStackPanel2";
             verticalStackPanel2.Padding = new Padding(8);
-            verticalStackPanel2.Size = new Size(646, 663);
+            verticalStackPanel2.Size = new Size(657, 667);
             verticalStackPanel2.TabIndex = 36;
             verticalStackPanel2.Paint += verticalStackPanel2_Paint;
             // 
@@ -129,7 +129,7 @@
             panButtons.Controls.Add(btStop);
             panButtons.Location = new Point(8, 629);
             panButtons.Name = "panButtons";
-            panButtons.Size = new Size(630, 27);
+            panButtons.Size = new Size(641, 27);
             panButtons.TabIndex = 43;
             // 
             // btApply
@@ -138,9 +138,9 @@
             btApply.FlatStyle = FlatStyle.Flat;
             btApply.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btApply.ForeColor = Color.Black;
-            btApply.Location = new Point(0, 0);
+            btApply.Location = new Point(3, 0);
             btApply.Name = "btApply";
-            btApply.Size = new Size(201, 27);
+            btApply.Size = new Size(159, 27);
             btApply.TabIndex = 39;
             btApply.Tag = "no-theme";
             btApply.Text = "Save Settings 💾";
@@ -153,7 +153,7 @@
             btLaunch.FlatStyle = FlatStyle.Flat;
             btLaunch.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btLaunch.ForeColor = Color.White;
-            btLaunch.Location = new Point(207, 0);
+            btLaunch.Location = new Point(221, 0);
             btLaunch.Name = "btLaunch";
             btLaunch.Size = new Size(205, 27);
             btLaunch.TabIndex = 40;
@@ -168,7 +168,7 @@
             btStop.FlatStyle = FlatStyle.Flat;
             btStop.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btStop.ForeColor = Color.White;
-            btStop.Location = new Point(420, 0);
+            btStop.Location = new Point(432, 0);
             btStop.Name = "btStop";
             btStop.Size = new Size(209, 27);
             btStop.TabIndex = 41;
@@ -183,7 +183,7 @@
             lblServerStatus.ForeColor = Color.FromArgb(230, 230, 230);
             lblServerStatus.Location = new Point(8, 605);
             lblServerStatus.Name = "lblServerStatus";
-            lblServerStatus.Size = new Size(630, 16);
+            lblServerStatus.Size = new Size(641, 16);
             lblServerStatus.TabIndex = 42;
             lblServerStatus.Text = "○ Server Stopped";
             lblServerStatus.TextAlign = ContentAlignment.MiddleLeft;
@@ -197,10 +197,10 @@
             lvServerLog.ForeColor = Color.FromArgb(230, 230, 230);
             lvServerLog.FullRowSelect = true;
             lvServerLog.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-            lvServerLog.Location = new Point(8, 484);
+            lvServerLog.Location = new Point(8, 418);
             lvServerLog.MultiSelect = false;
             lvServerLog.Name = "lvServerLog";
-            lvServerLog.Size = new Size(630, 113);
+            lvServerLog.Size = new Size(641, 179);
             lvServerLog.TabIndex = 44;
             lvServerLog.UseCompatibleStateImageBehavior = false;
             lvServerLog.View = View.Details;
@@ -222,7 +222,7 @@
             boxSettings.Location = new Point(8, 8);
             boxSettings.Name = "boxSettings";
             boxSettings.Padding = new Padding(12, 32, 12, 10);
-            boxSettings.Size = new Size(630, 468);
+            boxSettings.Size = new Size(641, 402);
             boxSettings.TabIndex = 0;
             boxSettings.Text = "Settings";
             // 
@@ -236,7 +236,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DimGray;
-            ClientSize = new Size(943, 663);
+            ClientSize = new Size(981, 667);
             Controls.Add(verticalStackPanel2);
             Controls.Add(verticalStackPanel1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -279,6 +279,7 @@
         private Controls.ModernNumericUpDown num_reasoningBudget;
         private Controls.ModernComboBox cb_instructlocal;
         private Controls.ModernComboBox cb_flashAttention;
+        private Controls.ModernComboBox cb_kvQuant;
         private Controls.ModernComboBox cb_reasoning;
         private Controls.ModernCheckBox ck_props;
         private Controls.ModernCheckBox ck_kvToGpu;

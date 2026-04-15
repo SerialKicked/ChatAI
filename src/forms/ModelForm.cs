@@ -63,107 +63,58 @@ namespace LetheChat.Forms
                 Padding = new Padding(4, 0, 4, 0)
             };
 
-            const int labelW = 200;
-            const int ctrlX = 205;
-            const int ctrlW = 370;
-            const int ctrlH = 28;
             const int rowGap = 32;
+            const int colGap = 24;
+            var xboxw = (boxSettings.Width - 8) / 2 - colGap;
+
+            int labelW = (int)(xboxw / 2f);
+            int ctrlX = labelW + 4;
+            int ctrlW = xboxw - labelW;
+            int ctrlH = 28;
+
             int y = 0;
             bool colleft = true;
-            var xboxw = (boxSettings.Width - 8) / 2 - rowGap;
 
             void AddRow(string labelText, Control ctrl, string? tip = null)
             {
+                var lblloc = new Point(colleft ? 0 : xboxw + colGap, y + 4);
+
                 var lbl = new Label
                 {
                     Text = labelText,
-                    Location = new Point(0, y + 6),
+                    Location = lblloc,
                     Size = new Size(labelW, 20),
                     TextAlign = ContentAlignment.MiddleLeft
                 };
-                ctrl.Location = new Point(ctrlX, y);
+                ctrl.Location = new Point(colleft ? ctrlX : xboxw + colGap + ctrlX, y);
                 ctrl.Size = new Size(ctrlW, ctrlH);
+                if (ctrl is ModernComboBox cb)
+                {
+                    cb.DropDownStyle = ComboBoxStyle.DropDownList;
+                }
 
                 if (!string.IsNullOrEmpty(tip))
                 {
                     HelpToolTip.SetToolTip(lbl, tip);
                     HelpToolTip.SetToolTip(ctrl, tip);
+                    foreach (Control child in ctrl.Controls)
+                    {
+                        HelpToolTip.SetToolTip(child, tip);
+                        foreach (Control grandChild in child.Controls)
+                            HelpToolTip.SetToolTip(grandChild, tip);
+                    }
                 }
                 panSettingsScroll.Controls.Add(lbl);
                 panSettingsScroll.Controls.Add(ctrl);
-                y += rowGap;
+                if (!colleft)
+                    y += rowGap;
+                colleft = !colleft;
             }
 
-            cb_completion = new ModernComboBox();
-            cb_completion.Items.AddRange(["Default (Chat)", "Text", "Chat"]);
-            cb_completion.SelectedIndex = 0;
-            AddRow("Completion Type", cb_completion, Tip(nameof(LLMEngine.Settings.DefaultCompletionType)));
-
-            num_port = new ModernNumericUpDown { Minimum = 1, Maximum = 65535 };
-            AddRow("Port", num_port, Tip(nameof(LlamaCppSettings.Port)));
-
-            num_threads = new ModernNumericUpDown { Minimum = 0, Maximum = 256 };
-            AddRow("CPU Threads", num_threads, Tip(nameof(LlamaCppSettings.Threads)));
-
-            num_gpuLayers = new ModernNumericUpDown { Minimum = 0, Maximum = 9999 };
-            AddRow("GPU Layers (-ngl)", num_gpuLayers, Tip(nameof(LlamaCppSettings.GpuLayers)));
-
-            num_contextSize = new ModernNumericUpDown { Minimum = 512, Maximum = 1048576, Increment = 512 };
-            AddRow("Context Size (-c)", num_contextSize, Tip(nameof(LlamaCppSettings.ContextSize)));
-
-            cb_flashAttention = new ModernComboBox();
-            cb_flashAttention.Items.AddRange(["Auto", "On", "Off"]);
-            cb_flashAttention.SelectedIndex = 0;
-            AddRow("Flash Attention (-fa)", cb_flashAttention, Tip(nameof(LlamaCppSettings.FlashAttention)));
-
-            cb_reasoning = new ModernComboBox();
-            cb_reasoning.Items.AddRange(["Auto", "On", "Off"]);
-            cb_reasoning.SelectedIndex = 0;
-            AddRow("Reasoning (-rea)", cb_reasoning, Tip(nameof(LlamaCppSettings.Reasoning)));
-
-            num_reasoningBudget = new ModernNumericUpDown { Minimum = -1, Maximum = 1000000 };
-            AddRow("Reasoning Budget", num_reasoningBudget, Tip(nameof(LlamaCppSettings.ReasoningBudget)));
-
-            cb_instructlocal = new ModernComboBox
-            {
-                MaxDropDownItems = 16
-            };
-            // add all DataFiles.Instruct id to combo box
-            cb_instructlocal.Items.Add("None");
-            foreach (var instruct in DataFiles.Instruct)
-                cb_instructlocal.Items.Add(instruct.Key);
-            AddRow("Instruct Template", cb_instructlocal, Tip(nameof(LlamaCppSettings.LocalInstructTemplateID)));
-
-            var lblArgs = new Label
-            {
-                Text = "Additional Args",
-                Location = new Point(0, y + 6),
-                Size = new Size(labelW, 20),
-                TextAlign = ContentAlignment.MiddleLeft
-            };
-            ed_additionalArgs = new TextBox
-            {
-                Location = new Point(ctrlX, y),
-                Size = new Size(ctrlW, ctrlH),
-                BorderStyle = BorderStyle.FixedSingle,
-                PlaceholderText = "Extra command-line args...",
-                BackColor = ThemeManager.curthemePanelColor,
-                ForeColor = ThemeManager.curthemeTextColor,
-                Font = ThemeManager.curthemeBaseFont
-            };
-            var additionalArgsTip = Tip(nameof(LlamaCppSettings.AdditionalArgs));
-            if (!string.IsNullOrEmpty(additionalArgsTip))
-            {
-                HelpToolTip.SetToolTip(lblArgs, additionalArgsTip);
-                HelpToolTip.SetToolTip(ed_additionalArgs, additionalArgsTip);
-            }
-            panSettingsScroll.Controls.Add(lblArgs);
-            panSettingsScroll.Controls.Add(ed_additionalArgs);
-            y += rowGap + 8;
 
             void AddCheck(ModernCheckBox ck, string? tip = null)
             {
-                ck.Location = new Point(colleft ? 0 : xboxw + rowGap, y);
+                ck.Location = new Point(colleft ? 0 : xboxw + colGap, y);
                 ck.Size = new Size(xboxw, 26);
                 if (!string.IsNullOrEmpty(tip))
                 {
@@ -175,6 +126,82 @@ namespace LetheChat.Forms
                 colleft = !colleft;
             }
 
+            num_port = new ModernNumericUpDown { Minimum = 1, Maximum = 65535 };
+            AddRow("Port", num_port, Tip(nameof(LlamaCppSettings.Port)));
+
+            num_threads = new ModernNumericUpDown { Minimum = 0, Maximum = 256 };
+            AddRow("CPU Threads", num_threads, Tip(nameof(LlamaCppSettings.Threads)));
+
+            cb_completion = new ModernComboBox();
+            cb_completion.Items.AddRange(["Default (Chat)", "Text", "Chat"]);
+            cb_completion.SelectedIndex = 0;
+            AddRow("Completion Type", cb_completion, Tip(nameof(LLMEngine.Settings.DefaultCompletionType)));
+
+            cb_instructlocal = new ModernComboBox
+            {
+                MaxDropDownItems = 20
+            };
+            // add all DataFiles.Instruct id to combo box
+            cb_instructlocal.Items.Add("None");
+            foreach (var instruct in DataFiles.Instruct)
+                cb_instructlocal.Items.Add(instruct.Key);
+            AddRow("Instruct Template", cb_instructlocal, Tip(nameof(LlamaCppSettings.LocalInstructTemplateID)));
+
+
+            num_gpuLayers = new ModernNumericUpDown { Minimum = 0, Maximum = 9999 };
+            AddRow("GPU Layers", num_gpuLayers, Tip(nameof(LlamaCppSettings.GpuLayers)));
+
+            num_contextSize = new ModernNumericUpDown { Minimum = 512, Maximum = 1048576, Increment = 512 };
+            AddRow("Context Size", num_contextSize, Tip(nameof(LlamaCppSettings.ContextSize)));
+
+            cb_kvQuant = new ModernComboBox();
+            cb_kvQuant.Items.AddRange(["Full", "Q8_0", "Q5_0", "Q4_0"]);
+            cb_kvQuant.SelectedIndex = 0;
+            AddRow("KV Cache Quantization", cb_kvQuant, Tip(nameof(LlamaCppSettings.KVCacheQuantization)));
+
+            cb_flashAttention = new ModernComboBox();
+            cb_flashAttention.Items.AddRange(["Auto", "On", "Off"]);
+            cb_flashAttention.SelectedIndex = 0;
+            AddRow("Flash Attention", cb_flashAttention, Tip(nameof(LlamaCppSettings.FlashAttention)));
+
+            cb_reasoning = new ModernComboBox();
+            cb_reasoning.Items.AddRange(["Auto", "On", "Off"]);
+            cb_reasoning.SelectedIndex = 0;
+            AddRow("Reasoning (-rea)", cb_reasoning, Tip(nameof(LlamaCppSettings.Reasoning)));
+
+            num_reasoningBudget = new ModernNumericUpDown { Minimum = -1, Maximum = 1000000 };
+            AddRow("Reasoning Budget", num_reasoningBudget, Tip(nameof(LlamaCppSettings.ReasoningBudget)));
+
+
+            var lblArgs = new Label
+            {
+                Text = "Additional Args",
+                Location = new Point(0, y + 4),
+                Size = new Size(labelW, 20),
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            ed_additionalArgs = new TextBox
+            {
+                Location = new Point(ctrlX, y + 4),
+                Size = new Size(xboxw * 2 - labelW + colGap, ctrlH),
+                BorderStyle = BorderStyle.FixedSingle,
+                PlaceholderText = "Extra command-line args...",
+                BackColor = ThemeManager.curthemePanelColor,
+                ForeColor = ThemeManager.curthemeTextColor,
+                Font = ThemeManager.curthemeBaseFont
+            };
+
+            var additionalArgsTip = Tip(nameof(LlamaCppSettings.AdditionalArgs));
+            if (!string.IsNullOrEmpty(additionalArgsTip))
+            {
+                HelpToolTip.SetToolTip(lblArgs, additionalArgsTip);
+                HelpToolTip.SetToolTip(ed_additionalArgs, additionalArgsTip);
+            }
+            panSettingsScroll.Controls.Add(lblArgs);
+            panSettingsScroll.Controls.Add(ed_additionalArgs);
+            y += rowGap + 16;
+
+            colleft = true;
             ck_props = new ModernCheckBox { Text = "Enable Props (--props)" };
             AddCheck(ck_props, Tip(nameof(LlamaCppSettings.Props)));
 
@@ -265,6 +292,7 @@ namespace LetheChat.Forms
                 CompletionType.Chat => 2, 
                 _ => 0 
             };
+            boxSettings.Text = $"Settings - {model.FileName}";
             num_port.Value = s.Port;
             num_threads.Value = s.Threads;
             num_gpuLayers.Value = s.GpuLayers;
@@ -280,6 +308,7 @@ namespace LetheChat.Forms
             ck_kvToGpu.Checked = s.KVcacheToGPU;
             ck_mlock.Checked = s.mlock;
             ck_mmap.Checked = s.mmap;
+            cb_kvQuant.SelectedIndex = (int)s.KVCacheQuantization;
             ck_loadMmproj.Checked = s.LoadMMprojIfAvailable;
             ck_loadMmproj.ForcedColor = model.IsMMProjFilePresent() ? Color.Green : null;
             ck_loadMmproj.Refresh();
@@ -309,6 +338,7 @@ namespace LetheChat.Forms
             s.ReasoningBudget = (int)num_reasoningBudget.Value;
             s.Props = ck_props.Checked;
             s.KVcacheToGPU = ck_kvToGpu.Checked;
+            s.KVCacheQuantization = (KVCacheQuantization)cb_kvQuant.SelectedIndex;
             s.mlock = ck_mlock.Checked;
             s.mmap = ck_mmap.Checked;
             s.LoadMMprojIfAvailable = ck_loadMmproj.Checked;
