@@ -105,7 +105,7 @@ namespace LetheChat.Forms
                 RequireEmptyThinkBlockWhenThinkingDisabled = ck_emptythink.Checked,
                 // Flow Control settings
                 StopSequence = ed_stopsequence.Text.Replace("\\n", "\n"),
-                StopStrings = [.. ed_stopstrings.Text.Split(',').Select(x => x.Trim())],
+                StopStrings = !string.IsNullOrWhiteSpace(ed_stopstrings.Text) ? [.. ed_stopstrings.Text.Split(',').Select(x => x.Trim())] : [],
                 BotStartOverride = ed_botprefixoverride.Text.Replace("\\n", "\n"),
                 BotEndOverride = ed_botsuffixoverride.Text.Replace("\\n", "\n"),
                 NoInstructInStopString = ck_disablinstructstopstrings.Checked

@@ -1,16 +1,16 @@
 {
   "BoSToken": "",
-  "UserStart": "<|im_start|>{{user}}\n",
+  "UserStart": "<|im_start|>user\n",
   "UserEnd": "<|im_end|>",
-  "BotStart": "<|im_start|>{{char}}\n",
+  "BotStart": "<|im_start|>assistant\n",
   "BotEnd": "<|im_end|>",
   "SystemStart": "<|im_start|>system\n",
   "SystemEnd": "<|im_end|>",
-  "ThinkingStart": "<think>\n",
-  "ThinkingEnd": "</think>",
+  "ThinkingStart": "",
+  "ThinkingEnd": "",
   "RequireEmptyThinkBlockWhenThinkingDisabled": false,
   "ThinkingForcedThought": "",
-  "PrefillThinking": true,
+  "PrefillThinking": false,
   "GroupThinkingPrefix": "",
   "ThinkingSystemPromptPrefix": "",
   "ThinkingSystemPromptSuffix": "",
@@ -22,5 +22,5 @@
   "BotStartOverride": "",
   "BotEndOverride": "",
   "NoInstructInStopString": false,
-  "UniqueName": "ChatML-Named"
+  "UniqueName": "ChatML-NoThink"
 }

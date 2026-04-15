@@ -1,8 +1,8 @@
 {
   "BoSToken": "",
-  "SystemStart": "### Instruction:\n",
+  "SystemStart": "### Input:\n",
   "SystemEnd": "",
-  "UserStart": "### Input:\n",
+  "UserStart": "### Instruction:\n",
   "UserEnd": "",
   "BotStart": "### Response:\n",
   "BotEnd": "",

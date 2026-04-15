@@ -365,6 +365,7 @@ namespace LetheChat
                 btMainSettings.Enabled = true;
                 var (tokens, duration) = LLMEngine.History.GetCurrentChatSessionInfo();
                 statusbar.Items[0].Text = $"Current Session: {duration.TotalDays:F2} days ({tokens} tokens)";
+                cb_instruct.Enabled = true;
             }
             else if (LLMEngine.Status == SystemStatus.Busy)
             {
@@ -383,6 +384,7 @@ namespace LetheChat
                 cb_user.Enabled = false;
                 ckToolCalls.Enabled = false;
                 btMainSettings.Enabled = false;
+                cb_instruct.Enabled = false;
             }
             else if (LLMEngine.Status == SystemStatus.NotInit)
             {
@@ -400,6 +402,7 @@ namespace LetheChat
                 cb_bot.Enabled = true;
                 cb_user.Enabled = true;
                 btMainSettings.Enabled = true;
+                cb_instruct.Enabled = true;
             }
             if (Bot?.AllowedSamplers.Count > 0)
             {
@@ -415,6 +418,7 @@ namespace LetheChat
             mck_disablethink.Checked = Program.Settings.DisableThinking;
             mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
             mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
+            mck_disablethink.Enabled = LLMEngine.Instruct.IsThinkFormat;
 
             if (!LLMEngine.SupportsToolCalls)
             {
@@ -1325,6 +1329,7 @@ namespace LetheChat
                 if (_isinitloading)
                     return;
                 LLMEngine.InvalidatePromptCache();
+                UpdateUIState();
             }
         }
 

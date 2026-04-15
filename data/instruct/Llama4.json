@@ -1,12 +1,12 @@
 {
   "BoSToken": "<|begin_of_text|>",
-  "UserStart": "<|header_start|>user<|header_end|>\n\n",
-  "UserEnd": "<|eot|>",
-  "BotStart": "<|header_start|>assistant<|header_end|>\n\n",
-  "BotEnd": "<|eot|>",
-  "SystemStart": "<|header_start|>system<|header_end|>\n\n",
-  "SystemEnd": "<|eot|>",
-  "ThinkingStart": "<think>",
+  "UserStart": "<|start_header_id|>user<|end_header_id|>\n\n",
+  "UserEnd": "<|eot_id|>",
+  "BotStart": "<|start_header_id|>assistant<|end_header_id|>\n\n",
+  "BotEnd": "<|eot_id|>",
+  "SystemStart": "<|start_header_id|>system<|end_header_id|>\n\n",
+  "SystemEnd": "<|eot_id|>",
+  "ThinkingStart": "<think>\n",
   "ThinkingEnd": "</think>",
   "RequireEmptyThinkBlockWhenThinkingDisabled": false,
   "ThinkingForcedThought": "",
@@ -22,5 +22,5 @@
   "BotStartOverride": "",
   "BotEndOverride": "",
   "NoInstructInStopString": false,
-  "UniqueName": "Llama4"
+  "UniqueName": "Llama3"
 }
