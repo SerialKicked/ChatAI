@@ -419,6 +419,7 @@ namespace LetheChat
             mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
             mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
             mck_disablethink.Enabled = LLMEngine.Instruct.IsThinkFormat;
+            cbMemStyle.SelectedIndex = (int)LLMEngine.Settings.RecallMemoryMode;
 
             if (!LLMEngine.SupportsToolCalls)
             {
@@ -463,7 +464,6 @@ namespace LetheChat
                     LLMEngine.Bot = DataFiles.Characters[key];
                     await webUI.LoadHistoryToUI();
                     mck_guidance.Checked = !LLMEngine.Bot.DisableBotGuidance;
-                    mck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
                     var searchplug = LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch");
                     if (searchplug != null)
                     {
@@ -557,7 +557,7 @@ namespace LetheChat
                     });
                     var stringfix = _currentgeneration.ToString().StripThinkTags();
                     if (string.IsNullOrEmpty(stringfix))
-                         stringfix = $"*{LLMEngine.Bot.GetIdentifier()} is thinking...*";
+                        stringfix = $"*{LLMEngine.Bot.GetIdentifier()} is thinking...*";
                     else
                         stringfix = stringfix.FixRoleplayString(Program.Settings.RoleplayFormatting, true);
 
@@ -1180,7 +1180,6 @@ namespace LetheChat
                 }
                 await webUI.LoadHistoryToUI();
                 mck_guidance.Checked = !LLMEngine.Bot.DisableBotGuidance;
-                mck_caninitchat.Checked = Bot?.CanInitiateChat ?? false;
                 var searchplug = LLMEngine.ContextPlugins.Find(x => x.PluginID == "WebSearch");
                 if (searchplug != null)
                 {
@@ -1386,7 +1385,7 @@ namespace LetheChat
 
         private void ck_worldinfo_CheckedChanged(object sender, EventArgs e)
         {
-            if (_isinitloading) 
+            if (_isinitloading)
                 return;
             LLMEngine.Settings.AllowWorldInfo = mck_worldinfo.Checked;
         }
@@ -1395,11 +1394,6 @@ namespace LetheChat
         {
             if (cb_sysprompt.SelectedItem is string key && !string.IsNullOrEmpty(key))
                 LLMEngine.SystemPrompt = DataFiles.SysPrompts[key];
-        }
-
-        private void ck_caninit_CheckedChanged(object sender, EventArgs e)
-        {
-            Bot?.CanInitiateChat = mck_caninitchat.Checked;
         }
 
         private void AutoTalkTimer_Tick(object sender, EventArgs e)
@@ -1617,6 +1611,11 @@ namespace LetheChat
             using var modelForm = new ModelForm();
             ThemeManager.ApplyToForm(modelForm);
             modelForm.ShowDialog(this);
+        }
+
+        private void cbMemStyle_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LLMEngine.Settings.RecallMemoryMode = (MemoryMode)cbMemStyle.SelectedIndex;
         }
     }
 }

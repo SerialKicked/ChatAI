@@ -158,7 +158,7 @@ namespace LetheChat.AgentPlugins
             if (availtokens <= 0)
                 return sysprompt.CleanupAndTrim();
 
-            var summaries = LLMEngine.History.GetPreviousSummaries(availtokens, "###", allowRP: true, maxCount: maxsession, datafound.GetGuids());
+            var summaries = LLMEngine.History.GetPreviousSummaries(availtokens, "###", allowRP: MemoryMode.Normal, maxCount: maxsession, datafound.GetGuids());
             sysprompt += summaries;
             return sysprompt.CleanupAndTrim();
         }

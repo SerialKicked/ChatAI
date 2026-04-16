@@ -193,7 +193,7 @@ namespace LetheChat.AgentPlugins
                 "## Chronological chat summaries:" + LLMEngine.NewLine + LLMEngine.NewLine;
 
             availtokens -= promptbuild.GetTokenCount(AuthorRole.System, sysprompt);
-            var AllowRP = rpHandling == RPHandling.Always;
+            var AllowRP = rpHandling == RPHandling.Always ? MemoryMode.Normal : MemoryMode.NonRPOnly;
             var summaries = LLMEngine.History.GetPreviousSummaries(availtokens, allowRP: AllowRP, maxCount: maxsession);
             sysprompt += summaries;
             return sysprompt.CleanupAndTrim();
@@ -227,7 +227,7 @@ namespace LetheChat.AgentPlugins
             if (availtokens <= 0)
                 return sysprompt.CleanupAndTrim();
 
-            var AllowRP = rpHandling == RPHandling.Always;
+            var AllowRP = rpHandling == RPHandling.Always ? MemoryMode.Normal : MemoryMode.NonRPOnly;
             var summaries = LLMEngine.History.GetPreviousSummaries(availtokens, "###", allowRP: AllowRP, maxCount: maxsession, datafound.GetGuids());
             sysprompt += summaries;
             return sysprompt.CleanupAndTrim();

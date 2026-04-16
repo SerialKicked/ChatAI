@@ -22,19 +22,81 @@ namespace LetheChat.Forms
 
         private void LoadToolTips()
         {
-            HelptoolTip.SetToolTip(ck_alwayswebsearch, "Normally, the Search API will only be attempted if you explicitely ask the bot to search the web. If you check this box, the LLM will always try to determine if a search would be useful." + Environment.NewLine + Environment.NewLine + "May lead to many false positive, and overall slower generation with some models.");
-            HelptoolTip.SetToolTip(ck_sessionmemory, "If checked, the bot will remember previous chat sessions by having their summaries inserted into the system prompt.");
-            HelptoolTip.SetToolTip(num_memtokens, "The number of tokens to reserve for session memory summaries. The more tokens you reserve, the more context the bot can remember from previous sessions, but the less tokens are available for the chatlog." + Environment.NewLine + "If you have a very large context window. A good rule of thumb is 2K per 16K of total context windows available.");
-            HelptoolTip.SetToolTip(cb_pastsession, "Determines how the bot will handle past sessions when session memory is enabled." + Environment.NewLine + "FitAll: Fit as many sessions as possible into the chatlog. Older sessions are summarized." + Environment.NewLine + "CurrentOnly: Only the current session is kept in full, older sessions are summarized.");
-            HelptoolTip.SetToolTip(ck_sysrag, "If checked, any RAG insert (sessions triggers and lorebook entries) will be moved to the system prompt instead of being inserted into the chatlog." + Environment.NewLine + "Some models behave better while contextual info into the system prompt, while others prefer having system messages in the chatlog.");
-            HelptoolTip.SetToolTip(num_ragcutoff, "The distance cutoff for RAG retrieval. The lower the value, the more similar the retrieved entries will be to the query." + Environment.NewLine + "A good starting point is between 0.07 and 0.1, assuming you're using the default embedding model.");
-            HelptoolTip.SetToolTip(num_ragmaxretrieve, "The maximum number of RAG entries to retrieve for each query. The more entries you retrieve, the more context the bot will have." + Environment.NewLine + "A good starting point is between 2 and 5.");
-            HelptoolTip.SetToolTip(num_ragindex, "The level in the chatlog where the entries will be inserted, 0 is just above the latest message pair. " + Environment.NewLine + "You can set it to -1 to put it into the system prompt.");
-            HelptoolTip.SetToolTip(num_ragM, "The M parameter for the HNSW index. Higher values lead to better quality results, but slower indexing and retrieval." + Environment.NewLine + "A good starting point is around 15-20.");
-            HelptoolTip.SetToolTip(cb_ragheuristic, "The heuristic used to select neighbors in the HNSW index:" + Environment.NewLine +
-                "- Simple: fast, but slightly less accurate." + Environment.NewLine +
-                "- Heuristic: better choice for large datasets and varied types of data." + Environment.NewLine +
-                "- Exact: Uses exact distance calculation for all entries, best accuracy but slower with very large datasets.");
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ck_alwayswebsearch, nameof(LetheChatSettings.AlwaysWebSearchQuery));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, cb_pastsession, nameof(LetheChatSettings.SessionHandling));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ck_oneparagraph, nameof(LetheChatSettings.StopGenerationOnFirstParagraph));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ck_sessionmemory, nameof(LetheChatSettings.SessionMemorySystem));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ckDetailedSum, nameof(LetheChatSettings.SessionDetailedSummary));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, num_ragcutoff, nameof(LetheChatSettings.RAGDistanceCutOff));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, num_ragmaxretrieve, nameof(LetheChatSettings.RAGMaxEntries));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numWIEntries, nameof(LetheChatSettings.WorldInfoMaxEntries));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, num_ragindex, nameof(LetheChatSettings.RAGIndex));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, num_ragM, nameof(LetheChatSettings.RAGMValue));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ck_sysrag, nameof(LetheChatSettings.MoveAllInsertsToSysPrompt));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ckShowHidden, nameof(LetheChatSettings.ShowHiddenMessages));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ck_hallusafe, nameof(LetheChatSettings.AntiHallucinationMemoryFormat));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, num_memtokens, nameof(LetheChatSettings.SessionReservedTokens));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ck_forcePW, nameof(LetheChatSettings.AlwaysForcePasswordOnBotSwitch));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ckThirdPerson, nameof(LetheChatSettings.RAGConvertTo3rdPerson));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, cb_ragheuristic, nameof(LetheChatSettings.RAGHeuristic));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, mck_cutmiddle, nameof(LetheChatSettings.CutInTheMiddleSummaryStrategy));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ckNoPastInserts, nameof(LetheChatSettings.DisableDateAndMoodIfNotLastSession));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ckGroupRouting, nameof(LetheChatSettings.GroupChatMode));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numGroupQueue, nameof(LetheChatSettings.GroupChatAutoResponseLimit));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, cbGroupSessionStrategy, nameof(LetheChatSettings.GroupSecondaryPersonaSeePastSessions));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ckGroupAltern, nameof(LetheChatSettings.GroupInstructFormatAdapter));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ckGroupThinkPrompt, nameof(LetheChatSettings.GroupChatInfoThinkingBlock));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ckGroupCommit, nameof(LetheChatSettings.CommitGroupSessionToSecondaryPersonaHistory));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ckForceInternalGram, nameof(LetheChatSettings.ForceInternalGrammar));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ckFactRetrieval, nameof(LetheChatSettings.FactRetrievalEnabled));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numFactDedup, nameof(LetheChatSettings.FactDeduplicationThreshold));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numFactRetrieval, nameof(LetheChatSettings.FactRetrievalThreshold));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numFactSuper, nameof(LetheChatSettings.FactSupersessionThreshold));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numFactTokens, nameof(LetheChatSettings.CoreFactsTokenBudget));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ckFactRoleplay, nameof(LetheChatSettings.RecordFactsDuringRoleplay));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, num_imgEmbed, nameof(LetheChatSettings.ImageEmbeddingSize));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, num_ImgCount, nameof(LetheChatSettings.MaxImageCount));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ckToolAlwaysAsk, nameof(LetheChatSettings.ToolCallsAlwaysManualConfirm));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numAFKDelay, nameof(LetheChatSettings.BackgroundAgentMinInactivityTime));
+
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, cbParallel, nameof(LetheChatSettings.BackendParallelToolCalls));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, cbChatAllowPrefill, nameof(LetheChatSettings.BackendChatAllowPrefill));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ck_backendbostoken, nameof(LetheChatSettings.BackendHandlesBoSToken));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, cb_searchapi, nameof(LetheChatSettings.WebSearchAPI));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ed_searchkey, nameof(LetheChatSettings.WebSearchBraveAPIKey));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ck_searchextract, nameof(LetheChatSettings.WebSearchDetailedResults));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numWebSearchDetailedMaxLength, nameof(LetheChatSettings.WebSearchDetailedMaxLength));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ckManagedLlama, nameof(LetheChatSettings.ManagedLlama));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, edLlamaPath, nameof(LetheChatSettings.PathToLlamaCppServer));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ckUseIkLlama, nameof(LetheChatSettings.IsIkLlama));
+
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numAFKDelay, nameof(LetheChatSettings.BackgroundAgentMinInactivityTime));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numAFKDelay, nameof(LetheChatSettings.BackgroundAgentMinInactivityTime));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numAFKDelay, nameof(LetheChatSettings.BackgroundAgentMinInactivityTime));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numAFKDelay, nameof(LetheChatSettings.BackgroundAgentMinInactivityTime));
+
+            HelpTool.ApplyTooltip<LlamaCppSettings>(HelptoolTip, numLlamaPort, nameof(LlamaCppSettings.Port));
+            HelpTool.ApplyTooltip<LlamaCppSettings>(HelptoolTip, ckLlamaMLock, nameof(LlamaCppSettings.mlock));
+            HelpTool.ApplyTooltip<LlamaCppSettings>(HelptoolTip, ckLlamaMMap, nameof(LlamaCppSettings.mmap));
+            HelpTool.ApplyTooltip<LlamaCppSettings>(HelptoolTip, numLlamaContext, nameof(LlamaCppSettings.ContextSize));
+            HelpTool.ApplyTooltip<LlamaCppSettings>(HelptoolTip, cbLlamaFlash, nameof(LlamaCppSettings.FlashAttention));
+            HelpTool.ApplyTooltip<LlamaCppSettings>(HelptoolTip, cbLlamaReason, nameof(LlamaCppSettings.Reasoning));
+            HelpTool.ApplyTooltip<LlamaCppSettings>(HelptoolTip, numLlamaThreads, nameof(LlamaCppSettings.Threads));
+            HelpTool.ApplyTooltip<LlamaCppSettings>(HelptoolTip, numLlamaLayers, nameof(LlamaCppSettings.GpuLayers));
+            HelpTool.ApplyTooltip<LlamaCppSettings>(HelptoolTip, numLlamaReasonBudget, nameof(LlamaCppSettings.ReasoningBudget));
+            HelpTool.ApplyTooltip<LlamaCppSettings>(HelptoolTip, ckLlamaProps, nameof(LlamaCppSettings.Props));
+            HelpTool.ApplyTooltip<LlamaCppSettings>(HelptoolTip, ckLlamaKV, nameof(LlamaCppSettings.KVcacheToGPU));
+            HelpTool.ApplyTooltip<LlamaCppSettings>(HelptoolTip, ckLlamaMMProj, nameof(LlamaCppSettings.LoadMMprojIfAvailable));
+            HelpTool.ApplyTooltip<LlamaCppSettings>(HelptoolTip, ckLlamaJinja, nameof(LlamaCppSettings.LoadJinjaIfAvailable));
+            HelpTool.ApplyTooltip<LlamaCppSettings>(HelptoolTip, cbLlamaKV, nameof(LlamaCppSettings.KVCacheQuantization));
+
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, cbDefaultCompletion, nameof(LetheChatSettings.DefaultCompletionType));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, cklToolsets, nameof(LetheChatSettings.AllowedToolsets));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ckAllowtools, nameof(LetheChatSettings.ToolCallsAllowed));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numToolLimit, nameof(LetheChatSettings.ToolCallLimit));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numToolMemory, nameof(LetheChatSettings.ToolCallChainLimit));
+
+
             HelptoolTip.SetToolTip(ck_fixasterix, "If checked, the bot will try to fix any asterisks in its responses. This is useful if the bot is using asterisks for emphasis incorrectly." + Environment.NewLine + "Note that this may not work perfectly, and may lead to some weird formatting.");
             HelptoolTip.SetToolTip(ck_antislop, "A very basic filter to remove words or sentences from the bot's output." + Environment.NewLine + "This is done by checking the bot's responses against a list of 'sloppy' words, and removing them." + Environment.NewLine + "You can customize the list of words in the text box below.");
             HelptoolTip.SetToolTip(num_antislopchance, "The chance that the bot will delete the word or sentence.");
@@ -48,18 +110,8 @@ namespace LetheChat.Forms
             HelptoolTip.SetToolTip(num_removeitalicmaxword, "The maximum number of words in an italicized section for it to be removed. This is useful to prevent the bot from removing large sections of italic text that may be important." + Environment.NewLine + "For example, if set to 5, any italicized section with 5 or fewer words will be removed, while longer sections will be kept.");
             HelptoolTip.SetToolTip(ck_lastparaphfilter, "If checked, the bot will remove the last paragraph of its response if it detects that it looks like filler." + Environment.NewLine + "Some models have a bad habit of constantly writing useless slop or asking leading questions in the last paragraph of their responses. This is meant to prevent it.");
             HelptoolTip.SetToolTip(ck_remlastsentence, "If checked, the bot will remove the last sentence of its response if it's incomplete, generally due to hitting the response token limit.");
-            HelptoolTip.SetToolTip(ck_oneparagraph, "If checked, the bot will stop its generation as soon as it finishes the first paragraph." + Environment.NewLine + "This is useful if you want to keep the bot's responses short and to the point, or if you want to avoid it going off on tangents.");
-            HelptoolTip.SetToolTip(ckShowHidden, "If checked, any hidden messages (e.g. system messages) will be shown in the chatlog." + Environment.NewLine + "This is useful for debugging or if you want to see the full context of the conversation.");
-            HelptoolTip.SetToolTip(ck_hallusafe, "If checked, the bot will try to format its memory inserts in a way that reduces the chance of hallucinations." + Environment.NewLine + "This is done by adding extra context and formatting to the memory inserts." + Environment.NewLine + "This may lead to slightly longer memory inserts, but helps improve the quality of the bot's responses.");
-            HelptoolTip.SetToolTip(cb_searchapi, "The search API to use for web searches. DuckDuckGo is free and does not require an API key, but may be less reliable." + Environment.NewLine + "Brave Search requires an API key (you can get one for free by creating a Brave account), but is generally more reliable and provides better results.");
-            HelptoolTip.SetToolTip(ed_searchkey, "Your Brave Search API key. Only needed if you select Brave Search as your search API." + Environment.NewLine + "You can get a free API key by creating a Brave account and generating an API key in the Brave Search settings.");
-            HelptoolTip.SetToolTip(ck_searchextract, "If checked, the bot will try to extract more detailed information from the search results." + Environment.NewLine + "This leads to much better results, but is also quite slow.");
-            HelptoolTip.SetToolTip(bt_importworld, "Import a lorebook file exported from SillyTavern or another external website." + Environment.NewLine + "The lorebook will be converted to the internal format and saved to this application's data/worlds folder.");
-            HelptoolTip.SetToolTip(bt_ImportSTChat, "Import a chatlog file exported from SillyTavern." + Environment.NewLine + "The chatlog will be converted to the internal format and saved to 'exported_chat.json' in this application's main folder.");
-            HelptoolTip.SetToolTip(ck_forcePW, "Normally, when switching to a password-protected bot, the app will remember its password for as long as it's running, so you don't need to enter it multiple times. If checked, the application will always ask for the bot's password when switching.");
-            HelptoolTip.SetToolTip(ckThirdPerson, "If checked, the bot will convert user messages to 3rd person when performing RAG searches. This tends to be more effective, especially to retrieve past sessions.");
-            HelptoolTip.SetToolTip(ckNoPastInserts, "If checked, the system will not insert date, insert memories, or udate mood information if the active chat session is not the latest. " + Environment.NewLine + "This can help reduce confusion when the bot is recalling past sessions that are not the current one.");
             HelptoolTip.IsBalloon = true;
+
             HelptoolTip.ToolTipIcon = ToolTipIcon.Info;
             HelptoolTip.ToolTipTitle = "Settings";
         }
@@ -180,6 +232,7 @@ namespace LetheChat.Forms
             ckLlamaMMProj.Checked = Program.Settings.DefaultLLamaCppSettings.LoadMMprojIfAvailable;
             ckLlamaJinja.Checked = Program.Settings.DefaultLLamaCppSettings.LoadJinjaIfAvailable;
             ckToolAlwaysAsk.Checked = Program.Settings.ToolCallsAlwaysManualConfirm;
+            ck_backendbostoken.Checked = Program.Settings.BackendHandlesBoSToken;
 
             cbLlamaFlash.SelectedIndex = Program.Settings.DefaultLLamaCppSettings.FlashAttention switch
             {
@@ -325,6 +378,7 @@ namespace LetheChat.Forms
                     2 => false,
                     _ => null,
                 };
+                Program.Settings.BackendHandlesBoSToken = ck_backendbostoken.Checked;
 
                 // Search API Settings
                 if (cb_searchapi.SelectedIndex == 0)
@@ -539,15 +593,6 @@ namespace LetheChat.Forms
             }
         }
 
-        private void label43_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void cklToolsets_RightToLeftChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void cklToolsets_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -563,11 +608,6 @@ namespace LetheChat.Forms
             {
                 edToolinfo.Text += $"- {tool.Function?.Name ?? "Unknown"}: {tool.Function?.Description ?? "No description"}" + Environment.NewLine + Environment.NewLine;
             }
-        }
-
-        private void ckLlamaMLock_CheckedChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

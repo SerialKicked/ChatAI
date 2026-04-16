@@ -83,6 +83,9 @@ namespace LetheChat
                     AvailModels.Add(model);
                 }
             }
+
+            // sort the list by filename
+            AvailModels.Sort((a, b) => string.Compare(a.FileName, b.FileName, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

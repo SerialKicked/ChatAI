@@ -19,11 +19,7 @@ namespace LetheChat.Forms
         private LocalModel? _currentModel;
         private readonly ToolTip _toolTip = new() { AutoPopDelay = 8000, InitialDelay = 400, ReshowDelay = 200 };
 
-        private static string? Tip(string propertyName) =>
-            typeof(LlamaCppSettings)
-                .GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance)
-                ?.GetCustomAttribute<DescriptionAttribute>()
-                ?.Description;
+
 
         public ModelForm()
         {
@@ -127,15 +123,15 @@ namespace LetheChat.Forms
             }
 
             num_port = new ModernNumericUpDown { Minimum = 1, Maximum = 65535 };
-            AddRow("Port", num_port, Tip(nameof(LlamaCppSettings.Port)));
+            AddRow("Port", num_port, HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.Port)));
 
             num_threads = new ModernNumericUpDown { Minimum = 0, Maximum = 256 };
-            AddRow("CPU Threads", num_threads, Tip(nameof(LlamaCppSettings.Threads)));
+            AddRow("CPU Threads", num_threads, HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.Threads)));
 
             cb_completion = new ModernComboBox();
             cb_completion.Items.AddRange(["Default (Chat)", "Text", "Chat"]);
             cb_completion.SelectedIndex = 0;
-            AddRow("Completion Type", cb_completion, Tip(nameof(LLMEngine.Settings.DefaultCompletionType)));
+            AddRow("Completion Type", cb_completion, HelpTool.Tip<LlamaCppSettings>(nameof(LLMEngine.Settings.DefaultCompletionType)));
 
             cb_instructlocal = new ModernComboBox
             {
@@ -145,33 +141,32 @@ namespace LetheChat.Forms
             cb_instructlocal.Items.Add("None");
             foreach (var instruct in DataFiles.Instruct)
                 cb_instructlocal.Items.Add(instruct.Key);
-            AddRow("Instruct Template", cb_instructlocal, Tip(nameof(LlamaCppSettings.LocalInstructTemplateID)));
+            AddRow("Instruct Template", cb_instructlocal, HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.LocalInstructTemplateID)));
 
 
             num_gpuLayers = new ModernNumericUpDown { Minimum = 0, Maximum = 9999 };
-            AddRow("GPU Layers", num_gpuLayers, Tip(nameof(LlamaCppSettings.GpuLayers)));
+            AddRow("GPU Layers", num_gpuLayers, HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.GpuLayers)));
 
             num_contextSize = new ModernNumericUpDown { Minimum = 512, Maximum = 1048576, Increment = 512 };
-            AddRow("Context Size", num_contextSize, Tip(nameof(LlamaCppSettings.ContextSize)));
+            AddRow("Context Size", num_contextSize, HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.ContextSize)));
 
             cb_kvQuant = new ModernComboBox();
             cb_kvQuant.Items.AddRange(["Full", "Q8_0", "Q5_0", "Q4_0"]);
             cb_kvQuant.SelectedIndex = 0;
-            AddRow("KV Cache Quantization", cb_kvQuant, Tip(nameof(LlamaCppSettings.KVCacheQuantization)));
+            AddRow("KV Cache Quantization", cb_kvQuant, HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.KVCacheQuantization)));
 
             cb_flashAttention = new ModernComboBox();
             cb_flashAttention.Items.AddRange(["Auto", "On", "Off"]);
             cb_flashAttention.SelectedIndex = 0;
-            AddRow("Flash Attention", cb_flashAttention, Tip(nameof(LlamaCppSettings.FlashAttention)));
+            AddRow("Flash Attention", cb_flashAttention, HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.FlashAttention)));
 
             cb_reasoning = new ModernComboBox();
             cb_reasoning.Items.AddRange(["Auto", "On", "Off"]);
             cb_reasoning.SelectedIndex = 0;
-            AddRow("Reasoning (-rea)", cb_reasoning, Tip(nameof(LlamaCppSettings.Reasoning)));
+            AddRow("Reasoning (-rea)", cb_reasoning, HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.Reasoning)));
 
             num_reasoningBudget = new ModernNumericUpDown { Minimum = -1, Maximum = 1000000 };
-            AddRow("Reasoning Budget", num_reasoningBudget, Tip(nameof(LlamaCppSettings.ReasoningBudget)));
-
+            AddRow("Reasoning Budget", num_reasoningBudget, HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.ReasoningBudget)));
 
             var lblArgs = new Label
             {
@@ -191,7 +186,7 @@ namespace LetheChat.Forms
                 Font = ThemeManager.curthemeBaseFont
             };
 
-            var additionalArgsTip = Tip(nameof(LlamaCppSettings.AdditionalArgs));
+            var additionalArgsTip = HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.AdditionalArgs));
             if (!string.IsNullOrEmpty(additionalArgsTip))
             {
                 HelpToolTip.SetToolTip(lblArgs, additionalArgsTip);
@@ -203,22 +198,22 @@ namespace LetheChat.Forms
 
             colleft = true;
             ck_props = new ModernCheckBox { Text = "Enable Props (--props)" };
-            AddCheck(ck_props, Tip(nameof(LlamaCppSettings.Props)));
+            AddCheck(ck_props, HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.Props)));
 
             ck_kvToGpu = new ModernCheckBox { Text = "Offload KV Cache to GPU (-kvo)" };
-            AddCheck(ck_kvToGpu, Tip(nameof(LlamaCppSettings.KVcacheToGPU)));
+            AddCheck(ck_kvToGpu, HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.KVcacheToGPU)));
 
             ck_mlock = new ModernCheckBox { Text = "Memory Lock (--mlock)" };
-            AddCheck(ck_mlock, Tip(nameof(LlamaCppSettings.mlock)));
+            AddCheck(ck_mlock, HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.mlock)));
 
             ck_mmap = new ModernCheckBox { Text = "Memory Map (--mmap)" };
-            AddCheck(ck_mmap, Tip(nameof(LlamaCppSettings.mmap)));
+            AddCheck(ck_mmap, HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.mmap)));
 
             ck_loadMmproj = new ModernCheckBox { Text = "Auto-load mmproj (vision) if available" };
-            AddCheck(ck_loadMmproj, Tip(nameof(LlamaCppSettings.LoadMMprojIfAvailable)));
+            AddCheck(ck_loadMmproj, HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.LoadMMprojIfAvailable)));
 
             ck_loadJinja = new ModernCheckBox { Text = "Auto-load .jinja chat template if available" };
-            AddCheck(ck_loadJinja, Tip(nameof(LlamaCppSettings.LoadJinjaIfAvailable)));
+            AddCheck(ck_loadJinja, HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.LoadJinjaIfAvailable)));
 
             boxSettings.Controls.Add(panSettingsScroll);
             SetSettingsEnabled(false);

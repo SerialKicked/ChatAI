@@ -10,12 +10,48 @@ using Microsoft.Web.WebView2.WinForms;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace LetheChat
 {
+    public static class HelpTool
+    {
+        public static string? Tip<T>(string propertyName) => typeof(T).GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance)
+        ?.GetCustomAttribute<DescriptionAttribute>()
+        ?.Description;
+
+        public static void ApplyTooltip(ToolTip tipmanager, Control target, string? tip)
+        {
+            if (string.IsNullOrEmpty(tip))
+                return;
+            tipmanager.SetToolTip(target, tip);
+            foreach (Control child in target.Controls)
+            {
+                tipmanager.SetToolTip(child, tip);
+                foreach (Control grandChild in child.Controls)
+                    tipmanager.SetToolTip(grandChild, tip);
+            }
+        }
+
+        public static void ApplyTooltip<T>(ToolTip tipmanager, Control target, string propertyName)
+        {
+            var tip = Tip<T>(propertyName);
+            if (string.IsNullOrEmpty(tip))
+                return;
+            tipmanager.SetToolTip(target, tip);
+            foreach (Control child in target.Controls)
+            {
+                tipmanager.SetToolTip(child, tip);
+                foreach (Control grandChild in child.Controls)
+                    tipmanager.SetToolTip(grandChild, tip);
+            }
+        }
+    }
+
     public class WebUI(MainForm form, WebView2 webview)
     {
         /// <summary>

@@ -75,6 +75,7 @@
             label5 = new Label();
             ckManagedLlama = new LetheChat.Controls.ModernCheckBox();
             collapsibleGroupBox2 = new LetheChat.Controls.CollapsibleGroupBox();
+            ck_backendbostoken = new LetheChat.Controls.ModernCheckBox();
             cbChatAllowPrefill = new LetheChat.Controls.ModernComboBox();
             label2 = new Label();
             panel3 = new Panel();
@@ -289,7 +290,7 @@
             // 
             panel1.Controls.Add(button1);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 518);
+            panel1.Location = new Point(0, 524);
             panel1.Name = "panel1";
             panel1.Size = new Size(1026, 38);
             panel1.TabIndex = 32;
@@ -328,7 +329,7 @@
             MainTab.Name = "MainTab";
             MainTab.SelectedIndex = 0;
             MainTab.ShowTabs = false;
-            MainTab.Size = new Size(798, 518);
+            MainTab.Size = new Size(798, 524);
             MainTab.TabIndex = 33;
             // 
             // tabBackend
@@ -342,7 +343,7 @@
             tabBackend.Location = new Point(0, 0);
             tabBackend.Name = "tabBackend";
             tabBackend.Padding = new Padding(3);
-            tabBackend.Size = new Size(798, 518);
+            tabBackend.Size = new Size(798, 524);
             tabBackend.TabIndex = 0;
             tabBackend.Text = "Backend";
             // 
@@ -353,7 +354,7 @@
             collapsibleGroupBox4.Controls.Add(verticalStackPanel3);
             collapsibleGroupBox4.Controls.Add(verticalStackPanel2);
             collapsibleGroupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox4.Location = new Point(6, 194);
+            collapsibleGroupBox4.Location = new Point(6, 200);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(12, 32, 12, 10);
             collapsibleGroupBox4.Size = new Size(780, 318);
@@ -419,7 +420,6 @@
             ckLlamaMLock.TabIndex = 40;
             ckLlamaMLock.Text = "Memory Lock";
             ckLlamaMLock.UseVisualStyleBackColor = true;
-            ckLlamaMLock.CheckedChanged += ckLlamaMLock_CheckedChanged;
             // 
             // ckLlamaKV
             // 
@@ -747,7 +747,7 @@
             collapsibleGroupBox3.Location = new Point(6, 6);
             collapsibleGroupBox3.Name = "collapsibleGroupBox3";
             collapsibleGroupBox3.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox3.Size = new Size(407, 182);
+            collapsibleGroupBox3.Size = new Size(407, 188);
             collapsibleGroupBox3.TabIndex = 41;
             collapsibleGroupBox3.Text = "Managed Llama.cpp";
             // 
@@ -768,7 +768,7 @@
             btModelFolders.FlatStyle = FlatStyle.Flat;
             btModelFolders.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btModelFolders.ForeColor = Color.Black;
-            btModelFolders.Location = new Point(15, 147);
+            btModelFolders.Location = new Point(15, 148);
             btModelFolders.Name = "btModelFolders";
             btModelFolders.Size = new Size(377, 27);
             btModelFolders.TabIndex = 7;
@@ -823,6 +823,7 @@
             // 
             collapsibleGroupBox2.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox2.CanCollapse = false;
+            collapsibleGroupBox2.Controls.Add(ck_backendbostoken);
             collapsibleGroupBox2.Controls.Add(cbChatAllowPrefill);
             collapsibleGroupBox2.Controls.Add(label2);
             collapsibleGroupBox2.Controls.Add(panel3);
@@ -835,9 +836,20 @@
             collapsibleGroupBox2.Location = new Point(419, 6);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox2.Size = new Size(367, 182);
+            collapsibleGroupBox2.Size = new Size(367, 188);
             collapsibleGroupBox2.TabIndex = 40;
             collapsibleGroupBox2.Text = "Backend-Compatibility Settings";
+            // 
+            // ck_backendbostoken
+            // 
+            ck_backendbostoken.Dock = DockStyle.Top;
+            ck_backendbostoken.Font = new Font("Segoe UI", 9F);
+            ck_backendbostoken.Location = new Point(12, 157);
+            ck_backendbostoken.Name = "ck_backendbostoken";
+            ck_backendbostoken.Size = new Size(343, 26);
+            ck_backendbostoken.TabIndex = 62;
+            ck_backendbostoken.Text = "Backend manages the BOS token";
+            ck_backendbostoken.UseVisualStyleBackColor = true;
             // 
             // cbChatAllowPrefill
             // 
@@ -846,7 +858,7 @@
             cbChatAllowPrefill.DropDownHeight = 180;
             cbChatAllowPrefill.Font = new Font("Segoe UI", 9F);
             cbChatAllowPrefill.Items.AddRange(new object[] { "Auto", "Allow", "Disallow" });
-            cbChatAllowPrefill.Location = new Point(12, 141);
+            cbChatAllowPrefill.Location = new Point(12, 133);
             cbChatAllowPrefill.MaxDropDownItems = 10;
             cbChatAllowPrefill.Name = "cbChatAllowPrefill";
             cbChatAllowPrefill.Padding = new Padding(1);
@@ -858,7 +870,7 @@
             label2.AutoSize = true;
             label2.Dock = DockStyle.Top;
             label2.Font = new Font("Segoe UI", 9F);
-            label2.Location = new Point(12, 126);
+            label2.Location = new Point(12, 118);
             label2.Name = "label2";
             label2.Size = new Size(230, 15);
             label2.TabIndex = 3;
@@ -867,11 +879,11 @@
             // panel3
             // 
             panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(12, 118);
+            panel3.Location = new Point(12, 114);
             panel3.Margin = new Padding(8);
             panel3.Name = "panel3";
             panel3.Padding = new Padding(8);
-            panel3.Size = new Size(343, 8);
+            panel3.Size = new Size(343, 4);
             panel3.TabIndex = 57;
             // 
             // cbParallel
@@ -881,7 +893,7 @@
             cbParallel.DropDownHeight = 180;
             cbParallel.Font = new Font("Segoe UI", 9F);
             cbParallel.Items.AddRange(new object[] { "Auto", "Allow", "Disallow" });
-            cbParallel.Location = new Point(12, 94);
+            cbParallel.Location = new Point(12, 90);
             cbParallel.MaxDropDownItems = 10;
             cbParallel.Name = "cbParallel";
             cbParallel.Padding = new Padding(1);
@@ -893,7 +905,7 @@
             label1.AutoSize = true;
             label1.Dock = DockStyle.Top;
             label1.Font = new Font("Segoe UI", 9F);
-            label1.Location = new Point(12, 79);
+            label1.Location = new Point(12, 75);
             label1.Name = "label1";
             label1.Size = new Size(111, 15);
             label1.TabIndex = 1;
@@ -906,7 +918,7 @@
             panel29.Margin = new Padding(8);
             panel29.Name = "panel29";
             panel29.Padding = new Padding(8);
-            panel29.Size = new Size(343, 8);
+            panel29.Size = new Size(343, 4);
             panel29.TabIndex = 61;
             // 
             // cbDefaultCompletion
@@ -945,7 +957,7 @@
             tabCore.Location = new Point(0, 0);
             tabCore.Name = "tabCore";
             tabCore.Padding = new Padding(3);
-            tabCore.Size = new Size(798, 518);
+            tabCore.Size = new Size(798, 524);
             tabCore.TabIndex = 1;
             tabCore.Text = "Core LLM";
             // 
@@ -1190,7 +1202,7 @@
             tabMemory.ForeColor = Color.FromArgb(230, 230, 230);
             tabMemory.Location = new Point(0, 0);
             tabMemory.Name = "tabMemory";
-            tabMemory.Size = new Size(798, 518);
+            tabMemory.Size = new Size(798, 524);
             tabMemory.TabIndex = 2;
             tabMemory.Text = "Memory Systems";
             // 
@@ -1679,7 +1691,7 @@
             TabGroup.ForeColor = Color.FromArgb(230, 230, 230);
             TabGroup.Location = new Point(0, 0);
             TabGroup.Name = "TabGroup";
-            TabGroup.Size = new Size(798, 518);
+            TabGroup.Size = new Size(798, 524);
             TabGroup.TabIndex = 3;
             TabGroup.Text = "Group Chat";
             // 
@@ -1824,7 +1836,7 @@
             tabWeb.ForeColor = Color.FromArgb(230, 230, 230);
             tabWeb.Location = new Point(0, 0);
             tabWeb.Name = "tabWeb";
-            tabWeb.Size = new Size(798, 518);
+            tabWeb.Size = new Size(798, 524);
             tabWeb.TabIndex = 4;
             tabWeb.Text = "Web";
             // 
@@ -1980,7 +1992,7 @@
             tabOutput.ForeColor = Color.FromArgb(230, 230, 230);
             tabOutput.Location = new Point(0, 0);
             tabOutput.Name = "tabOutput";
-            tabOutput.Size = new Size(798, 518);
+            tabOutput.Size = new Size(798, 524);
             tabOutput.TabIndex = 5;
             tabOutput.Text = "Output";
             // 
@@ -2261,7 +2273,7 @@
             tabTools.ForeColor = Color.FromArgb(230, 230, 230);
             tabTools.Location = new Point(0, 0);
             tabTools.Name = "tabTools";
-            tabTools.Size = new Size(798, 518);
+            tabTools.Size = new Size(798, 524);
             tabTools.TabIndex = 7;
             tabTools.Text = "Tools";
             // 
@@ -2326,7 +2338,6 @@
             label43.Size = new Size(206, 15);
             label43.TabIndex = 28;
             label43.Text = "Tool-call memory count (0 = keep all)";
-            label43.Click += label43_Click;
             // 
             // panel26
             // 
@@ -2406,7 +2417,6 @@
             cklToolsets.Size = new Size(312, 450);
             cklToolsets.TabIndex = 0;
             cklToolsets.SelectedIndexChanged += cklToolsets_SelectedIndexChanged;
-            cklToolsets.RightToLeftChanged += cklToolsets_RightToLeftChanged;
             // 
             // tabApp
             // 
@@ -2417,7 +2427,7 @@
             tabApp.ForeColor = Color.FromArgb(230, 230, 230);
             tabApp.Location = new Point(0, 0);
             tabApp.Name = "tabApp";
-            tabApp.Size = new Size(798, 518);
+            tabApp.Size = new Size(798, 524);
             tabApp.TabIndex = 6;
             tabApp.Text = "App";
             // 
@@ -2646,7 +2656,7 @@
             MainButtonStack.Location = new Point(0, 0);
             MainButtonStack.Name = "MainButtonStack";
             MainButtonStack.Padding = new Padding(4);
-            MainButtonStack.Size = new Size(228, 518);
+            MainButtonStack.Size = new Size(228, 524);
             MainButtonStack.TabIndex = 34;
             // 
             // btApp
@@ -2785,7 +2795,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1026, 556);
+            ClientSize = new Size(1026, 562);
             Controls.Add(MainTab);
             Controls.Add(MainButtonStack);
             Controls.Add(panel1);
@@ -3085,5 +3095,6 @@
         private Panel panel2;
         private Controls.ModernComboBox cbLlamaKV;
         private Label label3;
+        private Controls.ModernCheckBox ck_backendbostoken;
     }
 }

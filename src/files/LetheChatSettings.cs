@@ -25,9 +25,13 @@ namespace LetheChat.Files
         public double Temperature { get; set; } = 0.70;
         public int MaxMessagesOnScreen { get; set; } = 100;
         public int FontSize { get; set; } = 18;
+        [Description("If enabled, model will always be queried to check if a web search woould help, instead of using keyword-based detection.\n\nThis is very slow and probably shouldn't be used unless you know what you're doing.")]
         public bool AlwaysWebSearchQuery { get; set; } = false;
+        [Description("If enabled, hidden messages (such as system messages, tool calls and responses) will be shown in the chat history.\n\n" +
+            "This can be useful for debugging but it will clutter the chat interface. It'll also lead to a less immersive experience.")]
         public bool ShowHiddenMessages { get; set; } = false;
         public string BackgroundFile { get; set; } = "bedroom_cozy.jpg";
+        [Description("If enabled, the app will use text-to-speech to read out the model's responses. Only available on KoboldCpp API.")]
         public bool UseTTS { get; set; } = false;
         public bool AsteriskCheck { get; set; } = false;
         public bool AntiSlop { get; set; } = false;
@@ -36,8 +40,18 @@ namespace LetheChat.Files
         public bool RemoveCutSentence { get; set; } = false;
         public bool AlwaysForcePasswordOnBotSwitch { get; set; } = false;
         public StringFix RoleplayFormatting { get; set; } = new StringFix(false, false, false, false, false, 1, 50, false, false, false);
+
+        [Description("Determines how group chats are handled:\n RoundRobin, NameDetection, LLMSelection" +
+            "- 'Manual': The user manually switches the next character whenever they like. \n" +
+            "- 'RoundRobin': Characters will alternate speaking one after the other. \n" +
+            "- 'NameDetection': Lethe will look for names being mentioned in responses and switch active character accordingly.\n" +
+            "- 'LLMSelection': The LLM will be queried to determine whose turn is it to talk. It's generally very efficient, but it's slower.")]
         public GroupChatMode GroupChatMode { get; set; } = GroupChatMode.Manual;
+
+        [Description("In group chat, determines the maximum numbers of turn the characters can chat before the user takes their turn.")]
         public int GroupChatAutoResponseLimit { get; set; } = 2;
+
+        [Description("If checked and the path to llama-server.exe is correct, it allows the app to manage llama.cpp (or ik_llama) by itself.")]
         public bool ManagedLlama { get; set; } = false;
 
         /// <summary>
@@ -114,9 +128,9 @@ namespace LetheChat.Files
         /// <summary>
         /// Quantization format for the KV cache. The default is f16, which means that the KV cache will be stored in 16-bit floating point format.
         /// </summary>
-        [Description("Quantization format for the KV cache. Options: f16 (default), q8_0, q5_0, q4_0.\n\n" + 
+        [Description("Quantization format for the KV cache. Options: f16 (Full / default), q8_0, q5_0, q4_0.\n\n" + 
             "Lower precision formats reduce GPU memory usage but makes the model less coherent the longer the context is. As such, this is the worst way to free room for the context size.\n\n" +
-            "Keep this to F16, or if you're desperate and quality is of little concern to you, Q8_0.")]
+            "Keep this to Full, or if you're desperate and quality is of little concern to you, Q8_0.")]
         public KVCacheQuantization KVCacheQuantization { get; set; } = KVCacheQuantization.f16;
 
         /// <summary>
