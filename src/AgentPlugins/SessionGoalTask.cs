@@ -109,14 +109,10 @@ namespace LetheChat.AgentPlugins
         private static async Task<GoalRecord> GetGoalDetail(string systemprompt, string goalinfo)
         {
             var goalrecord = new GoalRecord();
-            LLMEngine.NamesInPromptOverride = false;
-            var prefill = LLMEngine.Instruct.PrefillThinking;
-            LLMEngine.Instruct.PrefillThinking = false;
 
             var promptbuild = LLMEngine.GetPromptBuilder();
 
             var requestedTask = "Based on the information provided in the system prompt, {{mchar}} has set the following goal for themselves: " + goalinfo + LLMEngine.NewLine + "Fill the required information about this specific goal so it can processed. " + goalrecord.GetQuery();
-
 
             var availtokens = LLMEngine.MaxContextLength - 20; // leave 2k for response and buffer
             availtokens -= promptbuild.GetTokenCount(AuthorRole.System, systemprompt);
@@ -130,8 +126,6 @@ namespace LetheChat.AgentPlugins
             var finalstr = await LLMEngine.SimpleQuery(ct).ConfigureAwait(false);
             finalstr = finalstr.RemoveThinkingBlocks();
             goalrecord = JsonConvert.DeserializeObject<GoalRecord>(finalstr);
-            LLMEngine.NamesInPromptOverride = null;
-            LLMEngine.Instruct.PrefillThinking = prefill;
             return goalrecord!;
         }
 

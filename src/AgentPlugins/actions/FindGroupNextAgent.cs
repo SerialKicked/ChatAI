@@ -42,14 +42,8 @@ namespace LetheChat.AgentPlugins
                 savedKV = await LLMEngine.Client.SaveKVState(0);
                 await Task.Delay(100, ct);
             }
-
-            LLMEngine.NamesInPromptOverride = false;
-            var prefill = LLMEngine.Instruct.PrefillThinking;
-            LLMEngine.Instruct.PrefillThinking = false;
             var replyln = 2048;
-
             var promptbuild = LLMEngine.GetPromptBuilder();
-
             var sysprompt = "You are a system designed to analyze chatlogs and determine who should get a turn to talk next. " +
                 "Use the dialogs and context clues provided in the chatlog to make your choice. " + LLMEngine.NewLine + LLMEngine.NewLine +
                 "You will be provided with a chatlog and a list of participants. Respond with a short reasoning followed by the number corresponding to your selection.";
@@ -97,9 +91,6 @@ namespace LetheChat.AgentPlugins
                 // retrieve the last character from the response as it should be the number
                 finalstr = finalstr[^1].ToString();
             }
-
-            LLMEngine.NamesInPromptOverride = null;
-            LLMEngine.Instruct.PrefillThinking = prefill;
 
             if (LLMEngine.Client!.SupportsStateSave && savedKV)
             {
