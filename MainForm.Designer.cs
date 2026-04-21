@@ -53,7 +53,7 @@ namespace LetheChat
             label1 = new Label();
             pictEmbed = new PictureBox();
             bt_clearimg = new Button();
-            button2 = new Button();
+            bt_brain = new Button();
             btRawLog = new Button();
             btWorldEditor = new Button();
             btMainSettings = new Button();
@@ -366,22 +366,22 @@ namespace LetheChat
             bt_clearimg.UseVisualStyleBackColor = false;
             bt_clearimg.Click += bt_clearimg_Click;
             // 
-            // button2
+            // bt_brain
             // 
-            button2.AutoSize = true;
-            button2.BackColor = Color.DarkKhaki;
-            button2.Dock = DockStyle.Top;
-            button2.FlatStyle = FlatStyle.Flat;
-            button2.Font = new Font("Segoe UI", 9F);
-            button2.ForeColor = Color.Black;
-            button2.Location = new Point(8, 256);
-            button2.Name = "button2";
-            button2.Size = new Size(184, 27);
-            button2.TabIndex = 41;
-            button2.Tag = "no-theme";
-            button2.Text = "Persona's Brain";
-            button2.UseVisualStyleBackColor = false;
-            button2.Click += button2_Click;
+            bt_brain.AutoSize = true;
+            bt_brain.BackColor = Color.DarkKhaki;
+            bt_brain.Dock = DockStyle.Top;
+            bt_brain.FlatStyle = FlatStyle.Flat;
+            bt_brain.Font = new Font("Segoe UI", 9F);
+            bt_brain.ForeColor = Color.Black;
+            bt_brain.Location = new Point(8, 256);
+            bt_brain.Name = "bt_brain";
+            bt_brain.Size = new Size(184, 27);
+            bt_brain.TabIndex = 41;
+            bt_brain.Tag = "no-theme";
+            bt_brain.Text = "Persona's Brain";
+            bt_brain.UseVisualStyleBackColor = false;
+            bt_brain.Click += button2_Click;
             // 
             // btRawLog
             // 
@@ -844,7 +844,7 @@ namespace LetheChat
             // collapsibleGroupBox2
             // 
             collapsibleGroupBox2.BackColor = Color.FromArgb(37, 38, 42);
-            collapsibleGroupBox2.Controls.Add(button2);
+            collapsibleGroupBox2.Controls.Add(bt_brain);
             collapsibleGroupBox2.Controls.Add(panel5);
             collapsibleGroupBox2.Controls.Add(mck_agentmode);
             collapsibleGroupBox2.Controls.Add(ckToolCalls);
@@ -1327,7 +1327,7 @@ namespace LetheChat
         private Button btWorldEditor;
         private Button btChatHistory;
         private Button btRawLog;
-        private Button button2;
+        private Button bt_brain;
         private Controls.CollapsibleGroupBox collapseModel;
         private ModernNumericUpDown num_maxresponse;
         private Label label7;

@@ -122,16 +122,7 @@ namespace LetheChat
             };
 
             ed_input.SpellCheckLanguage = "en-US";
-            HelptoolTip.SetToolTip(mck_ragenabled, "Use RAG functionalities to insert summaries of relevant previous sessions based on the user's input." + Environment.NewLine + "Configurable in the Program.Settings tab.");
-            HelptoolTip.SetToolTip(mck_guidance, "Insert day and time information to prompt when relevant to give the bot a better understanding of time.");
-            HelptoolTip.SetToolTip(mck_sessionmemory, "Use a set amount of tokens (set in Program.Settings) to insert summaries of previous chat sessions with this bot." + Environment.NewLine + "This drastically increases the bot's long-term memory.");
-            HelptoolTip.SetToolTip(mck_worldinfo, "Use the Lorebook file(s) associated with this bot. A Lorebook is a list of keyword-triggered textual information that is inserted into the prompt when the conditions are met." + Environment.NewLine + "See the Lorebook editor for additional information.");
-            HelptoolTip.SetToolTip(mck_charsampler, "If checked, and when using a bot persona containing a list of compatible inference Program.Settings, the inference Program.Settings will be picked at random from that list each time the bot write a new message." + Environment.NewLine + Environment.NewLine + "Will lead to a more creative and less repetitive interaction, but also less consistent.");
-            HelptoolTip.SetToolTip(mck_onlinerag, "If checked, the bot may perform a web search (using DuckDuckGo or Brave) to improve its responses when asked to. Check settings for details." + Environment.NewLine + Environment.NewLine + "This is a custom system used when the web-search toolset is not available or enabled.");
-            HelptoolTip.SetToolTip(mck_guidance, "Depending on the characters' settings, they can have moods varying over time, can be aware of the time, or change the topic of discussion based on background activity." + Environment.NewLine + Environment.NewLine + "This is a global check allowing/disallowing all those features at once, so you don't have to change 4 different settings each time you want to toggle the guidance.");
-            HelptoolTip.SetToolTip(mckNatMem, "When a character can run background tasks (like goal setting or background websearch), the system can insert the results into the prompt when it feels its related to the current conversation." + Environment.NewLine + Environment.NewLine + "This allows you to toggle the behavior entirely.");
-            HelptoolTip.SetToolTip(ckToolCalls, "Whether to allow the use of tool-calls in the current conversation. If unchecked, the bot will not be able to call any tools, even if they are enabled in the settings." + Environment.NewLine + Environment.NewLine + "This is useful to quickly toggle tool access without having to change the settings.");
-            HelptoolTip.SetToolTip(mck_agentmode, "Allow the bot to use its background agent features when the user is AFK, such as setting goals, writing in their journal, or performing websearches based on discussion." + Environment.NewLine + Environment.NewLine + "This is only relevant if the character has background tasks setup.");
+            SetupHelp();
 
             MoodManager.LoadDefaultMoods();
             // Load our agentic actions
@@ -164,6 +155,62 @@ namespace LetheChat
             Application.AddMessageFilter(new ActivityMessageFilter());
             ed_input.KeyPress += Ed_input_KeyPress!;
             ThemeManager.ApplyToForm(this);
+        }
+
+        private void SetupHelp() 
+        {
+            HelptoolTip.ToolTipIcon = ToolTipIcon.Info;
+            HelptoolTip.ToolTipTitle = "Help";
+            HelpTool.ApplyTooltip(HelptoolTip, mck_ragenabled, "Use RAG functionalities to insert relevant memories into the prompt based on the user's input." + Environment.NewLine + "Configurable in the Settings menu.");
+            HelpTool.ApplyTooltip(HelptoolTip, mck_sessionmemory, "Insert summaries of recent chat sessions into the system prompt. This drastically increases the character's long-term memory." + Environment.NewLine + "This function uses a set amount of tokens, configurable in the Settings menu.");
+            HelpTool.ApplyTooltip(HelptoolTip, mck_worldinfo, "Use the Lorebook file(s) associated with this bot. A Lorebook is a list of keyword-triggered textual information that is inserted into the prompt when the conditions are met." + Environment.NewLine + "See the Settings menu, and Character and Lorebook editors for additional settings.");
+            HelpTool.ApplyTooltip(HelptoolTip, mck_charsampler, "If checked the application will switch between the different sampling settings associated with the current character at random." + Environment.NewLine + "Character-specific settings can be set in the Character editor.");
+            HelpTool.ApplyTooltip(HelptoolTip, mck_onlinerag, "If checked, the character is allowed to perform web searches (using DuckDuckGo or Brave) to improve its responses when asked to. Check the Settings menu for details." + Environment.NewLine + Environment.NewLine + "This is a custom system used when the web-search toolset is not available or enabled.");
+            HelpTool.ApplyTooltip(HelptoolTip, mck_guidance, "Depending on the characters' settings, they can have moods varying over time, can be aware of the time, or change the topic of discussion based on background activity." + Environment.NewLine + Environment.NewLine + "This is a global check allowing/disallowing all those features at once, so you don't have to change 4 different settings each time you want to toggle the guidance.");
+            HelpTool.ApplyTooltip(HelptoolTip, mckNatMem, "When a character can run background tasks (like goal setting or background web queries), the system can insert the results into the prompt when it feels its related to the current conversation." + Environment.NewLine + Environment.NewLine + "This allows you to toggle the behavior entirely.");
+            HelpTool.ApplyTooltip(HelptoolTip, ckToolCalls, "Whether to allow the use of tool-calls in the current conversation. If unchecked, the bot will not be able to call any tools, even if they are enabled in the settings." + Environment.NewLine + Environment.NewLine + "This is useful to quickly toggle tool access without having to change the settings.");
+            HelpTool.ApplyTooltip(HelptoolTip, mck_agentmode, "Allow the bot to use its background agent features when the user is AFK, such as setting goals, writing in their journal, or performing websearches based on discussion." + Environment.NewLine + Environment.NewLine + "This is only relevant if the character has background tasks setup.");
+            HelpTool.ApplyTooltip(HelptoolTip, mck_forceNames, "Whether to add the user and bot's names before their respective input (name: input). This can help some fine-tuned models that have been trained that way. This may conflict with the correct operation of thinking models.");
+            HelpTool.ApplyTooltip(HelptoolTip, mck_disablethink, "Check this if you're not using a 'thinking' model or if you wish to disable the feature.");
+            HelpTool.ApplyTooltip(HelptoolTip, ckGroupToggle, "Toggle group chat mode. Allowing for secondary characters to interact with you and the current main character in a more dynamic way." + Environment.NewLine + Environment.NewLine + "Group mode works much better with a dedicated group system prompt. Not all models can play ball with group mode, especially thinking models (those need to be setup properly).");
+
+            HelpTool.ApplyTooltip(HelptoolTip, bt_brain, "Open the current Character's Brain" + Environment.NewLine + Environment.NewLine + "This is where you can see and edit all the memories, goals, and background information unique to the character." + Environment.NewLine + "This is mostly relevant to characters that have background tasks or the memory toolset enabled.");
+            HelpTool.ApplyTooltip(HelptoolTip, bt_backend, "Connect to an externally-managed backend.");
+            HelpTool.ApplyTooltip(HelptoolTip, bt_llama, "Open the model selection menu and load any model through llama.cpp directly from Lethe Chat.");
+            HelpTool.ApplyTooltip(HelptoolTip, bt_scenario, "Set a scenario override for the current conversation instead of the one associated with the character." + Environment.NewLine + "This is useful to quickly switch context without having to change the character's settings.");
+            HelpTool.ApplyTooltip(HelptoolTip, bt_newsession, "Start a new chat session with the current character." + Environment.NewLine + Environment.NewLine +
+                "This is a critically important part of Lethe Chat, it will archive the current session, summarize it, and add metadata for easier retrieval, " + Environment.NewLine +
+                "before starting a new session. It is strongly encouraged to do this when reaching a natural pause in the conversation, or when getting close to " + Environment.NewLine +
+                "the context limit of the model, to avoid losing important information and to keep the character's memory relevant." + Environment.NewLine + Environment.NewLine +
+                "Understanding how to manage sessions is simple but crucial. See the official documentation for more information.");
+            HelpTool.ApplyTooltip(HelptoolTip, bt_reroll, "Regenerate the last response from the bot without changing the conversation history." + Environment.NewLine + Environment.NewLine +
+                "This is useful when you want to get a different response to the same input, or if you want to slightly change the direction of the conversation without adding new information." + Environment.NewLine +
+                "The bot will use the same prompt and settings as before, so this is a good way to test how much randomness the model has, or to get a different variation of a response you liked.");
+            HelpTool.ApplyTooltip(HelptoolTip, bt_impersonate, "Tell the bot to impersonate you and write a response for you. Not all models support this feature very well.");
+            HelpTool.ApplyTooltip(HelptoolTip, btChatHistory, "View and manage the history of all your chat sessions with the current character." + Environment.NewLine + Environment.NewLine +
+                "This is where you can see all your past conversations, export them, or load them back into the chat." + Environment.NewLine + 
+                "This is also where you can see the summaries and metadata of each session, which can help you keep track of your interactions with the character.");
+            HelpTool.ApplyTooltip(HelptoolTip, btMainSettings, "Open the main settings menu, where you can configure global settings for the application, memory systems, llama.cpp defaults, the appearance, and other settings.");
+
+            HelpTool.ApplyTooltip(HelptoolTip, num_maxcontext, "Set the maximum context length for the model. This is the total number of tokens that the model can consider in a single response, including the prompt and the response itself." + Environment.NewLine + 
+                "This value is normally automatically detected by Lethe chat according to the backend's settings.");
+            HelpTool.ApplyTooltip(HelptoolTip, num_maxresponse, "Set the maximum length for the model's responses. This is the maximum number of tokens that the model will generate in a single response." + Environment.NewLine + 
+                "Keep in mind that the total context length (prompt + response) cannot exceed the model's maximum context length.");
+            HelpTool.ApplyTooltip(HelptoolTip, num_temperature, "Set the temperature for the model's responses (overriding the one provided by the selected sampling method." + Environment.NewLine +
+                "This value that controls the randomness of the model's output. A higher temperature will result in more varied responses, while a lower temperature will result in more deterministic responses.");
+
+            HelpTool.ApplyTooltip(HelptoolTip, cb_instruct, "Select an instruction template for the loaded model. Instruction templates are used to format the prompt in a way that model naturally understands." + Environment.NewLine +
+                "It is imperative to select the correct instruction template for the model you are using, otherwise performance will degrade dramatically.");
+            HelpTool.ApplyTooltip(HelptoolTip, cb_infer, "Select a sampling method for the loaded model. Sampling methods are used to control how the model generates responses, and can have a big impact on the quality and style of the responses." + Environment.NewLine +
+                "The available sampling methods depend on the model you are using, and can be configured in the sampler editor.");
+            HelpTool.ApplyTooltip(HelptoolTip, cb_sysprompt, "Select the format of the system prompt. The system prompt is a special part of the prompt that is used to give the model instructions on how to behave, and to provide it with relevant information that should be considered in its responses." + Environment.NewLine +
+                "The system prompt can be used to set the tone of the conversation, to provide the model with information about the world or the characters, or to give it specific instructions on how to respond." + Environment.NewLine +
+                "It depends on both your use case and the model being used.");
+            HelpTool.ApplyTooltip(HelptoolTip, cb_bot, "Select the character you want to talk to. Each character can have its own unique personality, background, and settings that influence how it responds to your messages." + Environment.NewLine +
+                "You can create and customize characters in the character editor, and each character can have its own set of memories, goals, and even different system prompts and sampling settings.");
+            HelpTool.ApplyTooltip(HelptoolTip, cb_user, "Select the user profile you want to use. User profiles are used to store information about you that the model can use to personalize its responses, such as your name, preferences, or background information." + Environment.NewLine +
+                "This is mostly useful for characters that have a more complex system prompt that takes into account the user's information, but it can be used with any character.");
+            HelpTool.ApplyTooltip(HelptoolTip, cbGroupSwitch, "When talking to a character group, you can select which character in the group you want to talk next. This dropdown allows you to do that.");
         }
 
         private static void EnsureLLMLoggerConnected()
