@@ -13,6 +13,8 @@ namespace LetheChat
         public static LetheChatSettings Settings { get; set; } = new LetheChatSettings();
         public static LlamaCppProcessManager LlamaCppProcess { get; } = new LlamaCppProcessManager();
 
+        public static SpeechRecognizer Audio { get; } = new SpeechRecognizer();
+
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>

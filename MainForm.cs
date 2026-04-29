@@ -1383,7 +1383,7 @@ namespace LetheChat
             if (!string.IsNullOrEmpty(instruct) && DataFiles.Instruct.TryGetValue(instruct, out var instructData))
             {
                 LLMEngine.Instruct = instructData;
-                cb_instruct.SelectedText = instruct;
+                cb_instruct.SelectedIndex = cb_instruct.Items.IndexOf(instruct);
             }
         }
 

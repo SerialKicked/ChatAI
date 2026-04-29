@@ -152,7 +152,21 @@ namespace LetheChat
         /// Set to 0 to disable auto-stop (manual StopRecordingAsync only).
         /// </summary>
         [Description("If > 0, recording stops automatically after this many consecutive seconds of silence. Set to 0 to disable auto-stop (manual StopRecordingAsync only).")]
-        public double SilenceTimeoutSeconds { get; set; } = 2.0;
+        public double SilenceTimeoutSeconds { get; set; } = 4.0;
+
+        /// <summary>
+        /// If set to true, the Whisper model will be unloaded from memory before LLM generation and reloaded afterwards. 
+        /// This can help reduce peak memory usage at the cost of increased latency.
+        /// </summary>
+        [Description("If set to true, the Whisper model will be unloaded from memory before LLM generation and reloaded afterwards. \n"+
+            "This can help reduce peak memory usage at the cost of increased latency.")]
+        public bool DynamicLoadModel { get; set; } = false;
+
+        /// <summary>
+        /// Global switch to enable or disable speech recognition features.
+        /// </summary>
+        [Description("Global switch to enable or disable speech recognition features.")]
+        public bool AllowAudioRecording { get; set; } = true;
 
         /// <summary>Temporary WAV file written after each recording session.</summary>
         public string TempWavPath { get; set; } = Path.Combine(Path.GetTempPath(), "lethe_speech_input.wav");

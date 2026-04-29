@@ -302,6 +302,40 @@ namespace LetheChat.Forms
             ckDetailedSum.Checked = Program.Settings.SessionDetailedSummary;
             ckGroupCommit.Checked = Program.Settings.CommitGroupSessionToSecondaryPersonaHistory;
             numAFKDelay.Value = (decimal)Program.Settings.BackgroundAgentMinInactivityTime.TotalHours;
+
+            // Audio
+
+            cb_audiolanguage.Items.Clear();
+            foreach (var lang in SpeechRecognizerSettings.AvailableLanguages)
+            {
+                cb_audiolanguage.Items.Add(lang.Value);
+            }
+            var selectedLang = SpeechRecognizerSettings.AvailableLanguages.ContainsKey(Program.Settings.AudioSettings.Language) ? SpeechRecognizerSettings.AvailableLanguages[Program.Settings.AudioSettings.Language] : "Auto-detect";
+            if (selectedLang != null)
+            {
+                cb_audiolanguage.SelectedIndex = cb_audiolanguage.Items.IndexOf(selectedLang);
+            }
+
+            ck_audiodynamic.Checked = Program.Settings.AudioSettings.DynamicLoadModel;
+            ck_audioenabled.Checked = Program.Settings.AudioSettings.AllowAudioRecording;
+            num_audioSilenceThreshold.Value = (decimal)Program.Settings.AudioSettings.SilenceThreshold;
+            num_audiotimeout.Value = (decimal)Program.Settings.AudioSettings.SilenceTimeoutSeconds;
+
+            cb_audiomodel.Items.Clear();
+            // if no whisper subfolder, create it
+            if (!Directory.Exists("whisper"))
+            {
+                Directory.CreateDirectory("whisper");
+            }
+            foreach (var file in Directory.GetFiles("whisper"))
+            {
+                cb_audiomodel.Items.Add(Path.GetFileName(file));
+            }
+            cb_audiomodel.SelectedIndex = cb_audiomodel.Items.IndexOf(Program.Settings.AudioSettings.WhisperFile);
+            if (cb_audiomodel.SelectedIndex == -1 && cb_audiomodel.Items.Count > 0)
+            {
+                cb_audiomodel.SelectedIndex = 0;
+            }
         }
 
         public void SaveSettings()
@@ -441,6 +475,14 @@ namespace LetheChat.Forms
                 // Apply RAG settings
                 LLMEngine.Bot.Brain.ReloadMemories();
                 LLMEngine.Client?.UpdateSearchProvider();
+
+                // audio settings
+                Program.Settings.AudioSettings.Language = SpeechRecognizerSettings.AvailableLanguages.FirstOrDefault(x => x.Value == cb_audiolanguage.SelectedItem?.ToString()).Key ?? "auto";
+                Program.Settings.AudioSettings.DynamicLoadModel = ck_audiodynamic.Checked;
+                Program.Settings.AudioSettings.AllowAudioRecording = ck_audioenabled.Checked;
+                Program.Settings.AudioSettings.SilenceThreshold = (float)num_audioSilenceThreshold.Value;
+                Program.Settings.AudioSettings.SilenceTimeoutSeconds = (float)num_audiotimeout.Value;
+                Program.Settings.AudioSettings.WhisperFile = cb_audiomodel.SelectedItem?.ToString() ?? "default";
             }
             catch (Exception ex)
             {

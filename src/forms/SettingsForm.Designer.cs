@@ -192,8 +192,18 @@
             num_antislopchance = new LetheChat.Controls.ModernNumericUpDown();
             ck_antislop = new LetheChat.Controls.ModernCheckBox();
             tabAudio = new TabPage();
+            collapsibleGroupBox18 = new LetheChat.Controls.CollapsibleGroupBox();
+            num_audiotimeout = new LetheChat.Controls.ModernNumericUpDown();
+            label44 = new Label();
+            num_audioSilenceThreshold = new LetheChat.Controls.ModernNumericUpDown();
+            label38 = new Label();
             collapsibleGroupBox17 = new LetheChat.Controls.CollapsibleGroupBox();
-            modernCheckBox1 = new LetheChat.Controls.ModernCheckBox();
+            cb_audiomodel = new LetheChat.Controls.ModernComboBox();
+            label12 = new Label();
+            cb_audiolanguage = new LetheChat.Controls.ModernComboBox();
+            label11 = new Label();
+            ck_audiodynamic = new LetheChat.Controls.ModernCheckBox();
+            ck_audioenabled = new LetheChat.Controls.ModernCheckBox();
             tabTools = new TabPage();
             edToolinfo = new TextBox();
             collapsibleGroupBox15 = new LetheChat.Controls.CollapsibleGroupBox();
@@ -280,6 +290,7 @@
             panel22.SuspendLayout();
             panel23.SuspendLayout();
             tabAudio.SuspendLayout();
+            collapsibleGroupBox18.SuspendLayout();
             collapsibleGroupBox17.SuspendLayout();
             tabTools.SuspendLayout();
             collapsibleGroupBox15.SuspendLayout();
@@ -2273,6 +2284,7 @@
             // tabAudio
             // 
             tabAudio.BackColor = Color.FromArgb(37, 37, 37);
+            tabAudio.Controls.Add(collapsibleGroupBox18);
             tabAudio.Controls.Add(collapsibleGroupBox17);
             tabAudio.Font = new Font("Segoe UI", 9F);
             tabAudio.ForeColor = Color.FromArgb(230, 230, 230);
@@ -2282,27 +2294,148 @@
             tabAudio.TabIndex = 8;
             tabAudio.Text = "Audio";
             // 
+            // collapsibleGroupBox18
+            // 
+            collapsibleGroupBox18.BackColor = Color.FromArgb(37, 37, 37);
+            collapsibleGroupBox18.Controls.Add(num_audiotimeout);
+            collapsibleGroupBox18.Controls.Add(label44);
+            collapsibleGroupBox18.Controls.Add(num_audioSilenceThreshold);
+            collapsibleGroupBox18.Controls.Add(label38);
+            collapsibleGroupBox18.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox18.Location = new Point(418, 6);
+            collapsibleGroupBox18.Name = "collapsibleGroupBox18";
+            collapsibleGroupBox18.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox18.Size = new Size(368, 222);
+            collapsibleGroupBox18.TabIndex = 2;
+            collapsibleGroupBox18.Text = "Audio Settings";
+            // 
+            // num_audiotimeout
+            // 
+            num_audiotimeout.BackColor = Color.FromArgb(64, 64, 64);
+            num_audiotimeout.DecimalPlaces = 1;
+            num_audiotimeout.Font = new Font("Segoe UI", 9F);
+            num_audiotimeout.Increment = new decimal(new int[] { 5, 0, 0, 65536 });
+            num_audiotimeout.Location = new Point(15, 98);
+            num_audiotimeout.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            num_audiotimeout.Name = "num_audiotimeout";
+            num_audiotimeout.Padding = new Padding(1);
+            num_audiotimeout.Size = new Size(127, 24);
+            num_audiotimeout.TabIndex = 7;
+            // 
+            // label44
+            // 
+            label44.AutoSize = true;
+            label44.Font = new Font("Segoe UI", 9F);
+            label44.Location = new Point(15, 80);
+            label44.Name = "label44";
+            label44.Size = new Size(212, 15);
+            label44.TabIndex = 6;
+            label44.Text = "Silence Timeout (seconds, 0 to disable)";
+            // 
+            // num_audioSilenceThreshold
+            // 
+            num_audioSilenceThreshold.BackColor = Color.FromArgb(64, 64, 64);
+            num_audioSilenceThreshold.DecimalPlaces = 3;
+            num_audioSilenceThreshold.Font = new Font("Segoe UI", 9F);
+            num_audioSilenceThreshold.Increment = new decimal(new int[] { 5, 0, 0, 196608 });
+            num_audioSilenceThreshold.Location = new Point(15, 53);
+            num_audioSilenceThreshold.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+            num_audioSilenceThreshold.Name = "num_audioSilenceThreshold";
+            num_audioSilenceThreshold.Padding = new Padding(1);
+            num_audioSilenceThreshold.Size = new Size(127, 24);
+            num_audioSilenceThreshold.TabIndex = 5;
+            num_audioSilenceThreshold.Value = new decimal(new int[] { 15, 0, 0, 196608 });
+            // 
+            // label38
+            // 
+            label38.AutoSize = true;
+            label38.Font = new Font("Segoe UI", 9F);
+            label38.Location = new Point(15, 35);
+            label38.Name = "label38";
+            label38.Size = new Size(307, 15);
+            label38.TabIndex = 2;
+            label38.Text = "Silence Threshold (sounds below value considered noise)";
+            // 
             // collapsibleGroupBox17
             // 
             collapsibleGroupBox17.BackColor = Color.FromArgb(37, 37, 37);
-            collapsibleGroupBox17.Controls.Add(modernCheckBox1);
+            collapsibleGroupBox17.Controls.Add(cb_audiomodel);
+            collapsibleGroupBox17.Controls.Add(label12);
+            collapsibleGroupBox17.Controls.Add(cb_audiolanguage);
+            collapsibleGroupBox17.Controls.Add(label11);
+            collapsibleGroupBox17.Controls.Add(ck_audiodynamic);
+            collapsibleGroupBox17.Controls.Add(ck_audioenabled);
             collapsibleGroupBox17.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             collapsibleGroupBox17.Location = new Point(6, 6);
             collapsibleGroupBox17.Name = "collapsibleGroupBox17";
             collapsibleGroupBox17.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox17.Size = new Size(780, 130);
+            collapsibleGroupBox17.Size = new Size(406, 222);
             collapsibleGroupBox17.TabIndex = 1;
             collapsibleGroupBox17.Text = "Whisper Settings";
             // 
-            // modernCheckBox1
+            // cb_audiomodel
             // 
-            modernCheckBox1.Font = new Font("Segoe UI", 9F);
-            modernCheckBox1.Location = new Point(15, 35);
-            modernCheckBox1.Name = "modernCheckBox1";
-            modernCheckBox1.Size = new Size(262, 26);
-            modernCheckBox1.TabIndex = 0;
-            modernCheckBox1.Text = "Use Whisper for speech recognition";
-            modernCheckBox1.UseVisualStyleBackColor = true;
+            cb_audiomodel.BackColor = Color.FromArgb(64, 64, 64);
+            cb_audiomodel.DropDownHeight = 180;
+            cb_audiomodel.Font = new Font("Segoe UI", 9F);
+            cb_audiomodel.Location = new Point(15, 176);
+            cb_audiomodel.MaxDropDownItems = 10;
+            cb_audiomodel.Name = "cb_audiomodel";
+            cb_audiomodel.Padding = new Padding(1);
+            cb_audiomodel.Size = new Size(376, 24);
+            cb_audiomodel.TabIndex = 5;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Font = new Font("Segoe UI", 9F);
+            label12.Location = new Point(15, 158);
+            label12.Name = "label12";
+            label12.Size = new Size(41, 15);
+            label12.TabIndex = 4;
+            label12.Text = "Model";
+            // 
+            // cb_audiolanguage
+            // 
+            cb_audiolanguage.BackColor = Color.FromArgb(64, 64, 64);
+            cb_audiolanguage.DropDownHeight = 180;
+            cb_audiolanguage.Font = new Font("Segoe UI", 9F);
+            cb_audiolanguage.Location = new Point(15, 121);
+            cb_audiolanguage.MaxDropDownItems = 10;
+            cb_audiolanguage.Name = "cb_audiolanguage";
+            cb_audiolanguage.Padding = new Padding(1);
+            cb_audiolanguage.Size = new Size(376, 24);
+            cb_audiolanguage.TabIndex = 3;
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Font = new Font("Segoe UI", 9F);
+            label11.Location = new Point(15, 103);
+            label11.Name = "label11";
+            label11.Size = new Size(59, 15);
+            label11.TabIndex = 2;
+            label11.Text = "Language";
+            // 
+            // ck_audiodynamic
+            // 
+            ck_audiodynamic.Font = new Font("Segoe UI", 9F);
+            ck_audiodynamic.Location = new Point(15, 67);
+            ck_audiodynamic.Name = "ck_audiodynamic";
+            ck_audiodynamic.Size = new Size(262, 26);
+            ck_audiodynamic.TabIndex = 1;
+            ck_audiodynamic.Text = "Dynamically load and unload model";
+            ck_audiodynamic.UseVisualStyleBackColor = true;
+            // 
+            // ck_audioenabled
+            // 
+            ck_audioenabled.Font = new Font("Segoe UI", 9F);
+            ck_audioenabled.Location = new Point(15, 35);
+            ck_audioenabled.Name = "ck_audioenabled";
+            ck_audioenabled.Size = new Size(262, 26);
+            ck_audioenabled.TabIndex = 0;
+            ck_audioenabled.Text = "Use Whisper for speech recognition";
+            ck_audioenabled.UseVisualStyleBackColor = true;
             // 
             // tabTools
             // 
@@ -2935,7 +3068,10 @@
             panel23.ResumeLayout(false);
             panel23.PerformLayout();
             tabAudio.ResumeLayout(false);
+            collapsibleGroupBox18.ResumeLayout(false);
+            collapsibleGroupBox18.PerformLayout();
             collapsibleGroupBox17.ResumeLayout(false);
+            collapsibleGroupBox17.PerformLayout();
             tabTools.ResumeLayout(false);
             tabTools.PerformLayout();
             collapsibleGroupBox15.ResumeLayout(false);
@@ -3159,6 +3295,16 @@
         private Button btAudio;
         private TabPage tabAudio;
         private Controls.CollapsibleGroupBox collapsibleGroupBox17;
-        private Controls.ModernCheckBox modernCheckBox1;
+        private Controls.ModernCheckBox ck_audioenabled;
+        private Controls.ModernCheckBox ck_audiodynamic;
+        private Controls.ModernComboBox cb_audiolanguage;
+        private Label label11;
+        private Controls.CollapsibleGroupBox collapsibleGroupBox18;
+        private Label label38;
+        private Controls.ModernComboBox cb_audiomodel;
+        private Label label12;
+        private Controls.ModernNumericUpDown num_audiotimeout;
+        private Label label44;
+        private Controls.ModernNumericUpDown num_audioSilenceThreshold;
     }
 }
