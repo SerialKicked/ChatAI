@@ -609,5 +609,11 @@ namespace LetheChat.Forms
                 edToolinfo.Text += $"- {tool.Function?.Name ?? "Unknown"}: {tool.Function?.Description ?? "No description"}" + Environment.NewLine + Environment.NewLine;
             }
         }
+
+        private void btAudio_Click(object sender, EventArgs e)
+        {
+            MainTab.SelectedTab = tabAudio;
+            ColorButton(sender as Button);
+        }
     }
 }

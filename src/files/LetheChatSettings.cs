@@ -76,6 +76,8 @@ namespace LetheChat.Files
         /// Default settings for the Llama.cpp server. These settings will be applied to all models launched with the Llama.cpp plugin, unless overridden by model-specific settings.
         /// </summary>
         public LlamaCppSettings DefaultLLamaCppSettings { get; set; } = new LlamaCppSettings();
+
+        public SpeechRecognizerSettings AudioSettings { get; set; } = new SpeechRecognizerSettings();
     }
 
     public enum KVCacheQuantization

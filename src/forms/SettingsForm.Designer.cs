@@ -191,6 +191,9 @@
             label61 = new Label();
             num_antislopchance = new LetheChat.Controls.ModernNumericUpDown();
             ck_antislop = new LetheChat.Controls.ModernCheckBox();
+            tabAudio = new TabPage();
+            collapsibleGroupBox17 = new LetheChat.Controls.CollapsibleGroupBox();
+            modernCheckBox1 = new LetheChat.Controls.ModernCheckBox();
             tabTools = new TabPage();
             edToolinfo = new TextBox();
             collapsibleGroupBox15 = new LetheChat.Controls.CollapsibleGroupBox();
@@ -224,6 +227,7 @@
             MainButtonStack = new LetheChat.Controls.VerticalStackPanel();
             btApp = new Button();
             btOutput = new Button();
+            btAudio = new Button();
             btTools = new Button();
             btWeb = new Button();
             brGroup = new Button();
@@ -275,6 +279,8 @@
             collapsibleGroupBox11.SuspendLayout();
             panel22.SuspendLayout();
             panel23.SuspendLayout();
+            tabAudio.SuspendLayout();
+            collapsibleGroupBox17.SuspendLayout();
             tabTools.SuspendLayout();
             collapsibleGroupBox15.SuspendLayout();
             panel27.SuspendLayout();
@@ -320,6 +326,7 @@
             MainTab.Controls.Add(TabGroup);
             MainTab.Controls.Add(tabWeb);
             MainTab.Controls.Add(tabOutput);
+            MainTab.Controls.Add(tabAudio);
             MainTab.Controls.Add(tabTools);
             MainTab.Controls.Add(tabApp);
             MainTab.Dock = DockStyle.Fill;
@@ -2263,6 +2270,40 @@
             ck_antislop.Text = "Remove words from list (ad-hoc anti slop)";
             ck_antislop.UseVisualStyleBackColor = true;
             // 
+            // tabAudio
+            // 
+            tabAudio.BackColor = Color.FromArgb(37, 37, 37);
+            tabAudio.Controls.Add(collapsibleGroupBox17);
+            tabAudio.Font = new Font("Segoe UI", 9F);
+            tabAudio.ForeColor = Color.FromArgb(230, 230, 230);
+            tabAudio.Location = new Point(0, 0);
+            tabAudio.Name = "tabAudio";
+            tabAudio.Size = new Size(798, 524);
+            tabAudio.TabIndex = 8;
+            tabAudio.Text = "Audio";
+            // 
+            // collapsibleGroupBox17
+            // 
+            collapsibleGroupBox17.BackColor = Color.FromArgb(37, 37, 37);
+            collapsibleGroupBox17.Controls.Add(modernCheckBox1);
+            collapsibleGroupBox17.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox17.Location = new Point(6, 6);
+            collapsibleGroupBox17.Name = "collapsibleGroupBox17";
+            collapsibleGroupBox17.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox17.Size = new Size(780, 130);
+            collapsibleGroupBox17.TabIndex = 1;
+            collapsibleGroupBox17.Text = "Whisper Settings";
+            // 
+            // modernCheckBox1
+            // 
+            modernCheckBox1.Font = new Font("Segoe UI", 9F);
+            modernCheckBox1.Location = new Point(15, 35);
+            modernCheckBox1.Name = "modernCheckBox1";
+            modernCheckBox1.Size = new Size(262, 26);
+            modernCheckBox1.TabIndex = 0;
+            modernCheckBox1.Text = "Use Whisper for speech recognition";
+            modernCheckBox1.UseVisualStyleBackColor = true;
+            // 
             // tabTools
             // 
             tabTools.BackColor = Color.FromArgb(37, 37, 37);
@@ -2646,6 +2687,7 @@
             // 
             MainButtonStack.Controls.Add(btApp);
             MainButtonStack.Controls.Add(btOutput);
+            MainButtonStack.Controls.Add(btAudio);
             MainButtonStack.Controls.Add(btTools);
             MainButtonStack.Controls.Add(btWeb);
             MainButtonStack.Controls.Add(brGroup);
@@ -2666,7 +2708,7 @@
             btApp.FlatStyle = FlatStyle.Flat;
             btApp.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btApp.ForeColor = Color.WhiteSmoke;
-            btApp.Location = new Point(4, 249);
+            btApp.Location = new Point(4, 284);
             btApp.Name = "btApp";
             btApp.Size = new Size(220, 27);
             btApp.TabIndex = 7;
@@ -2682,7 +2724,7 @@
             btOutput.FlatStyle = FlatStyle.Flat;
             btOutput.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btOutput.ForeColor = Color.WhiteSmoke;
-            btOutput.Location = new Point(4, 214);
+            btOutput.Location = new Point(4, 249);
             btOutput.Name = "btOutput";
             btOutput.Size = new Size(220, 27);
             btOutput.TabIndex = 5;
@@ -2690,6 +2732,22 @@
             btOutput.Text = "Output Formatting";
             btOutput.UseVisualStyleBackColor = false;
             btOutput.Click += btOutput_Click;
+            // 
+            // btAudio
+            // 
+            btAudio.BackColor = Color.SlateGray;
+            btAudio.FlatAppearance.BorderColor = Color.Black;
+            btAudio.FlatStyle = FlatStyle.Flat;
+            btAudio.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btAudio.ForeColor = Color.WhiteSmoke;
+            btAudio.Location = new Point(4, 214);
+            btAudio.Name = "btAudio";
+            btAudio.Size = new Size(220, 27);
+            btAudio.TabIndex = 8;
+            btAudio.Tag = "no-theme";
+            btAudio.Text = "Audio Input";
+            btAudio.UseVisualStyleBackColor = false;
+            btAudio.Click += btAudio_Click;
             // 
             // btTools
             // 
@@ -2876,6 +2934,8 @@
             panel22.PerformLayout();
             panel23.ResumeLayout(false);
             panel23.PerformLayout();
+            tabAudio.ResumeLayout(false);
+            collapsibleGroupBox17.ResumeLayout(false);
             tabTools.ResumeLayout(false);
             tabTools.PerformLayout();
             collapsibleGroupBox15.ResumeLayout(false);
@@ -3096,5 +3156,9 @@
         private Controls.ModernComboBox cbLlamaKV;
         private Label label3;
         private Controls.ModernCheckBox ck_backendbostoken;
+        private Button btAudio;
+        private TabPage tabAudio;
+        private Controls.CollapsibleGroupBox collapsibleGroupBox17;
+        private Controls.ModernCheckBox modernCheckBox1;
     }
 }

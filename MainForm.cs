@@ -139,8 +139,7 @@ namespace LetheChat
             LLMEngine.ToolManager.RegisterToolList(new WebSearchTools());
             LLMEngine.ToolManager.RegisterToolList(new MemoryTools());
             var pluginsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins");
-            LLMEngine.ToolManager.RegisterPluginsFromDirectory(pluginsDir);
-            AgentRuntime.RegisterPluginsFromDirectory(pluginsDir);
+            LLMEngine.RegisterPluginsFromDirectory(pluginsDir);
 
             // Manage theme
             if (Program.Settings.Skin == "Light")
