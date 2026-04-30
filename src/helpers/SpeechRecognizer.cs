@@ -191,6 +191,8 @@ namespace LetheChat
         // ──────────────────────────────────────────────────────────────
         public SpeechRecognizerSettings Settings => Program.Settings.AudioSettings;
 
+        public bool IsLoaded => _processor != null;
+
         private WhisperFactory? _factory;
         private WhisperProcessor? _processor;
         private bool _disposed;

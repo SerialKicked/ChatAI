@@ -37,7 +37,6 @@ namespace LetheChat
             statusbar = new StatusStrip();
             toolStripStatusLabel1 = new ToolStripStatusLabel();
             toolStripStatusLabel2 = new ToolStripStatusLabel();
-            toolStripStatusLabel3 = new ToolStripStatusLabel();
             AutoTalkTimer = new System.Windows.Forms.Timer(components);
             btChatHistory = new Button();
             btSysPrompt = new Button();
@@ -78,6 +77,7 @@ namespace LetheChat
             chatSplitter = new SplitContainer();
             web_chat = new Microsoft.Web.WebView2.WinForms.WebView2();
             input_panel = new Panel();
+            bt_record = new Button();
             ed_input = new SpellCheckedTextBox();
             bt_send = new Button();
             bt_reroll = new Button();
@@ -150,7 +150,7 @@ namespace LetheChat
             // 
             // statusbar
             // 
-            statusbar.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, toolStripStatusLabel2, toolStripStatusLabel3 });
+            statusbar.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, toolStripStatusLabel2 });
             statusbar.Location = new Point(0, 957);
             statusbar.Name = "statusbar";
             statusbar.Size = new Size(1282, 22);
@@ -167,17 +167,13 @@ namespace LetheChat
             // 
             // toolStripStatusLabel2
             // 
+            toolStripStatusLabel2.DisplayStyle = ToolStripItemDisplayStyle.Text;
             toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            toolStripStatusLabel2.Size = new Size(95, 17);
+            toolStripStatusLabel2.Overflow = ToolStripItemOverflow.Never;
+            toolStripStatusLabel2.Size = new Size(967, 17);
+            toolStripStatusLabel2.Spring = true;
             toolStripStatusLabel2.Text = "Generation Time";
-            // 
-            // toolStripStatusLabel3
-            // 
-            toolStripStatusLabel3.BorderStyle = Border3DStyle.SunkenOuter;
-            toolStripStatusLabel3.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            toolStripStatusLabel3.Size = new Size(872, 17);
-            toolStripStatusLabel3.Spring = true;
+            toolStripStatusLabel2.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // AutoTalkTimer
             // 
@@ -361,15 +357,18 @@ namespace LetheChat
             // bt_clearimg
             // 
             bt_clearimg.AutoSize = true;
+            bt_clearimg.BackColor = Color.DarkKhaki;
             bt_clearimg.Dock = DockStyle.Bottom;
             bt_clearimg.FlatStyle = FlatStyle.Flat;
+            bt_clearimg.Font = new Font("Segoe UI", 9F);
+            bt_clearimg.ForeColor = Color.Black;
             bt_clearimg.Location = new Point(8, 126);
             bt_clearimg.Margin = new Padding(0);
             bt_clearimg.Name = "bt_clearimg";
             bt_clearimg.Size = new Size(184, 27);
             bt_clearimg.TabIndex = 34;
-            bt_clearimg.Tag = "";
-            bt_clearimg.Text = "Clear";
+            bt_clearimg.Tag = "no-theme";
+            bt_clearimg.Text = "Remove Image";
             bt_clearimg.UseVisualStyleBackColor = false;
             bt_clearimg.Click += bt_clearimg_Click;
             // 
@@ -723,6 +722,7 @@ namespace LetheChat
             // 
             // input_panel
             // 
+            input_panel.Controls.Add(bt_record);
             input_panel.Controls.Add(ed_input);
             input_panel.Controls.Add(bt_send);
             input_panel.Controls.Add(bt_reroll);
@@ -734,6 +734,22 @@ namespace LetheChat
             input_panel.Size = new Size(866, 88);
             input_panel.TabIndex = 30;
             // 
+            // bt_record
+            // 
+            bt_record.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            bt_record.BackColor = Color.DarkSeaGreen;
+            bt_record.FlatAppearance.BorderColor = Color.Black;
+            bt_record.FlatStyle = FlatStyle.Flat;
+            bt_record.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            bt_record.ForeColor = Color.DarkRed;
+            bt_record.Location = new Point(742, 54);
+            bt_record.Name = "bt_record";
+            bt_record.Size = new Size(60, 25);
+            bt_record.TabIndex = 8;
+            bt_record.Tag = "no-theme";
+            bt_record.Text = "🔴 REC";
+            bt_record.UseVisualStyleBackColor = false;
+            // 
             // ed_input
             // 
             ed_input.AllowDrop = true;
@@ -744,7 +760,7 @@ namespace LetheChat
             ed_input.Multiline = true;
             ed_input.Name = "ed_input";
             ed_input.ScrollBars = ScrollBars.Vertical;
-            ed_input.Size = new Size(734, 79);
+            ed_input.Size = new Size(736, 79);
             ed_input.TabIndex = 2;
             ed_input.Tag = "no-theme";
             // 
@@ -755,9 +771,9 @@ namespace LetheChat
             bt_send.FlatStyle = FlatStyle.Flat;
             bt_send.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             bt_send.ForeColor = Color.Black;
-            bt_send.Location = new Point(740, 0);
+            bt_send.Location = new Point(742, 0);
             bt_send.Name = "bt_send";
-            bt_send.Size = new Size(60, 79);
+            bt_send.Size = new Size(60, 52);
             bt_send.TabIndex = 3;
             bt_send.Tag = "no-theme";
             bt_send.Text = "Send";
@@ -879,7 +895,7 @@ namespace LetheChat
             cboxVLM.Padding = new Padding(8, 32, 8, 8);
             cboxVLM.Size = new Size(200, 161);
             cboxVLM.TabIndex = 29;
-            cboxVLM.Text = "Visual Language Models";
+            cboxVLM.Text = "Visual Language Model";
             // 
             // collapsibleGroupBox2
             // 
@@ -1301,6 +1317,7 @@ namespace LetheChat
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
             Text = "Lethe Chat";
+            WindowState = FormWindowState.Maximized;
             FormClosing += MainForm_FormClosing;
             statusbar.ResumeLayout(false);
             statusbar.PerformLayout();
@@ -1391,7 +1408,6 @@ namespace LetheChat
         private Controls.ModernCheckBox mck_agentmode;
         private Controls.ModernCheckBox mck_onlinerag;
         private Panel panel2;
-        private ToolStripStatusLabel toolStripStatusLabel3;
         private Controls.CollapsibleGroupBox cboxVLM;
         private Controls.VerticalStackPanel panRight;
         private Controls.CollapsibleGroupBox collapsibleGroupBox3;
@@ -1420,5 +1436,6 @@ namespace LetheChat
         private ModernComboBox cbMemStyle;
         private Panel input_panel;
         private SplitContainer chatSplitter;
+        private Button bt_record;
     }
 }

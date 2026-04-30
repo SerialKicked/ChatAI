@@ -114,6 +114,7 @@ namespace LetheChat
             webUI = new WebUI(this, web_chat);
 
             EnsureLLMLoggerConnected();
+            SubscribeLoggerToStatusBar();
             this.Shown += async (_, __) =>
             {
                 await webUI.InitializeWebViewAsync();
@@ -219,6 +220,20 @@ namespace LetheChat
 
             LLMEngine.Logger = new LLMEngineUiLogger(nameof(LLMEngine));
             LLMEngine.Logger.LogInformation("LLMEngine logger connected from MainForm.");
+        }
+
+        private void SubscribeLoggerToStatusBar()
+        {
+            LLMEngineLogSink.LogAppended += OnLogAppended;
+        }
+
+        private void OnLogAppended(LLMEngineLogEntry entry)
+        {
+            if (!IsHandleCreated) return;
+            var text = entry.Message.RemoveNewLines().CleanupAndTrim();
+            if (text.Length > 500)
+                text = text[..500] + "...";
+            BeginInvoke(() => statusbar.Items[1].Text = text);
         }
 
         /// <summary>
@@ -411,6 +426,12 @@ namespace LetheChat
                 btMainSettings.Enabled = true;
                 var (tokens, duration) = LLMEngine.History.GetCurrentChatSessionInfo();
                 statusbar.Items[0].Text = $"Current Session: {duration.TotalDays:F2} days ({tokens} tokens)";
+
+                var col = tokens > LLMEngine.MaxContextLength * 0.9 ? Color.Red :
+                    tokens > LLMEngine.MaxContextLength * 0.8 ? Color.Orange :
+                    Color.Green;
+
+                statusbar.Items[0].ForeColor = col;
                 cb_instruct.Enabled = true;
             }
             else if (LLMEngine.Status == SystemStatus.Busy)
