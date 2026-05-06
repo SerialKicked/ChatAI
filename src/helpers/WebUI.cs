@@ -371,7 +371,15 @@ namespace LetheChat
                     html += AddHtmlMessage(LLMEngine.History.CurrentSession.Messages[i]);
             }
             html = InjectDialogCSS(html);
-            web_chat.NavigateToString(html);
+            try
+            {
+                web_chat.NavigateToString(html);
+
+            }
+            finally
+            {
+
+            }
         }
 
         private void OpenEditMessageMenu(Guid messageGuid)
