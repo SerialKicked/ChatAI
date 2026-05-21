@@ -110,25 +110,33 @@ namespace LetheChat.Plugins
                 return string.Empty;
             if (!Settings.IsLocked)
                 return Owner.ReplaceMacros(Settings.StatusUnlockedMessage);
-            if (Settings.LockDuration == TimeSpan.Zero)
-                return Owner.ReplaceMacros(Settings.StatusLockedMessage);
+            //if (Settings.LockDuration == TimeSpan.Zero)
+            //    return Owner.ReplaceMacros(Settings.StatusLockedMessage);
             var unlockTime = Settings.StateStartDate + Settings.LockDuration;
             var timeLeft = unlockTime - DateTime.Now;
-            if (timeLeft <= TimeSpan.Zero)
+            var lockedDuration = DateTime.UtcNow - Settings.StateStartDate;
+            if (timeLeft <= TimeSpan.Zero && Settings.LockDuration != TimeSpan.Zero)
             {
                 if (Settings.AutomaticUnlockOnDurationEnd)
                     UnlockItem();
-                return Owner.ReplaceMacros($"{Settings.StatusLockOverMessage} Lock expired {StringExtensions.TimeSpanToHumanString(-timeLeft)} ago.");
+                return Owner.ReplaceMacros($"{Settings.StatusLockOverMessage} It's been locked for {StringExtensions.TimeSpanToHumanString(lockedDuration)}. Lock expired {StringExtensions.TimeSpanToHumanString(-timeLeft)} ago.");
             }
             else
             {
                 if (Settings.ShowLockDuration)
                 {
-                    var lockedDuration = DateTime.UtcNow - Settings.StateStartDate;
-                    return Owner.ReplaceMacros($"{Settings.StatusLockedMessage} Has been locked for: {StringExtensions.TimeSpanToHumanString(lockedDuration)}. Time remaining: {StringExtensions.TimeSpanToHumanString(timeLeft)}.");
+                    var res = Owner.ReplaceMacros($"{Settings.StatusLockedMessage} It's been locked for {StringExtensions.TimeSpanToHumanString(lockedDuration)}.");
+                    if (timeLeft > TimeSpan.Zero)
+                        res += $" Time remaining: {StringExtensions.TimeSpanToHumanString(timeLeft)}.";
+                    return res;
                 }
-
-                return Owner.ReplaceMacros($"{Settings.StatusLockedMessage} Time remaining: {StringExtensions.TimeSpanToHumanString(timeLeft)}.");
+                else
+                {
+                    var res = Owner.ReplaceMacros($"{Settings.StatusLockedMessage}.");
+                    if (timeLeft > TimeSpan.Zero)
+                        res += $" Time remaining: {StringExtensions.TimeSpanToHumanString(timeLeft)}.";
+                    return res;
+                }
             }
         }
     }
