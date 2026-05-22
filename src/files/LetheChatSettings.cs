@@ -41,6 +41,10 @@ namespace LetheChat.Files
         public bool AlwaysForcePasswordOnBotSwitch { get; set; } = false;
         public StringFix RoleplayFormatting { get; set; } = new StringFix(false, false, false, false, false, 1, 50, false, false, false);
 
+        public bool EmojiRemoval { get; set; } = false;
+        public float EmojiBaseRemoval { get; set; } = 0.1f;
+        public float EmojiRemovalEscalation { get; set; } = 0.15f;
+
         [Description("Determines how group chats are handled:\n RoundRobin, NameDetection, LLMSelection" +
             "- 'Manual': The user manually switches the next character whenever they like. \n" +
             "- 'RoundRobin': Characters will alternate speaking one after the other. \n" +

@@ -1007,7 +1007,7 @@ namespace LetheChat
             mck_ragenabled.Name = "mck_ragenabled";
             mck_ragenabled.Size = new Size(184, 26);
             mck_ragenabled.TabIndex = 44;
-            mck_ragenabled.Text = "Contextual Memory";
+            mck_ragenabled.Text = "RAG: Vector Search";
             mck_ragenabled.UseVisualStyleBackColor = true;
             mck_ragenabled.CheckedChanged += ck_ragenabled_CheckedChanged;
             // 
@@ -1019,7 +1019,7 @@ namespace LetheChat
             mck_worldinfo.Name = "mck_worldinfo";
             mck_worldinfo.Size = new Size(184, 26);
             mck_worldinfo.TabIndex = 43;
-            mck_worldinfo.Text = "Enable Lorebooks";
+            mck_worldinfo.Text = "RAG: Keyword Search";
             mck_worldinfo.UseVisualStyleBackColor = true;
             mck_worldinfo.CheckedChanged += ck_worldinfo_CheckedChanged;
             // 

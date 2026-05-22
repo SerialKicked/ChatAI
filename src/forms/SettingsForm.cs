@@ -29,7 +29,7 @@ namespace LetheChat.Forms
             HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ckDetailedSum, nameof(LetheChatSettings.SessionDetailedSummary));
             HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, num_ragcutoff, nameof(LetheChatSettings.RAGDistanceCutOff));
             HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, num_ragmaxretrieve, nameof(LetheChatSettings.RAGMaxEntries));
-            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numWIEntries, nameof(LetheChatSettings.WorldInfoMaxEntries));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numWIEntries, nameof(LetheChatSettings.RAGKeywordMaxEntries));
             HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, num_ragindex, nameof(LetheChatSettings.RAGIndex));
             HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, num_ragM, nameof(LetheChatSettings.RAGMValue));
             HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, ck_sysrag, nameof(LetheChatSettings.MoveAllInsertsToSysPrompt));
@@ -203,7 +203,7 @@ namespace LetheChat.Forms
             ckThirdPerson.Checked = Program.Settings.RAGConvertTo3rdPerson;
             mcbSkin.SelectedIndex = mcbSkin.Items.IndexOf(Program.Settings.Skin);
             mck_cutmiddle.Checked = Program.Settings.CutInTheMiddleSummaryStrategy;
-            numWIEntries.Value = Program.Settings.WorldInfoMaxEntries;
+            numWIEntries.Value = Program.Settings.RAGKeywordMaxEntries;
             ckNoPastInserts.Checked = Program.Settings.DisableDateAndMoodIfNotLastSession;
             ckForceInternalGram.Checked = Program.Settings.ForceInternalGrammar;
             ckFactRetrieval.Checked = Program.Settings.FactRetrievalEnabled;
@@ -336,6 +336,11 @@ namespace LetheChat.Forms
             {
                 cb_audiomodel.SelectedIndex = 0;
             }
+
+            // emojis
+            ckEmojiRemoval.Checked = Program.Settings.EmojiRemoval;
+            numEmojiBaseRemoval.Value = (decimal)Program.Settings.EmojiBaseRemoval;
+            numEmojiRemovalEscalation.Value = (decimal)Program.Settings.EmojiRemovalEscalation;
         }
 
         public void SaveSettings()
@@ -367,7 +372,7 @@ namespace LetheChat.Forms
                 Program.Settings.SessionDetailedSummary = ckDetailedSum.Checked;
                 Program.Settings.RAGDistanceCutOff = (float)num_ragcutoff.Value;
                 Program.Settings.RAGMaxEntries = (int)num_ragmaxretrieve.Value;
-                Program.Settings.WorldInfoMaxEntries = (int)numWIEntries.Value;
+                Program.Settings.RAGKeywordMaxEntries = (int)numWIEntries.Value;
                 Program.Settings.RAGIndex = (int)num_ragindex.Value;
                 Program.Settings.RAGMValue = (int)num_ragM.Value;
                 Program.Settings.MoveAllInsertsToSysPrompt = ck_sysrag.Checked;
@@ -483,6 +488,11 @@ namespace LetheChat.Forms
                 Program.Settings.AudioSettings.SilenceThreshold = (float)num_audioSilenceThreshold.Value;
                 Program.Settings.AudioSettings.SilenceTimeoutSeconds = (float)num_audiotimeout.Value;
                 Program.Settings.AudioSettings.WhisperFile = cb_audiomodel.SelectedItem?.ToString() ?? "default";
+
+                // emojis
+                Program.Settings.EmojiRemoval = ckEmojiRemoval.Checked;
+                Program.Settings.EmojiBaseRemoval = (float)numEmojiBaseRemoval.Value;
+                Program.Settings.EmojiRemovalEscalation = (float)numEmojiRemovalEscalation.Value;
             }
             catch (Exception ex)
             {

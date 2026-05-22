@@ -27,6 +27,7 @@ using LetheChat.Plugins;
 using LetheChat.Slash;
 using LetheChat.Forms;
 using LetheAISharp.Moods;
+using Markdig.Extensions.Emoji;
 
 namespace LetheChat
 {
@@ -297,7 +298,7 @@ namespace LetheChat
             mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
             ckToolCalls.Checked = LLMEngine.Settings.ToolCallsAllowed;
             mck_ragenabled.Checked = LLMEngine.Settings.RAGEnabled;
-            mck_worldinfo.Checked = LLMEngine.Settings.AllowWorldInfo;
+            mck_worldinfo.Checked = LLMEngine.Settings.RAGKeywordEnabled;
             mck_forceNames.Checked = LLMEngine.Settings.AddNamesToPrompt;
 
             // Initialize context plugins
@@ -628,6 +629,9 @@ namespace LetheChat
                     else
                         stringfix = stringfix.FixRoleplayString(Program.Settings.RoleplayFormatting, true);
 
+                    if (Program.Settings.EmojiRemoval && (Program.Settings.EmojiRemovalEscalation >= 1 || Program.Settings.EmojiBaseRemoval >= 1))
+                        stringfix = EmojiFilter.RemoveAllEmojis(stringfix);
+
                     var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
                     await webUI.EditMessage(MsgPrefix + stringfix, _currentgenerationThink.ToString().StripThinkTags());
                 }
@@ -680,13 +684,15 @@ namespace LetheChat
                 }
                 if (Program.Settings.AsteriskCheck)
                     stringfix = stringfix.FixAsterisks();
-
                 if (Program.Settings.RemoveCutSentence)
                     stringfix = stringfix.RemoveUnfinishedSentence();
                 if (Program.Settings.AntiSlop)
                     stringfix = stringfix.RemoveSlop(Program.Settings.AntiSlopList, Program.Settings.AntiSlopRatio);
                 // Roleplay filter
                 stringfix = stringfix.FixRoleplayString(Program.Settings.RoleplayFormatting, false);
+
+                if (Program.Settings.EmojiRemoval)
+                    stringfix = EmojiFilter.RemoveEscalatingPerParagraphEmojis(stringfix, Program.Settings.EmojiBaseRemoval, Program.Settings.EmojiRemovalEscalation);
 
                 var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
 
@@ -1454,7 +1460,7 @@ namespace LetheChat
         {
             if (_isinitloading)
                 return;
-            LLMEngine.Settings.AllowWorldInfo = mck_worldinfo.Checked;
+            LLMEngine.Settings.RAGKeywordEnabled = mck_worldinfo.Checked;
         }
 
         private void cb_sysprompt_SelectionIndexChanged(object sender, EventArgs e)

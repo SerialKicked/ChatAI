@@ -170,6 +170,12 @@
             label34 = new Label();
             tabOutput = new TabPage();
             collapsibleGroupBox11 = new LetheChat.Controls.CollapsibleGroupBox();
+            panel4 = new Panel();
+            label13 = new Label();
+            numEmojiBaseRemoval = new LetheChat.Controls.ModernNumericUpDown();
+            label45 = new Label();
+            numEmojiRemovalEscalation = new LetheChat.Controls.ModernNumericUpDown();
+            ckEmojiRemoval = new LetheChat.Controls.ModernCheckBox();
             ckParenthesizeToItalic = new LetheChat.Controls.ModernCheckBox();
             ck_lastparaphfilter = new LetheChat.Controls.ModernCheckBox();
             ckDelStartSlop = new LetheChat.Controls.ModernCheckBox();
@@ -287,6 +293,7 @@
             panel25.SuspendLayout();
             tabOutput.SuspendLayout();
             collapsibleGroupBox11.SuspendLayout();
+            panel4.SuspendLayout();
             panel22.SuspendLayout();
             panel23.SuspendLayout();
             tabAudio.SuspendLayout();
@@ -1458,9 +1465,9 @@
             label22.Font = new Font("Segoe UI", 9F);
             label22.Location = new Point(169, 129);
             label22.Name = "label22";
-            label22.Size = new Size(123, 15);
+            label22.Size = new Size(168, 15);
             label22.TabIndex = 40;
-            label22.Text = "Max WorldInfo Entries";
+            label22.Text = "Max keyword-triggered entries";
             // 
             // ckThirdPerson
             // 
@@ -1585,9 +1592,9 @@
             label27.Font = new Font("Segoe UI", 9F);
             label27.Location = new Point(169, 85);
             label27.Name = "label27";
-            label27.Size = new Size(109, 15);
+            label27.Size = new Size(103, 15);
             label27.TabIndex = 26;
-            label27.Text = "Max Session Entries";
+            label27.Text = "Max vector entries";
             // 
             // collapsibleGroupBox6
             // 
@@ -2018,6 +2025,8 @@
             // 
             collapsibleGroupBox11.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox11.CanCollapse = false;
+            collapsibleGroupBox11.Controls.Add(panel4);
+            collapsibleGroupBox11.Controls.Add(ckEmojiRemoval);
             collapsibleGroupBox11.Controls.Add(ckParenthesizeToItalic);
             collapsibleGroupBox11.Controls.Add(ck_lastparaphfilter);
             collapsibleGroupBox11.Controls.Add(ckDelStartSlop);
@@ -2036,9 +2045,84 @@
             collapsibleGroupBox11.Location = new Point(6, 6);
             collapsibleGroupBox11.Name = "collapsibleGroupBox11";
             collapsibleGroupBox11.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox11.Size = new Size(780, 497);
+            collapsibleGroupBox11.Size = new Size(780, 515);
             collapsibleGroupBox11.TabIndex = 1;
             collapsibleGroupBox11.Text = "Output Formatting";
+            // 
+            // panel4
+            // 
+            panel4.Controls.Add(label13);
+            panel4.Controls.Add(numEmojiBaseRemoval);
+            panel4.Controls.Add(label45);
+            panel4.Controls.Add(numEmojiRemovalEscalation);
+            panel4.Dock = DockStyle.Top;
+            panel4.Location = new Point(12, 471);
+            panel4.Margin = new Padding(8);
+            panel4.Name = "panel4";
+            panel4.Padding = new Padding(8);
+            panel4.Size = new Size(756, 38);
+            panel4.TabIndex = 60;
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Font = new Font("Segoe UI", 9F);
+            label13.Location = new Point(11, 12);
+            label13.Name = "label13";
+            label13.Size = new Size(72, 15);
+            label13.TabIndex = 36;
+            label13.Text = "Base chance";
+            // 
+            // numEmojiBaseRemoval
+            // 
+            numEmojiBaseRemoval.BackColor = Color.FromArgb(64, 64, 64);
+            numEmojiBaseRemoval.CausesValidation = false;
+            numEmojiBaseRemoval.DecimalPlaces = 2;
+            numEmojiBaseRemoval.Font = new Font("Segoe UI", 9F);
+            numEmojiBaseRemoval.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
+            numEmojiBaseRemoval.Location = new Point(113, 9);
+            numEmojiBaseRemoval.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+            numEmojiBaseRemoval.Name = "numEmojiBaseRemoval";
+            numEmojiBaseRemoval.Padding = new Padding(1);
+            numEmojiBaseRemoval.Size = new Size(67, 23);
+            numEmojiBaseRemoval.TabIndex = 35;
+            numEmojiBaseRemoval.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // label45
+            // 
+            label45.AutoSize = true;
+            label45.Font = new Font("Segoe UI", 9F);
+            label45.Location = new Point(186, 13);
+            label45.Name = "label45";
+            label45.Size = new Size(60, 15);
+            label45.TabIndex = 39;
+            label45.Text = "Escalation";
+            // 
+            // numEmojiRemovalEscalation
+            // 
+            numEmojiRemovalEscalation.BackColor = Color.FromArgb(64, 64, 64);
+            numEmojiRemovalEscalation.CausesValidation = false;
+            numEmojiRemovalEscalation.DecimalPlaces = 2;
+            numEmojiRemovalEscalation.Font = new Font("Segoe UI", 9F);
+            numEmojiRemovalEscalation.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
+            numEmojiRemovalEscalation.Location = new Point(257, 9);
+            numEmojiRemovalEscalation.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+            numEmojiRemovalEscalation.Name = "numEmojiRemovalEscalation";
+            numEmojiRemovalEscalation.Padding = new Padding(1);
+            numEmojiRemovalEscalation.Size = new Size(67, 23);
+            numEmojiRemovalEscalation.TabIndex = 40;
+            numEmojiRemovalEscalation.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // ckEmojiRemoval
+            // 
+            ckEmojiRemoval.Dock = DockStyle.Top;
+            ckEmojiRemoval.Font = new Font("Segoe UI", 9F);
+            ckEmojiRemoval.Location = new Point(12, 445);
+            ckEmojiRemoval.Name = "ckEmojiRemoval";
+            ckEmojiRemoval.Size = new Size(756, 26);
+            ckEmojiRemoval.TabIndex = 59;
+            ckEmojiRemoval.Text = "Remove emoji spam";
+            ckEmojiRemoval.UseVisualStyleBackColor = true;
             // 
             // ckParenthesizeToItalic
             // 
@@ -3063,6 +3147,8 @@
             panel25.PerformLayout();
             tabOutput.ResumeLayout(false);
             collapsibleGroupBox11.ResumeLayout(false);
+            panel4.ResumeLayout(false);
+            panel4.PerformLayout();
             panel22.ResumeLayout(false);
             panel22.PerformLayout();
             panel23.ResumeLayout(false);
@@ -3306,5 +3392,11 @@
         private Controls.ModernNumericUpDown num_audiotimeout;
         private Label label44;
         private Controls.ModernNumericUpDown num_audioSilenceThreshold;
+        private Panel panel4;
+        private Label label13;
+        private Controls.ModernNumericUpDown numEmojiBaseRemoval;
+        private Label label45;
+        private Controls.ModernNumericUpDown numEmojiRemovalEscalation;
+        private Controls.ModernCheckBox ckEmojiRemoval;
     }
 }
