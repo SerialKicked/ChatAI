@@ -82,6 +82,12 @@ namespace LetheChat.Files
         public LlamaCppSettings DefaultLLamaCppSettings { get; set; } = new LlamaCppSettings();
 
         public SpeechRecognizerSettings AudioSettings { get; set; } = new SpeechRecognizerSettings();
+
+        /// <summary>
+        /// Indicates whether text between asterisks should be skipped in text-to-speech output.
+        /// </summary>
+        [Description("Indicates whether text between asterisks should be skipped in text-to-speech output.")]
+        public bool TTSSkipAsterisks { get; set; } = true;
     }
 
     public enum KVCacheQuantization

@@ -1137,8 +1137,30 @@ namespace LetheChat
 
         private async Task OutputTTS(string text)
         {
+            var cleanText = text;
+
             // remove all text between asterisks, including the asterisks, as those are for markdown formatting and would mess with TTS
-            var cleanText = System.Text.RegularExpressions.Regex.Replace(text, @"\*.*?\*", "\n");
+            if (Program.Settings.TTSSkipAsterisks)
+            {
+                // 1. Make sure we don't catch single-word between asterisks that are being used for emphasis instead of roleplay actions. Like in "I am *very* sorry".
+                // 1.1 black list of single words that we'll delete anyway
+                List<string> initlist = ["Grins", "Grin", "Mock-gasp", "Gasp", "Wink", "Winks", "Yawn", "Laughs", "Grins", "Winks", "Laughs", "Grinning", "Winking", "Laughing", "Smirks", "Smirking", "purrs", "Purring", "Giggle", "Giggles", "shivers"];
+                List<string> excludedWords = [.. initlist];
+                foreach (var item in initlist)
+                {
+                    excludedWords.Add(item + ".");
+                    excludedWords.Add(item + ",");
+                }
+                string excludedPattern = string.Join("|", excludedWords.Select(Regex.Escape));
+                // 1.2 Process tokens between ** ** (double asterisks) - excluding specific words
+                string pattern = $@"\*\*(?!({excludedPattern})\b)([^\s*]+?)(\p{{P}}?)\*\*";
+                cleanText = Regex.Replace(cleanText, pattern, "$2$3", RegexOptions.IgnoreCase);
+                // 1.3 Process tokens between * * (single asterisks) - excluding specific words
+                pattern = $@"\*(?!({excludedPattern})\b)([^\s*]+?)(\p{{P}}?)\*";
+                cleanText = Regex.Replace(cleanText, pattern, "$2$3", RegexOptions.IgnoreCase);
+                // 2. finally remove any remaining asterisked text
+                cleanText = Regex.Replace(cleanText, @"\*.*?\*", "\n");
+            }
 
             var paragraphs = cleanText.Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries);
 
