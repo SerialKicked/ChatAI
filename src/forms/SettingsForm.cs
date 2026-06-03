@@ -341,6 +341,13 @@ namespace LetheChat.Forms
             ckEmojiRemoval.Checked = Program.Settings.EmojiRemoval;
             numEmojiBaseRemoval.Value = (decimal)Program.Settings.EmojiBaseRemoval;
             numEmojiRemovalEscalation.Value = (decimal)Program.Settings.EmojiRemovalEscalation;
+
+            numDeepSearchMinRound.Value = (decimal)Program.Settings.DeepResearch.MinRounds;
+            numDeepSearchMaxRound.Value = (decimal)Program.Settings.DeepResearch.MaxRounds;
+            numDeepSearchSearchRound.Value = (decimal)Program.Settings.DeepResearch.MaxQueriesPerRound;
+            numDeepSearchSynthesis.Value = (decimal)Program.Settings.DeepResearch.SynthesisWindow;
+            numDeepSearchRuntime.Value = (decimal)Program.Settings.DeepResearch.MaxDuration.TotalMinutes;
+
         }
 
         public void SaveSettings()
@@ -493,6 +500,14 @@ namespace LetheChat.Forms
                 Program.Settings.EmojiRemoval = ckEmojiRemoval.Checked;
                 Program.Settings.EmojiBaseRemoval = (float)numEmojiBaseRemoval.Value;
                 Program.Settings.EmojiRemovalEscalation = (float)numEmojiRemovalEscalation.Value;
+
+                // Deep Research
+                Program.Settings.DeepResearch.MinRounds = (int)numDeepSearchMinRound.Value;
+                Program.Settings.DeepResearch.MaxRounds = (int)numDeepSearchMaxRound.Value;
+                Program.Settings.DeepResearch.MaxQueriesPerRound = (int)numDeepSearchSearchRound.Value;
+                Program.Settings.DeepResearch.SynthesisWindow = (int)numDeepSearchSynthesis.Value;
+                Program.Settings.DeepResearch.MaxDuration = TimeSpan.FromMinutes((double)numDeepSearchRuntime.Value);
+
             }
             catch (Exception ex)
             {

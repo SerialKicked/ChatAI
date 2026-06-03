@@ -156,12 +156,31 @@
             ckGroupRouting = new LetheChat.Controls.ModernComboBox();
             label30 = new Label();
             tabWeb = new TabPage();
+            collapsibleGroupBox19 = new LetheChat.Controls.CollapsibleGroupBox();
+            panel34 = new Panel();
+            numDeepSearchRuntime = new LetheChat.Controls.ModernNumericUpDown();
+            label53 = new Label();
+            panel33 = new Panel();
+            numDeepSearchSynthesis = new LetheChat.Controls.ModernNumericUpDown();
+            label52 = new Label();
+            label50 = new Label();
+            panel32 = new Panel();
+            numDeepSearchSearchRound = new LetheChat.Controls.ModernNumericUpDown();
+            label51 = new Label();
+            numDeepSearchMaxRound = new LetheChat.Controls.ModernNumericUpDown();
+            label49 = new Label();
+            numDeepSearchMinRound = new LetheChat.Controls.ModernNumericUpDown();
+            label48 = new Label();
+            label47 = new Label();
             collapsibleGroupBox7 = new LetheChat.Controls.CollapsibleGroupBox();
             ck_alwayswebsearch = new LetheChat.Controls.ModernCheckBox();
             panel25 = new Panel();
             numWebSearchDetailedMaxLength = new LetheChat.Controls.ModernNumericUpDown();
             label39 = new Label();
             ck_searchextract = new LetheChat.Controls.ModernCheckBox();
+            panel30 = new Panel();
+            numWebResultPerSearch = new LetheChat.Controls.ModernNumericUpDown();
+            label46 = new Label();
             panel20 = new Panel();
             ed_searchkey = new TextBox();
             label33 = new Label();
@@ -289,8 +308,14 @@
             collapsibleGroupBox8.SuspendLayout();
             panel19.SuspendLayout();
             tabWeb.SuspendLayout();
+            collapsibleGroupBox19.SuspendLayout();
+            panel34.SuspendLayout();
+            panel33.SuspendLayout();
+            panel32.SuspendLayout();
             collapsibleGroupBox7.SuspendLayout();
             panel25.SuspendLayout();
+            panel30.SuspendLayout();
+            panel20.SuspendLayout();
             tabOutput.SuspendLayout();
             collapsibleGroupBox11.SuspendLayout();
             panel4.SuspendLayout();
@@ -1856,6 +1881,7 @@
             // tabWeb
             // 
             tabWeb.BackColor = Color.FromArgb(37, 37, 37);
+            tabWeb.Controls.Add(collapsibleGroupBox19);
             tabWeb.Controls.Add(collapsibleGroupBox7);
             tabWeb.Font = new Font("Segoe UI", 9F);
             tabWeb.ForeColor = Color.FromArgb(230, 230, 230);
@@ -1865,6 +1891,205 @@
             tabWeb.TabIndex = 4;
             tabWeb.Text = "Web";
             // 
+            // collapsibleGroupBox19
+            // 
+            collapsibleGroupBox19.BackColor = Color.FromArgb(37, 37, 37);
+            collapsibleGroupBox19.CanCollapse = false;
+            collapsibleGroupBox19.Controls.Add(panel34);
+            collapsibleGroupBox19.Controls.Add(panel33);
+            collapsibleGroupBox19.Controls.Add(label50);
+            collapsibleGroupBox19.Controls.Add(panel32);
+            collapsibleGroupBox19.Controls.Add(label47);
+            collapsibleGroupBox19.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox19.Location = new Point(6, 284);
+            collapsibleGroupBox19.Name = "collapsibleGroupBox19";
+            collapsibleGroupBox19.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox19.Size = new Size(780, 186);
+            collapsibleGroupBox19.TabIndex = 2;
+            collapsibleGroupBox19.Text = "Deep Research";
+            // 
+            // panel34
+            // 
+            panel34.Controls.Add(numDeepSearchRuntime);
+            panel34.Controls.Add(label53);
+            panel34.Dock = DockStyle.Top;
+            panel34.Location = new Point(12, 134);
+            panel34.Margin = new Padding(8);
+            panel34.Name = "panel34";
+            panel34.Padding = new Padding(8);
+            panel34.Size = new Size(756, 36);
+            panel34.TabIndex = 62;
+            // 
+            // numDeepSearchRuntime
+            // 
+            numDeepSearchRuntime.BackColor = Color.FromArgb(64, 64, 64);
+            numDeepSearchRuntime.Font = new Font("Segoe UI", 9F);
+            numDeepSearchRuntime.Increment = new decimal(new int[] { 128, 0, 0, 0 });
+            numDeepSearchRuntime.Location = new Point(11, 6);
+            numDeepSearchRuntime.Maximum = new decimal(new int[] { 60, 0, 0, 0 });
+            numDeepSearchRuntime.Minimum = new decimal(new int[] { 5, 0, 0, 0 });
+            numDeepSearchRuntime.Name = "numDeepSearchRuntime";
+            numDeepSearchRuntime.Padding = new Padding(1);
+            numDeepSearchRuntime.Size = new Size(117, 23);
+            numDeepSearchRuntime.TabIndex = 27;
+            numDeepSearchRuntime.Value = new decimal(new int[] { 5, 0, 0, 0 });
+            // 
+            // label53
+            // 
+            label53.AutoSize = true;
+            label53.Font = new Font("Segoe UI", 9F);
+            label53.Location = new Point(142, 10);
+            label53.Name = "label53";
+            label53.Size = new Size(323, 15);
+            label53.TabIndex = 28;
+            label53.Text = "Maximum total runtime for a research execution in minutes.";
+            // 
+            // panel33
+            // 
+            panel33.Controls.Add(numDeepSearchSynthesis);
+            panel33.Controls.Add(label52);
+            panel33.Dock = DockStyle.Top;
+            panel33.Location = new Point(12, 98);
+            panel33.Margin = new Padding(8);
+            panel33.Name = "panel33";
+            panel33.Padding = new Padding(8);
+            panel33.Size = new Size(756, 36);
+            panel33.TabIndex = 61;
+            // 
+            // numDeepSearchSynthesis
+            // 
+            numDeepSearchSynthesis.BackColor = Color.FromArgb(64, 64, 64);
+            numDeepSearchSynthesis.Font = new Font("Segoe UI", 9F);
+            numDeepSearchSynthesis.Increment = new decimal(new int[] { 128, 0, 0, 0 });
+            numDeepSearchSynthesis.Location = new Point(11, 6);
+            numDeepSearchSynthesis.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
+            numDeepSearchSynthesis.Minimum = new decimal(new int[] { 4, 0, 0, 0 });
+            numDeepSearchSynthesis.Name = "numDeepSearchSynthesis";
+            numDeepSearchSynthesis.Padding = new Padding(1);
+            numDeepSearchSynthesis.Size = new Size(117, 23);
+            numDeepSearchSynthesis.TabIndex = 27;
+            numDeepSearchSynthesis.Value = new decimal(new int[] { 4, 0, 0, 0 });
+            // 
+            // label52
+            // 
+            label52.AutoSize = true;
+            label52.Font = new Font("Segoe UI", 9F);
+            label52.Location = new Point(142, 10);
+            label52.Name = "label52";
+            label52.Size = new Size(512, 15);
+            label52.TabIndex = 28;
+            label52.Text = "Synthesis window: Maximum number of findings to send into the synthesis prompt each round.";
+            // 
+            // label50
+            // 
+            label50.AutoSize = true;
+            label50.Dock = DockStyle.Top;
+            label50.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label50.Location = new Point(12, 83);
+            label50.Name = "label50";
+            label50.Size = new Size(51, 15);
+            label50.TabIndex = 60;
+            label50.Text = "General";
+            // 
+            // panel32
+            // 
+            panel32.Controls.Add(numDeepSearchSearchRound);
+            panel32.Controls.Add(label51);
+            panel32.Controls.Add(numDeepSearchMaxRound);
+            panel32.Controls.Add(label49);
+            panel32.Controls.Add(numDeepSearchMinRound);
+            panel32.Controls.Add(label48);
+            panel32.Dock = DockStyle.Top;
+            panel32.Location = new Point(12, 47);
+            panel32.Margin = new Padding(8);
+            panel32.Name = "panel32";
+            panel32.Padding = new Padding(8);
+            panel32.Size = new Size(756, 36);
+            panel32.TabIndex = 59;
+            // 
+            // numDeepSearchSearchRound
+            // 
+            numDeepSearchSearchRound.BackColor = Color.FromArgb(64, 64, 64);
+            numDeepSearchSearchRound.Font = new Font("Segoe UI", 9F);
+            numDeepSearchSearchRound.Increment = new decimal(new int[] { 128, 0, 0, 0 });
+            numDeepSearchSearchRound.Location = new Point(497, 6);
+            numDeepSearchSearchRound.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            numDeepSearchSearchRound.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numDeepSearchSearchRound.Name = "numDeepSearchSearchRound";
+            numDeepSearchSearchRound.Padding = new Padding(1);
+            numDeepSearchSearchRound.Size = new Size(80, 23);
+            numDeepSearchSearchRound.TabIndex = 31;
+            numDeepSearchSearchRound.Value = new decimal(new int[] { 3, 0, 0, 0 });
+            // 
+            // label51
+            // 
+            label51.AutoSize = true;
+            label51.Font = new Font("Segoe UI", 9F);
+            label51.Location = new Point(583, 10);
+            label51.Name = "label51";
+            label51.Size = new Size(125, 15);
+            label51.TabIndex = 32;
+            label51.Text = "Max queries per round";
+            // 
+            // numDeepSearchMaxRound
+            // 
+            numDeepSearchMaxRound.BackColor = Color.FromArgb(64, 64, 64);
+            numDeepSearchMaxRound.Font = new Font("Segoe UI", 9F);
+            numDeepSearchMaxRound.Increment = new decimal(new int[] { 128, 0, 0, 0 });
+            numDeepSearchMaxRound.Location = new Point(243, 6);
+            numDeepSearchMaxRound.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            numDeepSearchMaxRound.Minimum = new decimal(new int[] { 2, 0, 0, 0 });
+            numDeepSearchMaxRound.Name = "numDeepSearchMaxRound";
+            numDeepSearchMaxRound.Padding = new Padding(1);
+            numDeepSearchMaxRound.Size = new Size(80, 23);
+            numDeepSearchMaxRound.TabIndex = 29;
+            numDeepSearchMaxRound.Value = new decimal(new int[] { 3, 0, 0, 0 });
+            // 
+            // label49
+            // 
+            label49.AutoSize = true;
+            label49.Font = new Font("Segoe UI", 9F);
+            label49.Location = new Point(329, 10);
+            label49.Name = "label49";
+            label49.Size = new Size(104, 15);
+            label49.TabIndex = 30;
+            label49.Text = "Maximum Rounds";
+            // 
+            // numDeepSearchMinRound
+            // 
+            numDeepSearchMinRound.BackColor = Color.FromArgb(64, 64, 64);
+            numDeepSearchMinRound.Font = new Font("Segoe UI", 9F);
+            numDeepSearchMinRound.Increment = new decimal(new int[] { 128, 0, 0, 0 });
+            numDeepSearchMinRound.Location = new Point(11, 6);
+            numDeepSearchMinRound.Maximum = new decimal(new int[] { 4, 0, 0, 0 });
+            numDeepSearchMinRound.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numDeepSearchMinRound.Name = "numDeepSearchMinRound";
+            numDeepSearchMinRound.Padding = new Padding(1);
+            numDeepSearchMinRound.Size = new Size(80, 23);
+            numDeepSearchMinRound.TabIndex = 27;
+            numDeepSearchMinRound.Value = new decimal(new int[] { 3, 0, 0, 0 });
+            // 
+            // label48
+            // 
+            label48.AutoSize = true;
+            label48.Font = new Font("Segoe UI", 9F);
+            label48.Location = new Point(97, 10);
+            label48.Name = "label48";
+            label48.Size = new Size(103, 15);
+            label48.TabIndex = 28;
+            label48.Text = "Minimum Rounds";
+            // 
+            // label47
+            // 
+            label47.AutoSize = true;
+            label47.Dock = DockStyle.Top;
+            label47.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label47.Location = new Point(12, 32);
+            label47.Name = "label47";
+            label47.Size = new Size(102, 15);
+            label47.TabIndex = 38;
+            label47.Text = "Research Rounds";
+            // 
             // collapsibleGroupBox7
             // 
             collapsibleGroupBox7.BackColor = Color.FromArgb(37, 38, 42);
@@ -1872,8 +2097,8 @@
             collapsibleGroupBox7.Controls.Add(ck_alwayswebsearch);
             collapsibleGroupBox7.Controls.Add(panel25);
             collapsibleGroupBox7.Controls.Add(ck_searchextract);
+            collapsibleGroupBox7.Controls.Add(panel30);
             collapsibleGroupBox7.Controls.Add(panel20);
-            collapsibleGroupBox7.Controls.Add(ed_searchkey);
             collapsibleGroupBox7.Controls.Add(label33);
             collapsibleGroupBox7.Controls.Add(panel21);
             collapsibleGroupBox7.Controls.Add(cb_searchapi);
@@ -1882,7 +2107,7 @@
             collapsibleGroupBox7.Location = new Point(6, 6);
             collapsibleGroupBox7.Name = "collapsibleGroupBox7";
             collapsibleGroupBox7.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox7.Size = new Size(780, 235);
+            collapsibleGroupBox7.Size = new Size(780, 270);
             collapsibleGroupBox7.TabIndex = 1;
             collapsibleGroupBox7.Text = "Web Search API";
             // 
@@ -1890,7 +2115,7 @@
             // 
             ck_alwayswebsearch.Dock = DockStyle.Top;
             ck_alwayswebsearch.Font = new Font("Segoe UI", 9F);
-            ck_alwayswebsearch.Location = new Point(12, 190);
+            ck_alwayswebsearch.Location = new Point(12, 234);
             ck_alwayswebsearch.Name = "ck_alwayswebsearch";
             ck_alwayswebsearch.Size = new Size(756, 26);
             ck_alwayswebsearch.TabIndex = 35;
@@ -1902,7 +2127,7 @@
             panel25.Controls.Add(numWebSearchDetailedMaxLength);
             panel25.Controls.Add(label39);
             panel25.Dock = DockStyle.Top;
-            panel25.Location = new Point(12, 154);
+            panel25.Location = new Point(12, 198);
             panel25.Margin = new Padding(8);
             panel25.Name = "panel25";
             panel25.Padding = new Padding(8);
@@ -1937,31 +2162,67 @@
             // 
             ck_searchextract.Dock = DockStyle.Top;
             ck_searchextract.Font = new Font("Segoe UI", 9F);
-            ck_searchextract.Location = new Point(12, 128);
+            ck_searchextract.Location = new Point(12, 172);
             ck_searchextract.Name = "ck_searchextract";
             ck_searchextract.Size = new Size(756, 26);
             ck_searchextract.TabIndex = 40;
-            ck_searchextract.Text = "Try to extract page content using jina.ai";
+            ck_searchextract.Text = "Extract web results' content whenever possible.";
             ck_searchextract.UseVisualStyleBackColor = true;
+            // 
+            // panel30
+            // 
+            panel30.Controls.Add(numWebResultPerSearch);
+            panel30.Controls.Add(label46);
+            panel30.Dock = DockStyle.Top;
+            panel30.Location = new Point(12, 136);
+            panel30.Margin = new Padding(8);
+            panel30.Name = "panel30";
+            panel30.Padding = new Padding(8);
+            panel30.Size = new Size(756, 36);
+            panel30.TabIndex = 58;
+            // 
+            // numWebResultPerSearch
+            // 
+            numWebResultPerSearch.BackColor = Color.FromArgb(64, 64, 64);
+            numWebResultPerSearch.Font = new Font("Segoe UI", 9F);
+            numWebResultPerSearch.Increment = new decimal(new int[] { 128, 0, 0, 0 });
+            numWebResultPerSearch.Location = new Point(11, 6);
+            numWebResultPerSearch.Maximum = new decimal(new int[] { 8, 0, 0, 0 });
+            numWebResultPerSearch.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numWebResultPerSearch.Name = "numWebResultPerSearch";
+            numWebResultPerSearch.Padding = new Padding(1);
+            numWebResultPerSearch.Size = new Size(117, 23);
+            numWebResultPerSearch.TabIndex = 27;
+            numWebResultPerSearch.Value = new decimal(new int[] { 3, 0, 0, 0 });
+            // 
+            // label46
+            // 
+            label46.AutoSize = true;
+            label46.Font = new Font("Segoe UI", 9F);
+            label46.Location = new Point(134, 10);
+            label46.Name = "label46";
+            label46.Size = new Size(247, 15);
+            label46.TabIndex = 28;
+            label46.Text = "Retrieve those first results on each web query.";
             // 
             // panel20
             // 
+            panel20.Controls.Add(ed_searchkey);
             panel20.Dock = DockStyle.Top;
-            panel20.Location = new Point(12, 118);
+            panel20.Location = new Point(12, 95);
             panel20.Margin = new Padding(8);
             panel20.Name = "panel20";
             panel20.Padding = new Padding(8);
-            panel20.Size = new Size(756, 10);
+            panel20.Size = new Size(756, 41);
             panel20.TabIndex = 52;
             // 
             // ed_searchkey
             // 
-            ed_searchkey.Dock = DockStyle.Top;
-            ed_searchkey.Location = new Point(12, 95);
+            ed_searchkey.Location = new Point(11, 8);
             ed_searchkey.Name = "ed_searchkey";
-            ed_searchkey.PlaceholderText = "Brave API Key";
-            ed_searchkey.Size = new Size(756, 23);
-            ed_searchkey.TabIndex = 38;
+            ed_searchkey.PasswordChar = '*';
+            ed_searchkey.Size = new Size(734, 23);
+            ed_searchkey.TabIndex = 0;
             // 
             // label33
             // 
@@ -3141,10 +3402,22 @@
             panel19.ResumeLayout(false);
             panel19.PerformLayout();
             tabWeb.ResumeLayout(false);
+            collapsibleGroupBox19.ResumeLayout(false);
+            collapsibleGroupBox19.PerformLayout();
+            panel34.ResumeLayout(false);
+            panel34.PerformLayout();
+            panel33.ResumeLayout(false);
+            panel33.PerformLayout();
+            panel32.ResumeLayout(false);
+            panel32.PerformLayout();
             collapsibleGroupBox7.ResumeLayout(false);
             collapsibleGroupBox7.PerformLayout();
             panel25.ResumeLayout(false);
             panel25.PerformLayout();
+            panel30.ResumeLayout(false);
+            panel30.PerformLayout();
+            panel20.ResumeLayout(false);
+            panel20.PerformLayout();
             tabOutput.ResumeLayout(false);
             collapsibleGroupBox11.ResumeLayout(false);
             panel4.ResumeLayout(false);
@@ -3301,7 +3574,6 @@
         private Panel panel20;
         private Controls.ModernCheckBox ck_alwayswebsearch;
         private Controls.ModernCheckBox ck_searchextract;
-        private TextBox ed_searchkey;
         private Label label33;
         private Panel panel21;
         private Controls.ModernComboBox cb_searchapi;
@@ -3398,5 +3670,25 @@
         private Label label45;
         private Controls.ModernNumericUpDown numEmojiRemovalEscalation;
         private Controls.ModernCheckBox ckEmojiRemoval;
+        private Panel panel30;
+        private Controls.ModernNumericUpDown numWebResultPerSearch;
+        private Label label46;
+        private TextBox ed_searchkey;
+        private Controls.CollapsibleGroupBox collapsibleGroupBox19;
+        private Panel panel32;
+        private Controls.ModernNumericUpDown numDeepSearchMinRound;
+        private Label label48;
+        private Label label47;
+        private Label label50;
+        private Controls.ModernNumericUpDown numDeepSearchMaxRound;
+        private Label label49;
+        private Controls.ModernNumericUpDown numDeepSearchSearchRound;
+        private Label label51;
+        private Panel panel34;
+        private Controls.ModernNumericUpDown numDeepSearchRuntime;
+        private Label label53;
+        private Panel panel33;
+        private Controls.ModernNumericUpDown numDeepSearchSynthesis;
+        private Label label52;
     }
 }

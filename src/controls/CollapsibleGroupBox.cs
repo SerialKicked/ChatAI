@@ -153,7 +153,7 @@ namespace LetheChat.Controls
         {
             base.OnSizeChanged(e);
             // If we resize externally while expanded (not animating), ensure dock recalculated
-            if (!_isAnimating && _expanded)
+            if (!DesignMode && !_isAnimating && _expanded)
                 RelayoutDockedChildren();
         }
 
@@ -163,14 +163,13 @@ namespace LetheChat.Controls
             SuspendLayout();
             ResumeLayout(true);
             PerformLayout();
-            // Force each docked child to invalidate in case it depends on client rect
             foreach (Control c in Controls)
             {
                 if (c.Dock != DockStyle.None && c.Visible)
                     c.Invalidate();
             }
             // Also ask parent to re-layout in case stacking container depends on our new size
-            Parent?.PerformLayout();
+            //Parent?.PerformLayout();
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
