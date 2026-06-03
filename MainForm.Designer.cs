@@ -108,6 +108,7 @@ namespace LetheChat
             panel9 = new Panel();
             collapsibleMenus = new CollapsibleGroupBox();
             panel3 = new Panel();
+            btDeepSearch = new Button();
             panel8 = new Panel();
             cboxGroup = new CollapsibleGroupBox();
             cbGroupSwitch = new ModernComboBox();
@@ -397,7 +398,7 @@ namespace LetheChat
             btRawLog.FlatStyle = FlatStyle.Flat;
             btRawLog.Font = new Font("Segoe UI", 9F);
             btRawLog.ForeColor = Color.Black;
-            btRawLog.Location = new Point(8, 75);
+            btRawLog.Location = new Point(8, 102);
             btRawLog.Name = "btRawLog";
             btRawLog.Size = new Size(184, 27);
             btRawLog.TabIndex = 40;
@@ -414,7 +415,7 @@ namespace LetheChat
             btWorldEditor.FlatStyle = FlatStyle.Flat;
             btWorldEditor.Font = new Font("Segoe UI", 9F);
             btWorldEditor.ForeColor = Color.Black;
-            btWorldEditor.Location = new Point(8, 40);
+            btWorldEditor.Location = new Point(8, 67);
             btWorldEditor.Name = "btWorldEditor";
             btWorldEditor.Size = new Size(184, 27);
             btWorldEditor.TabIndex = 39;
@@ -431,7 +432,7 @@ namespace LetheChat
             btMainSettings.FlatStyle = FlatStyle.Flat;
             btMainSettings.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btMainSettings.ForeColor = Color.Black;
-            btMainSettings.Location = new Point(8, 102);
+            btMainSettings.Location = new Point(8, 129);
             btMainSettings.Name = "btMainSettings";
             btMainSettings.Size = new Size(184, 27);
             btMainSettings.TabIndex = 38;
@@ -1057,7 +1058,7 @@ namespace LetheChat
             collapsibleGroupBox4.Controls.Add(btRunAgent);
             collapsibleGroupBox4.Controls.Add(panel9);
             collapsibleGroupBox4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox4.Location = new Point(4, 792);
+            collapsibleGroupBox4.Location = new Point(4, 812);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(8, 32, 8, 8);
             collapsibleGroupBox4.Size = new Size(200, 156);
@@ -1138,24 +1139,42 @@ namespace LetheChat
             collapsibleMenus.Controls.Add(btRawLog);
             collapsibleMenus.Controls.Add(panel3);
             collapsibleMenus.Controls.Add(btWorldEditor);
+            collapsibleMenus.Controls.Add(btDeepSearch);
             collapsibleMenus.Controls.Add(panel8);
             collapsibleMenus.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             collapsibleMenus.Location = new Point(4, 642);
             collapsibleMenus.Name = "collapsibleMenus";
             collapsibleMenus.Padding = new Padding(8, 32, 8, 8);
-            collapsibleMenus.Size = new Size(200, 142);
+            collapsibleMenus.Size = new Size(200, 162);
             collapsibleMenus.TabIndex = 28;
             collapsibleMenus.Text = "Options and Settings";
             // 
             // panel3
             // 
             panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(8, 67);
+            panel3.Location = new Point(8, 94);
             panel3.Margin = new Padding(8);
             panel3.Name = "panel3";
             panel3.Padding = new Padding(8);
             panel3.Size = new Size(184, 8);
             panel3.TabIndex = 48;
+            // 
+            // btDeepSearch
+            // 
+            btDeepSearch.AutoSize = true;
+            btDeepSearch.BackColor = Color.DarkKhaki;
+            btDeepSearch.Dock = DockStyle.Top;
+            btDeepSearch.FlatStyle = FlatStyle.Flat;
+            btDeepSearch.Font = new Font("Segoe UI", 9F);
+            btDeepSearch.ForeColor = Color.Black;
+            btDeepSearch.Location = new Point(8, 40);
+            btDeepSearch.Name = "btDeepSearch";
+            btDeepSearch.Size = new Size(184, 27);
+            btDeepSearch.TabIndex = 50;
+            btDeepSearch.Tag = "no-theme";
+            btDeepSearch.Text = "Deep Search";
+            btDeepSearch.UseVisualStyleBackColor = false;
+            btDeepSearch.Click += btDeepSearch_Click;
             // 
             // panel8
             // 
@@ -1437,5 +1456,6 @@ namespace LetheChat
         private Panel input_panel;
         private SplitContainer chatSplitter;
         private Button bt_record;
+        private Button btDeepSearch;
     }
 }

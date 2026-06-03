@@ -1712,5 +1712,11 @@ namespace LetheChat
         {
             LLMEngine.Settings.RecallMemoryMode = (MemoryMode)cbMemStyle.SelectedIndex;
         }
+            private void btDeepSearch_Click(object sender, EventArgs e)
+            {
+                var form = new Forms.DeepSearchForm();
+                ThemeManager.ApplyToForm(form);
+                form.Show(this);
+            }
+        }
     }
-}
