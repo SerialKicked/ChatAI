@@ -20,6 +20,7 @@ namespace LetheChat.Forms
             btSearch = new Button();
             edQuery = new TextBox();
             lblQuery = new Label();
+            lblStatus = new Label();
             splitMain = new SplitContainer();
             listProgress = new ListView();
             colPhase = new ColumnHeader();
@@ -38,7 +39,6 @@ namespace LetheChat.Forms
             tabPlan = new TabPage();
             txtPlan = new RichTextBox();
             panBottom = new Panel();
-            lblStatus = new Label();
             btClose = new Button();
             panTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitMain).BeginInit();
@@ -61,11 +61,12 @@ namespace LetheChat.Forms
             panTop.Controls.Add(btSearch);
             panTop.Controls.Add(edQuery);
             panTop.Controls.Add(lblQuery);
+            panTop.Controls.Add(lblStatus);
             panTop.Dock = DockStyle.Top;
             panTop.Location = new Point(0, 0);
             panTop.Name = "panTop";
             panTop.Padding = new Padding(6, 4, 6, 4);
-            panTop.Size = new Size(1100, 100);
+            panTop.Size = new Size(1089, 68);
             panTop.TabIndex = 0;
             // 
             // btCancel
@@ -73,10 +74,11 @@ namespace LetheChat.Forms
             btCancel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btCancel.BackColor = Color.DarkRed;
             btCancel.Enabled = false;
+            btCancel.FlatAppearance.BorderColor = Color.Black;
             btCancel.FlatStyle = FlatStyle.Flat;
             btCancel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btCancel.ForeColor = Color.White;
-            btCancel.Location = new Point(1915, 6);
+            btCancel.Location = new Point(1002, 7);
             btCancel.Name = "btCancel";
             btCancel.Size = new Size(75, 26);
             btCancel.TabIndex = 2;
@@ -92,7 +94,7 @@ namespace LetheChat.Forms
             btSearch.FlatStyle = FlatStyle.Flat;
             btSearch.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btSearch.ForeColor = Color.Black;
-            btSearch.Location = new Point(1834, 6);
+            btSearch.Location = new Point(921, 7);
             btSearch.Name = "btSearch";
             btSearch.Size = new Size(75, 26);
             btSearch.TabIndex = 1;
@@ -108,9 +110,9 @@ namespace LetheChat.Forms
             edQuery.BorderStyle = BorderStyle.FixedSingle;
             edQuery.Font = new Font("Segoe UI", 9F);
             edQuery.ForeColor = Color.WhiteSmoke;
-            edQuery.Location = new Point(56, 8);
+            edQuery.Location = new Point(62, 8);
             edQuery.Name = "edQuery";
-            edQuery.Size = new Size(1032, 23);
+            edQuery.Size = new Size(853, 23);
             edQuery.TabIndex = 0;
             edQuery.KeyDown += edQuery_KeyDown;
             // 
@@ -119,17 +121,30 @@ namespace LetheChat.Forms
             lblQuery.AutoSize = true;
             lblQuery.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblQuery.ForeColor = Color.WhiteSmoke;
-            lblQuery.Location = new Point(6, 11);
+            lblQuery.Location = new Point(12, 10);
             lblQuery.Name = "lblQuery";
             lblQuery.Size = new Size(44, 15);
             lblQuery.TabIndex = 3;
             lblQuery.Text = "Query:";
             // 
+            // lblStatus
+            // 
+            lblStatus.Dock = DockStyle.Bottom;
+            lblStatus.Font = new Font("Segoe UI", 8.5F);
+            lblStatus.ForeColor = Color.LightSkyBlue;
+            lblStatus.Location = new Point(6, 42);
+            lblStatus.Name = "lblStatus";
+            lblStatus.Padding = new Padding(4, 0, 0, 0);
+            lblStatus.Size = new Size(1077, 22);
+            lblStatus.TabIndex = 0;
+            lblStatus.Text = "Ready.";
+            lblStatus.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // splitMain
             // 
             splitMain.Dock = DockStyle.Fill;
             splitMain.FixedPanel = FixedPanel.Panel1;
-            splitMain.Location = new Point(0, 100);
+            splitMain.Location = new Point(0, 68);
             splitMain.Name = "splitMain";
             // 
             // splitMain.Panel1
@@ -141,7 +156,7 @@ namespace LetheChat.Forms
             // 
             splitMain.Panel2.Controls.Add(tabResults);
             splitMain.Panel2MinSize = 300;
-            splitMain.Size = new Size(1100, 480);
+            splitMain.Size = new Size(1089, 576);
             splitMain.SplitterDistance = 280;
             splitMain.TabIndex = 1;
             // 
@@ -157,7 +172,7 @@ namespace LetheChat.Forms
             listProgress.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             listProgress.Location = new Point(0, 0);
             listProgress.Name = "listProgress";
-            listProgress.Size = new Size(280, 480);
+            listProgress.Size = new Size(280, 576);
             listProgress.TabIndex = 0;
             listProgress.UseCompatibleStateImageBehavior = false;
             listProgress.View = View.Details;
@@ -190,7 +205,7 @@ namespace LetheChat.Forms
             tabResults.Location = new Point(0, 0);
             tabResults.Name = "tabResults";
             tabResults.SelectedIndex = 0;
-            tabResults.Size = new Size(816, 480);
+            tabResults.Size = new Size(805, 576);
             tabResults.TabIndex = 0;
             // 
             // tabFinal
@@ -202,7 +217,7 @@ namespace LetheChat.Forms
             tabFinal.Location = new Point(4, 40);
             tabFinal.Name = "tabFinal";
             tabFinal.Padding = new Padding(3);
-            tabFinal.Size = new Size(808, 436);
+            tabFinal.Size = new Size(797, 532);
             tabFinal.TabIndex = 0;
             tabFinal.Text = "Final Report";
             // 
@@ -214,7 +229,7 @@ namespace LetheChat.Forms
             webFinalReport.Dock = DockStyle.Fill;
             webFinalReport.Location = new Point(3, 3);
             webFinalReport.Name = "webFinalReport";
-            webFinalReport.Size = new Size(802, 430);
+            webFinalReport.Size = new Size(791, 526);
             webFinalReport.TabIndex = 0;
             webFinalReport.ZoomFactor = 1D;
             // 
@@ -227,7 +242,7 @@ namespace LetheChat.Forms
             tabEvolving.Location = new Point(4, 40);
             tabEvolving.Name = "tabEvolving";
             tabEvolving.Padding = new Padding(3);
-            tabEvolving.Size = new Size(808, 570);
+            tabEvolving.Size = new Size(797, 526);
             tabEvolving.TabIndex = 1;
             tabEvolving.Text = "Evolving Report";
             // 
@@ -239,7 +254,7 @@ namespace LetheChat.Forms
             webEvolvingReport.Dock = DockStyle.Fill;
             webEvolvingReport.Location = new Point(3, 3);
             webEvolvingReport.Name = "webEvolvingReport";
-            webEvolvingReport.Size = new Size(802, 564);
+            webEvolvingReport.Size = new Size(791, 520);
             webEvolvingReport.TabIndex = 0;
             webEvolvingReport.ZoomFactor = 1D;
             // 
@@ -252,7 +267,7 @@ namespace LetheChat.Forms
             tabSources.Location = new Point(4, 40);
             tabSources.Name = "tabSources";
             tabSources.Padding = new Padding(3);
-            tabSources.Size = new Size(808, 570);
+            tabSources.Size = new Size(797, 526);
             tabSources.TabIndex = 2;
             tabSources.Text = "Sources";
             // 
@@ -268,7 +283,7 @@ namespace LetheChat.Forms
             listSources.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             listSources.Location = new Point(3, 3);
             listSources.Name = "listSources";
-            listSources.Size = new Size(802, 564);
+            listSources.Size = new Size(791, 520);
             listSources.TabIndex = 0;
             listSources.UseCompatibleStateImageBehavior = false;
             listSources.View = View.Details;
@@ -297,7 +312,7 @@ namespace LetheChat.Forms
             tabPlan.Location = new Point(4, 40);
             tabPlan.Name = "tabPlan";
             tabPlan.Padding = new Padding(3);
-            tabPlan.Size = new Size(808, 570);
+            tabPlan.Size = new Size(797, 526);
             tabPlan.TabIndex = 3;
             tabPlan.Text = "Research Plan";
             // 
@@ -312,44 +327,32 @@ namespace LetheChat.Forms
             txtPlan.Name = "txtPlan";
             txtPlan.ReadOnly = true;
             txtPlan.ScrollBars = RichTextBoxScrollBars.Vertical;
-            txtPlan.Size = new Size(802, 564);
+            txtPlan.Size = new Size(791, 520);
             txtPlan.TabIndex = 0;
             txtPlan.Tag = "no-theme";
             txtPlan.Text = "";
             // 
             // panBottom
             // 
-            panBottom.Controls.Add(lblStatus);
             panBottom.Controls.Add(btClose);
             panBottom.Dock = DockStyle.Bottom;
-            panBottom.Location = new Point(0, 580);
+            panBottom.Location = new Point(0, 644);
             panBottom.Name = "panBottom";
-            panBottom.Size = new Size(1100, 100);
+            panBottom.Padding = new Padding(4);
+            panBottom.Size = new Size(1089, 36);
             panBottom.TabIndex = 2;
-            // 
-            // lblStatus
-            // 
-            lblStatus.Dock = DockStyle.Fill;
-            lblStatus.Font = new Font("Segoe UI", 8.5F);
-            lblStatus.ForeColor = Color.LightSkyBlue;
-            lblStatus.Location = new Point(0, 0);
-            lblStatus.Name = "lblStatus";
-            lblStatus.Padding = new Padding(4, 0, 0, 0);
-            lblStatus.Size = new Size(1020, 100);
-            lblStatus.TabIndex = 0;
-            lblStatus.Text = "Ready.";
-            lblStatus.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // btClose
             // 
-            btClose.BackColor = Color.PaleGreen;
-            btClose.Dock = DockStyle.Right;
-            btClose.FlatStyle = FlatStyle.Flat;
+            btClose.BackColor = Color.DarkRed;
+            btClose.Dock = DockStyle.Fill;
+            btClose.FlatStyle = FlatStyle.Popup;
             btClose.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btClose.ForeColor = Color.Black;
-            btClose.Location = new Point(1020, 0);
+            btClose.Location = new Point(4, 4);
             btClose.Name = "btClose";
-            btClose.Size = new Size(80, 100);
+            btClose.Padding = new Padding(4);
+            btClose.Size = new Size(1081, 28);
             btClose.TabIndex = 0;
             btClose.Tag = "no-theme";
             btClose.Text = "Close";
@@ -361,7 +364,7 @@ namespace LetheChat.Forms
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(37, 38, 42);
-            ClientSize = new Size(1100, 680);
+            ClientSize = new Size(1089, 680);
             Controls.Add(splitMain);
             Controls.Add(panBottom);
             Controls.Add(panTop);
@@ -415,7 +418,8 @@ namespace LetheChat.Forms
         private TabPage tabPlan;
         private RichTextBox txtPlan;
         private Panel panBottom;
-        private Label lblStatus;
         private Button btClose;
+        private ProgressBar progressBar1;
+        private Label lblStatus;
     }
 }

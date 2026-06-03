@@ -41,11 +41,11 @@ namespace LetheChat.Forms
 
             item.ForeColor = p.Phase switch
             {
-                DeepResearchPhase.Error or DeepResearchPhase.Warning    => Color.Goldenrod,
-                DeepResearchPhase.Completed                             => Color.LightGreen,
+                DeepResearchPhase.Error or DeepResearchPhase.Warning => Color.Goldenrod,
+                DeepResearchPhase.Completed => Color.LightGreen,
                 DeepResearchPhase.Searching or DeepResearchPhase.Reading => Color.LightSkyBlue,
                 DeepResearchPhase.Analyzing or DeepResearchPhase.Writing => Color.Plum,
-                _                                                       => Color.FromArgb(200, 200, 200),
+                _ => Color.FromArgb(200, 200, 200),
             };
 
             listProgress.Items.Add(item);
@@ -257,6 +257,11 @@ namespace LetheChat.Forms
                 else
                     Close();
             }
+        }
+
+        private void progressBar1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
