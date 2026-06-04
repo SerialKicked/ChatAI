@@ -1495,6 +1495,7 @@ namespace LetheChat
         {
             if (!string.IsNullOrEmpty(ed_input.Text))
                 LLMEngine.Bot.AgentSystem?.NotifyUserActivity();
+            lblMonitor.Text = $"Status: {LLMEngine.Status} | LLM: {LLMEngine.LLMBusy}";
             if (LLMEngine.Status != SystemStatus.Ready || !string.IsNullOrEmpty(ed_input.Text) || Bot?.CanInitiateChat != true)
                 return;
             _activityTimer?.IsTimeout();

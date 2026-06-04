@@ -101,6 +101,7 @@ namespace LetheChat
             mck_sessionmemory = new ModernCheckBox();
             panRight = new VerticalStackPanel();
             collapsibleGroupBox4 = new CollapsibleGroupBox();
+            lblMonitor = new Label();
             cbMemStyle = new ModernComboBox();
             button4 = new Button();
             button3 = new Button();
@@ -152,7 +153,7 @@ namespace LetheChat
             // statusbar
             // 
             statusbar.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, toolStripStatusLabel2 });
-            statusbar.Location = new Point(0, 957);
+            statusbar.Location = new Point(0, 994);
             statusbar.Name = "statusbar";
             statusbar.Size = new Size(1282, 22);
             statusbar.TabIndex = 2;
@@ -179,7 +180,6 @@ namespace LetheChat
             // AutoTalkTimer
             // 
             AutoTalkTimer.Enabled = true;
-            AutoTalkTimer.Interval = 1000;
             AutoTalkTimer.Tick += AutoTalkTimer_Tick;
             // 
             // btChatHistory
@@ -705,8 +705,8 @@ namespace LetheChat
             // 
             chatSplitter.Panel2.Controls.Add(input_panel);
             chatSplitter.Panel2MinSize = 88;
-            chatSplitter.Size = new Size(866, 957);
-            chatSplitter.SplitterDistance = 865;
+            chatSplitter.Size = new Size(866, 994);
+            chatSplitter.SplitterDistance = 902;
             chatSplitter.TabIndex = 50;
             // 
             // web_chat
@@ -717,7 +717,7 @@ namespace LetheChat
             web_chat.Dock = DockStyle.Fill;
             web_chat.Location = new Point(0, 0);
             web_chat.Name = "web_chat";
-            web_chat.Size = new Size(866, 865);
+            web_chat.Size = new Size(866, 902);
             web_chat.TabIndex = 6;
             web_chat.ZoomFactor = 1D;
             // 
@@ -881,7 +881,7 @@ namespace LetheChat
             panLeft.Location = new Point(0, 0);
             panLeft.Name = "panLeft";
             panLeft.Padding = new Padding(4, 6, 4, 6);
-            panLeft.Size = new Size(208, 957);
+            panLeft.Size = new Size(208, 994);
             panLeft.TabIndex = 28;
             // 
             // cboxVLM
@@ -1046,12 +1046,13 @@ namespace LetheChat
             panRight.Location = new Point(1074, 0);
             panRight.Name = "panRight";
             panRight.Padding = new Padding(4, 6, 4, 6);
-            panRight.Size = new Size(208, 957);
+            panRight.Size = new Size(208, 994);
             panRight.TabIndex = 29;
             // 
             // collapsibleGroupBox4
             // 
             collapsibleGroupBox4.BackColor = Color.FromArgb(37, 37, 37);
+            collapsibleGroupBox4.Controls.Add(lblMonitor);
             collapsibleGroupBox4.Controls.Add(cbMemStyle);
             collapsibleGroupBox4.Controls.Add(button4);
             collapsibleGroupBox4.Controls.Add(button3);
@@ -1061,9 +1062,19 @@ namespace LetheChat
             collapsibleGroupBox4.Location = new Point(4, 812);
             collapsibleGroupBox4.Name = "collapsibleGroupBox4";
             collapsibleGroupBox4.Padding = new Padding(8, 32, 8, 8);
-            collapsibleGroupBox4.Size = new Size(200, 156);
+            collapsibleGroupBox4.Size = new Size(200, 173);
             collapsibleGroupBox4.TabIndex = 30;
             collapsibleGroupBox4.Text = "Debug";
+            // 
+            // lblMonitor
+            // 
+            lblMonitor.AutoSize = true;
+            lblMonitor.Dock = DockStyle.Top;
+            lblMonitor.Location = new Point(8, 145);
+            lblMonitor.Name = "lblMonitor";
+            lblMonitor.Size = new Size(47, 15);
+            lblMonitor.TabIndex = 55;
+            lblMonitor.Text = "label10";
             // 
             // cbMemStyle
             // 
@@ -1327,7 +1338,7 @@ namespace LetheChat
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(37, 38, 42);
-            ClientSize = new Size(1282, 979);
+            ClientSize = new Size(1282, 1016);
             Controls.Add(chatSplitter);
             Controls.Add(panRight);
             Controls.Add(panLeft);
@@ -1457,5 +1468,6 @@ namespace LetheChat
         private SplitContainer chatSplitter;
         private Button bt_record;
         private Button btDeepSearch;
+        private Label lblMonitor;
     }
 }
