@@ -263,7 +263,8 @@ namespace LetheChat.Files
 
         public string GetArgs()
         {
-            var args = new StringBuilder($" {(Program.Settings.IsIkLlama ? string.Empty : "--no-webui")} --reasoning-format none --port {Port} -np 1");
+            var args = new StringBuilder($" {(Program.Settings.IsIkLlama ? string.Empty : "--no-webui")} --port {Port} -np 1");
+            //var args = new StringBuilder($" {(Program.Settings.IsIkLlama ? string.Empty : "--no-webui")} --port {Port} -np 1");
             if (Props && !Program.Settings.IsIkLlama)
                 args.Append(" --props");
 
