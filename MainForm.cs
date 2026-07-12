@@ -646,7 +646,7 @@ namespace LetheChat
             }
         }
 
-        private async void LLMEngine_OnInferenceCompleted(object? sender, InferenceResult e)
+        private async void LLMEngine_OnInferenceCompleted(object? sender, InferenceResult inferenceResults)
         {
             _responselength = DateTime.Now - _postdate;
             _activityTimer?.Reset();
@@ -656,7 +656,7 @@ namespace LetheChat
                 _impersonatemode = false;
                 Invoke((System.Windows.Forms.MethodInvoker)delegate
                 {
-                    ed_input.Text = e.ThinkingContent?.ToWinFormat() ?? string.Empty + e.Response.ToWinFormat();
+                    ed_input.Text = inferenceResults.ThinkingContent?.ToWinFormat() ?? string.Empty + inferenceResults.Response.ToWinFormat();
                     statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                 });
                 LLMEngine.InvalidatePromptCache();
@@ -665,7 +665,16 @@ namespace LetheChat
             {
                 var activebot = (LLMEngine.Bot is GroupPersonaBase grp ? grp.GetCurrentPersona()?.Name : LLMEngine.Bot.Name) ?? LLMEngine.Bot.Name;
                 var statcheck = activebot + ": ";
-                var stringfix = e.Response;
+
+                var thinkblock = inferenceResults.ThinkingContent ?? string.Empty;
+                var talkblock = inferenceResults.Response ?? string.Empty;
+                if (string.IsNullOrEmpty(talkblock))
+                {
+                    talkblock = thinkblock;
+                    thinkblock = string.Empty;
+                }
+
+                var stringfix = talkblock;
                 if (stringfix.StartsWith(statcheck))
                 {
                     // remove the statcheck string at the start of e.Response. Like "Bob: Hello!" becomes "Hello!" if statcheck contains "Bob: "
@@ -697,9 +706,8 @@ namespace LetheChat
                 var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
 
                 var msg = LLMEngine.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMEngine.User, LLMEngine.Bot);
-                msg.ThinkBlock = e.ThinkingContent ?? string.Empty;
-                var thinkingContent = !string.IsNullOrEmpty(e.ThinkingContent) ? e.ThinkingContent : null;
-                await InvokeAsync(async () => { await webUI.EditMessage(MsgPrefix + stringfix, thinkingContent, msg.Guid); });
+                msg.ThinkBlock = thinkblock;
+                await InvokeAsync(async () => { await webUI.EditMessage(MsgPrefix + stringfix, thinkblock, msg.Guid); });
                 PrepareResponse();
 
                 if (_forcereload || Program.Settings.MaxMessagesOnScreen <= LLMEngine.History.CurrentSession.Messages.Count)
@@ -724,7 +732,7 @@ namespace LetheChat
             // GROUP CHAT CHAIN: continue with next queued bot if any
             if (await AdvanceGroupQueue())
                 return;
-            LLMEngine.Logger?.LogInformation($"[InferenceCompleted] Response: {e.Response} - Complete: {e.FinishReason} - Tool: {e.ToolCalls?.Count > 0}");
+            LLMEngine.Logger?.LogInformation($"[InferenceCompleted] Response: {inferenceResults.Response} - Complete: {inferenceResults.FinishReason} - Tool: {inferenceResults.ToolCalls?.Count > 0}");
         }
 
         [Obsolete("This method will be removed in future versions and replaced by an action. In the meantime, bot cannot initiate conversations.")]
