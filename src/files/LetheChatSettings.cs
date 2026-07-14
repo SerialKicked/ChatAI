@@ -88,6 +88,20 @@ namespace LetheChat.Files
         /// </summary>
         [Description("Indicates whether text between asterisks should be skipped in text-to-speech output.")]
         public bool TTSSkipAsterisks { get; set; } = true;
+
+        /// <summary>
+        /// Width in pixels of the canvas created by the Drawing toolset when the model calls NewDrawing.
+        /// The model is not allowed to pick the size; it is told these dimensions instead.
+        /// </summary>
+        [Description("Width in pixels of the canvas created by the Drawing toolset. The model cannot change this; it is told the dimensions when it opens a new drawing.")]
+        public int DrawingCanvasWidth { get; set; } = 800;
+
+        /// <summary>
+        /// Height in pixels of the canvas created by the Drawing toolset when the model calls NewDrawing.
+        /// The model is not allowed to pick the size; it is told these dimensions instead.
+        /// </summary>
+        [Description("Height in pixels of the canvas created by the Drawing toolset. The model cannot change this; it is told the dimensions when it opens a new drawing.")]
+        public int DrawingCanvasHeight { get; set; } = 600;
     }
 
     public enum KVCacheQuantization
