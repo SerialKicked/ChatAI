@@ -1,9 +1,8 @@
 # Lethe AI Chat
 
-Lethe Chat is a Windows-based, high-performance, LLM chat program, supporting a variety of backends like Llama.cpp, KoboldCpp, LMStudio, and more. It is written in C# .NET 10 and is using [Lethe AI Sharp](https://github.com/SerialKicked/Lethe-AI-Sharp) to do the heavy lifting.
+Lethe Chat is a Windows-based, high-performance, LLM harness and chat program, supporting a variety of backends like Llama.cpp, KoboldCpp, LMStudio, and more. It is written in C# .NET 10 and is using [Lethe AI Sharp](https://github.com/SerialKicked/Lethe-AI-Sharp) to do the heavy lifting.
 
-![WaifuAI_RjiqpbMiTq](https://github.com/user-attachments/assets/a4d1595d-a5f4-41f6-885e-5c50cd8fa619)
-
+<img width="1920" height="1032" alt="LetheChat-Dev_hhXQQa2tZO" src="https://github.com/user-attachments/assets/5f266867-e520-4c8a-b7fc-36b92afb6c1e" />
 
 ## ⭐ Main Features:
 
@@ -18,7 +17,7 @@ Lethe Chat is a Windows-based, high-performance, LLM chat program, supporting a 
   - Tool-calling models can even store and retrieve memories on their own
 - Optional strong encryption of chatlogs and memories.
 - **Agentic abilities**, allowing you to create characters that can perform specific tasks or functions
-  -	Web search via DuckDuckGo or Brave API
+  -	Simple and Deep Web search via DuckDuckGo and Brave API
   - Extensible tool-calling, allowing the bot to interact with external programs and APIs to perform tasks or retrieve information
   - Extensible background tasks, allowing the bot to perform tasks while the user is AFK
 - Detailed **character customisation** system, allowing you to create characters with unique personalities and knowledge bases
