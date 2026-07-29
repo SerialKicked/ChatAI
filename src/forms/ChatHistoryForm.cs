@@ -261,11 +261,24 @@ namespace LetheChat.Forms
                     "appassets.test",
                     Path.Combine(AppContext.BaseDirectory, "data"),
                     CoreWebView2HostResourceAccessKind.Allow);
+                web_sessioncontent.CoreWebView2.AddWebResourceRequestedFilter(
+                    ChatImageBroker.UrlPrefix + "*",
+                    CoreWebView2WebResourceContext.Image);
+                web_sessioncontent.CoreWebView2.WebResourceRequested += OnChatImageRequested;
             }
 
             // Build the HTML content
             var htmlContent = BuildSessionHtml(session);
             web_sessioncontent.NavigateToString(htmlContent);
+        }
+
+        /// <summary>
+        /// Serves full-size versions of attached chat images for the lightbox view.
+        /// </summary>
+        private void OnChatImageRequested(object? sender, CoreWebView2WebResourceRequestedEventArgs e)
+        {
+            if (web_sessioncontent?.CoreWebView2 != null)
+                ChatImageBroker.HandleWebResourceRequested(web_sessioncontent.CoreWebView2, e);
         }
 
         private string BuildSessionHtml(ChatSession session)
@@ -328,6 +341,7 @@ namespace LetheChat.Forms
             }
 
             var html = Markdown.ToHtml(ChatRender.GetMessagePrefix(message) + message.Message, CustomMarkDownPipeline);
+            var thumbs = ChatImageBroker.BuildThumbsHtml(message);
 
             return $@"
         <div class='chat-message' data-message-guid='{message.Guid}'>
@@ -338,6 +352,7 @@ namespace LetheChat.Forms
                 <div class='message-raw'>
                     {html}
                 </div>
+                {thumbs}
             </div>
         </div>";
         }
@@ -414,9 +429,10 @@ namespace LetheChat.Forms
             word-wrap: break-word;
             padding-right: 10px;
         }}
+        {ChatImageBroker.LightboxCss}
     </style>";
 
-            return $"<html><head>{css}</head><body>{htmlContent}</body></html>";
+            return $"<html><head>{css}</head><body>{ChatImageBroker.LightboxScriptTag}{htmlContent}</body></html>";
         }
 
         private void UpdateHistoryEntryEvent(object sender, EventArgs e)

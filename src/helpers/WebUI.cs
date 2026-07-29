@@ -90,11 +90,12 @@ namespace LetheChat
             return tcs.Task;
         }
 
-        private static string InjectDialogHtml(string imgPath, string dialog, string? thinking, Guid messageGuid)
+        private static string InjectDialogHtml(string imgPath, string dialog, string? thinking, Guid messageGuid, string? imagesHtml = null)
         {
             // dialog should already be sanitized for HTML; the pipeline calling this produces the HTML
             // Ensure both .thinking-content and .message-raw exist so JS paths always have a target.
             string think = thinking ?? string.Empty;
+            string images = imagesHtml ?? string.Empty;
             return $@"
         <div class='chat-message' data-message-guid='{messageGuid}'>
             <div class='portrait'>
@@ -105,6 +106,7 @@ namespace LetheChat
                 <div class='message-raw'>
                     {dialog}
                 </div>
+                {images}
             </div>
         </div>";
         }
@@ -178,6 +180,7 @@ namespace LetheChat
                         word-wrap: break-word;
                         padding-right: 10px;
                     }}
+                    {ChatImageBroker.LightboxCss}
                 </style>";
                         string scripts = @"
                 <script>
@@ -240,6 +243,8 @@ namespace LetheChat
                         const chatContainer = document.getElementById('chatContainer');
                         chatContainer.addEventListener('dblclick', (event) => 
                         {
+                            if (event.target && event.target.classList && event.target.classList.contains('chat-thumb'))
+                                return;
                             let targetElement = event.target;
                             while (targetElement && !targetElement.classList.contains('chat-message')) 
                             {
@@ -253,7 +258,7 @@ namespace LetheChat
                         });
                     });         
                 </script>";
-            return $"<html><head>{css}</head><body>{scripts}<div id='chatContainer'>{htmlContent}<br/></div></body></html>";
+            return $"<html><head>{css}</head><body>{scripts}{ChatImageBroker.LightboxScriptTag}<div id='chatContainer'>{htmlContent}<br/></div></body></html>";
         }
 
         private static string AddHtmlMessage(SingleMessage singleMessage)
@@ -288,7 +293,7 @@ namespace LetheChat
             {
                 think = Markdown.ToHtml(think, CustomMarkDownPipeline);
             }
-            return InjectDialogHtml(img, html, think, singleMessage.Guid);
+            return InjectDialogHtml(img, html, think, singleMessage.Guid, ChatImageBroker.BuildThumbsHtml(singleMessage));
         }
 
 
@@ -426,6 +431,10 @@ namespace LetheChat
             web_chat.CoreWebView2.WebMessageReceived += OnWebChatWebMessageReceived!;
             web_chat.CoreWebView2.NewWindowRequested += OnNewWindowRequested;
             web_chat.CoreWebView2.NavigationStarting += OnNavigationStarting;
+            web_chat.CoreWebView2.AddWebResourceRequestedFilter(
+                ChatImageBroker.UrlPrefix + "*",
+                CoreWebView2WebResourceContext.Image);
+            web_chat.CoreWebView2.WebResourceRequested += OnChatImageRequested;
             web_chat.ZoomFactor = 1D;
         }
 
@@ -458,6 +467,7 @@ namespace LetheChat
                     break;
             }
             var text = Markdown.ToHtml(ChatRender.GetMessagePrefix(singleMessage) + singleMessage.Message, WebUI.CustomMarkDownPipeline);
+            var thumbs = ChatImageBroker.BuildThumbsHtml(singleMessage);
             var coremsg = $@"
                     <div class='portrait'>
                         <img src='https://appassets.test/img/{img}' alt='Portrait' width='60'>
@@ -466,6 +476,7 @@ namespace LetheChat
                         <div class='message-raw'>
                             {text}
                         </div>
+                        {thumbs}
                     </div>";
 
             if (singleMessage.Role == AuthorRole.Assistant && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart))
@@ -485,6 +496,7 @@ namespace LetheChat
                         <div class='message-raw'>
                             {text}
                         </div>
+                        {thumbs}
                     </div>";
             }
 
@@ -528,6 +540,17 @@ namespace LetheChat
             {
                 await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
             }
+        }
+
+        /// <summary>
+        /// Serves full-size versions of attached chat images on demand (lightbox view).
+        /// Thumbnails are embedded inline as base64, so this only fires when a user
+        /// actually clicks a thumbnail.
+        /// </summary>
+        private void OnChatImageRequested(object? sender, CoreWebView2WebResourceRequestedEventArgs e)
+        {
+            if (web_chat?.CoreWebView2 != null)
+                ChatImageBroker.HandleWebResourceRequested(web_chat.CoreWebView2, e);
         }
 
         private void OnWebChatWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
