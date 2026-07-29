@@ -8,7 +8,7 @@ namespace LetheChat
 {
     public static class DragNDropExtension
     {
-        public static string DroppedFilePath { get; set; } = string.Empty;
+        public static List<string> DroppedFilePath { get; set; } = [];
 
         /// <summary>
         /// Enables drag and drop functionality for images on a control
@@ -48,38 +48,39 @@ namespace LetheChat
 
                 if (files?.Length > 0)
                 {
-                    string filePath = files[0];
-
-                    // Check if it's an image file
-                    if (IsImageFile(filePath))
+                    foreach (var filePath in files)
                     {
-                        try
+                        // Check if it's an image file
+                        if (IsImageFile(filePath))
                         {
-                            // Convert the image to base64
-                            string? base64Image = ImageUtils.ImageToBase64(filePath, maxSize);
+                            try
+                            {
+                                // Convert the image to base64
+                                string? base64Image = ImageUtils.ImageToBase64(filePath, maxSize);
 
-                            if (base64Image != null)
-                            {
-                                // Call the provided action with the base64 string
-                                DroppedFilePath = filePath;
-                                onImageDropped(base64Image);
+                                if (base64Image != null)
+                                {
+                                    // Call the provided action with the base64 string
+                                    DroppedFilePath.Add(filePath);
+                                    onImageDropped(base64Image);
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Failed to convert image to base64.", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                MessageBox.Show("Failed to convert image to base64.", "Error",
+                                MessageBox.Show($"Error processing image: {ex.Message}", "Error",
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            MessageBox.Show($"Error processing image: {ex.Message}", "Error",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("Please drop a valid image file.", "Invalid File",
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Please drop a valid image file.", "Invalid File",
-                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
             };

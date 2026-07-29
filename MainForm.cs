@@ -868,7 +868,7 @@ namespace LetheChat
                     break;
                 }
             }
-            var userMsg = new SingleMessage(AuthorRole.User, msgtxt, [DragNDropExtension.DroppedFilePath]);
+            var userMsg = new SingleMessage(AuthorRole.User, msgtxt, DragNDropExtension.DroppedFilePath);
             if (foundslash is not null && foundslash.ReplaceUser && foundslash.Message is not null)
             {
                 userMsg = foundslash.Message;
@@ -902,7 +902,7 @@ namespace LetheChat
                 await webUI.SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"));
                 ed_input.Text = string.Empty;
                 await LLMEngine.SendMessageToBot(userMsg);
-                DragNDropExtension.DroppedFilePath = string.Empty;
+                DragNDropExtension.DroppedFilePath = [];
                 pictEmbed.Image = null;
 
             }
@@ -1372,7 +1372,7 @@ namespace LetheChat
             {
                 try
                 {
-                    DragNDropExtension.DroppedFilePath = string.Empty;
+                    DragNDropExtension.DroppedFilePath = [];
                     UpdateGroupSelection();
                     LLMEngine.InvalidatePromptCache();
                     PrepareResponse();
@@ -1551,7 +1551,7 @@ namespace LetheChat
 
         private void bt_clearimg_Click(object sender, EventArgs e)
         {
-            DragNDropExtension.DroppedFilePath = string.Empty;
+            DragNDropExtension.DroppedFilePath = [];
             pictEmbed.Image = null;
         }
 
