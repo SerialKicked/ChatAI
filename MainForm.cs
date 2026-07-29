@@ -868,7 +868,7 @@ namespace LetheChat
                     break;
                 }
             }
-            var userMsg = new SingleMessage(AuthorRole.User, msgtxt, DragNDropExtension.DroppedFilePath);
+            var userMsg = new SingleMessage(AuthorRole.User, msgtxt, [DragNDropExtension.DroppedFilePath]);
             if (foundslash is not null && foundslash.ReplaceUser && foundslash.Message is not null)
             {
                 userMsg = foundslash.Message;

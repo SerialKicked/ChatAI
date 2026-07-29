@@ -67,7 +67,7 @@ namespace LetheChat.AgentPlugins
             };
 
             promptbuild.AddMessage(new SingleMessage(AuthorRole.System, str.ToString()));
-            promptbuild.AddMessage(new SingleMessage(AuthorRole.User, request, filepath));
+            promptbuild.AddMessage(new SingleMessage(AuthorRole.User, request, [filepath]));
 
             return promptbuild;
         }
