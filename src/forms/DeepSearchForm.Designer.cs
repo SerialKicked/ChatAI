@@ -419,7 +419,6 @@ namespace LetheChat.Forms
         private RichTextBox txtPlan;
         private Panel panBottom;
         private Button btClose;
-        private ProgressBar progressBar1;
         private Label lblStatus;
     }
 }
