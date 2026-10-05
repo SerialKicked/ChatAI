@@ -70,7 +70,6 @@ namespace LetheChat.Files
         [Description("Only set to true if you're using ik_llama.cpp instead of the original llama.cpp. This ensures compatibility with ik_llama.cpp's supported command-line arguments. Do not check otherwise.")]
         public bool IsIkLlama { get; set; } = false;
 
-
         /// <summary>
         /// List of directories to search for GGUF models.
         /// </summary>
@@ -102,6 +101,9 @@ namespace LetheChat.Files
         /// </summary>
         [Description("Height in pixels of the canvas created by the Drawing toolset. The model cannot change this; it is told the dimensions when it opens a new drawing.")]
         public int DrawingCanvasHeight { get; set; } = 600;
+
+        public string WorkspaceFolder { get; set; } = "S:\\";
+
     }
 
     public enum KVCacheQuantization
