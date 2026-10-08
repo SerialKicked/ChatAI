@@ -25,7 +25,7 @@ namespace LetheChat.Plugins
         public string Description => "A set of tools to draw shapes, lines, text and fills on a visual canvas.";
 
         public string SystemPromptInstruction =>
-            "You have access to a drawing canvas. Coordinates are in pixels, with the origin (0,0) at the TOP-LEFT corner; " +
+            "You have access to simple [Drawing] tools. Coordinates are in pixels, with the origin (0,0) at the TOP-LEFT corner; " +
             "x increases to the right and y increases downward. Colors can be given as common names (e.g. 'red', 'skyblue') " +
             "or hex strings (e.g. '#FF8800'). You must call NewDrawing before drawing; it will tell you the exact canvas size. " +
             "Build up an image by calling the drawing tools one after another. Use GetCanvasInfo if you need to recall the size.";
@@ -77,16 +77,16 @@ namespace LetheChat.Plugins
             if (clearExisting)
                 Tool.ClearRegisteredTools();
 
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(NewDrawing), "Drawing: Opens the drawing canvas (or clears the existing one) to a blank background. The canvas size is fixed by the app settings; this returns the exact width and height you must draw within."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(GetCanvasInfo), "Drawing: Inspects the current canvas. Returns its width and height, plus the bounding box (leftmost/topmost/rightmost/bottommost pixels) of everything drawn so far. Call this between steps to check where your shapes actually landed and whether separate parts are drifting apart or off-center, since you cannot see the canvas directly."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawLine), "Drawing: Draws a straight line between two points."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawRectangle), "Drawing: Draws a rectangle. Set filled=true for a solid rectangle, otherwise only the outline is drawn."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawCircle), "Drawing: Draws a circle from a center point and radius. Set filled=true for a solid disc."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawEllipse), "Drawing: Draws an ellipse/oval inside a bounding box (top-left corner plus width and height). Set filled=true for a solid ellipse."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawPolygon), "Drawing: Draws a polygon (or open polyline) through a list of points. Great for triangles and arbitrary shapes."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawText), "Drawing: Draws a text string at the given position."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(FloodFill), "Drawing: Bucket-fills the contiguous area of the same color starting at a seed pixel, replacing it with a new color."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(Erase), "Drawing: Erases a rectangular region back to the background color. Pass eraseAll=true to clear the whole canvas."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawNew), "[Drawing] Opens the drawing canvas (or clears the existing one) to a blank background. The canvas size is fixed by the app settings; this returns the exact width and height you must draw within."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawGetCanvasInfo), "[Drawing] Inspects the current canvas. Returns its width and height, plus the bounding box (leftmost/topmost/rightmost/bottommost pixels) of everything drawn so far. Call this between steps to check where your shapes actually landed and whether separate parts are drifting apart or off-center, since you cannot see the canvas directly."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawLine), "[Drawing] Draws a straight line between two points."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawRectangle), "[Drawing] Draws a rectangle. Set filled=true for a solid rectangle, otherwise only the outline is drawn."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawCircle), "[Drawing] Draws a circle from a center point and radius. Set filled=true for a solid disc."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawEllipse), "[Drawing] Draws an ellipse/oval inside a bounding box (top-left corner plus width and height). Set filled=true for a solid ellipse."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawPolygon), "[Drawing] Draws a polygon (or open polyline) through a list of points. Great for triangles and arbitrary shapes."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawText), "[Drawing] Draws a text string at the given position."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawFloodFill), "[Drawing] Bucket-fills the contiguous area of the same color starting at a seed pixel, replacing it with a new color."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawErase), "[Drawing] Erases a rectangular region back to the background color. Pass eraseAll=true to clear the whole canvas."));
         }
 
         public void UnloadTools()
@@ -140,7 +140,7 @@ namespace LetheChat.Plugins
 
         // ── Tools ────────────────────────────────────────────────────────────
 
-        public async Task<string> NewDrawing(
+        public async Task<string> DrawNew(
             [FunctionParameter("Background color of the new canvas, as a name or hex string. Defaults to white.")] string backgroundColor = "white")
         {
             await Task.Delay(1).ConfigureAwait(false);
@@ -154,7 +154,7 @@ namespace LetheChat.Plugins
             return $"New drawing created. The canvas is {w} pixels wide and {h} pixels tall. Origin (0,0) is the top-left corner.";
         }
 
-        public async Task<string> GetCanvasInfo()
+        public async Task<string> DrawGetCanvasInfo()
         {
             await Task.Delay(1).ConfigureAwait(false);
             if (_form == null || _form.IsDisposed || !_form.HasCanvas)
@@ -287,7 +287,7 @@ namespace LetheChat.Plugins
             return $"Drew the text \"{text}\" at ({x},{y}).";
         }
 
-        public async Task<string> FloodFill(
+        public async Task<string> DrawFloodFill(
             [FunctionParameter("X coordinate of the seed pixel to start filling from, in pixels.")] int x,
             [FunctionParameter("Y coordinate of the seed pixel to start filling from, in pixels.")] int y,
             [FunctionParameter("Fill color, as a name or hex string.")] string color)
@@ -303,7 +303,7 @@ namespace LetheChat.Plugins
             return ok ? $"Flood-filled the area at ({x},{y}) with {color}." : "Flood fill failed.";
         }
 
-        public async Task<string> Erase(
+        public async Task<string> DrawErase(
             [FunctionParameter("X coordinate of the region's top-left corner, in pixels. Ignored if eraseAll is true.")] int x = 0,
             [FunctionParameter("Y coordinate of the region's top-left corner, in pixels. Ignored if eraseAll is true.")] int y = 0,
             [FunctionParameter("Width of the region to erase in pixels. Ignored if eraseAll is true.")] int width = 0,

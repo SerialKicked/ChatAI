@@ -277,6 +277,7 @@
         private Controls.ModernNumericUpDown num_gpuLayers;
         private Controls.ModernNumericUpDown num_contextSize;
         private Controls.ModernNumericUpDown num_reasoningBudget;
+        private Controls.ModernNumericUpDown num_checkpoints;
         private Controls.ModernComboBox cb_instructlocal;
         private Controls.ModernComboBox cb_flashAttention;
         private Controls.ModernComboBox cb_kvQuant;

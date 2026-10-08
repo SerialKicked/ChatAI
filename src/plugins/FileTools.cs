@@ -34,7 +34,7 @@ namespace LetheChat.Plugins
             "and opening files or programs for the user.";
 
         public string SystemPromptInstruction =>
-            "You have access to a set of file tools operating inside a sandboxed 'workspace' folder on the user's machine. " +
+            "You have access to a [File] management tools operating inside a sandboxed 'workspace' folder on the user's machine. " +
             "All paths you provide are RELATIVE to that folder; absolute paths are refused. You cannot see the filesystem directly, " +
             "so orient yourself with ListDirectory (single folder) or GetTree (recursive outline) first, and use Glob " +
             "(filename patterns, e.g. '**/*.md') or Grep (search file contents by regex) to locate files. " +
@@ -52,7 +52,7 @@ namespace LetheChat.Plugins
         {
             // StartsWith is used because some backends append random strings to function names;
             // see WebSearchTools. Only shell execution requires user approval.
-            return functionName.StartsWith(nameof(OpenWithShell), StringComparison.OrdinalIgnoreCase);
+            return functionName.StartsWith(nameof(FS_OpenWithShell), StringComparison.OrdinalIgnoreCase);
         }
 
         // ── Sandbox ──────────────────────────────────────────────────────────
@@ -294,17 +294,17 @@ namespace LetheChat.Plugins
             if (clearExisting)
                 Tool.ClearRegisteredTools();
 
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(ListDirectory), "[Files] Lists the subfolders and files (with size and last-modified date) of a workspace folder. Use empty string for the workspace root."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(GetTree), "[Files] Returns a recursive outline of folders and files under a workspace folder so you can get oriented. Use empty string for the whole workspace. Prefer this over walking folders one level at a time."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(Glob), "[Files] Finds files by filename pattern and returns workspace-relative paths. Supports * (any characters within a name), ? (one character) and ** (recursion into subfolders), e.g. '**/*.txt' finds all text files at any depth while '*.txt' only matches the top level. Use empty path for the whole workspace."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(Grep), "[Files] Searches file CONTENTS with a case-insensitive regular expression, returning 'file:line: snippet' matches. 'include' optionally filters which files to scan by name pattern (e.g. '*.cs'). Use empty path to search the whole workspace."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(ReadFile), "[Files] Reads a text file between startLine and startLine+maxLines. The reply reports the file's total line count and whether output was truncated; call again with a higher startLine to read further."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(WriteFile), "[Files] Creates a file or overwrites an existing one with the full content provided. WARNING: this replaces the entire file. Parent folders are created as needed. ReadFile first if the file may already exist."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(AppendToFile), "[Files] Appends text to the end of an existing file. The file must already exist."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(ReplaceString), "[Files] Replaces every occurrence of a literal string with another string inside a text file. Fails if nothing matches; ReadFile the file first to copy the exact text."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(DeletePath), "[Files] Moves a file or folder to the recycle bin. Folders are deleted including all their contents. The workspace root itself cannot be deleted."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(MovePath), "[Files] Renames or moves a file or folder to another workspace-relative path. Fails if the destination already exists; parent folders are created as needed."));
-            toolList.Add(Tool.GetOrCreateTool(this, nameof(OpenWithShell), "[Files] Opens a file, folder or program from the workspace for the user with its default application: launches an .exe, opens a media file in the associated player, a document in its editor, or a folder in Explorer. Requires the user's confirmation."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(FS_ListDirectory), "[File] Lists the subfolders and files (with size and last-modified date) of a workspace folder. Use empty string for the workspace root."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(FS_GetTree), "[Files] Returns a recursive outline of folders and files under a workspace folder so you can get oriented. Use empty string for the whole workspace. Prefer this over walking folders one level at a time."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(FS_Glob), "[File] Finds files by filename pattern and returns workspace-relative paths. Supports * (any characters within a name), ? (one character) and ** (recursion into subfolders), e.g. '**/*.txt' finds all text files at any depth while '*.txt' only matches the top level. Use empty path for the whole workspace."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(FS_Grep), "[File] Searches file CONTENTS with a case-insensitive regular expression, returning 'file:line: snippet' matches. 'include' optionally filters which files to scan by name pattern (e.g. '*.cs'). Use empty path to search the whole workspace."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(FS_ReadFile), "[File] Reads a text file between startLine and startLine+maxLines. The reply reports the file's total line count and whether output was truncated; call again with a higher startLine to read further."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(FS_WriteFile), "[File] Creates a file or overwrites an existing one with the full content provided. WARNING: this replaces the entire file. Parent folders are created as needed. ReadFile first if the file may already exist."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(FS_AppendToFile), "[File] Appends text to the end of an existing file. The file must already exist."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(FS_ReplaceString), "[File] Replaces every occurrence of a literal string with another string inside a text file. Fails if nothing matches; ReadFile the file first to copy the exact text."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(FS_DeletePath), "[File] Moves a file or folder to the recycle bin. Folders are deleted including all their contents. The workspace root itself cannot be deleted."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(FS_MovePath), "[File] Renames or moves a file or folder to another workspace-relative path. Fails if the destination already exists; parent folders are created as needed."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(FS_OpenWithShell), "[File] Opens a file, folder or program from the workspace for the user with its default application: launches an .exe, opens a media file in the associated player, a document in its editor, or a folder in Explorer. Requires the user's confirmation."));
         }
 
         public void UnloadTools()
@@ -316,7 +316,7 @@ namespace LetheChat.Plugins
 
         // ── Tools: navigation ────────────────────────────────────────────────
 
-        public async Task<string> ListDirectory(
+        public async Task<string> FS_ListDirectory(
             [FunctionParameter("Workspace-relative folder to list. Use an empty string for the workspace root.")] string path = "")
         {
             await Task.Delay(5).ConfigureAwait(false);
@@ -351,7 +351,7 @@ namespace LetheChat.Plugins
             return sb.ToString();
         }
 
-        public async Task<string> GetTree(
+        public async Task<string> FS_GetTree(
             [FunctionParameter("Workspace-relative folder to start the outline from. Use an empty string for the whole workspace.")] string path = "",
             [FunctionParameter("Maximum folder depth to descend, between 1 and 8. Defaults to 3; use a small number for a high-level overview.")] int maxDepth = 3)
         {
@@ -397,7 +397,7 @@ namespace LetheChat.Plugins
                 sb.AppendLine($"{indent}{Path.GetFileName(file)}");
         }
 
-        public async Task<string> Glob(
+        public async Task<string> FS_Glob(
             [FunctionParameter("Filename pattern: '*' matches any characters within a name, '?' a single character, '**' recurses into subfolders. Examples: '*.txt' (top level only), '**/*.md' (every .md at any depth), 'src/**/*.cs'.")] string pattern,
             [FunctionParameter("Workspace-relative folder to search under. Use an empty string for the whole workspace.")] string path = "")
         {
@@ -440,7 +440,7 @@ namespace LetheChat.Plugins
                 : string.Join("\n", matches);
         }
 
-        public async Task<string> Grep(
+        public async Task<string> FS_Grep(
             [FunctionParameter("Case-insensitive regular expression to search for inside file contents, e.g. 'TODO|FIXME' or 'error \\d+'.")] string pattern,
             [FunctionParameter("Workspace-relative folder to search under. Use an empty string for the whole workspace.")] string path = "",
             [FunctionParameter("Optional filename filter using glob syntax (e.g. '*.cs' for all C# files anywhere). Leave empty to scan every text file.")] string include = "")
@@ -559,7 +559,7 @@ namespace LetheChat.Plugins
 
         // ── Tools: reading and writing ───────────────────────────────────────
 
-        public async Task<string> ReadFile(
+        public async Task<string> FS_ReadFile(
             [FunctionParameter("Workspace-relative path to the text file to read.")] string path,
             [FunctionParameter("Zero-based line number to start reading from. Defaults to 0 (start of file).")] int startLine = 0,
             [FunctionParameter("Maximum number of lines to read, between 1 and 500. Defaults to 200.")] int maxLines = 200)
@@ -606,7 +606,7 @@ namespace LetheChat.Plugins
             return header + "\n" + sb.ToString().TrimEnd();
         }
 
-        public async Task<string> WriteFile(
+        public async Task<string> FS_WriteFile(
             [FunctionParameter("Workspace-relative path to the file to create or overwrite. Parent folders are created as needed.")] string path,
             [FunctionParameter("The full content to write. WARNING: if the file already exists, its entire previous content is replaced.")] string content)
         {
@@ -623,7 +623,7 @@ namespace LetheChat.Plugins
                 : $"File '{path}' created ({FormatSize(new FileInfo(full).Length)} written).";
         }
 
-        public async Task<string> AppendToFile(
+        public async Task<string> FS_AppendToFile(
             [FunctionParameter("Workspace-relative path to the existing file to append to.")] string path,
             [FunctionParameter("The text to append at the end of the file.")] string content)
         {
@@ -636,7 +636,7 @@ namespace LetheChat.Plugins
             return $"Appended text to '{path}' (file is now {FormatSize(new FileInfo(full).Length)}).";
         }
 
-        public async Task<string> ReplaceString(
+        public async Task<string> FS_ReplaceString(
             [FunctionParameter("Workspace-relative path to the text file to edit.")] string path,
             [FunctionParameter("The exact literal text to find (not a regular expression). Every occurrence is replaced.")] string find,
             [FunctionParameter("The text to substitute in place of each occurrence of 'find'.")] string replace)
@@ -662,7 +662,7 @@ namespace LetheChat.Plugins
 
         // ── Tools: file management ───────────────────────────────────────────
 
-        public async Task<string> DeletePath(
+        public async Task<string> FS_DeletePath(
             [FunctionParameter("Workspace-relative path to the file or folder to move to the recycle bin.")] string path)
         {
             await Task.Delay(5).ConfigureAwait(false);
@@ -683,7 +683,7 @@ namespace LetheChat.Plugins
             return $"Not found: {path}";
         }
 
-        public async Task<string> MovePath(
+        public async Task<string> FS_MovePath(
             [FunctionParameter("Workspace-relative path to the existing file or folder to rename or move.")] string path,
             [FunctionParameter("New workspace-relative path for the file or folder. Fails if the destination already exists; parent folders are created as needed.")] string newPath)
         {
@@ -714,7 +714,7 @@ namespace LetheChat.Plugins
 
         // ── Tools: shell execution ───────────────────────────────────────────
 
-        public async Task<string> OpenWithShell(
+        public async Task<string> FS_OpenWithShell(
             [FunctionParameter("Workspace-relative path to the file, folder or program to open for the user.")] string path)
         {
             await Task.Delay(5).ConfigureAwait(false);

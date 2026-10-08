@@ -279,8 +279,7 @@ namespace LetheChat.Files
 
         public string GetArgs()
         {
-            var args = new StringBuilder($" {(Program.Settings.IsIkLlama ? string.Empty : "--no-webui")} --port {Port} -np 1");
-            //var args = new StringBuilder($" {(Program.Settings.IsIkLlama ? string.Empty : "--no-webui")} --port {Port} -np 1");
+            var args = new StringBuilder($" {(Program.Settings.IsIkLlama ? string.Empty : "--no-ui")} --port {Port} -np 1");
             if (Props && !Program.Settings.IsIkLlama)
                 args.Append(" --props");
 
@@ -295,7 +294,8 @@ namespace LetheChat.Files
                     args.Append(" -fa off");
             }
 
-            args.Append($" --ctx-checkpoints {CheckpointCount}");
+            if (CheckpointCount != -1)
+                args.Append($" --ctx-checkpoints {CheckpointCount}");
 
             if (Threads > 0)
                 args.Append($" --threads {Threads}");
@@ -328,19 +328,26 @@ namespace LetheChat.Files
                     args.Append(" -kvo");
             }
 
-            if (mlock)
-                args.Append(" --mlock");
-
             if (swafull)
                 args.Append(" --swa-full");
 
-            if (mmap)
+            if (!Program.Settings.IsIkLlama)
             {
-                if (!Program.Settings.IsIkLlama)
-                    args.Append(" --mmap");
+                if ((mmap || mlock))
+                {
+                    if (mlock && mmap)
+                        args.Append(" --load-mode mmap+mlock");
+                    else if (mlock)
+                        args.Append(" --load-mode mlock");
+                    else if (mmap)
+                        args.Append(" --load-mode mmap");
+                }
+                else
+                {
+                    args.Append(" --load-mode none");
+                }
             }
-            else
-                args.Append(" --no-mmap");
+
 
             if (!string.IsNullOrWhiteSpace(AdditionalArgs))
                 args.Append($" {AdditionalArgs}");

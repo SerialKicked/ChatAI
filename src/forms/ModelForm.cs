@@ -168,6 +168,16 @@ namespace LetheChat.Forms
             num_reasoningBudget = new ModernNumericUpDown { Minimum = -1, Maximum = 1000000 };
             AddRow("Reasoning Budget", num_reasoningBudget, HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.ReasoningBudget)));
 
+            num_checkpoints = new ModernNumericUpDown
+            {
+                Minimum = -1,
+                Maximum = 30,
+                DecimalPlaces = 0,
+                Value = 0 // default value for "Auto"
+            };
+            AddRow("Checkpoints", num_checkpoints, HelpTool.Tip<LlamaCppSettings>(nameof(LlamaCppSettings.CheckpointCount)));
+
+            y += rowGap;
             var lblArgs = new Label
             {
                 Text = "Additional Args",
@@ -299,6 +309,7 @@ namespace LetheChat.Forms
                     ? s.LocalInstructTemplateID
                     : "None";
             num_reasoningBudget.Value = s.ReasoningBudget;
+            num_checkpoints.Value = s.CheckpointCount;
             ck_props.Checked = s.Props;
             ck_kvToGpu.Checked = s.KVcacheToGPU;
             ck_mlock.Checked = s.mlock;
@@ -331,6 +342,7 @@ namespace LetheChat.Forms
                 ? cb_instructlocal.SelectedText
                 : "";
             s.ReasoningBudget = (int)num_reasoningBudget.Value;
+            s.CheckpointCount = (int)num_checkpoints.Value;
             s.Props = ck_props.Checked;
             s.KVcacheToGPU = ck_kvToGpu.Checked;
             s.KVCacheQuantization = (KVCacheQuantization)cb_kvQuant.SelectedIndex;
