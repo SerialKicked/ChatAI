@@ -1,3 +1,4 @@
+using LetheAISharp;
 using LetheAISharp.Agent.Tools;
 using LetheAISharp.LLM;
 using Microsoft.Extensions.Logging;
@@ -16,6 +17,31 @@ using System.Threading.Tasks;
 
 namespace LetheChat.Plugins
 {
+    public class FileToolsSettings
+    {
+        /// <summary>Maximum size of a file accepted by text-reading/editing tools.</summary>
+        public long MaxTextFileBytes = 2 * 1024 * 1024;
+        /// <summary>Maximum characters returned by a single ReadFile call.</summary>
+        public int MaxReadChars = 15_000;
+        /// <summary>Maximum lines a single ReadFile call may request.</summary>
+        public int MaxReadLines = 250;
+        /// <summary>Maximum entries returned by ListDirectory.</summary>
+        public int MaxListEntries = 200;
+        /// <summary>Maximum depth GetTree/Glob may be asked to descend.</summary>
+        public int MaxTreeDepth = 8;
+        /// <summary>Maximum paths returned by Glob.</summary>
+        public int MaxGlobResults = 100;
+        /// <summary>Maximum matches returned by Grep.</summary>
+        public int MaxGrepMatches = 100;
+        /// <summary>Maximum files Grep will scan before stopping.</summary>
+        public int MaxGrepFiles = 200;
+        /// <summary>Maximum size of a file Grep will scan.</summary>
+        public long MaxGrepFileBytes = 2 * 1024 * 1024;
+        /// <summary>Number of leading bytes inspected to detect binary files.</summary>
+        public int BinarySniffBytes = 4096;
+    }
+
+
     /// <summary>
     /// Function-calling toolset that gives the persona a sandboxed view of a user-configured
     /// "workspace" folder: directory navigation, filename pattern matching (Glob), content
@@ -56,29 +82,6 @@ namespace LetheChat.Plugins
         }
 
         // ── Sandbox ──────────────────────────────────────────────────────────
-
-        /// <summary>Maximum size of a file accepted by text-reading/editing tools.</summary>
-        private const long MaxTextFileBytes = 2 * 1024 * 1024;
-        /// <summary>Maximum characters returned by a single ReadFile call.</summary>
-        private const int MaxReadChars = 15_000;
-        /// <summary>Maximum lines a single ReadFile call may request.</summary>
-        private const int MaxReadLines = 250;
-        /// <summary>Maximum entries returned by ListDirectory.</summary>
-        private const int MaxListEntries = 200;
-        /// <summary>Maximum lines returned by GetTree.</summary>
-        private const int MaxTreeLines = 400;
-        /// <summary>Maximum depth GetTree/Glob may be asked to descend.</summary>
-        private const int MaxTreeDepth = 8;
-        /// <summary>Maximum paths returned by Glob.</summary>
-        private const int MaxGlobResults = 100;
-        /// <summary>Maximum matches returned by Grep.</summary>
-        private const int MaxGrepMatches = 100;
-        /// <summary>Maximum files Grep will scan before stopping.</summary>
-        private const int MaxGrepFiles = 200;
-        /// <summary>Maximum size of a file Grep will scan.</summary>
-        private const long MaxGrepFileBytes = 2 * 1024 * 1024;
-        /// <summary>Number of leading bytes inspected to detect binary files.</summary>
-        private const int BinarySniffBytes = 4096;
 
         // Hidden/system/reparse entries are skipped at enumeration level; dot-prefixed
         // names are filtered in code to match the ObsidianToolset convention.
@@ -222,7 +225,7 @@ namespace LetheChat.Plugins
             try
             {
                 using var fs = File.OpenRead(path);
-                var buf = new byte[Math.Min(BinarySniffBytes, fs.Length)];
+                var buf = new byte[Math.Min(Program.Settings.FileTools.BinarySniffBytes, fs.Length)];
                 if (buf.Length == 0)
                     return false;
                 fs.ReadExactly(buf);
@@ -305,6 +308,7 @@ namespace LetheChat.Plugins
             toolList.Add(Tool.GetOrCreateTool(this, nameof(FS_DeletePath), "[File] Moves a file or folder to the recycle bin. Folders are deleted including all their contents. The workspace root itself cannot be deleted."));
             toolList.Add(Tool.GetOrCreateTool(this, nameof(FS_MovePath), "[File] Renames or moves a file or folder to another workspace-relative path. Fails if the destination already exists; parent folders are created as needed."));
             toolList.Add(Tool.GetOrCreateTool(this, nameof(FS_OpenWithShell), "[File] Opens a file, folder or program from the workspace for the user with its default application: launches an .exe, opens a media file in the associated player, a document in its editor, or a folder in Explorer. Requires the user's confirmation."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(FS_ViewImage), "[File] Opens an image file from the workspace and allows you (the agent/LLM) to look at it."));
         }
 
         public void UnloadTools()
@@ -342,7 +346,7 @@ namespace LetheChat.Plugins
             if (all.Count == 0)
                 return "The folder is empty.";
             var sb = new StringBuilder();
-            var shown = Math.Min(all.Count, MaxListEntries);
+            var shown = Math.Min(all.Count, Program.Settings.FileTools.MaxListEntries);
             sb.AppendJoin("\n", all.Take(shown));
             if (all.Count > shown)
                 sb.Append($"\n(and {all.Count - shown} more entries not shown)");
@@ -360,7 +364,7 @@ namespace LetheChat.Plugins
                 return err;
             if (!Directory.Exists(full))
                 return $"Folder not found: {path}";
-            var depth = Math.Clamp(maxDepth, 1, MaxTreeDepth);
+            var depth = Math.Clamp(maxDepth, 1, Program.Settings.FileTools.MaxTreeDepth);
 
             var sb = new StringBuilder();
             var truncated = false;
@@ -428,15 +432,15 @@ namespace LetheChat.Plugins
                 if (matcher.IsMatch(rel))
                 {
                     matches.Add(Path.GetRelativePath(root, file).Replace('\\', '/'));
-                    if (matches.Count >= MaxGlobResults)
+                    if (matches.Count >= Program.Settings.FileTools.MaxGlobResults)
                         break;
                 }
             }
             if (matches.Count == 0)
                 return $"No files match '{pattern}'.";
             matches.Sort(StringComparer.OrdinalIgnoreCase);
-            return matches.Count >= MaxGlobResults
-                ? string.Join("\n", matches) + $"\n(results capped at {MaxGlobResults}; refine the pattern)"
+            return matches.Count >= Program.Settings.FileTools.MaxGlobResults
+                ? string.Join("\n", matches) + $"\n(results capped at {Program.Settings.FileTools.MaxGlobResults}; refine the pattern)"
                 : string.Join("\n", matches);
         }
 
@@ -499,13 +503,13 @@ namespace LetheChat.Plugins
                     if (!matched)
                         continue;
                 }
-                if (++scanned > MaxGrepFiles)
+                if (++scanned > Program.Settings.FileTools.MaxGrepFiles)
                 {
-                    sb.Append($"\n(stopped after scanning {MaxGrepFiles} files; narrow the search)");
+                    sb.Append($"\n(stopped after scanning {Program.Settings.FileTools.MaxGrepFiles} files; narrow the search)");
                     break;
                 }
                 var fi = new FileInfo(file);
-                if (fi.Length == 0 || fi.Length > MaxGrepFileBytes || LooksBinary(file))
+                if (fi.Length == 0 || fi.Length > Program.Settings.FileTools.MaxGrepFileBytes || LooksBinary(file))
                 {
                     skippedBinary++;
                     continue;
@@ -540,9 +544,9 @@ namespace LetheChat.Plugins
                     if (snippet.Length > 200)
                         snippet = snippet[..200] + "...";
                     sb.AppendLine($"{relResult}:{i + 1}: {snippet}");
-                    if (++matchCount >= MaxGrepMatches)
+                    if (++matchCount >= Program.Settings.FileTools.MaxGrepMatches)
                     {
-                        sb.Append($"(results capped at {MaxGrepMatches}; refine the search)");
+                        sb.Append($"(results capped at {Program.Settings.FileTools.MaxGrepMatches}; refine the search)");
                         hitCap = true;
                         break;
                     }
@@ -570,8 +574,8 @@ namespace LetheChat.Plugins
             if (!File.Exists(full))
                 return $"File not found: {path}";
             var fi = new FileInfo(full);
-            if (fi.Length > MaxTextFileBytes)
-                return $"File '{path}' is {FormatSize(fi.Length)}, too large to read (limit {FormatSize(MaxTextFileBytes)}).";
+            if (fi.Length > Program.Settings.FileTools.MaxTextFileBytes)
+                return $"File '{path}' is {FormatSize(fi.Length)}, too large to read (limit {FormatSize(Program.Settings.FileTools.MaxTextFileBytes)}).";
             if (LooksBinary(full))
                 return $"File '{path}' appears to be binary and cannot be shown as text.";
 
@@ -580,14 +584,14 @@ namespace LetheChat.Plugins
             if (total == 0)
                 return $"File '{path}' exists but is empty.";
             var start = Math.Clamp(startLine, 0, total - 1);
-            var count = Math.Clamp(maxLines, 1, MaxReadLines);
+            var count = Math.Clamp(maxLines, 1, Program.Settings.FileTools.MaxReadLines);
             var sb = new StringBuilder();
             var emitted = 0;
             var charTruncated = false;
             for (var i = start; i < total && emitted < count; i++, emitted++)
             {
                 var line = lines[i];
-                if (sb.Length + line.Length > MaxReadChars)
+                if (sb.Length + line.Length > Program.Settings.FileTools.MaxReadChars)
                 {
                     charTruncated = true;
                     break;
@@ -649,15 +653,37 @@ namespace LetheChat.Plugins
             if (string.IsNullOrEmpty(find))
                 return "The text to find must not be empty.";
             var fi = new FileInfo(full);
-            if (fi.Length > MaxTextFileBytes)
-                return $"File '{path}' is {FormatSize(fi.Length)}, too large to edit (limit {FormatSize(MaxTextFileBytes)}).";
+            if (fi.Length > Program.Settings.FileTools.MaxTextFileBytes)
+                return $"File '{path}' is {FormatSize(fi.Length)}, too large to edit (limit {FormatSize(Program.Settings.FileTools.MaxTextFileBytes)}).";
 
             var content = File.ReadAllText(full);
-            var count = Regex.Matches(content, Regex.Escape(find)).Count;
+            var count = Regex.Count(content, Regex.Escape(find));
             if (count == 0)
                 return $"The text to replace was not found in '{path}'. ReadFile the file and copy the exact text.";
             File.WriteAllText(full, content.Replace(find, replace));
             return $"Replaced {count} occurrence(s) in '{path}'.";
+        }
+
+        public async Task<string> FS_ViewImage(
+            [FunctionParameter("Workspace-relative path to the image file to look at.")] string path)
+        {
+            await Task.Delay(5).ConfigureAwait(false);
+            if (!TryResolvePath(path, false, out var full, out var root, out var err))
+                return err;
+            if (!File.Exists(full))
+                return $"File not found: {path}";
+
+            // Remote URLs are forwarded untouched by the engine (the backend fetches them itself);
+            // local paths are validated here so the LLM gets actionable feedback instead of a
+            // silently dropped image.
+            if (!File.Exists(full))
+                return ToolMediaResult.BuildResult($"Error: no image found at '{path}'.", "Media", "media");
+
+            var result = new StringBuilder();
+            result.AppendLinuxLine($"Image loaded from '{path}'.");
+            if (!LLMEngine.SupportsVision)
+                result.AppendLinuxLine("Note: no vision-capable model is currently loaded, so the image was not attached; you can only reference it by path.");
+            return ToolMediaResult.BuildResult(result.ToString(), "Media", "media", full);
         }
 
         // ── Tools: file management ───────────────────────────────────────────

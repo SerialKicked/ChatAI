@@ -82,6 +82,8 @@ namespace LetheChat.Files
 
         public SpeechRecognizerSettings AudioSettings { get; set; } = new SpeechRecognizerSettings();
 
+        public FileToolsSettings FileTools { get; set; } = new FileToolsSettings();
+
         /// <summary>
         /// Indicates whether text between asterisks should be skipped in text-to-speech output.
         /// </summary>
