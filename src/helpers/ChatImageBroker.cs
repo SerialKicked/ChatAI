@@ -3,8 +3,6 @@ using LetheAISharp.Files;
 using LetheAISharp.LLM;
 using Microsoft.Extensions.Logging;
 using Microsoft.Web.WebView2.Core;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Jpeg;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
@@ -220,7 +218,8 @@ namespace LetheChat
                 if (mime.Length > 0 && new FileInfo(path).Length <= MaxOriginalFileBytes)
                     return (new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read), mime);
 
-                return (EncodeJpeg(path, FullViewMaxSize, FullViewJpegQuality), "image/jpeg");
+                var jpeg = ImageUtils.EncodeJpeg(path, FullViewMaxSize, FullViewJpegQuality);
+                return jpeg == null ? (null, string.Empty) : (new MemoryStream(jpeg), "image/jpeg");
             }
             catch (Exception ex)
             {
@@ -237,8 +236,10 @@ namespace LetheChat
                 if (_thumbCache.TryGetValue(path, out var cached) && cached.WriteTimeUtc == writeTime)
                     return cached.Data;
 
-                using var ms = EncodeJpeg(path, ThumbMaxSize, ThumbJpegQuality);
-                var data = Convert.ToBase64String(ms.ToArray());
+                var jpeg = ImageUtils.EncodeJpeg(path, ThumbMaxSize, ThumbJpegQuality);
+                if (jpeg == null)
+                    return null;
+                var data = Convert.ToBase64String(jpeg);
                 if (_thumbCache.Count >= ThumbCacheCap)
                     _thumbCache.Clear();
                 _thumbCache[path] = (writeTime, data);
@@ -248,25 +249,6 @@ namespace LetheChat
             {
                 LLMEngine.Logger?.LogError(ex, "Error generating chat image thumbnail: {Path}", path);
                 return null;
-            }
-        }
-
-        private static MemoryStream EncodeJpeg(string path, int maxSize, int quality)
-        {
-            using var image = SixLabors.ImageSharp.Image.Load(path);
-            var scaled = ImageUtils.ScaleImage(image, maxSize);
-            var ownsScaled = !ReferenceEquals(scaled, image);
-            try
-            {
-                var ms = new MemoryStream();
-                scaled.Save(ms, new JpegEncoder { Quality = quality });
-                ms.Position = 0;
-                return ms;
-            }
-            finally
-            {
-                if (ownsScaled)
-                    scaled.Dispose();
             }
         }
     }
