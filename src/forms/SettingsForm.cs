@@ -3,6 +3,7 @@ using LetheAISharp.Files;
 using LetheAISharp.LLM;
 using LetheAISharp.Memory;
 using LetheAISharp.SearchAPI;
+using LetheAISharp.Skills;
 using LetheChat.Controls;
 using LetheChat.Files;
 using Newtonsoft.Json;
@@ -96,6 +97,18 @@ namespace LetheChat.Forms
             HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numToolLimit, nameof(LetheChatSettings.ToolCallLimit));
             HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, numToolMemory, nameof(LetheChatSettings.ToolCallChainLimit));
 
+            HelpTool.ApplyTooltip<SkillSettings>(HelptoolTip, numSkillIndexMax, nameof(SkillSettings.MaxIndexEntries));
+            HelpTool.ApplyTooltip<SkillSettings>(HelptoolTip, numSkillIndexDesc, nameof(SkillSettings.MaxIndexDescriptionLength));
+            HelpTool.ApplyTooltip<SkillSettings>(HelptoolTip, ckSkillAutoSuggest, nameof(SkillSettings.AutoSuggest));
+            HelpTool.ApplyTooltip<SkillSettings>(HelptoolTip, numSkillAutoMax, nameof(SkillSettings.AutoSuggestMax));
+            HelpTool.ApplyTooltip<SkillSettings>(HelptoolTip, numSkillAutoChars, nameof(SkillSettings.AutoSuggestMaxChars));
+            HelpTool.ApplyTooltip<SkillSettings>(HelptoolTip, ckSkillEmbeddings, nameof(SkillSettings.UseEmbeddings));
+            HelpTool.ApplyTooltip<SkillSettings>(HelptoolTip, numSkillCutoff, nameof(SkillSettings.SimilarityCutoff));
+            HelpTool.ApplyTooltip<SkillSettings>(HelptoolTip, ckSkillAllowWrites, nameof(SkillSettings.AllowAgentWrites));
+            HelpTool.ApplyTooltip<SkillSettings>(HelptoolTip, ckSkillPlainDraft, nameof(SkillSettings.DraftWithPlainSections));
+            HelpTool.ApplyTooltip<SkillSettings>(HelptoolTip, numSkillMaxContent, nameof(SkillSettings.MaxContentLength));
+            HelpTool.ApplyTooltip<SkillSettings>(HelptoolTip, numSkillMaxCount, nameof(SkillSettings.MaxSkillCount));
+
 
             HelptoolTip.SetToolTip(ck_fixasterix, "If checked, the bot will try to fix any asterisks in its responses. This is useful if the bot is using asterisks for emphasis incorrectly." + Environment.NewLine + "Note that this may not work perfectly, and may lead to some weird formatting.");
             HelptoolTip.SetToolTip(ck_antislop, "A very basic filter to remove words or sentences from the bot's output." + Environment.NewLine + "This is done by checking the bot's responses against a list of 'sloppy' words, and removing them." + Environment.NewLine + "You can customize the list of words in the text box below.");
@@ -170,6 +183,20 @@ namespace LetheChat.Forms
             ckAllowtools.Checked = Program.Settings.ToolCallsAllowed;
             numToolLimit.Value = Program.Settings.ToolCallLimit;
             numToolMemory.Value = Program.Settings.ToolCallChainLimit;
+
+            // Skills
+            var skillOpt = Program.Settings.SkillOptions;
+            SetNum(numSkillIndexMax, skillOpt.MaxIndexEntries);
+            SetNum(numSkillIndexDesc, skillOpt.MaxIndexDescriptionLength);
+            ckSkillAutoSuggest.Checked = skillOpt.AutoSuggest;
+            SetNum(numSkillAutoMax, skillOpt.AutoSuggestMax);
+            SetNum(numSkillAutoChars, skillOpt.AutoSuggestMaxChars);
+            ckSkillEmbeddings.Checked = skillOpt.UseEmbeddings;
+            SetNum(numSkillCutoff, (decimal)skillOpt.SimilarityCutoff);
+            ckSkillAllowWrites.Checked = skillOpt.AllowAgentWrites;
+            ckSkillPlainDraft.Checked = skillOpt.DraftWithPlainSections;
+            SetNum(numSkillMaxContent, skillOpt.MaxContentLength);
+            SetNum(numSkillMaxCount, skillOpt.MaxSkillCount);
 
             num_memtokens.Value = Program.Settings.SessionReservedTokens;
             ck_sessionmemory.Checked = LLMEngine.Settings.SessionMemorySystem;
@@ -480,6 +507,19 @@ namespace LetheChat.Forms
                 Program.Settings.ToolCallLimit = (int)numToolLimit.Value;
                 Program.Settings.ToolCallChainLimit = (int)numToolMemory.Value;
 
+                var skillSave = Program.Settings.SkillOptions;
+                skillSave.MaxIndexEntries = (int)numSkillIndexMax.Value;
+                skillSave.MaxIndexDescriptionLength = (int)numSkillIndexDesc.Value;
+                skillSave.AutoSuggest = ckSkillAutoSuggest.Checked;
+                skillSave.AutoSuggestMax = (int)numSkillAutoMax.Value;
+                skillSave.AutoSuggestMaxChars = (int)numSkillAutoChars.Value;
+                skillSave.UseEmbeddings = ckSkillEmbeddings.Checked;
+                skillSave.SimilarityCutoff = (float)numSkillCutoff.Value;
+                skillSave.AllowAgentWrites = ckSkillAllowWrites.Checked;
+                skillSave.DraftWithPlainSections = ckSkillPlainDraft.Checked;
+                skillSave.MaxContentLength = (int)numSkillMaxContent.Value;
+                skillSave.MaxSkillCount = (int)numSkillMaxCount.Value;
+
                 var str = JsonConvert.SerializeObject(Program.Settings, Formatting.Indented);
                 File.WriteAllText("settings.json", str);
                 // Context plugin settings
@@ -675,6 +715,35 @@ namespace LetheChat.Forms
             {
                 edToolinfo.Text += $"- {tool.Function?.Name ?? "Unknown"}: {tool.Function?.Description ?? "No description"}" + Environment.NewLine + Environment.NewLine;
             }
+        }
+
+        private static void SetNum(Controls.ModernNumericUpDown num, decimal value)
+        {
+            num.Value = Math.Clamp(value, num.Minimum, num.Maximum);
+        }
+
+        private void btSkills_Click(object sender, EventArgs e)
+        {
+            MainTab.SelectedTab = tabSkills;
+            ColorButton(sender as Button);
+        }
+
+        private void bt_skilleditor_Click(object sender, EventArgs e)
+        {
+            Program.BigForm?.OpenSkillEditor();
+        }
+
+        private void bt_skillfolder_Click(object sender, EventArgs e)
+        {
+            var root = LLMEngine.SkillManager.RootFolder;
+            Directory.CreateDirectory(root);
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("explorer.exe", $"\"{root}\"") { UseShellExecute = true });
+        }
+
+        private void bt_skillreload_Click(object sender, EventArgs e)
+        {
+            LLMEngine.SkillManager.Load();
+            MessageBox.Show($"{LLMEngine.SkillManager.Count} skill(s) loaded.", "Skills");
         }
 
         private void btAudio_Click(object sender, EventArgs e)

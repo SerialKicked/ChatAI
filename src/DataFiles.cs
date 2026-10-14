@@ -74,6 +74,7 @@ namespace LetheChat
             SysPrompts = Load<SystemPrompt>("data/sysprompts/", "*.json");
             Websites = Load<WebsiteDefinition>("data/websites/", "*.json");
             Points = Load<PointSystem>("data/pointsystems/", "*.json");
+            LLMEngine.SkillManager.Load();
 
             if (File.Exists("modelDB.json"))
             {

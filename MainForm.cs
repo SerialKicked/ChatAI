@@ -27,6 +27,7 @@ using LetheChat.Plugins;
 using LetheChat.Slash;
 using LetheChat.Forms;
 using LetheAISharp.Moods;
+using LetheAISharp.Skills;
 using Markdig.Extensions.Emoji;
 
 namespace LetheChat
@@ -50,7 +51,7 @@ namespace LetheChat
         private bool _suppressGroupSwitchEvent = false;
 
         public RenPyDialogHandler? _renpyDialogHandler;
-        public readonly List<ISlashCommand> slashCommands = [new MainSlashCmds(), new RenpyGameCmds()];
+        public readonly List<ISlashCommand> slashCommands = [new MainSlashCmds(), new RenpyGameCmds(), new SkillSlashCmds()];
 
         public static ICharacter? Bot => LLMEngine.Bot as ICharacter;
         public static ICharacter? User => LLMEngine.User as ICharacter;
@@ -142,6 +143,8 @@ namespace LetheChat
             LLMEngine.ToolManager.RegisterToolList(new MemoryTools());
             LLMEngine.ToolManager.RegisterToolList(new DrawingTools());
             LLMEngine.ToolManager.RegisterToolList(new FileTools());
+            LLMEngine.ToolManager.RegisterToolList(new SkillTools());
+            LLMEngine.ToolCallConfirmation = ConfirmToolCall;
             var pluginsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "plugins");
             LLMEngine.RegisterPluginsFromDirectory(pluginsDir);
 
@@ -308,6 +311,7 @@ namespace LetheChat
             LLMEngine.ContextPlugins = [];
             LLMEngine.ContextPlugins.Add(new LocationPlugin("Locations"));
             LLMEngine.ContextPlugins.Add(new WebSearchPlugin());
+            LLMEngine.ContextPlugins.Add(new SkillContextPlugin());
 
 
             SubscribeLLMEvents();
@@ -1643,6 +1647,72 @@ namespace LetheChat
             worldForm.StartPosition = FormStartPosition.CenterParent;
             worldForm.ShowDialog();
             LLMEngine.InvalidatePromptCache();
+        }
+
+        private void btSkillEditor_Click(object sender, EventArgs e)
+        {
+            OpenSkillEditor();
+        }
+
+        /// <summary>
+        /// Opens the skill editor, optionally on a specific skill or with an unsaved draft already loaded.
+        /// </summary>
+        public void OpenSkillEditor(string? skillName = null, Skill? draft = null)
+        {
+            using var skillForm = new SkillForm();
+            ThemeManager.ApplyToForm(skillForm);
+            skillForm.StartPosition = FormStartPosition.CenterParent;
+            skillForm.SetupSkillEditor(skillName ?? string.Empty);
+            if (draft != null)
+                skillForm.LoadDraft(draft);
+            skillForm.ShowDialog();
+            LLMEngine.InvalidatePromptCache();
+        }
+
+        private bool _skillDraftRunning = false;
+
+        /// <summary>
+        /// Asks the model to write a skill from the current chat, then opens the skill editor on the result so the user can review it.
+        /// </summary>
+        public async Task BeginSkillDraft(string request)
+        {
+            if (_skillDraftRunning)
+                return;
+            _skillDraftRunning = true;
+            var oldStatus = statusbar.Items[1].Text;
+            statusbar.Items[1].Text = "Writing skill...";
+            try
+            {
+                var result = await new SkillDraftAction().Execute(new SkillDraftParams { Request = request }, CancellationToken.None);
+                if (!result.Success)
+                {
+                    MessageBox.Show(this, result.Error, "Could not write the skill", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                OpenSkillEditor(null, result.Skill);
+            }
+            finally
+            {
+                statusbar.Items[1].Text = oldStatus;
+                _skillDraftRunning = false;
+            }
+        }
+
+        /// <summary>
+        /// Asks the user to approve a tool call. Invoked by the LLM engine, possibly from a background thread.
+        /// </summary>
+        private Task<bool> ConfirmToolCall(string toolName, string argumentsJson)
+        {
+            if (IsDisposed || Disposing)
+                return Task.FromResult(false);
+            var allowed = false;
+            Invoke(() =>
+            {
+                using var dlg = new ToolConfirmForm(toolName, argumentsJson);
+                ThemeManager.ApplyToForm(dlg);
+                allowed = dlg.ShowDialog(this) == DialogResult.OK;
+            });
+            return Task.FromResult(allowed);
         }
 
         private async void btChatHistory_Click(object sender, EventArgs e)
