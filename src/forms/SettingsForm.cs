@@ -329,6 +329,7 @@ namespace LetheChat.Forms
             ckDetailedSum.Checked = Program.Settings.SessionDetailedSummary;
             ckGroupCommit.Checked = Program.Settings.CommitGroupSessionToSecondaryPersonaHistory;
             numAFKDelay.Value = (decimal)Program.Settings.BackgroundAgentMinInactivityTime.TotalHours;
+            ckMergeSysMessages.Checked = Program.Settings.MergeSystemMessageInUserMessage;
 
             // Audio
 
@@ -436,6 +437,7 @@ namespace LetheChat.Forms
                 Program.Settings.MaxImageCount = (int)num_ImgCount.Value;
                 Program.Settings.ToolCallsAlwaysManualConfirm = ckToolAlwaysAsk.Checked;
                 Program.Settings.BackgroundAgentMinInactivityTime = TimeSpan.FromHours((double)numAFKDelay.Value);
+                Program.Settings.MergeSystemMessageInUserMessage = ckMergeSysMessages.Checked;
 
                 Program.Settings.BackendParallelToolCalls = cbParallel.SelectedIndex switch
                 {

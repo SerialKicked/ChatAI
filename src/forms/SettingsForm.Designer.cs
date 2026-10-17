@@ -100,6 +100,7 @@
             num_imgEmbed = new LetheChat.Controls.ModernNumericUpDown();
             label19 = new Label();
             collapsibleGroupBox1 = new LetheChat.Controls.CollapsibleGroupBox();
+            ckMergeSysMessages = new LetheChat.Controls.ModernCheckBox();
             ckForceInternalGram = new LetheChat.Controls.ModernCheckBox();
             ckNoPastInserts = new LetheChat.Controls.ModernCheckBox();
             ck_hallusafe = new LetheChat.Controls.ModernCheckBox();
@@ -229,40 +230,6 @@
             label11 = new Label();
             ck_audiodynamic = new LetheChat.Controls.ModernCheckBox();
             ck_audioenabled = new LetheChat.Controls.ModernCheckBox();
-            tabSkills = new TabPage();
-            collapsibleGroupBox23 = new LetheChat.Controls.CollapsibleGroupBox();
-            bt_skilleditor = new Button();
-            bt_skillfolder = new Button();
-            bt_skillreload = new Button();
-            lblSkillHint = new Label();
-            collapsibleGroupBox22 = new LetheChat.Controls.CollapsibleGroupBox();
-            panel52 = new Panel();
-            numSkillMaxCount = new LetheChat.Controls.ModernNumericUpDown();
-            lblSkillMaxCount = new Label();
-            panel51 = new Panel();
-            numSkillMaxContent = new LetheChat.Controls.ModernNumericUpDown();
-            lblSkillMaxContent = new Label();
-            ckSkillAllowWrites = new LetheChat.Controls.ModernCheckBox();
-            ckSkillPlainDraft = new LetheChat.Controls.ModernCheckBox();
-            collapsibleGroupBox21 = new LetheChat.Controls.CollapsibleGroupBox();
-            panel56 = new Panel();
-            numSkillCutoff = new LetheChat.Controls.ModernNumericUpDown();
-            lblSkillCutoff = new Label();
-            ckSkillEmbeddings = new LetheChat.Controls.ModernCheckBox();
-            panel55 = new Panel();
-            numSkillAutoChars = new LetheChat.Controls.ModernNumericUpDown();
-            lblSkillAutoChars = new Label();
-            panel54 = new Panel();
-            numSkillAutoMax = new LetheChat.Controls.ModernNumericUpDown();
-            lblSkillAutoMax = new Label();
-            ckSkillAutoSuggest = new LetheChat.Controls.ModernCheckBox();
-            collapsibleGroupBox20 = new LetheChat.Controls.CollapsibleGroupBox();
-            panel58 = new Panel();
-            numSkillIndexDesc = new LetheChat.Controls.ModernNumericUpDown();
-            lblSkillIndexDesc = new Label();
-            panel57 = new Panel();
-            numSkillIndexMax = new LetheChat.Controls.ModernNumericUpDown();
-            lblSkillIndexMax = new Label();
             tabTools = new TabPage();
             edToolinfo = new TextBox();
             collapsibleGroupBox15 = new LetheChat.Controls.CollapsibleGroupBox();
@@ -293,12 +260,46 @@
             panel24 = new Panel();
             cb_background = new LetheChat.Controls.ModernComboBox();
             label37 = new Label();
+            tabSkills = new TabPage();
+            collapsibleGroupBox23 = new LetheChat.Controls.CollapsibleGroupBox();
+            lblSkillHint = new Label();
+            bt_skillreload = new Button();
+            bt_skillfolder = new Button();
+            bt_skilleditor = new Button();
+            collapsibleGroupBox22 = new LetheChat.Controls.CollapsibleGroupBox();
+            panel52 = new Panel();
+            numSkillMaxCount = new LetheChat.Controls.ModernNumericUpDown();
+            lblSkillMaxCount = new Label();
+            panel51 = new Panel();
+            numSkillMaxContent = new LetheChat.Controls.ModernNumericUpDown();
+            lblSkillMaxContent = new Label();
+            ckSkillPlainDraft = new LetheChat.Controls.ModernCheckBox();
+            ckSkillAllowWrites = new LetheChat.Controls.ModernCheckBox();
+            collapsibleGroupBox21 = new LetheChat.Controls.CollapsibleGroupBox();
+            panel56 = new Panel();
+            numSkillCutoff = new LetheChat.Controls.ModernNumericUpDown();
+            lblSkillCutoff = new Label();
+            ckSkillEmbeddings = new LetheChat.Controls.ModernCheckBox();
+            panel55 = new Panel();
+            numSkillAutoChars = new LetheChat.Controls.ModernNumericUpDown();
+            lblSkillAutoChars = new Label();
+            panel54 = new Panel();
+            numSkillAutoMax = new LetheChat.Controls.ModernNumericUpDown();
+            lblSkillAutoMax = new Label();
+            ckSkillAutoSuggest = new LetheChat.Controls.ModernCheckBox();
+            collapsibleGroupBox20 = new LetheChat.Controls.CollapsibleGroupBox();
+            panel58 = new Panel();
+            numSkillIndexDesc = new LetheChat.Controls.ModernNumericUpDown();
+            lblSkillIndexDesc = new Label();
+            panel57 = new Panel();
+            numSkillIndexMax = new LetheChat.Controls.ModernNumericUpDown();
+            lblSkillIndexMax = new Label();
             MainButtonStack = new LetheChat.Controls.VerticalStackPanel();
             btApp = new Button();
             btOutput = new Button();
             btAudio = new Button();
-            btTools = new Button();
             btSkills = new Button();
+            btTools = new Button();
             btWeb = new Button();
             brGroup = new Button();
             btMemory = new Button();
@@ -359,6 +360,14 @@
             tabAudio.SuspendLayout();
             collapsibleGroupBox18.SuspendLayout();
             collapsibleGroupBox17.SuspendLayout();
+            tabTools.SuspendLayout();
+            collapsibleGroupBox15.SuspendLayout();
+            panel27.SuspendLayout();
+            panel26.SuspendLayout();
+            collapsibleGroupBox14.SuspendLayout();
+            tabApp.SuspendLayout();
+            collapsibleGroupBox13.SuspendLayout();
+            collapsibleGroupBox12.SuspendLayout();
             tabSkills.SuspendLayout();
             collapsibleGroupBox23.SuspendLayout();
             collapsibleGroupBox22.SuspendLayout();
@@ -371,14 +380,6 @@
             collapsibleGroupBox20.SuspendLayout();
             panel58.SuspendLayout();
             panel57.SuspendLayout();
-            tabTools.SuspendLayout();
-            collapsibleGroupBox15.SuspendLayout();
-            panel27.SuspendLayout();
-            panel26.SuspendLayout();
-            collapsibleGroupBox14.SuspendLayout();
-            tabApp.SuspendLayout();
-            collapsibleGroupBox13.SuspendLayout();
-            collapsibleGroupBox12.SuspendLayout();
             MainButtonStack.SuspendLayout();
             SuspendLayout();
             // 
@@ -1065,7 +1066,7 @@
             collapsibleGroupBox16.CanCollapse = false;
             collapsibleGroupBox16.Controls.Add(panel31);
             collapsibleGroupBox16.Font = new Font("Segoe UI", 9F);
-            collapsibleGroupBox16.Location = new Point(6, 333);
+            collapsibleGroupBox16.Location = new Point(6, 361);
             collapsibleGroupBox16.Name = "collapsibleGroupBox16";
             collapsibleGroupBox16.Padding = new Padding(12, 32, 12, 10);
             collapsibleGroupBox16.Size = new Size(780, 84);
@@ -1117,10 +1118,10 @@
             collapsibleGroupBox10.Controls.Add(panel14);
             collapsibleGroupBox10.Controls.Add(panel9);
             collapsibleGroupBox10.Font = new Font("Segoe UI", 9F);
-            collapsibleGroupBox10.Location = new Point(6, 163);
+            collapsibleGroupBox10.Location = new Point(6, 182);
             collapsibleGroupBox10.Name = "collapsibleGroupBox10";
             collapsibleGroupBox10.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox10.Size = new Size(780, 154);
+            collapsibleGroupBox10.Size = new Size(780, 164);
             collapsibleGroupBox10.TabIndex = 42;
             collapsibleGroupBox10.Text = "Image Processing";
             // 
@@ -1234,6 +1235,7 @@
             // 
             collapsibleGroupBox1.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox1.CanCollapse = false;
+            collapsibleGroupBox1.Controls.Add(ckMergeSysMessages);
             collapsibleGroupBox1.Controls.Add(ckForceInternalGram);
             collapsibleGroupBox1.Controls.Add(ckNoPastInserts);
             collapsibleGroupBox1.Controls.Add(ck_hallusafe);
@@ -1242,9 +1244,20 @@
             collapsibleGroupBox1.Location = new Point(6, 6);
             collapsibleGroupBox1.Name = "collapsibleGroupBox1";
             collapsibleGroupBox1.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox1.Size = new Size(780, 142);
+            collapsibleGroupBox1.Size = new Size(780, 165);
             collapsibleGroupBox1.TabIndex = 34;
             collapsibleGroupBox1.Text = "LLM Core Settings";
+            // 
+            // ckMergeSysMessages
+            // 
+            ckMergeSysMessages.Dock = DockStyle.Top;
+            ckMergeSysMessages.Font = new Font("Segoe UI", 9F);
+            ckMergeSysMessages.Location = new Point(12, 136);
+            ckMergeSysMessages.Name = "ckMergeSysMessages";
+            ckMergeSysMessages.Size = new Size(756, 26);
+            ckMergeSysMessages.TabIndex = 40;
+            ckMergeSysMessages.Text = "Merge system message into following user message";
+            ckMergeSysMessages.UseVisualStyleBackColor = true;
             // 
             // ckForceInternalGram
             // 
@@ -2830,431 +2843,6 @@
             ck_audioenabled.Text = "Use Whisper for speech recognition";
             ck_audioenabled.UseVisualStyleBackColor = true;
             // 
-            // tabSkills
-            // 
-            tabSkills.BackColor = Color.FromArgb(37, 37, 37);
-            tabSkills.Controls.Add(collapsibleGroupBox23);
-            tabSkills.Controls.Add(collapsibleGroupBox22);
-            tabSkills.Controls.Add(collapsibleGroupBox21);
-            tabSkills.Controls.Add(collapsibleGroupBox20);
-            tabSkills.Font = new Font("Segoe UI", 9F);
-            tabSkills.ForeColor = Color.FromArgb(230, 230, 230);
-            tabSkills.Location = new Point(0, 0);
-            tabSkills.Name = "tabSkills";
-            tabSkills.Size = new Size(798, 524);
-            tabSkills.TabIndex = 9;
-            tabSkills.Text = "Skills";
-            // 
-            // collapsibleGroupBox20
-            // 
-            collapsibleGroupBox20.BackColor = Color.FromArgb(37, 38, 42);
-            collapsibleGroupBox20.CanCollapse = false;
-            collapsibleGroupBox20.Controls.Add(panel58);
-            collapsibleGroupBox20.Controls.Add(panel57);
-            collapsibleGroupBox20.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox20.Location = new Point(6, 6);
-            collapsibleGroupBox20.Name = "collapsibleGroupBox20";
-            collapsibleGroupBox20.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox20.Size = new Size(390, 118);
-            collapsibleGroupBox20.TabIndex = 0;
-            collapsibleGroupBox20.Text = "Skill List in the System Prompt";
-            // 
-            // panel57
-            // 
-            panel57.Controls.Add(numSkillIndexMax);
-            panel57.Controls.Add(lblSkillIndexMax);
-            panel57.Dock = DockStyle.Top;
-            panel57.Location = new Point(12, 32);
-            panel57.Margin = new Padding(8);
-            panel57.Name = "panel57";
-            panel57.Padding = new Padding(8);
-            panel57.Size = new Size(366, 36);
-            panel57.TabIndex = 0;
-            // 
-            // numSkillIndexMax
-            // 
-            numSkillIndexMax.BackColor = Color.FromArgb(64, 64, 64);
-            numSkillIndexMax.Font = new Font("Segoe UI", 9F);
-            numSkillIndexMax.Location = new Point(11, 6);
-            numSkillIndexMax.Maximum = new decimal(new int[] { 500, 0, 0, 0 });
-            numSkillIndexMax.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            numSkillIndexMax.Name = "numSkillIndexMax";
-            numSkillIndexMax.Padding = new Padding(1);
-            numSkillIndexMax.Size = new Size(117, 23);
-            numSkillIndexMax.TabIndex = 0;
-            numSkillIndexMax.Value = new decimal(new int[] { 40, 0, 0, 0 });
-            // 
-            // lblSkillIndexMax
-            // 
-            lblSkillIndexMax.AutoSize = true;
-            lblSkillIndexMax.Font = new Font("Segoe UI", 9F);
-            lblSkillIndexMax.Location = new Point(142, 10);
-            lblSkillIndexMax.Name = "lblSkillIndexMax";
-            lblSkillIndexMax.Size = new Size(200, 15);
-            lblSkillIndexMax.TabIndex = 1;
-            lblSkillIndexMax.Text = "Maximum skills listed in the prompt";
-            // 
-            // panel58
-            // 
-            panel58.Controls.Add(numSkillIndexDesc);
-            panel58.Controls.Add(lblSkillIndexDesc);
-            panel58.Dock = DockStyle.Top;
-            panel58.Location = new Point(12, 68);
-            panel58.Margin = new Padding(8);
-            panel58.Name = "panel58";
-            panel58.Padding = new Padding(8);
-            panel58.Size = new Size(366, 36);
-            panel58.TabIndex = 1;
-            // 
-            // numSkillIndexDesc
-            // 
-            numSkillIndexDesc.BackColor = Color.FromArgb(64, 64, 64);
-            numSkillIndexDesc.Font = new Font("Segoe UI", 9F);
-            numSkillIndexDesc.Location = new Point(11, 6);
-            numSkillIndexDesc.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
-            numSkillIndexDesc.Minimum = new decimal(new int[] { 40, 0, 0, 0 });
-            numSkillIndexDesc.Name = "numSkillIndexDesc";
-            numSkillIndexDesc.Padding = new Padding(1);
-            numSkillIndexDesc.Size = new Size(117, 23);
-            numSkillIndexDesc.TabIndex = 0;
-            numSkillIndexDesc.Value = new decimal(new int[] { 220, 0, 0, 0 });
-            // 
-            // lblSkillIndexDesc
-            // 
-            lblSkillIndexDesc.AutoSize = true;
-            lblSkillIndexDesc.Font = new Font("Segoe UI", 9F);
-            lblSkillIndexDesc.Location = new Point(142, 10);
-            lblSkillIndexDesc.Name = "lblSkillIndexDesc";
-            lblSkillIndexDesc.Size = new Size(210, 15);
-            lblSkillIndexDesc.TabIndex = 1;
-            lblSkillIndexDesc.Text = "Maximum description length (characters)";
-            // 
-            // collapsibleGroupBox21
-            // 
-            collapsibleGroupBox21.BackColor = Color.FromArgb(37, 38, 42);
-            collapsibleGroupBox21.CanCollapse = false;
-            collapsibleGroupBox21.Controls.Add(panel56);
-            collapsibleGroupBox21.Controls.Add(ckSkillEmbeddings);
-            collapsibleGroupBox21.Controls.Add(panel55);
-            collapsibleGroupBox21.Controls.Add(panel54);
-            collapsibleGroupBox21.Controls.Add(ckSkillAutoSuggest);
-            collapsibleGroupBox21.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox21.Location = new Point(6, 132);
-            collapsibleGroupBox21.Name = "collapsibleGroupBox21";
-            collapsibleGroupBox21.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox21.Size = new Size(390, 202);
-            collapsibleGroupBox21.TabIndex = 1;
-            collapsibleGroupBox21.Text = "Automatic Suggestions and Search";
-            // 
-            // ckSkillAutoSuggest
-            // 
-            ckSkillAutoSuggest.Dock = DockStyle.Top;
-            ckSkillAutoSuggest.Font = new Font("Segoe UI", 9F);
-            ckSkillAutoSuggest.Location = new Point(12, 32);
-            ckSkillAutoSuggest.Name = "ckSkillAutoSuggest";
-            ckSkillAutoSuggest.Size = new Size(366, 26);
-            ckSkillAutoSuggest.TabIndex = 0;
-            ckSkillAutoSuggest.Text = "Suggest skills matching the user's message";
-            ckSkillAutoSuggest.UseVisualStyleBackColor = true;
-            // 
-            // panel54
-            // 
-            panel54.Controls.Add(numSkillAutoMax);
-            panel54.Controls.Add(lblSkillAutoMax);
-            panel54.Dock = DockStyle.Top;
-            panel54.Location = new Point(12, 58);
-            panel54.Margin = new Padding(8);
-            panel54.Name = "panel54";
-            panel54.Padding = new Padding(8);
-            panel54.Size = new Size(366, 36);
-            panel54.TabIndex = 1;
-            // 
-            // numSkillAutoMax
-            // 
-            numSkillAutoMax.BackColor = Color.FromArgb(64, 64, 64);
-            numSkillAutoMax.Font = new Font("Segoe UI", 9F);
-            numSkillAutoMax.Location = new Point(11, 6);
-            numSkillAutoMax.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
-            numSkillAutoMax.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            numSkillAutoMax.Name = "numSkillAutoMax";
-            numSkillAutoMax.Padding = new Padding(1);
-            numSkillAutoMax.Size = new Size(117, 23);
-            numSkillAutoMax.TabIndex = 0;
-            numSkillAutoMax.Value = new decimal(new int[] { 2, 0, 0, 0 });
-            // 
-            // lblSkillAutoMax
-            // 
-            lblSkillAutoMax.AutoSize = true;
-            lblSkillAutoMax.Font = new Font("Segoe UI", 9F);
-            lblSkillAutoMax.Location = new Point(142, 10);
-            lblSkillAutoMax.Name = "lblSkillAutoMax";
-            lblSkillAutoMax.Size = new Size(200, 15);
-            lblSkillAutoMax.TabIndex = 1;
-            lblSkillAutoMax.Text = "Maximum skills suggested per message";
-            // 
-            // panel55
-            // 
-            panel55.Controls.Add(numSkillAutoChars);
-            panel55.Controls.Add(lblSkillAutoChars);
-            panel55.Dock = DockStyle.Top;
-            panel55.Location = new Point(12, 94);
-            panel55.Margin = new Padding(8);
-            panel55.Name = "panel55";
-            panel55.Padding = new Padding(8);
-            panel55.Size = new Size(366, 36);
-            panel55.TabIndex = 2;
-            // 
-            // numSkillAutoChars
-            // 
-            numSkillAutoChars.BackColor = Color.FromArgb(64, 64, 64);
-            numSkillAutoChars.Font = new Font("Segoe UI", 9F);
-            numSkillAutoChars.Increment = new decimal(new int[] { 500, 0, 0, 0 });
-            numSkillAutoChars.Location = new Point(11, 6);
-            numSkillAutoChars.Maximum = new decimal(new int[] { 50000, 0, 0, 0 });
-            numSkillAutoChars.Minimum = new decimal(new int[] { 500, 0, 0, 0 });
-            numSkillAutoChars.Name = "numSkillAutoChars";
-            numSkillAutoChars.Padding = new Padding(1);
-            numSkillAutoChars.Size = new Size(117, 23);
-            numSkillAutoChars.TabIndex = 0;
-            numSkillAutoChars.Value = new decimal(new int[] { 6000, 0, 0, 0 });
-            // 
-            // lblSkillAutoChars
-            // 
-            lblSkillAutoChars.AutoSize = true;
-            lblSkillAutoChars.Font = new Font("Segoe UI", 9F);
-            lblSkillAutoChars.Location = new Point(142, 10);
-            lblSkillAutoChars.Name = "lblSkillAutoChars";
-            lblSkillAutoChars.Size = new Size(215, 15);
-            lblSkillAutoChars.TabIndex = 1;
-            lblSkillAutoChars.Text = "Max characters injected (no-tool models)";
-            // 
-            // ckSkillEmbeddings
-            // 
-            ckSkillEmbeddings.Dock = DockStyle.Top;
-            ckSkillEmbeddings.Font = new Font("Segoe UI", 9F);
-            ckSkillEmbeddings.Location = new Point(12, 130);
-            ckSkillEmbeddings.Name = "ckSkillEmbeddings";
-            ckSkillEmbeddings.Size = new Size(366, 26);
-            ckSkillEmbeddings.TabIndex = 3;
-            ckSkillEmbeddings.Text = "Also match skills by embedding similarity";
-            ckSkillEmbeddings.UseVisualStyleBackColor = true;
-            // 
-            // panel56
-            // 
-            panel56.Controls.Add(numSkillCutoff);
-            panel56.Controls.Add(lblSkillCutoff);
-            panel56.Dock = DockStyle.Top;
-            panel56.Location = new Point(12, 156);
-            panel56.Margin = new Padding(8);
-            panel56.Name = "panel56";
-            panel56.Padding = new Padding(8);
-            panel56.Size = new Size(366, 36);
-            panel56.TabIndex = 4;
-            // 
-            // numSkillCutoff
-            // 
-            numSkillCutoff.BackColor = Color.FromArgb(64, 64, 64);
-            numSkillCutoff.DecimalPlaces = 2;
-            numSkillCutoff.Font = new Font("Segoe UI", 9F);
-            numSkillCutoff.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
-            numSkillCutoff.Location = new Point(11, 6);
-            numSkillCutoff.Maximum = new decimal(new int[] { 15, 0, 0, 65536 });
-            numSkillCutoff.Minimum = new decimal(new int[] { 5, 0, 0, 131072 });
-            numSkillCutoff.Name = "numSkillCutoff";
-            numSkillCutoff.Padding = new Padding(1);
-            numSkillCutoff.Size = new Size(117, 23);
-            numSkillCutoff.TabIndex = 0;
-            numSkillCutoff.Value = new decimal(new int[] { 45, 0, 0, 131072 });
-            // 
-            // lblSkillCutoff
-            // 
-            lblSkillCutoff.AutoSize = true;
-            lblSkillCutoff.Font = new Font("Segoe UI", 9F);
-            lblSkillCutoff.Location = new Point(142, 10);
-            lblSkillCutoff.Name = "lblSkillCutoff";
-            lblSkillCutoff.Size = new Size(215, 15);
-            lblSkillCutoff.TabIndex = 1;
-            lblSkillCutoff.Text = "Similarity cut-off (lower = stricter)";
-            // 
-            // collapsibleGroupBox22
-            // 
-            collapsibleGroupBox22.BackColor = Color.FromArgb(37, 38, 42);
-            collapsibleGroupBox22.CanCollapse = false;
-            collapsibleGroupBox22.Controls.Add(panel52);
-            collapsibleGroupBox22.Controls.Add(panel51);
-            collapsibleGroupBox22.Controls.Add(ckSkillPlainDraft);
-            collapsibleGroupBox22.Controls.Add(ckSkillAllowWrites);
-            collapsibleGroupBox22.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox22.Location = new Point(402, 6);
-            collapsibleGroupBox22.Name = "collapsibleGroupBox22";
-            collapsibleGroupBox22.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox22.Size = new Size(384, 170);
-            collapsibleGroupBox22.TabIndex = 2;
-            collapsibleGroupBox22.Text = "Skill Creation";
-            // 
-            // ckSkillAllowWrites
-            // 
-            ckSkillAllowWrites.Dock = DockStyle.Top;
-            ckSkillAllowWrites.Font = new Font("Segoe UI", 9F);
-            ckSkillAllowWrites.Location = new Point(12, 32);
-            ckSkillAllowWrites.Name = "ckSkillAllowWrites";
-            ckSkillAllowWrites.Size = new Size(360, 26);
-            ckSkillAllowWrites.TabIndex = 0;
-            ckSkillAllowWrites.Text = "Let the model create and edit skills (asks first)";
-            ckSkillAllowWrites.UseVisualStyleBackColor = true;
-            // 
-            // ckSkillPlainDraft
-            // 
-            ckSkillPlainDraft.Dock = DockStyle.Top;
-            ckSkillPlainDraft.Font = new Font("Segoe UI", 9F);
-            ckSkillPlainDraft.Location = new Point(12, 58);
-            ckSkillPlainDraft.Name = "ckSkillPlainDraft";
-            ckSkillPlainDraft.Size = new Size(360, 26);
-            ckSkillPlainDraft.TabIndex = 3;
-            ckSkillPlainDraft.Text = "Write skill drafts as plain sections (not JSON)";
-            ckSkillPlainDraft.UseVisualStyleBackColor = true;
-            // 
-            // panel51
-            // 
-            panel51.Controls.Add(numSkillMaxContent);
-            panel51.Controls.Add(lblSkillMaxContent);
-            panel51.Dock = DockStyle.Top;
-            panel51.Location = new Point(12, 84);
-            panel51.Margin = new Padding(8);
-            panel51.Name = "panel51";
-            panel51.Padding = new Padding(8);
-            panel51.Size = new Size(360, 36);
-            panel51.TabIndex = 1;
-            // 
-            // numSkillMaxContent
-            // 
-            numSkillMaxContent.BackColor = Color.FromArgb(64, 64, 64);
-            numSkillMaxContent.Font = new Font("Segoe UI", 9F);
-            numSkillMaxContent.Increment = new decimal(new int[] { 1000, 0, 0, 0 });
-            numSkillMaxContent.Location = new Point(11, 6);
-            numSkillMaxContent.Maximum = new decimal(new int[] { 200000, 0, 0, 0 });
-            numSkillMaxContent.Minimum = new decimal(new int[] { 1000, 0, 0, 0 });
-            numSkillMaxContent.Name = "numSkillMaxContent";
-            numSkillMaxContent.Padding = new Padding(1);
-            numSkillMaxContent.Size = new Size(117, 23);
-            numSkillMaxContent.TabIndex = 0;
-            numSkillMaxContent.Value = new decimal(new int[] { 24000, 0, 0, 0 });
-            // 
-            // lblSkillMaxContent
-            // 
-            lblSkillMaxContent.AutoSize = true;
-            lblSkillMaxContent.Font = new Font("Segoe UI", 9F);
-            lblSkillMaxContent.Location = new Point(142, 10);
-            lblSkillMaxContent.Name = "lblSkillMaxContent";
-            lblSkillMaxContent.Size = new Size(200, 15);
-            lblSkillMaxContent.TabIndex = 1;
-            lblSkillMaxContent.Text = "Maximum skill size (characters)";
-            // 
-            // panel52
-            // 
-            panel52.Controls.Add(numSkillMaxCount);
-            panel52.Controls.Add(lblSkillMaxCount);
-            panel52.Dock = DockStyle.Top;
-            panel52.Location = new Point(12, 120);
-            panel52.Margin = new Padding(8);
-            panel52.Name = "panel52";
-            panel52.Padding = new Padding(8);
-            panel52.Size = new Size(360, 36);
-            panel52.TabIndex = 2;
-            // 
-            // numSkillMaxCount
-            // 
-            numSkillMaxCount.BackColor = Color.FromArgb(64, 64, 64);
-            numSkillMaxCount.Font = new Font("Segoe UI", 9F);
-            numSkillMaxCount.Location = new Point(11, 6);
-            numSkillMaxCount.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
-            numSkillMaxCount.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            numSkillMaxCount.Name = "numSkillMaxCount";
-            numSkillMaxCount.Padding = new Padding(1);
-            numSkillMaxCount.Size = new Size(117, 23);
-            numSkillMaxCount.TabIndex = 0;
-            numSkillMaxCount.Value = new decimal(new int[] { 200, 0, 0, 0 });
-            // 
-            // lblSkillMaxCount
-            // 
-            lblSkillMaxCount.AutoSize = true;
-            lblSkillMaxCount.Font = new Font("Segoe UI", 9F);
-            lblSkillMaxCount.Location = new Point(142, 10);
-            lblSkillMaxCount.Name = "lblSkillMaxCount";
-            lblSkillMaxCount.Size = new Size(200, 15);
-            lblSkillMaxCount.TabIndex = 1;
-            lblSkillMaxCount.Text = "Maximum skills in the library";
-            // 
-            // collapsibleGroupBox23
-            // 
-            collapsibleGroupBox23.BackColor = Color.FromArgb(37, 38, 42);
-            collapsibleGroupBox23.CanCollapse = false;
-            collapsibleGroupBox23.Controls.Add(lblSkillHint);
-            collapsibleGroupBox23.Controls.Add(bt_skillreload);
-            collapsibleGroupBox23.Controls.Add(bt_skillfolder);
-            collapsibleGroupBox23.Controls.Add(bt_skilleditor);
-            collapsibleGroupBox23.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox23.Location = new Point(402, 182);
-            collapsibleGroupBox23.Name = "collapsibleGroupBox23";
-            collapsibleGroupBox23.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox23.Size = new Size(384, 178);
-            collapsibleGroupBox23.TabIndex = 3;
-            collapsibleGroupBox23.Text = "Skill Library";
-            // 
-            // bt_skilleditor
-            // 
-            bt_skilleditor.BackColor = Color.Silver;
-            bt_skilleditor.FlatStyle = FlatStyle.Flat;
-            bt_skilleditor.Font = new Font("Segoe UI", 9F);
-            bt_skilleditor.ForeColor = Color.Black;
-            bt_skilleditor.Location = new Point(15, 38);
-            bt_skilleditor.Name = "bt_skilleditor";
-            bt_skilleditor.Size = new Size(209, 23);
-            bt_skilleditor.TabIndex = 0;
-            bt_skilleditor.Tag = "no-theme";
-            bt_skilleditor.Text = "Open the skill editor";
-            bt_skilleditor.UseVisualStyleBackColor = false;
-            bt_skilleditor.Click += bt_skilleditor_Click;
-            // 
-            // bt_skillfolder
-            // 
-            bt_skillfolder.BackColor = Color.Silver;
-            bt_skillfolder.FlatStyle = FlatStyle.Flat;
-            bt_skillfolder.Font = new Font("Segoe UI", 9F);
-            bt_skillfolder.ForeColor = Color.Black;
-            bt_skillfolder.Location = new Point(15, 67);
-            bt_skillfolder.Name = "bt_skillfolder";
-            bt_skillfolder.Size = new Size(209, 23);
-            bt_skillfolder.TabIndex = 1;
-            bt_skillfolder.Tag = "no-theme";
-            bt_skillfolder.Text = "Open the skills folder";
-            bt_skillfolder.UseVisualStyleBackColor = false;
-            bt_skillfolder.Click += bt_skillfolder_Click;
-            // 
-            // bt_skillreload
-            // 
-            bt_skillreload.BackColor = Color.Silver;
-            bt_skillreload.FlatStyle = FlatStyle.Flat;
-            bt_skillreload.Font = new Font("Segoe UI", 9F);
-            bt_skillreload.ForeColor = Color.Black;
-            bt_skillreload.Location = new Point(15, 96);
-            bt_skillreload.Name = "bt_skillreload";
-            bt_skillreload.Size = new Size(209, 23);
-            bt_skillreload.TabIndex = 2;
-            bt_skillreload.Tag = "no-theme";
-            bt_skillreload.Text = "Reload skills from disk";
-            bt_skillreload.UseVisualStyleBackColor = false;
-            bt_skillreload.Click += bt_skillreload_Click;
-            // 
-            // lblSkillHint
-            // 
-            lblSkillHint.Font = new Font("Segoe UI", 9F);
-            lblSkillHint.Location = new Point(15, 126);
-            lblSkillHint.Name = "lblSkillHint";
-            lblSkillHint.Size = new Size(354, 44);
-            lblSkillHint.TabIndex = 3;
-            lblSkillHint.Text = "To let the model load skills with tool calls, enable the 'Skills' toolset in the Tool Access page.";
-            // 
             // tabTools
             // 
             tabTools.BackColor = Color.FromArgb(37, 37, 37);
@@ -3634,6 +3222,431 @@
             label37.TabIndex = 26;
             label37.Text = "Chat Background";
             // 
+            // tabSkills
+            // 
+            tabSkills.BackColor = Color.FromArgb(37, 37, 37);
+            tabSkills.Controls.Add(collapsibleGroupBox23);
+            tabSkills.Controls.Add(collapsibleGroupBox22);
+            tabSkills.Controls.Add(collapsibleGroupBox21);
+            tabSkills.Controls.Add(collapsibleGroupBox20);
+            tabSkills.Font = new Font("Segoe UI", 9F);
+            tabSkills.ForeColor = Color.FromArgb(230, 230, 230);
+            tabSkills.Location = new Point(0, 0);
+            tabSkills.Name = "tabSkills";
+            tabSkills.Size = new Size(798, 524);
+            tabSkills.TabIndex = 9;
+            tabSkills.Text = "Skills";
+            // 
+            // collapsibleGroupBox23
+            // 
+            collapsibleGroupBox23.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox23.CanCollapse = false;
+            collapsibleGroupBox23.Controls.Add(lblSkillHint);
+            collapsibleGroupBox23.Controls.Add(bt_skillreload);
+            collapsibleGroupBox23.Controls.Add(bt_skillfolder);
+            collapsibleGroupBox23.Controls.Add(bt_skilleditor);
+            collapsibleGroupBox23.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox23.Location = new Point(402, 182);
+            collapsibleGroupBox23.Name = "collapsibleGroupBox23";
+            collapsibleGroupBox23.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox23.Size = new Size(384, 178);
+            collapsibleGroupBox23.TabIndex = 3;
+            collapsibleGroupBox23.Text = "Skill Library";
+            // 
+            // lblSkillHint
+            // 
+            lblSkillHint.Font = new Font("Segoe UI", 9F);
+            lblSkillHint.Location = new Point(15, 126);
+            lblSkillHint.Name = "lblSkillHint";
+            lblSkillHint.Size = new Size(354, 44);
+            lblSkillHint.TabIndex = 3;
+            lblSkillHint.Text = "To let the model load skills with tool calls, enable the 'Skills' toolset in the Tool Access page.";
+            // 
+            // bt_skillreload
+            // 
+            bt_skillreload.BackColor = Color.Silver;
+            bt_skillreload.FlatStyle = FlatStyle.Flat;
+            bt_skillreload.Font = new Font("Segoe UI", 9F);
+            bt_skillreload.ForeColor = Color.Black;
+            bt_skillreload.Location = new Point(15, 96);
+            bt_skillreload.Name = "bt_skillreload";
+            bt_skillreload.Size = new Size(209, 23);
+            bt_skillreload.TabIndex = 2;
+            bt_skillreload.Tag = "no-theme";
+            bt_skillreload.Text = "Reload skills from disk";
+            bt_skillreload.UseVisualStyleBackColor = false;
+            bt_skillreload.Click += bt_skillreload_Click;
+            // 
+            // bt_skillfolder
+            // 
+            bt_skillfolder.BackColor = Color.Silver;
+            bt_skillfolder.FlatStyle = FlatStyle.Flat;
+            bt_skillfolder.Font = new Font("Segoe UI", 9F);
+            bt_skillfolder.ForeColor = Color.Black;
+            bt_skillfolder.Location = new Point(15, 67);
+            bt_skillfolder.Name = "bt_skillfolder";
+            bt_skillfolder.Size = new Size(209, 23);
+            bt_skillfolder.TabIndex = 1;
+            bt_skillfolder.Tag = "no-theme";
+            bt_skillfolder.Text = "Open the skills folder";
+            bt_skillfolder.UseVisualStyleBackColor = false;
+            bt_skillfolder.Click += bt_skillfolder_Click;
+            // 
+            // bt_skilleditor
+            // 
+            bt_skilleditor.BackColor = Color.Silver;
+            bt_skilleditor.FlatStyle = FlatStyle.Flat;
+            bt_skilleditor.Font = new Font("Segoe UI", 9F);
+            bt_skilleditor.ForeColor = Color.Black;
+            bt_skilleditor.Location = new Point(15, 38);
+            bt_skilleditor.Name = "bt_skilleditor";
+            bt_skilleditor.Size = new Size(209, 23);
+            bt_skilleditor.TabIndex = 0;
+            bt_skilleditor.Tag = "no-theme";
+            bt_skilleditor.Text = "Open the skill editor";
+            bt_skilleditor.UseVisualStyleBackColor = false;
+            bt_skilleditor.Click += bt_skilleditor_Click;
+            // 
+            // collapsibleGroupBox22
+            // 
+            collapsibleGroupBox22.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox22.CanCollapse = false;
+            collapsibleGroupBox22.Controls.Add(panel52);
+            collapsibleGroupBox22.Controls.Add(panel51);
+            collapsibleGroupBox22.Controls.Add(ckSkillPlainDraft);
+            collapsibleGroupBox22.Controls.Add(ckSkillAllowWrites);
+            collapsibleGroupBox22.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox22.Location = new Point(402, 6);
+            collapsibleGroupBox22.Name = "collapsibleGroupBox22";
+            collapsibleGroupBox22.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox22.Size = new Size(384, 170);
+            collapsibleGroupBox22.TabIndex = 2;
+            collapsibleGroupBox22.Text = "Skill Creation";
+            // 
+            // panel52
+            // 
+            panel52.Controls.Add(numSkillMaxCount);
+            panel52.Controls.Add(lblSkillMaxCount);
+            panel52.Dock = DockStyle.Top;
+            panel52.Location = new Point(12, 120);
+            panel52.Margin = new Padding(8);
+            panel52.Name = "panel52";
+            panel52.Padding = new Padding(8);
+            panel52.Size = new Size(360, 36);
+            panel52.TabIndex = 2;
+            // 
+            // numSkillMaxCount
+            // 
+            numSkillMaxCount.BackColor = Color.FromArgb(64, 64, 64);
+            numSkillMaxCount.Font = new Font("Segoe UI", 9F);
+            numSkillMaxCount.Location = new Point(11, 6);
+            numSkillMaxCount.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            numSkillMaxCount.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numSkillMaxCount.Name = "numSkillMaxCount";
+            numSkillMaxCount.Padding = new Padding(1);
+            numSkillMaxCount.Size = new Size(117, 23);
+            numSkillMaxCount.TabIndex = 0;
+            numSkillMaxCount.Value = new decimal(new int[] { 200, 0, 0, 0 });
+            // 
+            // lblSkillMaxCount
+            // 
+            lblSkillMaxCount.AutoSize = true;
+            lblSkillMaxCount.Font = new Font("Segoe UI", 9F);
+            lblSkillMaxCount.Location = new Point(142, 10);
+            lblSkillMaxCount.Name = "lblSkillMaxCount";
+            lblSkillMaxCount.Size = new Size(158, 15);
+            lblSkillMaxCount.TabIndex = 1;
+            lblSkillMaxCount.Text = "Maximum skills in the library";
+            // 
+            // panel51
+            // 
+            panel51.Controls.Add(numSkillMaxContent);
+            panel51.Controls.Add(lblSkillMaxContent);
+            panel51.Dock = DockStyle.Top;
+            panel51.Location = new Point(12, 84);
+            panel51.Margin = new Padding(8);
+            panel51.Name = "panel51";
+            panel51.Padding = new Padding(8);
+            panel51.Size = new Size(360, 36);
+            panel51.TabIndex = 1;
+            // 
+            // numSkillMaxContent
+            // 
+            numSkillMaxContent.BackColor = Color.FromArgb(64, 64, 64);
+            numSkillMaxContent.Font = new Font("Segoe UI", 9F);
+            numSkillMaxContent.Increment = new decimal(new int[] { 1000, 0, 0, 0 });
+            numSkillMaxContent.Location = new Point(11, 6);
+            numSkillMaxContent.Maximum = new decimal(new int[] { 200000, 0, 0, 0 });
+            numSkillMaxContent.Minimum = new decimal(new int[] { 1000, 0, 0, 0 });
+            numSkillMaxContent.Name = "numSkillMaxContent";
+            numSkillMaxContent.Padding = new Padding(1);
+            numSkillMaxContent.Size = new Size(117, 23);
+            numSkillMaxContent.TabIndex = 0;
+            numSkillMaxContent.Value = new decimal(new int[] { 24000, 0, 0, 0 });
+            // 
+            // lblSkillMaxContent
+            // 
+            lblSkillMaxContent.AutoSize = true;
+            lblSkillMaxContent.Font = new Font("Segoe UI", 9F);
+            lblSkillMaxContent.Location = new Point(142, 10);
+            lblSkillMaxContent.Name = "lblSkillMaxContent";
+            lblSkillMaxContent.Size = new Size(171, 15);
+            lblSkillMaxContent.TabIndex = 1;
+            lblSkillMaxContent.Text = "Maximum skill size (characters)";
+            // 
+            // ckSkillPlainDraft
+            // 
+            ckSkillPlainDraft.Dock = DockStyle.Top;
+            ckSkillPlainDraft.Font = new Font("Segoe UI", 9F);
+            ckSkillPlainDraft.Location = new Point(12, 58);
+            ckSkillPlainDraft.Name = "ckSkillPlainDraft";
+            ckSkillPlainDraft.Size = new Size(360, 26);
+            ckSkillPlainDraft.TabIndex = 3;
+            ckSkillPlainDraft.Text = "Write skill drafts as plain sections (not JSON)";
+            ckSkillPlainDraft.UseVisualStyleBackColor = true;
+            // 
+            // ckSkillAllowWrites
+            // 
+            ckSkillAllowWrites.Dock = DockStyle.Top;
+            ckSkillAllowWrites.Font = new Font("Segoe UI", 9F);
+            ckSkillAllowWrites.Location = new Point(12, 32);
+            ckSkillAllowWrites.Name = "ckSkillAllowWrites";
+            ckSkillAllowWrites.Size = new Size(360, 26);
+            ckSkillAllowWrites.TabIndex = 0;
+            ckSkillAllowWrites.Text = "Let the model create and edit skills (asks first)";
+            ckSkillAllowWrites.UseVisualStyleBackColor = true;
+            // 
+            // collapsibleGroupBox21
+            // 
+            collapsibleGroupBox21.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox21.CanCollapse = false;
+            collapsibleGroupBox21.Controls.Add(panel56);
+            collapsibleGroupBox21.Controls.Add(ckSkillEmbeddings);
+            collapsibleGroupBox21.Controls.Add(panel55);
+            collapsibleGroupBox21.Controls.Add(panel54);
+            collapsibleGroupBox21.Controls.Add(ckSkillAutoSuggest);
+            collapsibleGroupBox21.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox21.Location = new Point(6, 132);
+            collapsibleGroupBox21.Name = "collapsibleGroupBox21";
+            collapsibleGroupBox21.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox21.Size = new Size(390, 202);
+            collapsibleGroupBox21.TabIndex = 1;
+            collapsibleGroupBox21.Text = "Automatic Suggestions and Search";
+            // 
+            // panel56
+            // 
+            panel56.Controls.Add(numSkillCutoff);
+            panel56.Controls.Add(lblSkillCutoff);
+            panel56.Dock = DockStyle.Top;
+            panel56.Location = new Point(12, 156);
+            panel56.Margin = new Padding(8);
+            panel56.Name = "panel56";
+            panel56.Padding = new Padding(8);
+            panel56.Size = new Size(366, 36);
+            panel56.TabIndex = 4;
+            // 
+            // numSkillCutoff
+            // 
+            numSkillCutoff.BackColor = Color.FromArgb(64, 64, 64);
+            numSkillCutoff.DecimalPlaces = 2;
+            numSkillCutoff.Font = new Font("Segoe UI", 9F);
+            numSkillCutoff.Increment = new decimal(new int[] { 5, 0, 0, 131072 });
+            numSkillCutoff.Location = new Point(11, 6);
+            numSkillCutoff.Maximum = new decimal(new int[] { 15, 0, 0, 65536 });
+            numSkillCutoff.Minimum = new decimal(new int[] { 5, 0, 0, 131072 });
+            numSkillCutoff.Name = "numSkillCutoff";
+            numSkillCutoff.Padding = new Padding(1);
+            numSkillCutoff.Size = new Size(117, 23);
+            numSkillCutoff.TabIndex = 0;
+            numSkillCutoff.Value = new decimal(new int[] { 45, 0, 0, 131072 });
+            // 
+            // lblSkillCutoff
+            // 
+            lblSkillCutoff.AutoSize = true;
+            lblSkillCutoff.Font = new Font("Segoe UI", 9F);
+            lblSkillCutoff.Location = new Point(142, 10);
+            lblSkillCutoff.Name = "lblSkillCutoff";
+            lblSkillCutoff.Size = new Size(186, 15);
+            lblSkillCutoff.TabIndex = 1;
+            lblSkillCutoff.Text = "Similarity cut-off (lower = stricter)";
+            // 
+            // ckSkillEmbeddings
+            // 
+            ckSkillEmbeddings.Dock = DockStyle.Top;
+            ckSkillEmbeddings.Font = new Font("Segoe UI", 9F);
+            ckSkillEmbeddings.Location = new Point(12, 130);
+            ckSkillEmbeddings.Name = "ckSkillEmbeddings";
+            ckSkillEmbeddings.Size = new Size(366, 26);
+            ckSkillEmbeddings.TabIndex = 3;
+            ckSkillEmbeddings.Text = "Also match skills by embedding similarity";
+            ckSkillEmbeddings.UseVisualStyleBackColor = true;
+            // 
+            // panel55
+            // 
+            panel55.Controls.Add(numSkillAutoChars);
+            panel55.Controls.Add(lblSkillAutoChars);
+            panel55.Dock = DockStyle.Top;
+            panel55.Location = new Point(12, 94);
+            panel55.Margin = new Padding(8);
+            panel55.Name = "panel55";
+            panel55.Padding = new Padding(8);
+            panel55.Size = new Size(366, 36);
+            panel55.TabIndex = 2;
+            // 
+            // numSkillAutoChars
+            // 
+            numSkillAutoChars.BackColor = Color.FromArgb(64, 64, 64);
+            numSkillAutoChars.Font = new Font("Segoe UI", 9F);
+            numSkillAutoChars.Increment = new decimal(new int[] { 500, 0, 0, 0 });
+            numSkillAutoChars.Location = new Point(11, 6);
+            numSkillAutoChars.Maximum = new decimal(new int[] { 50000, 0, 0, 0 });
+            numSkillAutoChars.Minimum = new decimal(new int[] { 500, 0, 0, 0 });
+            numSkillAutoChars.Name = "numSkillAutoChars";
+            numSkillAutoChars.Padding = new Padding(1);
+            numSkillAutoChars.Size = new Size(117, 23);
+            numSkillAutoChars.TabIndex = 0;
+            numSkillAutoChars.Value = new decimal(new int[] { 6000, 0, 0, 0 });
+            // 
+            // lblSkillAutoChars
+            // 
+            lblSkillAutoChars.AutoSize = true;
+            lblSkillAutoChars.Font = new Font("Segoe UI", 9F);
+            lblSkillAutoChars.Location = new Point(142, 10);
+            lblSkillAutoChars.Name = "lblSkillAutoChars";
+            lblSkillAutoChars.Size = new Size(224, 15);
+            lblSkillAutoChars.TabIndex = 1;
+            lblSkillAutoChars.Text = "Max characters injected (no-tool models)";
+            // 
+            // panel54
+            // 
+            panel54.Controls.Add(numSkillAutoMax);
+            panel54.Controls.Add(lblSkillAutoMax);
+            panel54.Dock = DockStyle.Top;
+            panel54.Location = new Point(12, 58);
+            panel54.Margin = new Padding(8);
+            panel54.Name = "panel54";
+            panel54.Padding = new Padding(8);
+            panel54.Size = new Size(366, 36);
+            panel54.TabIndex = 1;
+            // 
+            // numSkillAutoMax
+            // 
+            numSkillAutoMax.BackColor = Color.FromArgb(64, 64, 64);
+            numSkillAutoMax.Font = new Font("Segoe UI", 9F);
+            numSkillAutoMax.Location = new Point(11, 6);
+            numSkillAutoMax.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            numSkillAutoMax.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numSkillAutoMax.Name = "numSkillAutoMax";
+            numSkillAutoMax.Padding = new Padding(1);
+            numSkillAutoMax.Size = new Size(117, 23);
+            numSkillAutoMax.TabIndex = 0;
+            numSkillAutoMax.Value = new decimal(new int[] { 2, 0, 0, 0 });
+            // 
+            // lblSkillAutoMax
+            // 
+            lblSkillAutoMax.AutoSize = true;
+            lblSkillAutoMax.Font = new Font("Segoe UI", 9F);
+            lblSkillAutoMax.Location = new Point(142, 10);
+            lblSkillAutoMax.Name = "lblSkillAutoMax";
+            lblSkillAutoMax.Size = new Size(215, 15);
+            lblSkillAutoMax.TabIndex = 1;
+            lblSkillAutoMax.Text = "Maximum skills suggested per message";
+            // 
+            // ckSkillAutoSuggest
+            // 
+            ckSkillAutoSuggest.Dock = DockStyle.Top;
+            ckSkillAutoSuggest.Font = new Font("Segoe UI", 9F);
+            ckSkillAutoSuggest.Location = new Point(12, 32);
+            ckSkillAutoSuggest.Name = "ckSkillAutoSuggest";
+            ckSkillAutoSuggest.Size = new Size(366, 26);
+            ckSkillAutoSuggest.TabIndex = 0;
+            ckSkillAutoSuggest.Text = "Suggest skills matching the user's message";
+            ckSkillAutoSuggest.UseVisualStyleBackColor = true;
+            // 
+            // collapsibleGroupBox20
+            // 
+            collapsibleGroupBox20.BackColor = Color.FromArgb(37, 38, 42);
+            collapsibleGroupBox20.CanCollapse = false;
+            collapsibleGroupBox20.Controls.Add(panel58);
+            collapsibleGroupBox20.Controls.Add(panel57);
+            collapsibleGroupBox20.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            collapsibleGroupBox20.Location = new Point(6, 6);
+            collapsibleGroupBox20.Name = "collapsibleGroupBox20";
+            collapsibleGroupBox20.Padding = new Padding(12, 32, 12, 10);
+            collapsibleGroupBox20.Size = new Size(390, 118);
+            collapsibleGroupBox20.TabIndex = 0;
+            collapsibleGroupBox20.Text = "Skill List in the System Prompt";
+            // 
+            // panel58
+            // 
+            panel58.Controls.Add(numSkillIndexDesc);
+            panel58.Controls.Add(lblSkillIndexDesc);
+            panel58.Dock = DockStyle.Top;
+            panel58.Location = new Point(12, 68);
+            panel58.Margin = new Padding(8);
+            panel58.Name = "panel58";
+            panel58.Padding = new Padding(8);
+            panel58.Size = new Size(366, 36);
+            panel58.TabIndex = 1;
+            // 
+            // numSkillIndexDesc
+            // 
+            numSkillIndexDesc.BackColor = Color.FromArgb(64, 64, 64);
+            numSkillIndexDesc.Font = new Font("Segoe UI", 9F);
+            numSkillIndexDesc.Location = new Point(11, 6);
+            numSkillIndexDesc.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            numSkillIndexDesc.Minimum = new decimal(new int[] { 40, 0, 0, 0 });
+            numSkillIndexDesc.Name = "numSkillIndexDesc";
+            numSkillIndexDesc.Padding = new Padding(1);
+            numSkillIndexDesc.Size = new Size(117, 23);
+            numSkillIndexDesc.TabIndex = 0;
+            numSkillIndexDesc.Value = new decimal(new int[] { 220, 0, 0, 0 });
+            // 
+            // lblSkillIndexDesc
+            // 
+            lblSkillIndexDesc.AutoSize = true;
+            lblSkillIndexDesc.Font = new Font("Segoe UI", 9F);
+            lblSkillIndexDesc.Location = new Point(142, 10);
+            lblSkillIndexDesc.Name = "lblSkillIndexDesc";
+            lblSkillIndexDesc.Size = new Size(225, 15);
+            lblSkillIndexDesc.TabIndex = 1;
+            lblSkillIndexDesc.Text = "Maximum description length (characters)";
+            // 
+            // panel57
+            // 
+            panel57.Controls.Add(numSkillIndexMax);
+            panel57.Controls.Add(lblSkillIndexMax);
+            panel57.Dock = DockStyle.Top;
+            panel57.Location = new Point(12, 32);
+            panel57.Margin = new Padding(8);
+            panel57.Name = "panel57";
+            panel57.Padding = new Padding(8);
+            panel57.Size = new Size(366, 36);
+            panel57.TabIndex = 0;
+            // 
+            // numSkillIndexMax
+            // 
+            numSkillIndexMax.BackColor = Color.FromArgb(64, 64, 64);
+            numSkillIndexMax.Font = new Font("Segoe UI", 9F);
+            numSkillIndexMax.Location = new Point(11, 6);
+            numSkillIndexMax.Maximum = new decimal(new int[] { 500, 0, 0, 0 });
+            numSkillIndexMax.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numSkillIndexMax.Name = "numSkillIndexMax";
+            numSkillIndexMax.Padding = new Padding(1);
+            numSkillIndexMax.Size = new Size(117, 23);
+            numSkillIndexMax.TabIndex = 0;
+            numSkillIndexMax.Value = new decimal(new int[] { 40, 0, 0, 0 });
+            // 
+            // lblSkillIndexMax
+            // 
+            lblSkillIndexMax.AutoSize = true;
+            lblSkillIndexMax.Font = new Font("Segoe UI", 9F);
+            lblSkillIndexMax.Location = new Point(142, 10);
+            lblSkillIndexMax.Name = "lblSkillIndexMax";
+            lblSkillIndexMax.Size = new Size(196, 15);
+            lblSkillIndexMax.TabIndex = 1;
+            lblSkillIndexMax.Text = "Maximum skills listed in the prompt";
+            // 
             // MainButtonStack
             // 
             MainButtonStack.Controls.Add(btApp);
@@ -3921,18 +3934,6 @@
             collapsibleGroupBox18.PerformLayout();
             collapsibleGroupBox17.ResumeLayout(false);
             collapsibleGroupBox17.PerformLayout();
-            tabSkills.ResumeLayout(false);
-            collapsibleGroupBox23.ResumeLayout(false);
-            collapsibleGroupBox22.ResumeLayout(false);
-            panel52.ResumeLayout(false);
-            panel51.ResumeLayout(false);
-            collapsibleGroupBox21.ResumeLayout(false);
-            panel56.ResumeLayout(false);
-            panel55.ResumeLayout(false);
-            panel54.ResumeLayout(false);
-            collapsibleGroupBox20.ResumeLayout(false);
-            panel58.ResumeLayout(false);
-            panel57.ResumeLayout(false);
             tabTools.ResumeLayout(false);
             tabTools.PerformLayout();
             collapsibleGroupBox15.ResumeLayout(false);
@@ -3945,6 +3946,25 @@
             collapsibleGroupBox13.ResumeLayout(false);
             collapsibleGroupBox12.ResumeLayout(false);
             collapsibleGroupBox12.PerformLayout();
+            tabSkills.ResumeLayout(false);
+            collapsibleGroupBox23.ResumeLayout(false);
+            collapsibleGroupBox22.ResumeLayout(false);
+            panel52.ResumeLayout(false);
+            panel52.PerformLayout();
+            panel51.ResumeLayout(false);
+            panel51.PerformLayout();
+            collapsibleGroupBox21.ResumeLayout(false);
+            panel56.ResumeLayout(false);
+            panel56.PerformLayout();
+            panel55.ResumeLayout(false);
+            panel55.PerformLayout();
+            panel54.ResumeLayout(false);
+            panel54.PerformLayout();
+            collapsibleGroupBox20.ResumeLayout(false);
+            panel58.ResumeLayout(false);
+            panel58.PerformLayout();
+            panel57.ResumeLayout(false);
+            panel57.PerformLayout();
             MainButtonStack.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -4227,5 +4247,6 @@
         private Panel panel33;
         private Controls.ModernNumericUpDown numDeepSearchSynthesis;
         private Label label52;
+        private Controls.ModernCheckBox ckMergeSysMessages;
     }
 }
