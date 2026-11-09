@@ -154,11 +154,12 @@ namespace LetheChat.Files
         /// </summary>
         [Description("Number of model layers to offload to the GPU (-ngl). Set to 255 to offload all layers. Reduce if you run out of VRAM.")]
         public int GpuLayers { get; set; } = 255;
+        public bool SetGPULayers { get; set; } = true;
 
         /// <summary>
         /// Quantization format for the KV cache. The default is f16, which means that the KV cache will be stored in 16-bit floating point format.
         /// </summary>
-        [Description("Quantization format for the KV cache. Options: f16 (Full / default), q8_0, q5_0, q4_0.\n\n" + 
+        [Description("Quantization format for the KV cache. Options: f16 (Full / default), q8_0, q5_0, q4_0.\n\n" +
             "Lower precision formats reduce GPU memory usage but makes the model less coherent the longer the context is. As such, this is the worst way to free room for the context size.\n\n" +
             "Keep this to Full, or if you're desperate and quality is of little concern to you, Q8_0.")]
         public KVCacheQuantization KVCacheQuantization { get; set; } = KVCacheQuantization.f16;

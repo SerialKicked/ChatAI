@@ -47,6 +47,8 @@ namespace LetheChat.Forms
             lbl_context = new Label();
             num_maxcontext = new ModernNumericUpDown();
             btBrowse = new Button();
+            edModelID = new TextBox();
+            label4 = new Label();
             collapsibleGroupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -57,7 +59,7 @@ namespace LetheChat.Forms
             edKey.Location = new Point(15, 155);
             edKey.Name = "edKey";
             edKey.PlaceholderText = "When in doubt, leave empty";
-            edKey.Size = new Size(496, 23);
+            edKey.Size = new Size(224, 23);
             edKey.TabIndex = 3;
             // 
             // label3
@@ -161,6 +163,8 @@ namespace LetheChat.Forms
             // 
             collapsibleGroupBox1.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox1.CanCollapse = false;
+            collapsibleGroupBox1.Controls.Add(edModelID);
+            collapsibleGroupBox1.Controls.Add(label4);
             collapsibleGroupBox1.Controls.Add(ck_flash);
             collapsibleGroupBox1.Controls.Add(lbl_gpu);
             collapsibleGroupBox1.Controls.Add(num_gpu);
@@ -253,6 +257,26 @@ namespace LetheChat.Forms
             btBrowse.UseVisualStyleBackColor = true;
             btBrowse.Click += btBrowse_Click;
             // 
+            // edModelID
+            // 
+            edModelID.BorderStyle = BorderStyle.FixedSingle;
+            edModelID.Font = new Font("Segoe UI", 9F);
+            edModelID.Location = new Point(245, 155);
+            edModelID.Name = "edModelID";
+            edModelID.PlaceholderText = "When in doubt, leave empty";
+            edModelID.Size = new Size(182, 23);
+            edModelID.TabIndex = 22;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI", 9F);
+            label4.Location = new Point(245, 136);
+            label4.Name = "label4";
+            label4.Size = new Size(55, 15);
+            label4.TabIndex = 23;
+            label4.Text = "Model ID";
+            // 
             // LoginForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -293,5 +317,7 @@ namespace LetheChat.Forms
         private Label lbl_context;
         private ModernNumericUpDown num_maxcontext;
         private ModernCheckBox ck_flash;
+        private TextBox edModelID;
+        private Label label4;
     }
 }

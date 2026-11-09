@@ -29,6 +29,7 @@ namespace LetheChat.Forms
             num_gpu.Value = Program.Settings.LlamaSharpGPULayers;
             num_maxcontext.Value = Program.Settings.MaxTotalTokens;
             ck_flash.Checked = Program.Settings.LlamaSharpFlashAttention;
+            edModelID.Text = Program.Settings.OpenAIModelID;
             UpdateFields();
         }
 
@@ -44,6 +45,7 @@ namespace LetheChat.Forms
                     lbl_gpu.Visible = false;
                     num_gpu.Visible = false;
                     ck_flash.Visible = false;
+                    edModelID.Visible = true;
                     break;
                 case BackendAPI.LlamaCpp:
                     edKey.Enabled = false;
@@ -54,6 +56,7 @@ namespace LetheChat.Forms
                     lbl_gpu.Visible = false;
                     num_gpu.Visible = false;
                     ck_flash.Visible = false;
+                    edModelID.Visible = false;
                     break;
                 case BackendAPI.KoboldAPI:
                     edKey.Enabled = false;
@@ -64,6 +67,7 @@ namespace LetheChat.Forms
                     lbl_gpu.Visible = false;
                     num_gpu.Visible = false;
                     ck_flash.Visible = false;
+                    edModelID.Visible = false;
                     break;
                 case BackendAPI.LlamaSharp:
                     edKey.Enabled = false;
@@ -73,6 +77,7 @@ namespace LetheChat.Forms
                     num_maxcontext.Visible = true;
                     lbl_gpu.Visible = true;
                     num_gpu.Visible = true;
+                    edModelID.Visible = false;
                     ck_flash.Visible = true;
                     break;
             }
@@ -108,6 +113,7 @@ namespace LetheChat.Forms
             LLMEngine.Settings.LlamaSharpFlashAttention = ck_flash.Checked;
             LLMEngine.Settings.MaxTotalTokens = (int)num_maxcontext.Value;
             LLMEngine.Settings.LlamaSharpGPULayers = (int)num_gpu.Value;
+            LLMEngine.Settings.OpenAIModelID = edModelID.Text;
 
             LLMEngine.Setup(edUrl.Text, (BackendAPI)cbAPI.SelectedIndex, !string.IsNullOrEmpty(edKey.Text) ? edKey.Text : null);
             var res = await LLMEngine.CheckBackend();
