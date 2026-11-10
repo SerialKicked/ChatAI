@@ -595,10 +595,14 @@ namespace LetheChat
             if (string.IsNullOrEmpty(e.Text))
                 return;
 
-            if (!_impersonatemode && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart) && _currentgencalls <= 1)
+            // Edits are addressed to the message that was live when this segment arrived. If it is cancelled, reloaded or
+            // finalized before the edit gets applied, the edit finds nothing and is dropped (see WebUI.EditMessage).
+            var live = webUI.LiveMessageGuid;
+
+            if (!_impersonatemode && !string.IsNullOrEmpty(LLMEngine.Instruct.ThinkingStart) && _currentgencalls <= 1 && live != Guid.Empty)
             {
                 var thoughts = ChatRender.GetMessagePrefix(AuthorRole.Assistant) + $"*{LLMEngine.Bot.GetIdentifier()} is thinking...*";
-                await webUI.EditMessage(thoughts);
+                await webUI.EditMessage(thoughts, null, null, live);
             }
 
             switch (e.Channel)
@@ -625,10 +629,9 @@ namespace LetheChat
                 _currentgenerationtokencount = 0;
                 if (!_impersonatemode)
                 {
-                    Invoke((System.Windows.Forms.MethodInvoker)delegate
-                    {
-                        statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
-                    });
+                    InvokeUI(() => statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s");
+                    if (live == Guid.Empty)
+                        return;
                     var stringfix = _currentgeneration.ToString().StripThinkTags();
                     if (string.IsNullOrEmpty(stringfix))
                         stringfix = $"*{LLMEngine.Bot.GetIdentifier()} is thinking...*";
@@ -639,11 +642,11 @@ namespace LetheChat
                         stringfix = EmojiFilter.RemoveAllEmojis(stringfix);
 
                     var MsgPrefix = ChatRender.GetMessagePrefix(AuthorRole.Assistant);
-                    await webUI.EditMessage(MsgPrefix + stringfix, _currentgenerationThink.ToString().StripThinkTags());
+                    await webUI.EditMessage(MsgPrefix + stringfix, _currentgenerationThink.ToString().StripThinkTags(), null, live);
                 }
                 else
                 {
-                    Invoke((System.Windows.Forms.MethodInvoker)delegate
+                    InvokeUI(() =>
                     {
                         statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
                         ed_input.Text = _currentgenerationThink.ToString() + _currentgeneration.ToString();
@@ -652,15 +655,46 @@ namespace LetheChat
             }
         }
 
+        /// <summary>
+        /// Runs an action on the UI thread without ever blocking the caller (the engine thread), and without throwing when the form is going away.
+        /// </summary>
+        private void InvokeUI(Action action)
+        {
+            if (IsDisposed || !IsHandleCreated)
+                return;
+            if (!InvokeRequired)
+            {
+                action();
+                return;
+            }
+            try
+            {
+                BeginInvoke(action);
+            }
+            catch (InvalidOperationException)
+            {
+                // handle destroyed in the meantime
+            }
+        }
+
         private async void LLMEngine_OnInferenceCompleted(object? sender, InferenceResult inferenceResults)
         {
             _responselength = DateTime.Now - _postdate;
             _activityTimer?.Reset();
+
+            // The engine raises exactly one completion per generation. A cancelled one carries a partial response that
+            // is discarded: nothing goes to the history, and the placeholder leaves the screen.
+            if (inferenceResults.WasCancelled)
+            {
+                await HandleCancelledGeneration();
+                return;
+            }
+
             // add time to the log
             if (_impersonatemode)
             {
                 _impersonatemode = false;
-                Invoke((System.Windows.Forms.MethodInvoker)delegate
+                InvokeUI(() =>
                 {
                     ed_input.Text = inferenceResults.ThinkingContent?.ToWinFormat() ?? string.Empty + inferenceResults.Response.ToWinFormat();
                     statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
@@ -669,6 +703,9 @@ namespace LetheChat
             }
             else
             {
+                // placeholder of this response, on screen
+                var live = webUI.LiveMessageGuid;
+
                 var activebot = (LLMEngine.Bot is GroupPersonaBase grp ? grp.GetCurrentPersona()?.Name : LLMEngine.Bot.Name) ?? LLMEngine.Bot.Name;
                 var statcheck = activebot + ": ";
 
@@ -713,21 +750,17 @@ namespace LetheChat
 
                 var msg = LLMEngine.Bot.History.LogMessage(AuthorRole.Assistant, stringfix, LLMEngine.User, LLMEngine.Bot);
                 msg.ThinkBlock = thinkblock;
-                await InvokeAsync(async () => { await webUI.EditMessage(MsgPrefix + stringfix, thinkblock, msg.Guid); });
+                // The message is in the history now. Turn the placeholder into it; if the placeholder is gone for any
+                // reason (reload, race with a group chain...), rebuild the page from the history, which is the truth.
+                var shown = live != Guid.Empty && await webUI.EditMessage(MsgPrefix + stringfix, thinkblock, msg.Guid, live);
                 PrepareResponse();
 
-                if (_forcereload || Program.Settings.MaxMessagesOnScreen <= LLMEngine.History.CurrentSession.Messages.Count)
+                if (!shown || _forcereload || Program.Settings.MaxMessagesOnScreen <= LLMEngine.History.CurrentSession.Messages.Count)
                 {
-                    Invoke((System.Windows.Forms.MethodInvoker)async delegate
-                    {
-                        await webUI.ReloadFullChat();
-                    });
                     _forcereload = false;
+                    await webUI.ReloadFullChat();
                 }
-                Invoke((System.Windows.Forms.MethodInvoker)delegate
-                {
-                    statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s";
-                });
+                InvokeUI(() => statusbar.Items[1].Text = $"Generation: {_responselength.TotalSeconds:F2}s");
                 if (Program.Settings.UseTTS && !string.IsNullOrEmpty(Bot?.TTSVoice) && LLMEngine.Client?.SupportsTTS == true)
                 {
                     await OutputTTS(stringfix);
@@ -739,6 +772,30 @@ namespace LetheChat
             if (await AdvanceGroupQueue())
                 return;
             LLMEngine.Logger?.LogInformation($"[InferenceCompleted] Response: {inferenceResults.Response} - Complete: {inferenceResults.FinishReason} - Tool: {inferenceResults.ToolCalls?.Count > 0}");
+        }
+
+        /// <summary>
+        /// End of a generation the user cancelled. The partial response is discarded: the history never received it, 
+        /// so removing the placeholder (by guid, no reload) is all it takes for the screen to match the state again.
+        /// </summary>
+        private async Task HandleCancelledGeneration()
+        {
+            var impersonating = _impersonatemode;
+            _impersonatemode = false;
+            var live = webUI.LiveMessageGuid;
+            PrepareResponse();
+
+            // Whatever the prompt builder remembers belongs to the abandoned generation (a later reroll must not reuse it).
+            LLMEngine.InvalidatePromptCache();
+
+            if (impersonating)
+                InvokeUI(() => ed_input.Text = string.Empty);
+            else if (live != Guid.Empty)
+                await webUI.RemoveMessage(live);
+
+            InvokeUI(() => statusbar.Items[1].Text = "Generation cancelled");
+            LLMEngine.Logger?.LogInformation("[InferenceCompleted] Generation cancelled by the user.");
+            Bot?.SaveChatHistory();
         }
 
         [Obsolete("This method will be removed in future versions and replaced by an action. In the meantime, bot cannot initiate conversations.")]
@@ -775,10 +832,8 @@ namespace LetheChat
 
         private void OnStatusChanged(object? sender, SystemStatus e)
         {
-            Invoke((System.Windows.Forms.MethodInvoker)delegate
-            {
-                UpdateUIState();
-            });
+            // Never block the engine thread on the UI thread: UpdateUIState reads the current status anyway.
+            InvokeUI(UpdateUIState);
         }
 
         #endregion
@@ -815,17 +870,44 @@ namespace LetheChat
             _currentgencalls = 0;
         }
 
+        // A send / reroll is being prepared (placeholder not drawn yet, so the engine is not Busy yet). Ignores extra clicks and Enter presses.
+        private bool _startingTurn = false;
+        // Bumped on every cancel, lets deferred work (group chat chain) notice it was cancelled in the meantime.
+        private int _cancelEpoch = 0;
+
         private async void Impersonate(object sender, EventArgs e)
         {
             _activityTimer?.Reset();
-            if (LLMEngine.Status == SystemStatus.Busy)
+            if (LLMEngine.Status == SystemStatus.Busy || _startingTurn)
                 return;
             statusbar.Items[1].Text = "Analyzing...";
             _postdate = DateTime.Now;
             _impersonatemode = true;
             PrepareResponse();
             ed_input.Text = string.Empty;
-            await LLMEngine.ImpersonateUser();
+            if (!await LLMEngine.ImpersonateUser())
+            {
+                _impersonatemode = false;
+                statusbar.Items[1].Text = "The model is busy, try again once it has finished.";
+            }
+        }
+
+        /// <summary>
+        /// Cancel button. The engine does the heavy lifting: it stops the turn wherever it is (preparation steps included),
+        /// then raises a "cancelled" completion that <see cref="HandleCancelledGeneration"/> turns into a clean screen.
+        /// Nothing is reloaded or edited here, so the page and the state cannot disagree.
+        /// </summary>
+        private async Task CancelCurrentWork()
+        {
+            _cancelEpoch++;
+            statusbar.Items[1].Text = "Cancelling...";
+            LLMEngine.Bot.AgentSystem?.CancelWork();
+            if (LLMEngine.Bot is GroupChar mygroup)
+                mygroup.ClearResponseQueue();
+            // Some backends need an HTTP round trip to abort, and continuations of the cancelled call may run on this thread.
+            await Task.Run(() => LLMEngine.CancelGeneration());
+            // A cancelled chat turn will also report through HandleCancelledGeneration; a cancelled background query will not.
+            statusbar.Items[1].Text = "Generation cancelled";
         }
 
         private async void SendMessage(object sender, EventArgs e)
@@ -837,100 +919,136 @@ namespace LetheChat
             _afkmessagecount = 0;
             if (LLMEngine.Status == SystemStatus.Busy)
             {
-                LLMEngine.CancelGeneration();
-                LLMEngine.Bot.AgentSystem?.CancelWork();
-                if (LLMEngine.Bot is GroupChar mygroup)
-                    mygroup.ClearResponseQueue();
-                UpdateUIState();
-                await webUI.ReloadFullChat();
+                await CancelCurrentWork();
                 return;
             }
-            _impersonatemode = false;
-            _postdate = DateTime.Now;
-            statusbar.Items[1].Text = "Analyzing...";
-            UseCharacterDefinedSampler();
-
-            if (string.IsNullOrEmpty(ed_input.Text))
-            {
-                // ready a new message for the bot's response
-                PrepareResponse();
-                await webUI.SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is thinking...*"));
-                ed_input.Text = string.Empty;
-                await LLMEngine.AddBotMessage();
+            if (_startingTurn)
                 return;
-            }
-            ;
-
-            var msgtxt = ed_input.Text.ToLinuxFormat();
-            msgtxt = LLMEngine.Bot.ReplaceMacros(msgtxt);
-            SlashReturn? foundslash = null;
-            foreach (var slash in slashCommands)
+            _startingTurn = true;
+            try
             {
-                var res = slash.RunCommand(msgtxt);
-                if (res.Message != null)
+                _impersonatemode = false;
+                _postdate = DateTime.Now;
+                statusbar.Items[1].Text = "Analyzing...";
+                UseCharacterDefinedSampler();
+
+                if (string.IsNullOrEmpty(ed_input.Text))
                 {
-                    foundslash = res;
-                    break;
+                    // ready a new message for the bot's response
+                    PrepareResponse();
+                    var thinking = new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is thinking...*");
+                    await webUI.SendMessageToUI(thinking, live: true);
+                    ed_input.Text = string.Empty;
+                    // The engine flips to Busy synchronously inside this call, so the guard can drop right before it.
+                    _startingTurn = false;
+                    if (!await LLMEngine.AddBotMessage())
+                    {
+                        statusbar.Items[1].Text = "The model is busy, try again once it has finished.";
+                        await webUI.RemoveMessage(thinking.Guid);
+                    }
+                    return;
+                }
+
+                var msgtxt = ed_input.Text.ToLinuxFormat();
+                msgtxt = LLMEngine.Bot.ReplaceMacros(msgtxt);
+                SlashReturn? foundslash = null;
+                foreach (var slash in slashCommands)
+                {
+                    var res = slash.RunCommand(msgtxt);
+                    if (res.Message != null)
+                    {
+                        foundslash = res;
+                        break;
+                    }
+                }
+                var userMsg = new SingleMessage(AuthorRole.User, msgtxt, DragNDropExtension.DroppedFilePath);
+                if (foundslash is not null && foundslash.ReplaceUser && foundslash.Message is not null)
+                {
+                    userMsg = foundslash.Message;
+                }
+                await webUI.SendMessageToUI(userMsg);
+                if (foundslash is not null && !foundslash.ReplaceUser && foundslash.Message is not null)
+                {
+                    await webUI.SendMessageToUI(foundslash.Message);
+                    if (foundslash.LogToHistory)
+                        LLMEngine.History.LogMessage(foundslash.Message);
+                }
+
+                // GROUP CHAT START: build queue & prime first responder
+                _lastUserMessageForGroupLoop = userMsg;
+                if (LLMEngine.Bot is GroupChar ggroup && (foundslash is null || !foundslash.NoBotResponse))
+                {
+                    await ggroup.BuildResponseQueue(msgtxt);
+                    var first = await ggroup.PrimeFirstResponder();
+                    if (first != null)
+                    {
+                        UpdateGroupSelection(); // keep UI in sync
+                        LLMEngine.InvalidatePromptCache();
+                    }
+                }
+                // GROUP CHAT END
+
+                if (foundslash is null || !foundslash.NoBotResponse)
+                {
+                    // ready a new message for the bot's response
+                    PrepareResponse();
+                    var reading = new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*");
+                    await webUI.SendMessageToUI(reading, live: true);
+                    ed_input.Text = string.Empty;
+                    // The engine flips to Busy synchronously inside this call, so the guard can drop right before it.
+                    _startingTurn = false;
+                    if (await LLMEngine.SendMessageToBot(userMsg))
+                    {
+                        DragNDropExtension.DroppedFilePath = [];
+                        pictEmbed.Image = null;
+                    }
+                    else
+                    {
+                        // Refused (something grabbed the engine in the meantime): nothing was sent. Give the text back
+                        // and rebuild the page from the history, which does not know about this message.
+                        statusbar.Items[1].Text = "The model is busy, the message was not sent.";
+                        ed_input.Text = msgtxt;
+                        await webUI.ReloadFullChat();
+                    }
                 }
             }
-            var userMsg = new SingleMessage(AuthorRole.User, msgtxt, DragNDropExtension.DroppedFilePath);
-            if (foundslash is not null && foundslash.ReplaceUser && foundslash.Message is not null)
+            finally
             {
-                userMsg = foundslash.Message;
-            }
-            await webUI.SendMessageToUI(userMsg);
-            if (foundslash is not null && !foundslash.ReplaceUser && foundslash.Message is not null)
-            {
-                await webUI.SendMessageToUI(foundslash.Message);
-                if (foundslash.LogToHistory)
-                    LLMEngine.History.LogMessage(foundslash.Message);
-            }
-
-            // GROUP CHAT START: build queue & prime first responder
-            _lastUserMessageForGroupLoop = userMsg;
-            if (LLMEngine.Bot is GroupChar ggroup && (foundslash is null || !foundslash.NoBotResponse))
-            {
-                await ggroup.BuildResponseQueue(msgtxt);
-                var first = await ggroup.PrimeFirstResponder();
-                if (first != null)
-                {
-                    UpdateGroupSelection(); // keep UI in sync
-                    LLMEngine.InvalidatePromptCache();
-                }
-            }
-            // GROUP CHAT END
-
-            if (foundslash is null || !foundslash.NoBotResponse)
-            {
-                // ready a new message for the bot's response
-                PrepareResponse();
-                await webUI.SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"));
-                ed_input.Text = string.Empty;
-                await LLMEngine.SendMessageToBot(userMsg);
-                DragNDropExtension.DroppedFilePath = [];
-                pictEmbed.Image = null;
-
+                _startingTurn = false;
             }
         }
 
         private async void RerollMessage(object sender, EventArgs e)
         {
+            _afkmessagecount = 0;
+            if (LLMEngine.Status == SystemStatus.Busy || _startingTurn || LLMEngine.History.CurrentSession.Messages.Count == 0 || LLMEngine.History.LastMessage()?.Role != AuthorRole.Assistant)
+                return;
             if (LLMEngine.Bot is GroupChar g)
                 g.ClearResponseQueue();
-            _afkmessagecount = 0;
-            if (LLMEngine.Status == SystemStatus.Busy || LLMEngine.History.CurrentSession.Messages.Count == 0 || LLMEngine.History.LastMessage()?.Role != AuthorRole.Assistant)
-                return;
-            _activityTimer?.Reset();
-            _impersonatemode = false;
-            _postdate = DateTime.Now;
-            statusbar.Items[1].Text = "Analyzing...";
-            UseCharacterDefinedSampler();
-            await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
-            await webUI.RemoveLastMessage();
-            await webUI.SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"));
-            PrepareResponse();
-            await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
-            await LLMEngine.RerollLastMessage();
+            _startingTurn = true;
+            try
+            {
+                _activityTimer?.Reset();
+                _impersonatemode = false;
+                _postdate = DateTime.Now;
+                statusbar.Items[1].Text = "Analyzing...";
+                UseCharacterDefinedSampler();
+                await webUI.RemoveLastMessage();
+                await webUI.SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"), live: true);
+                PrepareResponse();
+                // The engine flips to Busy synchronously inside this call, so the guard can drop right before it.
+                _startingTurn = false;
+                if (!await LLMEngine.RerollLastMessage())
+                {
+                    // Refused: the history is untouched, so rebuilding the page brings the old message back.
+                    statusbar.Items[1].Text = "The model is busy, try again once it has finished.";
+                    await webUI.ReloadFullChat();
+                }
+            }
+            finally
+            {
+                _startingTurn = false;
+            }
         }
 
         private async void bt_connectClick(object sender, EventArgs e)
@@ -1371,39 +1489,50 @@ namespace LetheChat
                 return false;
 
             ggroup.SetCurrentBot(next.UniqueName);
+            var epoch = _cancelEpoch;
 
-            // UI work must happen on the UI thread.
+            // UI work (placeholder) and the generation itself, in that order, from the UI thread.
             BeginInvoke(new Action(async () =>
             {
+                SingleMessage? placeholder = null;
                 try
                 {
                     DragNDropExtension.DroppedFilePath = [];
                     UpdateGroupSelection();
                     LLMEngine.InvalidatePromptCache();
                     PrepareResponse();
-                    await webUI.SendMessageToUI(new SingleMessage(
+                    placeholder = new SingleMessage(
                         AuthorRole.Assistant,
-                        "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"));
+                        "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*");
+                    await webUI.SendMessageToUI(placeholder, live: true);
+
+                    // We are called from the completion event of the previous member, which fires while the engine is
+                    // still closing that turn. Wait for it to be released instead of racing it.
+                    for (var i = 0; i < 250 && LLMEngine.Status == SystemStatus.Busy; i++)
+                        await Task.Delay(20);
+
+                    // Cancelled while we were waiting: the next member must not start.
+                    if (epoch != _cancelEpoch)
+                    {
+                        await webUI.RemoveMessage(placeholder.Guid);
+                        return;
+                    }
+
+                    if (!await LLMEngine.AddBotMessage())
+                    {
+                        statusbar.Items[1].Text = "The model is busy, the group chain was interrupted.";
+                        await webUI.RemoveMessage(placeholder.Guid);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("AdvanceGroupQueue UI block error: " + ex);
+                    Debug.WriteLine("AdvanceGroupQueue error: " + ex);
+                    if (placeholder != null)
+                    {
+                        try { await webUI.RemoveMessage(placeholder.Guid); } catch { /* best effort */ }
+                    }
                 }
             }));
-
-            // Fire-and-forget the actual generation. We do NOT await here, so the next
-            // OnStreamInferenceEnded after this bot finishes will run with no guard blockage.
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    await LLMEngine.AddBotMessage().ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("AdvanceGroupQueue generation error: " + ex);
-                }
-            });
 
             return true;
         }

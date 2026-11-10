@@ -90,6 +90,66 @@ namespace LetheChat
             return tcs.Task;
         }
 
+        #region *** DOM operation serialization ***
+
+        // WebView2 is not forgiving: a script executed while a navigation is in flight runs against a document that is
+        // about to be thrown away (or not at all), and a reload that is not awaited makes every later script racy.
+        // So every operation touching the page goes through RunDom: they run one at a time, in arrival order, on the UI
+        // thread, and a reload only completes once the new document is loaded.
+        private readonly SemaphoreSlim _domGate = new(1, 1);
+
+        private async Task RunDom(Func<Task> op)
+        {
+            await _domGate.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                if (mainForm.IsDisposed)
+                    return;
+                if (mainForm.InvokeRequired)
+                    await InvokeAsync(op).ConfigureAwait(false);
+                else
+                    await op();
+            }
+            finally
+            {
+                _domGate.Release();
+            }
+        }
+
+        #endregion
+
+        #region *** Live message tracking ***
+
+        // The "live" message is the placeholder of the response being generated. Streaming edits address it by guid
+        // (never "the last message"), so an edit that arrives late - after a cancel, a reload, or once the message got its
+        // final guid - finds nothing and is dropped instead of overwriting an unrelated message.
+        private readonly object _liveLock = new();
+        private Guid _liveGuid = Guid.Empty;
+
+        /// <summary>
+        /// Guid of the message currently being generated on screen, or <see cref="Guid.Empty"/> when there is none.
+        /// </summary>
+        public Guid LiveMessageGuid
+        {
+            get { lock (_liveLock) return _liveGuid; }
+        }
+
+        private void SetLive(Guid guid)
+        {
+            lock (_liveLock) _liveGuid = guid;
+        }
+
+        private void ClearLiveIf(Guid guid)
+        {
+            lock (_liveLock)
+            {
+                if (_liveGuid == guid)
+                    _liveGuid = Guid.Empty;
+            }
+        }
+
+        #endregion
+
         private static string InjectDialogHtml(string imgPath, string dialog, string? thinking, Guid messageGuid, string? imagesHtml = null)
         {
             // dialog should already be sanitized for HTML; the pipeline calling this produces the HTML
@@ -297,74 +357,195 @@ namespace LetheChat
         }
 
 
-        public async Task RemoveLastMessage()
+        /// <summary>
+        /// Removes the last message element of the page (reroll / delete-last). For a message you know the guid of, prefer <see cref="RemoveMessage"/>.
+        /// </summary>
+        public Task RemoveLastMessage() => RunDom(async () =>
         {
-            if (mainForm.InvokeRequired)
-            {
-                await InvokeAsync(new Func<Task>(RemoveLastMessage));
+            if (web_chat.CoreWebView2 == null)
                 return;
-            }
             await web_chat.CoreWebView2.ExecuteScriptAsync(@"
                 (function(){
                     const msgs = document.getElementsByClassName('chat-message');
                     if (msgs.length > 0) { msgs[msgs.length - 1].remove(); }
                 })();");
             await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
+        });
+
+        /// <summary>
+        /// Removes the message with the given guid from the page (no effect on the chat history).
+        /// </summary>
+        /// <returns>true if the message was on the page</returns>
+        public async Task<bool> RemoveMessage(Guid messageGuid)
+        {
+            var found = false;
+            await RunDom(async () =>
+            {
+                if (web_chat.CoreWebView2 == null)
+                    return;
+                var res = await web_chat.CoreWebView2.ExecuteScriptAsync(
+                    $"(function(){{ const el = document.querySelector('.chat-message[data-message-guid=\"{messageGuid}\"]'); if (!el) return false; el.remove(); return true; }})();");
+                found = res == "true";
+            });
+            ClearLiveIf(messageGuid);
+            return found;
         }
 
-        public async Task EditMessage(string message, string? thinking = null, Guid? messageGuid = null)
+        #region *** Message edits (coalesced) ***
+
+        // Streaming edits are produced faster than WebView2 can apply them. Instead of piling them up, edits for the same
+        // message that are still waiting are merged (the newest wins). A "final" edit (one that renames the message to its
+        // history guid) is never overwritten by a streaming edit, and edits for different messages are never merged.
+        private sealed class PendingEdit(string messageHtml, string thinkingHtml, Guid? newGuid, Guid target)
         {
-            if (mainForm.InvokeRequired)
+            public string MessageHtml { get; private set; } = messageHtml;
+            public string ThinkingHtml { get; private set; } = thinkingHtml;
+            public Guid? NewGuid { get; private set; } = newGuid;
+            public Guid Target { get; } = target;
+            public TaskCompletionSource<bool> Done { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            public void Update(string messageHtml, string thinkingHtml, Guid? newGuid)
             {
-                await InvokeAsync(new Func<Task>(async () => await EditMessage(message, thinking, messageGuid)));
-                return;
+                MessageHtml = messageHtml;
+                ThinkingHtml = thinkingHtml;
+                NewGuid = newGuid;
             }
+        }
+
+        private readonly object _editLock = new();
+        private readonly List<PendingEdit> _editQueue = [];
+        private bool _editPumpRunning;
+
+        /// <summary>
+        /// Replaces the content of a message on the page. The message is addressed by guid: <paramref name="targetGuid"/>, or
+        /// the live (being generated) message when omitted. If that message is not on the page (cancelled, reloaded, already
+        /// finalized) nothing is touched and false is returned: it never falls back to "the last message".
+        /// </summary>
+        /// <param name="message">markdown of the message</param>
+        /// <param name="thinking">markdown of the thinking block</param>
+        /// <param name="newGuid">when set, the message element is renamed to this guid (final edit, it becomes the history message)</param>
+        /// <param name="targetGuid">message to edit; defaults to <see cref="LiveMessageGuid"/></param>
+        /// <returns>true if the edit was applied</returns>
+        public async Task<bool> EditMessage(string message, string? thinking = null, Guid? newGuid = null, Guid? targetGuid = null)
+        {
+            var target = targetGuid ?? LiveMessageGuid;
+            if (target == Guid.Empty)
+                return false;
 
             var messageHtml = Markdown.ToHtml(message, CustomMarkDownPipeline).SanitizeForJS();
             var thinkingHtml = !string.IsNullOrEmpty(thinking)
                 ? Markdown.ToHtml(thinking, CustomMarkDownPipeline).SanitizeForJS()
                 : string.Empty;
-            var guidLiteral = messageGuid.HasValue ? messageGuid.Value.ToString() : string.Empty;
 
+            Task<bool> waiter;
+            var startPump = false;
+            lock (_editLock)
+            {
+                var tail = _editQueue.Count > 0 ? _editQueue[^1] : null;
+                if (tail != null && tail.Target == target && tail.NewGuid == null)
+                {
+                    // merge into the waiting streaming edit (a final edit simply makes it final)
+                    tail.Update(messageHtml, thinkingHtml, newGuid);
+                    waiter = tail.Done.Task;
+                }
+                else if (tail != null && tail.Target == target && tail.NewGuid != null && newGuid == null)
+                {
+                    // a streaming edit that trails the final one: obsolete
+                    waiter = tail.Done.Task;
+                }
+                else
+                {
+                    var edit = new PendingEdit(messageHtml, thinkingHtml, newGuid, target);
+                    _editQueue.Add(edit);
+                    waiter = edit.Done.Task;
+                    if (!_editPumpRunning)
+                    {
+                        _editPumpRunning = true;
+                        startPump = true;
+                    }
+                }
+            }
+            if (startPump)
+                _ = PumpEditsAsync();
+            return await waiter.ConfigureAwait(false);
+        }
+
+        private async Task PumpEditsAsync()
+        {
+            while (true)
+            {
+                PendingEdit edit;
+                lock (_editLock)
+                {
+                    if (_editQueue.Count == 0)
+                    {
+                        _editPumpRunning = false;
+                        return;
+                    }
+                    edit = _editQueue[0];
+                    _editQueue.RemoveAt(0);
+                }
+                var ok = false;
+                try
+                {
+                    await RunDom(async () => ok = await ApplyEditAsync(edit)).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error while editing a message: {ex}");
+                }
+                edit.Done.TrySetResult(ok);
+            }
+        }
+
+        private async Task<bool> ApplyEditAsync(PendingEdit edit)
+        {
+            if (web_chat.CoreWebView2 == null)
+                return false;
+
+            var rename = edit.NewGuid.HasValue ? $"wrapper.setAttribute('data-message-guid', '{edit.NewGuid.Value}');" : string.Empty;
             var script = $@"
 (function() {{
   try {{
-    const contents = document.getElementsByClassName('message-content');
-    if (!contents || contents.length === 0) {{
-      console.error('NewEditMessage: no .message-content elements found');
-      return;
-    }}
-    const idx = contents.length - 1;
-
-    if (typeof updateMessageBothAtIndex === 'function') {{
-      updateMessageBothAtIndex(""{messageHtml}"", ""{thinkingHtml}"", idx);
-    }} else {{
-      const messageContent = contents[idx];
-      const msgTarget = messageContent.querySelector('.message-raw');
-      if (msgTarget) {{
-        msgTarget.innerHTML = ""{messageHtml}"";
-      }}
-      const thinkTarget = messageContent.querySelector('.thinking-content');
-      if (thinkTarget) {{
-        thinkTarget.innerHTML = ""{thinkingHtml}"";
-      }}
-    }}
-
-    const wrapper = contents[idx].closest('.chat-message');
-    {(messageGuid.HasValue ? $"if (wrapper) wrapper.setAttribute('data-message-guid', '{guidLiteral}');" : "")}
+    const wrapper = document.querySelector('.chat-message[data-message-guid=""{edit.Target}""]');
+    if (!wrapper) return false;
+    const content = wrapper.querySelector('.message-content');
+    if (!content) return false;
+    const msgTarget = content.querySelector('.message-raw');
+    if (msgTarget) {{ msgTarget.innerHTML = ""{edit.MessageHtml}""; }}
+    const thinkTarget = content.querySelector('.thinking-content');
+    if (thinkTarget) {{ thinkTarget.innerHTML = ""{edit.ThinkingHtml}""; }}
+    {rename}
+    window.scrollTo(0, document.body.scrollHeight);
+    return true;
   }} catch (e) {{
-    console.error('NewEditMessage: exception', e);
+    console.error('EditMessage: exception', e);
+    return false;
   }}
 }})();";
 
-            await web_chat.CoreWebView2.ExecuteScriptAsync(script);
-            await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
+            var res = await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+            var ok = res == "true";
+            if (ok && edit.NewGuid.HasValue)
+                ClearLiveIf(edit.Target);
+            return ok;
         }
 
-        public async Task ReloadFullChat()
+        #endregion
+
+        /// <summary>
+        /// Rebuilds the page from the chat history and returns once the new document is loaded.
+        /// Anything that is not in the history (a placeholder being generated) is gone afterwards.
+        /// </summary>
+        public Task ReloadFullChat() => RunDom(ReloadCoreAsync);
+
+        private async Task ReloadCoreAsync()
         {
             if (web_chat.CoreWebView2 == null)
                 await InitializeWebViewAsync();
+
+            // The page is rebuilt from the history: a placeholder is not part of it.
+            SetLive(Guid.Empty);
 
             var html = string.Empty;
             var start = LLMEngine.History.CurrentSession.Messages.Count - Program.Settings.MaxMessagesOnScreen;
@@ -376,14 +557,22 @@ namespace LetheChat
                     html += AddHtmlMessage(LLMEngine.History.CurrentSession.Messages[i]);
             }
             html = InjectDialogCSS(html);
+
+            // NavigateToString returns immediately. Scripts executed before the new document is up would hit the old
+            // one (or nothing), so wait for the navigation to complete before releasing the DOM gate.
+            var navDone = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            void OnNavCompleted(object? s, CoreWebView2NavigationCompletedEventArgs e) => navDone.TrySetResult(e.IsSuccess);
+            web_chat.CoreWebView2!.NavigationCompleted += OnNavCompleted;
             try
             {
                 web_chat.NavigateToString(html);
-
+                var finished = await Task.WhenAny(navDone.Task, Task.Delay(10000));
+                if (finished != navDone.Task)
+                    Debug.WriteLine("ReloadFullChat: navigation did not complete in time.");
             }
             finally
             {
-
+                web_chat.CoreWebView2.NavigationCompleted -= OnNavCompleted;
             }
         }
 
@@ -438,19 +627,15 @@ namespace LetheChat
             web_chat.ZoomFactor = 1D;
         }
 
-        public async Task LoadHistoryToUI()
-        {
-            if (mainForm.InvokeRequired)
-            {
-                await InvokeAsync(ReloadFullChat);
-            }
-            else
-            {
-                await ReloadFullChat();
-            }
-        }
+        public Task LoadHistoryToUI() => ReloadFullChat();
 
-        public async Task SendMessageToUI(SingleMessage singleMessage)
+        /// <summary>
+        /// Appends a message after the last one on the page (the chat history is not touched).
+        /// </summary>
+        /// <param name="singleMessage">message to display</param>
+        /// <param name="live">true for the placeholder of a response about to be generated: it becomes the live message, the
+        /// target of <see cref="EditMessage"/> calls that do not name one</param>
+        public async Task SendMessageToUI(SingleMessage singleMessage, bool live = false)
         {
             string img = "gears.png";
             switch (singleMessage.Role)
@@ -502,8 +687,16 @@ namespace LetheChat
 
             coremsg = coremsg.SanitizeForJS();
             var script = $"addHtmlAfterLastChatMessage(\"{coremsg}\", \"{singleMessage.Guid}\");";
-            await web_chat.CoreWebView2.ExecuteScriptAsync(script);
-            await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
+            await RunDom(async () =>
+            {
+                if (web_chat.CoreWebView2 == null)
+                    return;
+                await web_chat.CoreWebView2.ExecuteScriptAsync(script);
+                // The page owns the element now: edits can address it.
+                if (live)
+                    SetLive(singleMessage.Guid);
+                await web_chat.CoreWebView2.ExecuteScriptAsync("window.scrollTo(0, document.body.scrollHeight);");
+            });
         }
 
 
