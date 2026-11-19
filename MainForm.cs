@@ -431,14 +431,7 @@ namespace LetheChat
                 ckToolCalls.Enabled = true;
                 bt_backend.Enabled = true;
                 btMainSettings.Enabled = true;
-                var (tokens, duration) = LLMEngine.History.GetCurrentChatSessionInfo();
-                statusbar.Items[0].Text = $"Current Session: {duration.TotalDays:F2} days ({tokens} tokens)";
-
-                var col = tokens > LLMEngine.MaxContextLength * 0.9 ? Color.Red :
-                    tokens > LLMEngine.MaxContextLength * 0.8 ? Color.Orange :
-                    Color.Green;
-
-                statusbar.Items[0].ForeColor = col;
+                _ = RefreshSessionInfoAsync();
                 cb_instruct.Enabled = true;
             }
             else if (LLMEngine.Status == SystemStatus.Busy)
@@ -503,6 +496,31 @@ namespace LetheChat
 
 
             cbGroupSwitch.Enabled = LLMEngine.Status == SystemStatus.Ready;
+        }
+
+        private int _sessionInfoRequest = 0;
+
+        /// <summary>
+        /// Updates the session size shown in the status bar. Counting the whole session's tokens can be a backend round
+        /// trip (llama.cpp tokenizer), so it runs off the UI thread. Only the latest request gets displayed.
+        /// </summary>
+        private async Task RefreshSessionInfoAsync()
+        {
+            var request = ++_sessionInfoRequest;
+            try
+            {
+                var (tokens, duration) = await Task.Run(() => LLMEngine.History.GetCurrentChatSessionInfo());
+                if (request != _sessionInfoRequest || IsDisposed)
+                    return;
+                statusbar.Items[0].Text = $"Current Session: {duration.TotalDays:F2} days ({tokens} tokens)";
+                statusbar.Items[0].ForeColor = tokens > LLMEngine.MaxContextLength * 0.9 ? Color.Red :
+                    tokens > LLMEngine.MaxContextLength * 0.8 ? Color.Orange :
+                    Color.Green;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("RefreshSessionInfoAsync error: " + ex);
+            }
         }
 
         /// <summary>
@@ -583,11 +601,9 @@ namespace LetheChat
 
         private void OnFullPromptReady(object? sender, string e)
         {
-            Invoke((System.Windows.Forms.MethodInvoker)delegate
-            {
-                var text = "====== New Generation ======\n\n" + e + "\n\n";
-                ed_log = text.ToWinFormat();
-            });
+            // Plain field, only read when the log window opens: no need to block the engine on the UI thread for it.
+            var text = "====== New Generation ======\n\n" + e + "\n\n";
+            ed_log = text.ToWinFormat();
         }
 
         private async void LMEngine_OnInferenceSeqmentReceived(object? sender, InferenceSegment e)
@@ -875,6 +891,29 @@ namespace LetheChat
         // Bumped on every cancel, lets deferred work (group chat chain) notice it was cancelled in the meantime.
         private int _cancelEpoch = 0;
 
+        /// <summary>
+        /// Runs a chat turn (send / reroll / impersonate / bot message) on a worker thread. The preparation steps (plugins,
+        /// memory, RAG, token counting, prompt building and trimming) are synchronous for the most part, and would otherwise
+        /// freeze the UI until the first real async call. The <see cref="_startingTurn"/> guard stays up until the engine
+        /// has claimed the turn (Busy) or refused it.
+        /// </summary>
+        /// <returns>the engine's answer: true if the turn ran, false if it was refused</returns>
+        private async Task<bool> RunTurnAsync(Func<Task<bool>> start)
+        {
+            _startingTurn = true;
+            var turn = Task.Run(start);
+            try
+            {
+                while (!turn.IsCompleted && LLMEngine.Status != SystemStatus.Busy)
+                    await Task.WhenAny(turn, Task.Delay(10));
+            }
+            finally
+            {
+                _startingTurn = false;
+            }
+            return await turn;
+        }
+
         private async void Impersonate(object sender, EventArgs e)
         {
             _activityTimer?.Reset();
@@ -885,7 +924,7 @@ namespace LetheChat
             _impersonatemode = true;
             PrepareResponse();
             ed_input.Text = string.Empty;
-            if (!await LLMEngine.ImpersonateUser())
+            if (!await RunTurnAsync(LLMEngine.ImpersonateUser))
             {
                 _impersonatemode = false;
                 statusbar.Items[1].Text = "The model is busy, try again once it has finished.";
@@ -939,9 +978,7 @@ namespace LetheChat
                     var thinking = new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is thinking...*");
                     await webUI.SendMessageToUI(thinking, live: true);
                     ed_input.Text = string.Empty;
-                    // The engine flips to Busy synchronously inside this call, so the guard can drop right before it.
-                    _startingTurn = false;
-                    if (!await LLMEngine.AddBotMessage())
+                    if (!await RunTurnAsync(LLMEngine.AddBotMessage))
                     {
                         statusbar.Items[1].Text = "The model is busy, try again once it has finished.";
                         await webUI.RemoveMessage(thinking.Guid);
@@ -995,9 +1032,7 @@ namespace LetheChat
                     var reading = new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*");
                     await webUI.SendMessageToUI(reading, live: true);
                     ed_input.Text = string.Empty;
-                    // The engine flips to Busy synchronously inside this call, so the guard can drop right before it.
-                    _startingTurn = false;
-                    if (await LLMEngine.SendMessageToBot(userMsg))
+                    if (await RunTurnAsync(() => LLMEngine.SendMessageToBot(userMsg)))
                     {
                         DragNDropExtension.DroppedFilePath = [];
                         pictEmbed.Image = null;
@@ -1036,9 +1071,7 @@ namespace LetheChat
                 await webUI.RemoveLastMessage();
                 await webUI.SendMessageToUI(new SingleMessage(AuthorRole.Assistant, "*" + LLMEngine.Bot.GetIdentifier() + " is reading your message...*"), live: true);
                 PrepareResponse();
-                // The engine flips to Busy synchronously inside this call, so the guard can drop right before it.
-                _startingTurn = false;
-                if (!await LLMEngine.RerollLastMessage())
+                if (!await RunTurnAsync(LLMEngine.RerollLastMessage))
                 {
                     // Refused: the history is untouched, so rebuilding the page brings the old message back.
                     statusbar.Items[1].Text = "The model is busy, try again once it has finished.";
@@ -1518,7 +1551,7 @@ namespace LetheChat
                         return;
                     }
 
-                    if (!await LLMEngine.AddBotMessage())
+                    if (!await RunTurnAsync(LLMEngine.AddBotMessage))
                     {
                         statusbar.Items[1].Text = "The model is busy, the group chain was interrupted.";
                         await webUI.RemoveMessage(placeholder.Guid);

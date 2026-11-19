@@ -74,7 +74,9 @@ namespace LetheChat
         /// <returns></returns>
         private Task<bool> InvokeAsync(Func<Task> func)
         {
-            var tcs = new TaskCompletionSource<bool>();
+            // Completed on the UI thread: without RunContinuationsAsynchronously, every caller awaiting this with
+            // ConfigureAwait(false) (RunDom, the edit pump, engine event handlers) would continue inline on the UI thread.
+            var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             mainForm.BeginInvoke(new Action(async () =>
             {
                 try
