@@ -167,6 +167,7 @@ namespace LetheChat.Plugins
             prompt.AppendLinuxLine("- The user is asking a direct question about history, a location, or a news item");
             prompt.AppendLinuxLine("- The user is explicitly telling you to search for something on the internet");
             prompt.AppendLinuxLine("- If information and links from the web would improve your response");
+            prompt.AppendLinuxLine();
             prompt.AppendLinuxLine("# Examples where a web search would not be beneficial:");
             prompt.AppendLinuxLine();
             prompt.AppendLinuxLine("- You're actively engaged in roleplay or deep conversation with the user");
