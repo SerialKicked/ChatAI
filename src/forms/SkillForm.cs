@@ -29,6 +29,7 @@ namespace LetheChat.Forms
         private readonly Button btDelete = new();
         private readonly Button btImport = new();
         private readonly Button btFolder = new();
+        private readonly Button btReload = new();
 
         private readonly List<string> _listNames = [];
         private bool _loading = false;
@@ -63,13 +64,14 @@ namespace LetheChat.Forms
             listSkills.Font = new Font("Segoe UI", 9.25F);
             listSkills.SelectedIndexChanged += listSkills_SelectedIndexChanged;
 
-            var panLeftButtons = new Panel { Dock = DockStyle.Bottom, Height = 4 * 30 + 6 };
+            var panLeftButtons = new Panel { Dock = DockStyle.Bottom, Height = 5 * 30 + 6 };
+            ConfigureButton(btReload, "Reload from folder", Color.LightSlateGray, btReload_Click);
             ConfigureButton(btFolder, "Open skills folder", Color.LightSlateGray, btFolder_Click);
             ConfigureButton(btImport, "Import skill file...", Color.LightSlateGray, btImport_Click);
             ConfigureButton(btDelete, "Delete skill", Color.IndianRed, btDelete_Click);
             ConfigureButton(btNew, "New skill", Color.DarkKhaki, btNew_Click);
             // Dock bottom: last added is laid out first, so add in reverse visual order
-            foreach (var b in new[] { btFolder, btImport, btDelete, btNew })
+            foreach (var b in new[] { btReload, btFolder, btImport, btDelete, btNew })
             {
                 b.Dock = DockStyle.Top;
                 b.Height = 26;
@@ -402,6 +404,20 @@ namespace LetheChat.Forms
             Process.Start(new ProcessStartInfo("explorer.exe", $"\"{root}\"") { UseShellExecute = true });
         }
 
+        private void btReload_Click(object? sender, EventArgs e)
+        {
+            if (!ConfirmDiscard())
+                return;
+            LLMEngine.SkillManager.Load();
+            _dirty = false;
+            // Keep the current skill selected if it still exists, so external edits show up right away
+            var keep = LLMEngine.SkillManager.Get(_currentName)?.Name ?? string.Empty;
+            if (keep.Length == 0)
+                _currentName = null;
+            RefreshList(keep);
+            SetStatus($"{LLMEngine.SkillManager.Count} skill(s) loaded from the folder.");
+        }
+
         private async void btDraft_Click(object? sender, EventArgs e)
         {
             await GenerateAsync(improve: false);
@@ -476,6 +492,7 @@ namespace LetheChat.Forms
             btNew.Enabled = !generating;
             btDelete.Enabled = !generating;
             btImport.Enabled = !generating;
+            btReload.Enabled = !generating;
             listSkills.Enabled = !generating;
         }
 

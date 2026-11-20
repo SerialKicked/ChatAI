@@ -175,6 +175,9 @@ namespace LetheChat
             HelpTool.ApplyTooltip(HelptoolTip, mck_guidance, "Depending on the characters' settings, they can have moods varying over time, can be aware of the time, or change the topic of discussion based on background activity." + Environment.NewLine + Environment.NewLine + "This is a global check allowing/disallowing all those features at once, so you don't have to change 4 different settings each time you want to toggle the guidance.");
             HelpTool.ApplyTooltip(HelptoolTip, mckNatMem, "When a character can run background tasks (like goal setting or background web queries), the system can insert the results into the prompt when it feels its related to the current conversation." + Environment.NewLine + Environment.NewLine + "This allows you to toggle the behavior entirely.");
             HelpTool.ApplyTooltip(HelptoolTip, ckToolCalls, "Whether to allow the use of tool-calls in the current conversation. If unchecked, the bot will not be able to call any tools, even if they are enabled in the settings." + Environment.NewLine + Environment.NewLine + "This is useful to quickly toggle tool access without having to change the settings.");
+            HelpTool.ApplyTooltip(HelptoolTip, mckSkills, "Whether to use the skill library (reusable instructions for specific tasks) in the current conversation." + Environment.NewLine + Environment.NewLine +
+                "When tool-calling is active and the Skills toolset is allowed, the bot can search and load skills by itself. Otherwise, skills matching your message are inserted directly into the system prompt (if auto-suggest is enabled in the Settings menu)." + Environment.NewLine +
+                "Unavailable when the library is empty, or when neither the Skills toolset nor auto-suggest can be used.");
             HelpTool.ApplyTooltip(HelptoolTip, mck_agentmode, "Allow the bot to use its background agent features when the user is AFK, such as setting goals, writing in their journal, or performing websearches based on discussion." + Environment.NewLine + Environment.NewLine + "This is only relevant if the character has background tasks setup.");
             HelpTool.ApplyTooltip(HelptoolTip, mck_forceNames, "Whether to add the user and bot's names before their respective input (name: input). This can help some fine-tuned models that have been trained that way. This may conflict with the correct operation of thinking models.");
             HelpTool.ApplyTooltip(HelptoolTip, mck_disablethink, "Check this if you're not using a 'thinking' model or if you wish to disable the feature.");
@@ -302,6 +305,7 @@ namespace LetheChat
             mck_agentmode.Checked = LLMEngine.Bot.AgentMode;
             mckNatMem.Checked = !LLMEngine.Bot.Brain.DisableEurekas;
             ckToolCalls.Checked = LLMEngine.Settings.ToolCallsAllowed;
+            mckSkills.Checked = LLMEngine.Settings.SkillOptions.Enabled;
             mck_ragenabled.Checked = LLMEngine.Settings.RAGEnabled;
             mck_worldinfo.Checked = LLMEngine.Settings.RAGKeywordEnabled;
             mck_forceNames.Checked = LLMEngine.Settings.AddNamesToPrompt;
@@ -493,9 +497,21 @@ namespace LetheChat
                 ckToolCalls.Enabled = LLMEngine.SupportsToolCalls;
                 ckToolCalls.Checked = false;
             }
-
+            UpdateSkillToggleState();
 
             cbGroupSwitch.Enabled = LLMEngine.Status == SystemStatus.Ready;
+        }
+
+        /// <summary>
+        /// Enables the Skills checkbox only when toggling it would change something: the library has enabled skills, 
+        /// and either the Skills toolset can be offered to the model or auto-suggest can insert them in the prompt.
+        /// </summary>
+        private void UpdateSkillToggleState()
+        {
+            var toolsetUsable = LLMEngine.SupportsToolCalls && LLMEngine.Settings.ToolCallsAllowed &&
+                LLMEngine.ToolManager.AllowedToolSets.Contains(SkillContextPlugin.ToolsetId);
+            var hasEffect = LLMEngine.SkillManager.Enabled.Count > 0 && (toolsetUsable || LLMEngine.Settings.SkillOptions.AutoSuggest);
+            mckSkills.Enabled = LLMEngine.Status != SystemStatus.Busy && hasEffect;
         }
 
         private int _sessionInfoRequest = 0;
@@ -1829,6 +1845,7 @@ namespace LetheChat
                 skillForm.LoadDraft(draft);
             skillForm.ShowDialog();
             LLMEngine.InvalidatePromptCache();
+            UpdateSkillToggleState();
         }
 
         private bool _skillDraftRunning = false;
@@ -1942,6 +1959,16 @@ namespace LetheChat
             if (_isinitloading)
                 return;
             LLMEngine.Settings.ToolCallsAllowed = ckToolCalls.Checked;
+            LLMEngine.InvalidatePromptCache();
+            UpdateSkillToggleState();
+        }
+
+        private void mckSkills_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_isinitloading)
+                return;
+            LLMEngine.Settings.SkillOptions.Enabled = mckSkills.Checked;
+            LLMEngine.InvalidatePromptCache();
         }
 
         private void bt_llama_Click(object sender, EventArgs e)

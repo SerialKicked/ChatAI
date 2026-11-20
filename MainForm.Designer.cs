@@ -92,6 +92,7 @@ namespace LetheChat
             collapsibleGroupBox2 = new CollapsibleGroupBox();
             panel5 = new Panel();
             mck_agentmode = new ModernCheckBox();
+            mckSkills = new ModernCheckBox();
             ckToolCalls = new ModernCheckBox();
             mck_onlinerag = new ModernCheckBox();
             panel2 = new Panel();
@@ -382,7 +383,7 @@ namespace LetheChat
             bt_brain.FlatStyle = FlatStyle.Flat;
             bt_brain.Font = new Font("Segoe UI", 9F);
             bt_brain.ForeColor = Color.Black;
-            bt_brain.Location = new Point(8, 256);
+            bt_brain.Location = new Point(8, 282);
             bt_brain.Name = "bt_brain";
             bt_brain.Size = new Size(184, 27);
             bt_brain.TabIndex = 41;
@@ -909,7 +910,7 @@ namespace LetheChat
             cboxVLM.Controls.Add(pictEmbed);
             cboxVLM.Controls.Add(bt_clearimg);
             cboxVLM.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            cboxVLM.Location = new Point(4, 784);
+            cboxVLM.Location = new Point(4, 823);
             cboxVLM.Name = "cboxVLM";
             cboxVLM.Padding = new Padding(8, 32, 8, 8);
             cboxVLM.Size = new Size(200, 161);
@@ -922,6 +923,7 @@ namespace LetheChat
             collapsibleGroupBox2.Controls.Add(bt_brain);
             collapsibleGroupBox2.Controls.Add(panel5);
             collapsibleGroupBox2.Controls.Add(mck_agentmode);
+            collapsibleGroupBox2.Controls.Add(mckSkills);
             collapsibleGroupBox2.Controls.Add(ckToolCalls);
             collapsibleGroupBox2.Controls.Add(mck_onlinerag);
             collapsibleGroupBox2.Controls.Add(panel2);
@@ -934,14 +936,14 @@ namespace LetheChat
             collapsibleGroupBox2.Location = new Point(4, 483);
             collapsibleGroupBox2.Name = "collapsibleGroupBox2";
             collapsibleGroupBox2.Padding = new Padding(8, 32, 8, 8);
-            collapsibleGroupBox2.Size = new Size(200, 293);
+            collapsibleGroupBox2.Size = new Size(200, 332);
             collapsibleGroupBox2.TabIndex = 28;
             collapsibleGroupBox2.Text = "Memory and Tools";
             // 
             // panel5
             // 
             panel5.Dock = DockStyle.Top;
-            panel5.Location = new Point(8, 248);
+            panel5.Location = new Point(8, 274);
             panel5.Margin = new Padding(8);
             panel5.Name = "panel5";
             panel5.Padding = new Padding(8);
@@ -952,7 +954,7 @@ namespace LetheChat
             // 
             mck_agentmode.Dock = DockStyle.Top;
             mck_agentmode.Font = new Font("Segoe UI", 9F);
-            mck_agentmode.Location = new Point(8, 222);
+            mck_agentmode.Location = new Point(8, 248);
             mck_agentmode.Name = "mck_agentmode";
             mck_agentmode.Size = new Size(184, 26);
             mck_agentmode.TabIndex = 48;
@@ -971,6 +973,18 @@ namespace LetheChat
             ckToolCalls.Text = "Allow Tool-calling";
             ckToolCalls.UseVisualStyleBackColor = true;
             ckToolCalls.CheckedChanged += ckToolCalls_CheckedChanged;
+            // 
+            // mckSkills
+            // 
+            mckSkills.Dock = DockStyle.Top;
+            mckSkills.Font = new Font("Segoe UI", 9F);
+            mckSkills.Location = new Point(8, 222);
+            mckSkills.Name = "mckSkills";
+            mckSkills.Size = new Size(184, 26);
+            mckSkills.TabIndex = 52;
+            mckSkills.Text = "Use Skills";
+            mckSkills.UseVisualStyleBackColor = true;
+            mckSkills.CheckedChanged += mckSkills_CheckedChanged;
             // 
             // mck_onlinerag
             // 
@@ -1480,6 +1494,7 @@ namespace LetheChat
         private Button btRunAgent;
         private Button button4;
         private ModernCheckBox ckToolCalls;
+        private ModernCheckBox mckSkills;
         private Button bt_llama;
         private Panel panel4;
         private Panel panel8;
