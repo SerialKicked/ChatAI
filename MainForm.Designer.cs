@@ -962,18 +962,6 @@ namespace LetheChat
             mck_agentmode.UseVisualStyleBackColor = true;
             mck_agentmode.CheckedChanged += ck_agentmode_CheckedChanged;
             // 
-            // ckToolCalls
-            // 
-            ckToolCalls.Dock = DockStyle.Top;
-            ckToolCalls.Font = new Font("Segoe UI", 9F);
-            ckToolCalls.Location = new Point(8, 196);
-            ckToolCalls.Name = "ckToolCalls";
-            ckToolCalls.Size = new Size(184, 26);
-            ckToolCalls.TabIndex = 51;
-            ckToolCalls.Text = "Allow Tool-calling";
-            ckToolCalls.UseVisualStyleBackColor = true;
-            ckToolCalls.CheckedChanged += ckToolCalls_CheckedChanged;
-            // 
             // mckSkills
             // 
             mckSkills.Dock = DockStyle.Top;
@@ -985,6 +973,18 @@ namespace LetheChat
             mckSkills.Text = "Use Skills";
             mckSkills.UseVisualStyleBackColor = true;
             mckSkills.CheckedChanged += mckSkills_CheckedChanged;
+            // 
+            // ckToolCalls
+            // 
+            ckToolCalls.Dock = DockStyle.Top;
+            ckToolCalls.Font = new Font("Segoe UI", 9F);
+            ckToolCalls.Location = new Point(8, 196);
+            ckToolCalls.Name = "ckToolCalls";
+            ckToolCalls.Size = new Size(184, 26);
+            ckToolCalls.TabIndex = 51;
+            ckToolCalls.Text = "Allow Tool-calling";
+            ckToolCalls.UseVisualStyleBackColor = true;
+            ckToolCalls.CheckedChanged += ckToolCalls_CheckedChanged;
             // 
             // mck_onlinerag
             // 
