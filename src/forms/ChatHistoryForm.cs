@@ -644,6 +644,40 @@ namespace LetheChat.Forms
             LLMEngine.History.Sessions.Add(_selectedSession);
             LoadChatHistoryTab();
         }
+
+        private async void btMegaSummary_Click(object sender, EventArgs e)
+        {
+            this.Enabled = false;
+
+            using var loadingForm = new LoadingForm() { Owner = this };
+
+            // Set the position in a way that doesn't affect the internal layout
+            loadingForm.StartPosition = FormStartPosition.Manual;
+            loadingForm.CenterToParent();
+            loadingForm.Show();
+            loadingForm.BringToFront();
+            loadingForm.Refresh();
+
+            try
+            {
+                loadingForm.SetMessage("Creating Meta-Summaries for long term chat. This might take a (long) moment.");
+                loadingForm.SetProgress(0);
+                loadingForm.SetMax(LLMEngine.History.Sessions.Count);
+                EmbedTools.OnEmbedText += (s, e) =>
+                {
+                    loadingForm.AddProgress(1);
+                };
+                await LLMEngine.History.UpdatePeriodSummaries(true);
+                loadingForm.SetMessage("Saving history...");
+                MainForm.Bot?.SaveChatHistory(true);
+            }
+            finally
+            {
+                loadingForm.Close();
+                this.Enabled = true;
+                MessageBox.Show("Long term chat meta-summaries have been created successfully.");
+            }
+        }
     }
 
     /// <summary>

@@ -54,7 +54,9 @@ namespace LetheChat.Forms
             listSession = new ListView();
             columnHeader1 = new ColumnHeader();
             columnHeader2 = new ColumnHeader();
+            columnHeader3 = new ColumnHeader();
             panel5 = new Panel();
+            btMegaSummary = new Button();
             btEmbedAll = new Button();
             bt_deleteAllHistory = new Button();
             verticalStackPanel1 = new Panel();
@@ -62,7 +64,6 @@ namespace LetheChat.Forms
             tabPage1 = new TabPage();
             button2 = new Button();
             tabPage2 = new TabPage();
-            columnHeader3 = new ColumnHeader();
             collapsibleGroupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)web_sessioncontent).BeginInit();
             panel4.SuspendLayout();
@@ -82,7 +83,7 @@ namespace LetheChat.Forms
             collapsibleGroupBox3.Location = new Point(8, 283);
             collapsibleGroupBox3.Name = "collapsibleGroupBox3";
             collapsibleGroupBox3.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox3.Size = new Size(823, 387);
+            collapsibleGroupBox3.Size = new Size(823, 267);
             collapsibleGroupBox3.TabIndex = 5;
             collapsibleGroupBox3.Text = "Content";
             // 
@@ -94,7 +95,7 @@ namespace LetheChat.Forms
             web_sessioncontent.Dock = DockStyle.Fill;
             web_sessioncontent.Location = new Point(12, 32);
             web_sessioncontent.Name = "web_sessioncontent";
-            web_sessioncontent.Size = new Size(799, 345);
+            web_sessioncontent.Size = new Size(799, 225);
             web_sessioncontent.TabIndex = 4;
             web_sessioncontent.ZoomFactor = 1D;
             // 
@@ -299,7 +300,7 @@ namespace LetheChat.Forms
             panel4.Dock = DockStyle.Left;
             panel4.Location = new Point(0, 0);
             panel4.Name = "panel4";
-            panel4.Size = new Size(376, 681);
+            panel4.Size = new Size(376, 561);
             panel4.TabIndex = 0;
             // 
             // listSession
@@ -309,7 +310,7 @@ namespace LetheChat.Forms
             listSession.FullRowSelect = true;
             listSession.Location = new Point(0, 0);
             listSession.Name = "listSession";
-            listSession.Size = new Size(376, 601);
+            listSession.Size = new Size(376, 447);
             listSession.TabIndex = 2;
             listSession.UseCompatibleStateImageBehavior = false;
             listSession.View = View.Details;
@@ -325,15 +326,36 @@ namespace LetheChat.Forms
             columnHeader2.Text = "Date";
             columnHeader2.Width = 90;
             // 
+            // columnHeader3
+            // 
+            columnHeader3.Text = "ID";
+            // 
             // panel5
             // 
+            panel5.Controls.Add(btMegaSummary);
             panel5.Controls.Add(btEmbedAll);
             panel5.Controls.Add(bt_deleteAllHistory);
             panel5.Dock = DockStyle.Bottom;
-            panel5.Location = new Point(0, 601);
+            panel5.Location = new Point(0, 447);
             panel5.Name = "panel5";
-            panel5.Size = new Size(376, 80);
+            panel5.Size = new Size(376, 114);
             panel5.TabIndex = 1;
+            // 
+            // btMegaSummary
+            // 
+            btMegaSummary.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btMegaSummary.BackColor = Color.Red;
+            btMegaSummary.FlatStyle = FlatStyle.Flat;
+            btMegaSummary.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btMegaSummary.ForeColor = Color.Black;
+            btMegaSummary.Location = new Point(6, 75);
+            btMegaSummary.Name = "btMegaSummary";
+            btMegaSummary.Size = new Size(364, 28);
+            btMegaSummary.TabIndex = 6;
+            btMegaSummary.Tag = "no-theme";
+            btMegaSummary.Text = "Long Term Summarization";
+            btMegaSummary.UseVisualStyleBackColor = false;
+            btMegaSummary.Click += btMegaSummary_Click;
             // 
             // btEmbedAll
             // 
@@ -375,7 +397,7 @@ namespace LetheChat.Forms
             verticalStackPanel1.Margin = new Padding(8);
             verticalStackPanel1.Name = "verticalStackPanel1";
             verticalStackPanel1.Padding = new Padding(8);
-            verticalStackPanel1.Size = new Size(839, 681);
+            verticalStackPanel1.Size = new Size(839, 561);
             verticalStackPanel1.TabIndex = 3;
             // 
             // modernTabControl1
@@ -446,16 +468,12 @@ namespace LetheChat.Forms
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Activation";
             // 
-            // columnHeader3
-            // 
-            columnHeader3.Text = "ID";
-            // 
             // ChatHistoryForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DimGray;
-            ClientSize = new Size(1215, 681);
+            ClientSize = new Size(1215, 561);
             Controls.Add(verticalStackPanel1);
             Controls.Add(panel4);
             ForeColor = Color.WhiteSmoke;
@@ -513,5 +531,6 @@ namespace LetheChat.Forms
         private TabPage tabPage2;
         private Button button2;
         private ColumnHeader columnHeader3;
+        private Button btMegaSummary;
     }
 }
