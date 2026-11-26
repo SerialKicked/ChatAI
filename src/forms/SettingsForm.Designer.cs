@@ -307,6 +307,9 @@
             btBackend = new Button();
             HelptoolTip = new ToolTip(components);
             openFileDialog1 = new OpenFileDialog();
+            panel35 = new Panel();
+            num_longterm = new LetheChat.Controls.ModernNumericUpDown();
+            label54 = new Label();
             panel1.SuspendLayout();
             MainTab.SuspendLayout();
             tabBackend.SuspendLayout();
@@ -381,6 +384,7 @@
             panel58.SuspendLayout();
             panel57.SuspendLayout();
             MainButtonStack.SuspendLayout();
+            panel35.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -1525,7 +1529,7 @@
             collapsibleGroupBox5.Controls.Add(num_ragmaxretrieve);
             collapsibleGroupBox5.Controls.Add(label27);
             collapsibleGroupBox5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            collapsibleGroupBox5.Location = new Point(6, 223);
+            collapsibleGroupBox5.Location = new Point(6, 249);
             collapsibleGroupBox5.Name = "collapsibleGroupBox5";
             collapsibleGroupBox5.Padding = new Padding(12, 32, 12, 10);
             collapsibleGroupBox5.Size = new Size(398, 207);
@@ -1686,6 +1690,7 @@
             // 
             collapsibleGroupBox6.BackColor = Color.FromArgb(37, 38, 42);
             collapsibleGroupBox6.CanCollapse = false;
+            collapsibleGroupBox6.Controls.Add(panel35);
             collapsibleGroupBox6.Controls.Add(ckDetailedSum);
             collapsibleGroupBox6.Controls.Add(mck_cutmiddle);
             collapsibleGroupBox6.Controls.Add(cb_pastsession);
@@ -1696,7 +1701,7 @@
             collapsibleGroupBox6.Location = new Point(6, 6);
             collapsibleGroupBox6.Name = "collapsibleGroupBox6";
             collapsibleGroupBox6.Padding = new Padding(12, 32, 12, 10);
-            collapsibleGroupBox6.Size = new Size(398, 211);
+            collapsibleGroupBox6.Size = new Size(398, 235);
             collapsibleGroupBox6.TabIndex = 36;
             collapsibleGroupBox6.Text = "Session Memory System";
             // 
@@ -3830,6 +3835,41 @@
             // 
             openFileDialog1.FileName = "openFileDialog1";
             // 
+            // panel35
+            // 
+            panel35.Controls.Add(num_longterm);
+            panel35.Controls.Add(label54);
+            panel35.Dock = DockStyle.Top;
+            panel35.Location = new Point(12, 184);
+            panel35.Margin = new Padding(8);
+            panel35.Name = "panel35";
+            panel35.Padding = new Padding(8);
+            panel35.Size = new Size(374, 36);
+            panel35.TabIndex = 58;
+            // 
+            // num_longterm
+            // 
+            num_longterm.BackColor = Color.FromArgb(64, 64, 64);
+            num_longterm.Font = new Font("Segoe UI", 9F);
+            num_longterm.Increment = new decimal(new int[] { 256, 0, 0, 0 });
+            num_longterm.Location = new Point(11, 6);
+            num_longterm.Maximum = new decimal(new int[] { 128000, 0, 0, 0 });
+            num_longterm.Name = "num_longterm";
+            num_longterm.Padding = new Padding(1);
+            num_longterm.Size = new Size(117, 23);
+            num_longterm.TabIndex = 27;
+            num_longterm.Value = new decimal(new int[] { 2048, 0, 0, 0 });
+            // 
+            // label54
+            // 
+            label54.AutoSize = true;
+            label54.Font = new Font("Segoe UI", 9F);
+            label54.Location = new Point(134, 10);
+            label54.Name = "label54";
+            label54.Size = new Size(165, 15);
+            label54.TabIndex = 28;
+            label54.Text = "Tokens for long term memory";
+            // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -3966,6 +4006,8 @@
             panel57.ResumeLayout(false);
             panel57.PerformLayout();
             MainButtonStack.ResumeLayout(false);
+            panel35.ResumeLayout(false);
+            panel35.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -4248,5 +4290,8 @@
         private Controls.ModernNumericUpDown numDeepSearchSynthesis;
         private Label label52;
         private Controls.ModernCheckBox ckMergeSysMessages;
+        private Panel panel35;
+        private Controls.ModernNumericUpDown num_longterm;
+        private Label label54;
     }
 }

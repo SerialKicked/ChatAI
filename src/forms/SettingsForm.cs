@@ -108,6 +108,7 @@ namespace LetheChat.Forms
             HelpTool.ApplyTooltip<SkillSettings>(HelptoolTip, ckSkillPlainDraft, nameof(SkillSettings.DraftWithPlainSections));
             HelpTool.ApplyTooltip<SkillSettings>(HelptoolTip, numSkillMaxContent, nameof(SkillSettings.MaxContentLength));
             HelpTool.ApplyTooltip<SkillSettings>(HelptoolTip, numSkillMaxCount, nameof(SkillSettings.MaxSkillCount));
+            HelpTool.ApplyTooltip<LetheChatSettings>(HelptoolTip, num_longterm, nameof(LetheChatSettings.PeriodSummaryReservedTokens));
 
 
             HelptoolTip.SetToolTip(ck_fixasterix, "If checked, the bot will try to fix any asterisks in its responses. This is useful if the bot is using asterisks for emphasis incorrectly." + Environment.NewLine + "Note that this may not work perfectly, and may lead to some weird formatting.");
@@ -242,6 +243,7 @@ namespace LetheChat.Forms
             num_ImgCount.Value = Program.Settings.MaxImageCount;
             ckFactRoleplay.Checked = Program.Settings.RecordFactsDuringRoleplay;
             numWebSearchDetailedMaxLength.Value = (decimal)Program.Settings.WebSearchDetailedMaxLength;
+            num_longterm.Value = Program.Settings.PeriodSummaryReservedTokens;
 
             ckManagedLlama.Checked = Program.Settings.ManagedLlama;
             edLlamaPath.Text = Program.Settings.PathToLlamaCppServer;
@@ -410,6 +412,7 @@ namespace LetheChat.Forms
                 Program.Settings.RAGKeywordMaxEntries = (int)numWIEntries.Value;
                 Program.Settings.RAGIndex = (int)num_ragindex.Value;
                 Program.Settings.RAGMValue = (int)num_ragM.Value;
+                Program.Settings.PeriodSummaryReservedTokens = (int)num_longterm.Value;
                 Program.Settings.MoveAllInsertsToSysPrompt = ck_sysrag.Checked;
                 Program.Settings.ShowHiddenMessages = ckShowHidden.Checked;
                 Program.Settings.AntiHallucinationMemoryFormat = ck_hallusafe.Checked;
