@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using LetheAISharp.Agent.Tools;
+using LetheAISharp.LLM;
 using LetheChat.Controls;
 using LetheChat.Forms;
 using OpenAI;
@@ -28,7 +30,8 @@ namespace LetheChat.Plugins
             "You have access to simple [Drawing] tools. Coordinates are in pixels, with the origin (0,0) at the TOP-LEFT corner; " +
             "x increases to the right and y increases downward. Colors can be given as common names (e.g. 'red', 'skyblue') " +
             "or hex strings (e.g. '#FF8800'). You must call NewDrawing before drawing; it will tell you the exact canvas size. " +
-            "Build up an image by calling the drawing tools one after another. Use GetCanvasInfo if you need to recall the size.";
+            "Build up an image by calling the drawing tools one after another. Use GetCanvasInfo if you need to recall the size. " +
+            "Use DrawViewImage to look at the canvas and check your work.";
 
         private readonly List<Tool> toolList = [];
 
@@ -79,6 +82,7 @@ namespace LetheChat.Plugins
 
             toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawNew), "[Drawing] Opens the drawing canvas (or clears the existing one) to a blank background. The canvas size is fixed by the app settings; this returns the exact width and height you must draw within."));
             toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawGetCanvasInfo), "[Drawing] Inspects the current canvas. Returns its width and height, plus the bounding box (leftmost/topmost/rightmost/bottommost pixels) of everything drawn so far. Call this between steps to check where your shapes actually landed and whether separate parts are drifting apart or off-center, since you cannot see the canvas directly."));
+            toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawViewCanvas), "[Drawing] Shows you the current content of the canvas as an image, so you can see what you have drawn so far and correct mistakes."));
             toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawLine), "[Drawing] Draws a straight line between two points."));
             toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawRectangle), "[Drawing] Draws a rectangle. Set filled=true for a solid rectangle, otherwise only the outline is drawn."));
             toolList.Add(Tool.GetOrCreateTool(this, nameof(DrawCircle), "[Drawing] Draws a circle from a center point and radius. Set filled=true for a solid disc."));
@@ -169,6 +173,30 @@ namespace LetheChat.Plugins
                 + $"Everything drawn so far fits in a bounding box from top-left ({bounds.Left},{bounds.Top}) to bottom-right ({bounds.Right - 1},{bounds.Bottom - 1}), "
                 + $"which is {bounds.Width} wide by {bounds.Height} tall, centered at ({centerX},{centerY}). "
                 + $"The canvas center is ({w / 2},{h / 2}); compare these to judge whether your drawing is well-centered or whether parts have drifted apart.";
+        }
+
+        public async Task<string> DrawViewCanvas()
+        {
+            await Task.Delay(1).ConfigureAwait(false);
+            if (_form == null || _form.IsDisposed || !_form.HasCanvas)
+                return ToolMediaResult.BuildResult("No canvas exists yet. Call NewDrawing to create one.", Id, "media");
+            if (!LLMEngine.SupportsVision)
+                return ToolMediaResult.BuildResult("No vision-capable model is currently loaded, so the canvas cannot be shown to you. Use GetCanvasInfo instead.", Id, "media");
+
+            var path = Path.Combine(Path.GetTempPath(), "LetheChat_DrawingView.png");
+            try
+            {
+                if (!_form.SaveCanvasPng(path))
+                    return ToolMediaResult.BuildResult("No canvas exists yet. Call NewDrawing to create one.", Id, "media");
+            }
+            catch (Exception ex)
+            {
+                return ToolMediaResult.BuildResult($"Failed to capture the canvas: {ex.Message}", Id, "media");
+            }
+
+            return ToolMediaResult.BuildResult(
+                $"The current {_form.CanvasWidth} x {_form.CanvasHeight} canvas is attached. Origin (0,0) is the top-left corner.",
+                Id, "media", path);
         }
 
         public async Task<string> DrawLine(

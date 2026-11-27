@@ -308,6 +308,19 @@ namespace LetheChat.Forms
             });
         }
 
+        /// <summary>
+        /// Saves the current canvas as a PNG file. Returns false when there is no canvas.
+        /// </summary>
+        public bool SaveCanvasPng(string path)
+        {
+            return RunOnUi(() =>
+            {
+                if (_canvas == null) return false;
+                _canvas.Save(path, ImageFormat.Png);
+                return true;
+            });
+        }
+
         private void Present()
         {
             picCanvas.Invalidate();

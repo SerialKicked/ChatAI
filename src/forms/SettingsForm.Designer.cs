@@ -136,6 +136,9 @@
             num_ragmaxretrieve = new LetheChat.Controls.ModernNumericUpDown();
             label27 = new Label();
             collapsibleGroupBox6 = new LetheChat.Controls.CollapsibleGroupBox();
+            panel35 = new Panel();
+            num_longterm = new LetheChat.Controls.ModernNumericUpDown();
+            label54 = new Label();
             ckDetailedSum = new LetheChat.Controls.ModernCheckBox();
             mck_cutmiddle = new LetheChat.Controls.ModernCheckBox();
             cb_pastsession = new LetheChat.Controls.ModernComboBox();
@@ -307,9 +310,6 @@
             btBackend = new Button();
             HelptoolTip = new ToolTip(components);
             openFileDialog1 = new OpenFileDialog();
-            panel35 = new Panel();
-            num_longterm = new LetheChat.Controls.ModernNumericUpDown();
-            label54 = new Label();
             panel1.SuspendLayout();
             MainTab.SuspendLayout();
             tabBackend.SuspendLayout();
@@ -342,6 +342,7 @@
             panel17.SuspendLayout();
             collapsibleGroupBox5.SuspendLayout();
             collapsibleGroupBox6.SuspendLayout();
+            panel35.SuspendLayout();
             panel18.SuspendLayout();
             TabGroup.SuspendLayout();
             collapsibleGroupBox8.SuspendLayout();
@@ -384,7 +385,6 @@
             panel58.SuspendLayout();
             panel57.SuspendLayout();
             MainButtonStack.SuspendLayout();
-            panel35.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -1704,6 +1704,41 @@
             collapsibleGroupBox6.Size = new Size(398, 235);
             collapsibleGroupBox6.TabIndex = 36;
             collapsibleGroupBox6.Text = "Session Memory System";
+            // 
+            // panel35
+            // 
+            panel35.Controls.Add(num_longterm);
+            panel35.Controls.Add(label54);
+            panel35.Dock = DockStyle.Top;
+            panel35.Location = new Point(12, 184);
+            panel35.Margin = new Padding(8);
+            panel35.Name = "panel35";
+            panel35.Padding = new Padding(8);
+            panel35.Size = new Size(374, 36);
+            panel35.TabIndex = 58;
+            // 
+            // num_longterm
+            // 
+            num_longterm.BackColor = Color.FromArgb(64, 64, 64);
+            num_longterm.Font = new Font("Segoe UI", 9F);
+            num_longterm.Increment = new decimal(new int[] { 256, 0, 0, 0 });
+            num_longterm.Location = new Point(11, 6);
+            num_longterm.Maximum = new decimal(new int[] { 128000, 0, 0, 0 });
+            num_longterm.Name = "num_longterm";
+            num_longterm.Padding = new Padding(1);
+            num_longterm.Size = new Size(117, 23);
+            num_longterm.TabIndex = 27;
+            num_longterm.Value = new decimal(new int[] { 2048, 0, 0, 0 });
+            // 
+            // label54
+            // 
+            label54.AutoSize = true;
+            label54.Font = new Font("Segoe UI", 9F);
+            label54.Location = new Point(134, 10);
+            label54.Name = "label54";
+            label54.Size = new Size(165, 15);
+            label54.TabIndex = 28;
+            label54.Text = "Tokens for long term memory";
             // 
             // ckDetailedSum
             // 
@@ -3835,41 +3870,6 @@
             // 
             openFileDialog1.FileName = "openFileDialog1";
             // 
-            // panel35
-            // 
-            panel35.Controls.Add(num_longterm);
-            panel35.Controls.Add(label54);
-            panel35.Dock = DockStyle.Top;
-            panel35.Location = new Point(12, 184);
-            panel35.Margin = new Padding(8);
-            panel35.Name = "panel35";
-            panel35.Padding = new Padding(8);
-            panel35.Size = new Size(374, 36);
-            panel35.TabIndex = 58;
-            // 
-            // num_longterm
-            // 
-            num_longterm.BackColor = Color.FromArgb(64, 64, 64);
-            num_longterm.Font = new Font("Segoe UI", 9F);
-            num_longterm.Increment = new decimal(new int[] { 256, 0, 0, 0 });
-            num_longterm.Location = new Point(11, 6);
-            num_longterm.Maximum = new decimal(new int[] { 128000, 0, 0, 0 });
-            num_longterm.Name = "num_longterm";
-            num_longterm.Padding = new Padding(1);
-            num_longterm.Size = new Size(117, 23);
-            num_longterm.TabIndex = 27;
-            num_longterm.Value = new decimal(new int[] { 2048, 0, 0, 0 });
-            // 
-            // label54
-            // 
-            label54.AutoSize = true;
-            label54.Font = new Font("Segoe UI", 9F);
-            label54.Location = new Point(134, 10);
-            label54.Name = "label54";
-            label54.Size = new Size(165, 15);
-            label54.TabIndex = 28;
-            label54.Text = "Tokens for long term memory";
-            // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -3937,6 +3937,8 @@
             collapsibleGroupBox5.PerformLayout();
             collapsibleGroupBox6.ResumeLayout(false);
             collapsibleGroupBox6.PerformLayout();
+            panel35.ResumeLayout(false);
+            panel35.PerformLayout();
             panel18.ResumeLayout(false);
             panel18.PerformLayout();
             TabGroup.ResumeLayout(false);
@@ -4006,8 +4008,6 @@
             panel57.ResumeLayout(false);
             panel57.PerformLayout();
             MainButtonStack.ResumeLayout(false);
-            panel35.ResumeLayout(false);
-            panel35.PerformLayout();
             ResumeLayout(false);
         }
 
